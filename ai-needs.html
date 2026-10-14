@@ -1,0 +1,210 @@
+<!DOCTYPE html><html lang="en"><head>
+<title>AI Needs Board — Pegasus AI Network</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="Post what you need built with AI and your budget. Vetted AI builders come to you. Free to post.">
+<link rel="canonical" href="https://pegasuscapitalnetwork.com/ai-needs.html">
+<meta property="og:title" content="AI Needs Board — Pegasus">
+<meta property="og:description" content="Describe what you need built and your budget. The right AI builders come to you.">
+<meta property="og:type" content="website">
+<link rel="icon" href="/assets/brand/favicon.ico" sizes="any">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,300&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0a1017;--ink2:#0f1824;--panel:#121d2b;--line:rgba(226,232,240,.10);
+  --ivory:#f3efe6;--ivory-dim:#c7cdd6;--muted:#8793a3;
+  --gold:#c9a85c;--blue:#5b9bd5;
+  --sans:'Inter',system-ui,sans-serif;--serif:'Fraunces',Georgia,serif;--mono:'IBM Plex Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--ink);color:var(--ivory);font-family:var(--sans);font-weight:300;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1040px;margin:0 auto;padding:0 32px}
+@media(max-width:720px){.wrap{padding:0 20px}}
+.field{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(900px 500px at 74% -8%,rgba(91,155,213,.13),transparent 60%),radial-gradient(700px 440px at 10% 2%,rgba(201,168,92,.07),transparent 55%)}
+header.top{position:relative;z-index:3;display:flex;align-items:center;justify-content:space-between;padding:22px 32px;max-width:1040px;margin:0 auto}
+.brand{display:flex;align-items:center;gap:11px;font-family:var(--serif);font-size:19px}
+.brand .mk{width:26px;height:26px;border:1px solid var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:13px}
+.top .nav{display:flex;gap:20px;font-family:var(--mono);font-size:11.5px;color:var(--muted);letter-spacing:.04em}
+.top .nav a:hover{color:var(--ivory)}
+.top .nav a.on{color:var(--gold)}
+@media(max-width:620px){.top .nav{display:none}}
+.hero{position:relative;z-index:2;padding:60px 0 34px}
+.eyebrow{font-family:var(--mono);font-size:11.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin-bottom:22px;display:flex;align-items:center;gap:12px}
+.eyebrow::before{content:"";width:34px;height:1px;background:var(--gold);opacity:.6}
+h1{font-family:var(--serif);font-weight:300;font-size:clamp(34px,5.2vw,58px);line-height:1.03;letter-spacing:-.02em;max-width:17ch}
+h1 em{font-style:italic;color:var(--gold)}
+.lede{margin-top:22px;font-size:clamp(15px,1.8vw,18px);color:var(--ivory-dim);max-width:58ch}
+.cols{position:relative;z-index:2;display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);margin:30px 0 20px}
+@media(max-width:800px){.cols{grid-template-columns:1fr}}
+.col{background:var(--ink2);padding:30px 28px}
+.col h2{font-family:var(--serif);font-weight:400;font-size:23px;margin-bottom:6px}
+.col .sub{font-size:13.5px;color:var(--muted);margin-bottom:20px}
+.fld{margin-bottom:13px}
+.fld label{display:block;font-family:var(--mono);font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.fld input,.fld textarea{width:100%;background:var(--ink);border:1px solid var(--line);color:var(--ivory);font-family:var(--sans);font-size:14px;padding:11px 13px;border-radius:2px}
+.fld input:focus,.fld textarea:focus{outline:none;border-color:var(--gold)}
+.fld textarea{resize:vertical;min-height:70px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+@media(max-width:520px){.row2{grid-template-columns:1fr}}
+.submit{width:100%;margin-top:8px;background:var(--gold);color:#1a1205;border:none;font-family:var(--sans);font-weight:600;font-size:14.5px;padding:13px;border-radius:2px;cursor:pointer}
+.submit:hover{opacity:.92}.submit:disabled{opacity:.5}
+.merr{color:#e8836f;font-size:12.5px;min-height:15px;margin-top:9px}
+.howto{font-size:13.5px;color:var(--ivory-dim);line-height:1.7}
+.howto li{margin:0 0 12px 20px;position:relative}
+.howto li::before{content:"";position:absolute;left:-20px;top:9px;width:7px;height:7px;border-radius:50%;background:var(--gold);opacity:.7}
+.board{position:relative;z-index:2;padding:30px 0 70px}
+.board-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:8px;border-top:1px solid var(--line);padding-top:30px}
+.board-head h2{font-family:var(--serif);font-weight:300;font-size:clamp(22px,2.6vw,30px)}
+.board-head .cnt{font-family:var(--mono);font-size:11.5px;color:var(--muted)}
+.needs{display:grid;gap:12px}
+.need{background:var(--ink2);border:1px solid var(--line);border-radius:4px;padding:20px 22px;transition:background .2s,border-color .2s}
+.need:hover{background:var(--panel);border-color:rgba(201,168,92,.3)}
+.need-top{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:flex-start}
+.need-ttl{font-family:var(--serif);font-size:19px;color:var(--ivory)}
+.need-budget{font-family:var(--mono);font-size:12.5px;color:var(--gold);white-space:nowrap}
+.need-desc{font-size:13.5px;color:var(--ivory-dim);margin:8px 0 12px}
+.need-meta{display:flex;gap:8px;flex-wrap:wrap}
+.chip{font-family:var(--mono);font-size:10.5px;letter-spacing:.03em;color:var(--ivory-dim);border:1px solid var(--line);border-radius:2px;padding:4px 9px}
+.chip.corp{color:var(--gold);border-color:rgba(201,168,92,.35)}
+.empty{text-align:center;padding:48px 24px;border:1px dashed var(--line);border-radius:6px;color:var(--muted)}
+.empty .big{font-family:var(--serif);font-size:22px;color:var(--ivory);margin-bottom:10px;font-weight:400}
+footer{position:relative;z-index:2;border-top:1px solid var(--line);padding:30px 0 60px}
+footer .wrap{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+footer .fnote{font-family:var(--mono);font-size:10.5px;color:var(--muted);max-width:64ch;line-height:1.7}
+.toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%);background:#0f2033;color:#fff;padding:12px 20px;border-radius:10px;font-size:13px;z-index:9500;box-shadow:0 10px 30px rgba(0,0,0,.3);max-width:90vw;text-align:center}
+</style></head>
+<body>
+<div class="field"></div>
+<header class="top">
+  <a class="brand" href="/"><span class="mk">✦</span> Pegasus</a>
+  <div class="nav">
+    <a href="/ai-network.html">AI Network</a>
+    <a href="/ai-needs.html" class="on">Needs Board</a>
+    <a href="/">Home</a>
+  </div>
+</header>
+
+<section class="hero"><div class="wrap">
+  <div class="eyebrow">AI Needs Board</div>
+  <h1>Tell the network what you need <em>built</em>.</h1>
+  <p class="lede">Describe the problem and your budget. Vetted AI builders come to you, instead of you hunting for them. Free to post, no obligation.</p>
+</div></section>
+
+<div class="wrap">
+  <div class="cols">
+    <div class="col">
+      <h2>Post what you need</h2>
+      <div class="sub">Takes a minute. Reviewed before it goes live on the board.</div>
+      <div class="fld"><label>What do you need built?</label><input id="nTitle" maxlength="90" placeholder="e.g. AI phone agent for our clinic intake"></div>
+      <div class="fld"><label>Describe it</label><textarea id="nDesc" maxlength="500" placeholder="What problem it solves, where it runs, what success looks like"></textarea></div>
+      <div class="row2">
+        <div class="fld"><label>Budget</label><input id="nBudget" placeholder="e.g. $10k–40k, or exploratory"></div>
+        <div class="fld"><label>Timeline</label><input id="nTime" placeholder="e.g. 2–3 months"></div>
+      </div>
+      <div class="row2">
+        <div class="fld"><label>Category</label><input id="nCat" placeholder="e.g. voice AI, vision, docs"></div>
+        <div class="fld"><label>Company</label><input id="nCo" placeholder="Your company"></div>
+      </div>
+      <div class="row2">
+        <div class="fld"><label>Your name</label><input id="nName" placeholder="Full name"></div>
+        <div class="fld"><label>Email</label><input id="nEmail" type="email" placeholder="you@company.com"></div>
+      </div>
+      <button class="submit" id="nSubmit" onclick="postNeed()">Post this need →</button>
+      <div class="merr" id="nErr"></div>
+    </div>
+    <div class="col">
+      <h2>How it works</h2>
+      <div class="sub">Demand finds supply, not the other way around.</div>
+      <ul class="howto">
+        <li>You post what you need and your budget. It is reviewed, then listed on the board.</li>
+        <li>Vetted AI builders in the network see it and reach out with how they would do it.</li>
+        <li>You compare, pick who fits, and work directly. Pegasus just made the introduction.</li>
+        <li>Building AI yourself? <a href="/ai-network.html" style="color:var(--gold)">Join as a builder →</a> and get matched to needs like these.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<section class="board"><div class="wrap">
+  <div class="board-head">
+    <h2>Open needs</h2>
+    <span class="cnt" id="needCnt"></span>
+  </div>
+  <div class="needs" id="needList"><div class="empty"><div class="big">Loading…</div></div></div>
+</div></section>
+
+<footer><div class="wrap">
+  <a class="brand" href="/"><span class="mk">✦</span> Pegasus</a>
+  <p class="fnote">Pegasus facilitates professional connections and is not a party to any agreement between members. It does not guarantee outcomes, pricing, or delivery. Always verify counterparties independently.</p>
+</div></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="/js/pegasus-config.js"></script>
+<script>
+(function(){
+  var C=window.PEG_CONFIG||window.PEGASUS_CONFIG||{};
+  var URL=C.SUPABASE_URL||'https://trdwsssouhpawhfdkfqf.supabase.co';
+  var KEY=C.SUPABASE_ANON||'sb_publishable_hrR8wI6hM921mnxk7bBE_A_YKxWsoBI';
+  var sb=(window.supabase&&window.supabase.createClient)?window.supabase.createClient(URL,KEY):null;
+  function v(id){return (document.getElementById(id).value||'').trim();}
+  function esc(x){return (x==null?'':String(x)).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+  function toast(m){var t=document.createElement('div');t.className='toast';t.textContent=m;document.body.appendChild(t);setTimeout(function(){t.style.transition='opacity .4s';t.style.opacity='0';setTimeout(function(){t.remove();},400);},4600);}
+
+  window.postNeed=async function(){
+    var err=document.getElementById('nErr'),btn=document.getElementById('nSubmit');
+    err.textContent='';
+    var title=v('nTitle'),email=v('nEmail');
+    if(title.length<4){err.textContent='Add a short title for what you need.';return;}
+    if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){err.textContent='Add a valid email.';return;}
+    if(!sb){err.textContent='Connection unavailable, try again shortly.';return;}
+    btn.disabled=true;btn.textContent='Posting…';
+    try{
+      var r=await sb.from('ai_needs').insert({
+        need_title:title,need_description:v('nDesc'),budget_range:v('nBudget'),
+        timeline:v('nTime'),category:v('nCat'),company:v('nCo'),
+        poster_name:v('nName'),poster_email:email,source:'ai_needs_board'
+      });
+      if(r.error) throw r.error;
+      ['nTitle','nDesc','nBudget','nTime','nCat','nCo','nName','nEmail'].forEach(function(id){document.getElementById(id).value='';});
+      toast('Posted. We review each need before it goes live on the board.');
+    }catch(e){
+      console.error('[ai-needs] post failed:',e);
+      err.textContent=(e&&e.message)||'Could not post. Please try again.';
+    }
+    btn.disabled=false;btn.textContent='Post this need →';
+  };
+
+  (async function loadBoard(){
+    var host=document.getElementById('needList'),cnt=document.getElementById('needCnt');
+    if(!sb){host.innerHTML='';return;}
+    try{
+      var r=await sb.from('ai_needs').select('need_title,need_description,budget_range,timeline,category,location,is_large_company,created_at').eq('status','approved').order('created_at',{ascending:false}).limit(60);
+      if(r.error) throw r.error;
+      var rows=r.data||[];
+      if(!rows.length){
+        host.innerHTML='<div class="empty"><div class="big">The board is just opening.</div>Be the first to post what you need built — or <a href="/ai-network.html" style="color:var(--gold)">join as a builder</a> to get matched when needs arrive.</div>';
+        cnt.textContent='';return;
+      }
+      cnt.textContent=rows.length+' open';
+      host.innerHTML=rows.map(function(n){
+        return '<div class="need"><div class="need-top"><div class="need-ttl">'+esc(n.need_title)+'</div>'+
+          (n.budget_range?'<div class="need-budget">'+esc(n.budget_range)+'</div>':'')+'</div>'+
+          (n.need_description?'<div class="need-desc">'+esc(n.need_description)+'</div>':'')+
+          '<div class="need-meta">'+
+            (n.is_large_company?'<span class="chip corp">Enterprise</span>':'')+
+            (n.category?'<span class="chip">'+esc(n.category)+'</span>':'')+
+            (n.timeline?'<span class="chip">'+esc(n.timeline)+'</span>':'')+
+            (n.location?'<span class="chip">'+esc(n.location)+'</span>':'')+
+          '</div></div>';
+      }).join('');
+    }catch(e){
+      console.error('[ai-needs] board load failed:',e);
+      host.innerHTML='<div class="empty">Could not load the board right now.</div>';
+    }
+  })();
+})();
+</script>
+</body></html>
