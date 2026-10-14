@@ -75,7 +75,7 @@ v.insertAdjacentHTML('beforeend',
   '<a href="/showcase-admin.html" style="color:var(--blue)">Showcase Moderation</a> · <a href="/admin/intelligence" style="color:var(--blue)">Capital Intelligence</a> · '+
   '<a href="/admin/partner-network" style="color:var(--blue)">Partner Network</a></div>'+
   '<div style="display:flex;gap:4px;margin-bottom:16px;flex-wrap:wrap" id="atabs"></div><div id="apanel"></div>');
-const sections=['Users','Feed','Invites','Claims','Deal Requests','Duplicates','Directory','Homepage Event','Subscriptions','Access System','Deal Rooms','Lender Profiles','Growth Partner Submissions','Match Activity','Analytics','Member Log','Manual Review','Platform Health','Schema & Repair'];
+const sections=['Users','Pegasus AI','Feed','Invites','Claims','Deal Requests','Duplicates','Directory','Homepage Event','Subscriptions','Access System','Deal Rooms','Lender Profiles','Growth Partner Submissions','Match Activity','Analytics','Member Log','Manual Review','Platform Health','Schema & Repair'];
 document.getElementById('atabs').innerHTML=sections.map((s,i)=>'<div class="toggle-opt '+(i===0?'on':'')+'" style="font-size:11px" onclick="aShow(\''+s+'\')">'+s+'</div>').join('');
 function tbl(cols,rows){return '<div class="card"><table class="tbl"><thead><tr>'+cols.map(c=>'<th>'+c+'</th>').join('')+'</tr></thead><tbody>'+rows.map(r=>'<tr>'+r.map(c=>'<td>'+c+'</td>').join('')+'</tr>').join('')+'</tbody></table></div>';}
 const chip=(t,c)=>'<span class="badge '+c+'">'+t+'</span>';
@@ -253,6 +253,67 @@ async function loadDuplicates(p){
 
 /* ── Entity claims review (migration 080) — approve/reject "claim this page"
    requests. Approving adds the claimant as a manager of the presence. ── */
+async function loadPegasusAI(p){
+  p.innerHTML='<div style="padding:40px;text-align:center;color:var(--text3);font-size:12px">Loading Pegasus AI…</div>';
+  function esc(x){return (x==null?'':String(x)).replace(/[&<>"]/g,function(ch){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch];});}
+  try{
+    var c=await window.PegSB.ready;
+    var needsRes=await c.from('ai_needs').select('id,need_title,need_description,budget_range,timeline,category,company,poster_name,poster_email,is_large_company,status,created_at').order('created_at',{ascending:false}).limit(200);
+    if(needsRes.error) throw needsRes.error;
+    var signRes=await c.from('ai_network_signups').select('id,side,full_name,org_name,email,focus_area,one_liner,location,status,created_at').order('created_at',{ascending:false}).limit(200);
+    var needs=needsRes.data||[], signs=(signRes&&signRes.data)||[];
+    window.__aiNeeds=needs;
+    var pend=needs.filter(function(n){return n.status==='new';}).length;
+
+    var html='<div style="display:flex;gap:18px;flex-wrap:wrap;margin-bottom:18px">'+
+      '<div class="card" style="padding:14px 20px"><div style="font-size:22px;font-weight:700;color:var(--text)">'+needs.length+'</div><div style="font-size:11px;color:var(--text3);font-family:var(--mono)">NEEDS · '+pend+' pending</div></div>'+
+      '<div class="card" style="padding:14px 20px"><div style="font-size:22px;font-weight:700;color:var(--text)">'+signs.length+'</div><div style="font-size:11px;color:var(--text3);font-family:var(--mono)">SIGNUPS</div></div>'+
+      '<div class="card" style="padding:14px 20px"><div style="font-size:22px;font-weight:700;color:var(--text)">'+signs.filter(function(s){return s.side==='company';}).length+' / '+signs.filter(function(s){return s.side==='investor';}).length+' / '+signs.filter(function(s){return s.side==='buyer'||s.side==='client';}).length+'</div><div style="font-size:11px;color:var(--text3);font-family:var(--mono)">STARTUPS / INVESTORS / CLIENTS</div></div>'+
+    '</div>';
+
+    html+='<h3 style="font-family:var(--serif,serif);font-weight:400;font-size:20px;margin:6px 0 12px">Needs board — approve to publish</h3>';
+    if(!needs.length){ html+=adminEmpty('📋','No needs posted yet','When someone posts on the AI Needs Board it lands here. Approve it to make it public.'); }
+    else{
+      html+='<div id="ai-needs-list">'+needs.map(function(n){
+        var st={'new':'var(--amber)','approved':'var(--green)','matched':'var(--blue)','closed':'var(--text3)','archived':'var(--text3)'}[n.status]||'var(--text3)';
+        var act=(n.status==='new'||n.status==='archived')
+          ? '<button class="btn btn-pri btn-sm" onclick="aiNeedDecide(\''+n.id+'\',\'approved\')">Approve</button> <button class="btn btn-ghost btn-sm" onclick="aiNeedDecide(\''+n.id+'\',\'archived\')">Archive</button>'
+          : (n.status==='approved' ? '<button class="btn btn-ghost btn-sm" onclick="aiNeedDecide(\''+n.id+'\',\'matched\')">Mark matched</button> <button class="btn btn-ghost btn-sm" onclick="aiNeedDecide(\''+n.id+'\',\'archived\')">Unpublish</button>' : '<span style="font-size:11px;color:var(--text3)">'+esc(n.status)+'</span>');
+        return '<div class="card" style="padding:15px 18px;margin-bottom:9px">'+
+          '<div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:flex-start">'+
+            '<div style="min-width:0;flex:1">'+
+              '<div style="font-weight:600;color:var(--text);font-size:14px">'+esc(n.need_title)+' '+(n.is_large_company?'<span style="font-size:10px;color:var(--gold,#b8923f)">★ enterprise</span>':'')+' <span style="font-size:10px;font-family:var(--mono);text-transform:uppercase;color:'+st+'">· '+esc(n.status)+'</span></div>'+
+              (n.need_description?'<div style="font-size:12.5px;color:var(--text2);margin-top:4px">'+esc(n.need_description)+'</div>':'')+
+              '<div style="font-size:11.5px;color:var(--text3);margin-top:5px">'+[n.budget_range?('💰 '+esc(n.budget_range)):'',n.category?esc(n.category):'',n.timeline?esc(n.timeline):'',n.company?esc(n.company):''].filter(Boolean).join(' · ')+'</div>'+
+              '<div style="font-size:11px;color:var(--text3);margin-top:3px">'+esc(n.poster_name||'')+' · '+esc(n.poster_email||'')+'</div>'+
+            '</div>'+
+            '<div style="display:flex;gap:6px;flex-wrap:wrap">'+act+'</div>'+
+          '</div></div>';
+      }).join('')+'</div>';
+    }
+
+    html+='<h3 style="font-family:var(--serif,serif);font-weight:400;font-size:20px;margin:26px 0 12px">Signups</h3>';
+    if(!signs.length){ html+=adminEmpty('✦','No signups yet','People who join via the AI Network page appear here.'); }
+    else{
+      html+=tbl(['Side','Name','Org','Focus','One-liner','Email'],signs.map(function(s){
+        var side=(s.side==='buyer'?'client':s.side);
+        return [esc(side),esc(s.full_name||'—'),esc(s.org_name||'—'),esc(s.focus_area||'—'),esc((s.one_liner||'').slice(0,60)),esc(s.email||'—')];
+      }));
+    }
+    p.innerHTML=html;
+  }catch(e){
+    console.error('[admin] loadPegasusAI failed:',e);
+    p.innerHTML=adminErr((e&&e.message)||'Could not load Pegasus AI data.');
+  }
+}
+window.aiNeedDecide=async function(id,status){
+  try{
+    var c=await window.PegSB.ready;
+    var r=await c.from('ai_needs').update({status:status}).eq('id',id);
+    if(r.error) throw r.error;
+    loadPegasusAI(document.getElementById('apanel'));
+  }catch(e){ alert('Could not update: '+((e&&e.message)||'error')); }
+};
 async function loadClaims(p){
   p.innerHTML='<div style="padding:40px;text-align:center;color:var(--text3);font-size:12px">Loading claims…</div>';
   try{
@@ -973,6 +1034,7 @@ var HEALTH_MANUAL_HTML =
 
 window.aShow=function(s){[...document.querySelectorAll('#atabs .toggle-opt')].forEach(e=>e.classList.toggle('on',e.textContent===s));const p=document.getElementById('apanel');
   if(s==='Users'){ loadUsers(p); return; }
+  if(s==='Pegasus AI'){ loadPegasusAI(p); return; }
   if(s==='Claims'){ loadClaims(p); return; }
   if(s==='Deal Requests'){ loadDealRequests(p); return; }
   if(s==='Duplicates'){ loadDuplicates(p); return; }
