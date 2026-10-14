@@ -94,7 +94,7 @@
     const learn=G('Learn',[['How Pegasus Works','/how-it-works.html','The system explained'],['Growth Capital','/growth-capital.html','Financing & programs'],['Capital Sessions','/capital-sessions.html','Live institutional briefings'],['Capital Academy','/capital-academy.html','Finance fundamentals'],['Network Badge','/network-badge.html','Show your Pegasus connection'],['FAQ','/faq.html','Common questions']]);
     return `<a href="#maincontent" class="skip-link" onclick="var m=document.getElementById('maincontent')||document.querySelector('main,section,.section,.auth-wrap,.ar-wrap,.view');if(m){m.setAttribute('tabindex','-1');m.focus();}">Skip to content</a><nav class="pub-nav">
       <a class="brand" href="/"><img class="brand-mark" src="/assets/brand/pegasus-symbol.svg" alt="Pegasus"><span>Pegasus Network</span></a>
-      <div class="pub-links"><a href="/feed" class="${active==='Feed'?'on':''}">Feed</a><a href="/find-a-lender" class="${active==='Find a Lender'?'on':''}">Find a Lender</a><a href="/people">People</a><a href="/businesses">Businesses</a><a href="/events">Events</a><a href="/explore.html" class="${active==='Inside Pegasus'||active==='Explore'?'on':''}">Inside Pegasus</a>${who}${learn}</div>
+      <div class="pub-links"><a href="/people" class="${active==='People'?'on':''}">People</a><a href="/businesses" class="${active==='Businesses'?'on':''}">Businesses</a><a href="/explore.html" class="${active==='Opportunities'||active==='Explore'||active==='Inside Pegasus'?'on':''}">Opportunities</a><a href="/events" class="${active==='Events'?'on':''}">Events</a><a href="/how-it-works.html" class="${active==='How'?'on':''}">How it works</a></div>
       <div class="nav-cta" id="pub-nav-cta"><a class="btn btn-ghost" id="nav-signin-btn" href="/signin.html">Sign In</a><a class="btn btn-pri nav-create" id="nav-create-btn" href="/signup.html">Create Free Profile</a></div>
       <button class="mob-menu-btn" id="mobMenuBtn" aria-label="Menu"><span></span><span></span><span></span></button>
     </nav>
@@ -102,13 +102,9 @@
     <div class="mob-drawer" id="mobDrawer">
       <div class="mob-drawer-head"><img src="/assets/brand/pegasus-wordmark.png" style="height:24px"><button class="mob-drawer-close" id="mobClose" aria-label="Close menu">✕</button></div>
       <div class="mob-drawer-nav" id="mobDrawerNav">
-        <a href="/feed">Feed</a><a href="/find-a-lender">Find a Lender</a><a href="/people">People</a><a href="/businesses">Businesses</a><a href="/events">Events</a><a href="/explore.html">Inside Pegasus</a>
-        <div class="mob-sec">Who It’s For</div>
-        <a href="/category-capital-providers.html">Capital Providers</a><a href="/category-capital-seekers.html">Capital Seekers</a><a href="/category-real-estate-agents.html">Real Estate Agents</a><a href="/category-rwa.html">RWA Partners</a><a href="/people">Browse People</a><a href="/businesses">Browse Businesses</a><a href="/events">Browse Events</a>
-        <div class="mob-sec">Learn</div>
-        <a href="/how-it-works.html">How Pegasus Works</a><a href="/growth-capital.html">Growth Capital</a><a href="/capital-sessions.html">Capital Sessions</a><a href="/capital-academy.html">Capital Academy</a><a href="/network-badge.html">Network Badge</a><a href="/rankings">Lender Rankings</a><a href="/awards/top-lenders-2025">Top Lenders 2025</a><a href="/faq.html">FAQ</a>
-        <div class="mob-sec">Company</div>
-        <a href="/about.html">About</a><a href="/contact.html">Contact</a><a href="/events">Events</a>
+        <a href="/people">People</a><a href="/businesses">Businesses</a><a href="/explore.html">Opportunities</a><a href="/events">Events</a><a href="/how-it-works.html">How it works</a>
+        <div class="mob-sec">More</div>
+        <a href="/growth-capital.html">Growth Capital</a><a href="/capital-academy.html">Capital Academy</a><a href="/about.html">About</a><a href="/contact.html">Contact</a><a href="/faq.html">FAQ</a>
       </div>
       <div class="mob-drawer-foot" id="mobDrawerFoot"><a class="btn btn-ghost" href="/signin.html">Sign In</a><a class="btn btn-pri nav-create" href="/signup.html">Create Profile</a></div>
     </div>
@@ -903,29 +899,27 @@
       links.setAttribute('data-member', '1');
       var on = function(p){ return location.pathname.indexOf(p) === 0 ? ' on' : ''; };
       links.innerHTML =
-        '<a class="member'+on('/feed')+'" href="/feed">Feed</a>'+
-        '<a class="member'+on('/find-a-lender')+'" href="/find-a-lender">Find a Lender</a>'+
-        '<a class="member'+on('/members')+'" href="/members.html">Members Network</a>'+
-        '<a class="member'+on('/businesses')+'" href="/businesses">Directory</a>'+
-        '<a class="member'+(slug?on('/u/'):'')+'" href="'+(slug?'/u/'+slug:'/profile.html')+'">My Profile</a>'+
-        '<a class="member'+on('/my-presences')+'" href="/my-presences.html">Business Pages</a>'+
+        '<a class="member'+on('/people')+'" href="/people">People</a>'+
+        '<a class="member'+on('/businesses')+'" href="/businesses">Businesses</a>'+
         '<a class="member'+on('/showcase')+'" href="/showcase.html">Opportunities</a>'+
-        '<a class="member'+on('/dashboard')+'" href="/dashboard.html">Workspace</a>';
+        '<a class="member'+on('/events')+'" href="/events">Events</a>'+
+        '<a class="member'+on('/dashboard')+'" href="/dashboard.html">My Workspace</a>'+
+        '<a class="member'+(slug?on('/u/'):'')+'" href="'+(slug?'/u/'+slug:'/profile.html')+'">My Profile</a>';
     }
     /* Mobile drawer → member links too */
     var mdn = document.getElementById('mobDrawerNav');
     if (mdn && mdn.getAttribute('data-member') !== '1') {
       mdn.setAttribute('data-member', '1');
       mdn.innerHTML =
-        '<a href="/feed">Feed</a>'+
-        '<a href="/find-a-lender">Find a Lender</a>'+
-        '<a href="/members.html">Members Network</a>'+
-        '<a href="/businesses">Directory</a>'+
-        '<a href="'+(slug?'/u/'+slug:'/profile.html')+'">My Profile</a>'+
-        '<a href="/my-presences.html">Business Pages</a>'+
+        '<a href="/people">People</a>'+
+        '<a href="/businesses">Businesses</a>'+
         '<a href="/showcase.html">Opportunities</a>'+
-        '<a href="/dashboard.html">Workspace</a>'+
+        '<a href="/events">Events</a>'+
+        '<a href="/dashboard.html">My Workspace</a>'+
+        '<a href="'+(slug?'/u/'+slug:'/profile.html')+'">My Profile</a>'+
         '<div class="mob-sec">Account</div>'+
+        '<a href="/my-presences.html">Business Pages</a>'+
+        '<a href="/feed">Feed</a>'+
         '<a href="/deal-requests.html">Financing Requests</a>'+
         '<a href="/membership.html">Access & Growth</a>'+
         '<a href="/profile-edit.html">Manage Profile</a>'+
