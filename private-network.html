@@ -160,8 +160,8 @@ footer .fnote{font-family:var(--mono);font-size:10.5px;color:var(--muted);max-wi
       var r=await sb.from('private_network_interest').insert(row);
       if(r.error) throw r.error;
       var col=document.getElementById(isE?'col-everyday':'col-accredited');
-      col.innerHTML='<div class="done"><div class="chk">✓</div><h3>You're on the list.</h3>'+
-        '<p>Thank you. We're building the Private Network community and will reach out at '+email.replace(/[&<>"]/g,'')+' as compliant access opens through licensed partners. No offer is being made now.</p></div>';
+      col.innerHTML='<div class="done"><div class="chk">✓</div><h3>You’re on the list.</h3>'+
+        '<p>Thank you. We’re building the Private Network community and will reach out at '+email.replace(/[&<>"]/g,'')+' as compliant access opens through licensed partners. No offer is being made now.</p></div>';
     }catch(e){
       console.error('[private-network] signup failed:',e);
       err.textContent=(e&&e.message)||'Could not submit. Please try again.';
