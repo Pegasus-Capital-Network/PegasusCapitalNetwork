@@ -209,18 +209,30 @@
     <div>
       <div class="eh-welcome" id="heroWelcome" style="display:none"><span class="d"></span><span id="heroWelcomeTxt">Welcome back</span></div>
       <div class="eh-kick"><span class="rule"></span><span>A Private Capital Network</span></div>
-      <h1 class="eh-h1">Become visible to the people who <em>move capital.</em></h1>
-      <p class="eh-lead">A private network where principals, funds, and operators present who they are and what they are building — to an audience of equally serious capital.</p>
-      <div class="eh-cta" id="heroCta">
-        <a class="eh-btn eh-btn-pri" href="/signup.html?intent=profile">Create Your Profile</a>
-        <a class="eh-btn eh-btn-out" href="/explore.html">Explore the Network</a>
-        <a class="eh-btn-link" href="/how-it-works.html">How it works →</a>
-      </div>
+      <h1 class="eh-h1">Where serious people and <em>serious capital</em> find each other.</h1>
+      <p class="eh-lead">A private network for founders, investors, operators, and capital partners — across AI, real estate, and the companies building what’s next. Present who you are and what you’re building to an audience that can actually move.</p>
+      <form class="eh-enter" id="heroEnter" onsubmit="return pegHeroEnter(event)">
+        <input id="heroEmail" type="email" placeholder="Enter your email to start" autocomplete="email" aria-label="Email">
+        <button type="submit" class="eh-btn eh-btn-pri">Get started →</button>
+      </form>
+      <div class="eh-enter-sub">Free to join · <a href="/explore.html">Explore the network</a> · <a href="/how-it-works.html">How it works</a></div>
       <div class="eh-index" id="ehIndex" style="display:none"></div>
     </div>
-    <div class="eh-dossier" id="ehFeatured" style="display:none"></div>
   </div>
 </section>
+<script>
+function pegHeroEnter(e){e.preventDefault();var v=(document.getElementById('heroEmail').value||'').trim();var u='/signup.html';if(/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v)){u+='?email='+encodeURIComponent(v);}location.href=u;return false;}
+</script>
+<style>
+.eh-enter{display:flex;gap:10px;max-width:480px;margin:8px 0 14px;flex-wrap:wrap}
+.eh-enter input{flex:1;min-width:220px;padding:14px 16px;border:1px solid var(--border,rgba(20,40,70,.18));border-radius:8px;font-size:15px;font-family:inherit;background:#fff;color:var(--text,#13233b)}
+.eh-enter input:focus{outline:none;border-color:var(--gold,#b8923f);box-shadow:0 0 0 3px rgba(184,146,63,.14)}
+.eh-enter .eh-btn-pri{white-space:nowrap;padding:14px 22px}
+.eh-enter-sub{font-size:13px;color:var(--text2,#5a6b82)}
+.eh-enter-sub a{color:var(--text2,#5a6b82);text-decoration:underline;text-underline-offset:2px}
+.eh-enter-sub a:hover{color:var(--text,#13233b)}
+@media(max-width:560px){.eh-enter .eh-btn-pri{width:100%}}
+</style>
 
 <!-- WHY CREATE A PROFILE — large product panels -->
 <div class="lpanels" id="why-profile">
@@ -281,8 +293,7 @@
   </div>
 
   <div class="why-cta" style="margin-top:38px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap" id="panelsCta">
-    <a class="btn btn-pri btn-lg" href="/signup.html">Create Free Profile</a>
-    <a class="btn btn-ghost btn-lg" href="/signin.html">Sign In</a>
+    <a class="btn btn-pri btn-lg" href="/signup.html">Create your free profile →</a>
   </div>
 </div>
 
@@ -329,9 +340,7 @@
   <h2 class="why-h2">Build your presence inside Pegasus.</h2>
   <p class="why-intro">Create your free profile, present your business, and become visible to the right people.</p>
   <div class="why-cta" id="finalCta" style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
-    <a class="btn btn-pri btn-lg hero-cta-pri" href="/signup.html">Create Free Profile</a>
-    <a class="btn btn-ghost btn-lg" href="/signin.html">Sign In</a>
-    <a class="btn btn-ghost btn-lg" href="/how-it-works.html">How It Works</a>
+    <a class="btn btn-pri btn-lg hero-cta-pri" href="/signup.html">Create your free profile →</a>
   </div>
 </section>
 <div id="footer"></div>
