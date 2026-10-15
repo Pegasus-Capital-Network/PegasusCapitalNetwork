@@ -75,7 +75,7 @@ v.insertAdjacentHTML('beforeend',
   '<a href="/showcase-admin.html" style="color:var(--blue)">Showcase Moderation</a> · <a href="/admin/intelligence" style="color:var(--blue)">Capital Intelligence</a> · '+
   '<a href="/admin/partner-network" style="color:var(--blue)">Partner Network</a></div>'+
   '<div style="display:flex;gap:4px;margin-bottom:16px;flex-wrap:wrap" id="atabs"></div><div id="apanel"></div>');
-const sections=['Users','Pegasus AI','Feed','Invites','Claims','Deal Requests','Duplicates','Directory','Homepage Event','Subscriptions','Access System','Deal Rooms','Lender Profiles','Growth Partner Submissions','Match Activity','Analytics','Member Log','Manual Review','Platform Health','Schema & Repair'];
+const sections=['Users','Pegasus AI','Private Network','Feed','Invites','Claims','Deal Requests','Duplicates','Directory','Homepage Event','Subscriptions','Access System','Deal Rooms','Lender Profiles','Growth Partner Submissions','Match Activity','Analytics','Member Log','Manual Review','Platform Health','Schema & Repair'];
 document.getElementById('atabs').innerHTML=sections.map((s,i)=>'<div class="toggle-opt '+(i===0?'on':'')+'" style="font-size:11px" onclick="aShow(\''+s+'\')">'+s+'</div>').join('');
 function tbl(cols,rows){return '<div class="card"><table class="tbl"><thead><tr>'+cols.map(c=>'<th>'+c+'</th>').join('')+'</tr></thead><tbody>'+rows.map(r=>'<tr>'+r.map(c=>'<td>'+c+'</td>').join('')+'</tr>').join('')+'</tbody></table></div>';}
 const chip=(t,c)=>'<span class="badge '+c+'">'+t+'</span>';
@@ -312,6 +312,62 @@ window.aiNeedDecide=async function(id,status){
     var r=await c.from('ai_needs').update({status:status}).eq('id',id);
     if(r.error) throw r.error;
     loadPegasusAI(document.getElementById('apanel'));
+  }catch(e){ alert('Could not update: '+((e&&e.message)||'error')); }
+};
+async function loadPrivateNetwork(p){
+  p.innerHTML='<div style="padding:40px;text-align:center;color:var(--text3);font-size:12px">Loading Private Network…</div>';
+  function esc(x){return (x==null?'':String(x)).replace(/[&<>"]/g,function(ch){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch];});}
+  try{
+    var c=await window.PegSB.ready;
+    var res=await c.from('private_network_interest').select('id,track,full_name,email,org_name,interest_band,areas,accredited_self,location,status,created_at').order('created_at',{ascending:false}).limit(300);
+    if(res.error) throw res.error;
+    var rows=res.data||[];
+    window.__pnInterest=rows;
+    var ev=rows.filter(function(r){return r.track==='everyday';}).length;
+    var ac=rows.filter(function(r){return r.track==='accredited';}).length;
+    var pend=rows.filter(function(r){return r.status==='new'||!r.status;}).length;
+
+    var html='<div style="display:flex;gap:18px;flex-wrap:wrap;margin-bottom:18px">'+
+      '<div class="card" style="padding:14px 20px"><div style="font-size:22px;font-weight:700;color:var(--text)">'+rows.length+'</div><div style="font-size:11px;color:var(--text3);font-family:var(--mono)">INTEREST · '+pend+' new</div></div>'+
+      '<div class="card" style="padding:14px 20px"><div style="font-size:22px;font-weight:700;color:var(--text)">'+ev+' / '+ac+'</div><div style="font-size:11px;color:var(--text3);font-family:var(--mono)">EVERYDAY / ACCREDITED</div></div>'+
+    '</div>'+
+    '<div style="font-size:11.5px;color:var(--text3);margin:-6px 0 16px;max-width:60ch">Interest list only — not an offering. People here have expressed interest; any actual investment happens later through licensed Reg CF/A+/D partners.</div>';
+
+    html+='<h3 style="font-family:var(--serif,serif);font-weight:400;font-size:20px;margin:6px 0 12px">Interest list</h3>';
+    if(!rows.length){ html+=adminEmpty('◈','No interest yet','When someone expresses interest via the Private Network page it lands here.'); }
+    else{
+      html+='<div id="pn-list">'+rows.map(function(r){
+        var status=r.status||'new';
+        var st={'new':'var(--amber)','reviewed':'var(--blue)','contacted':'var(--green)','archived':'var(--text3)'}[status]||'var(--text3)';
+        var act=(status==='new'||status==='archived')
+          ? '<button class="btn btn-pri btn-sm" onclick="pnDecide(\''+r.id+'\',\'reviewed\')">Mark reviewed</button> <button class="btn btn-ghost btn-sm" onclick="pnDecide(\''+r.id+'\',\'archived\')">Archive</button>'
+          : (status==='reviewed' ? '<button class="btn btn-pri btn-sm" onclick="pnDecide(\''+r.id+'\',\'contacted\')">Mark contacted</button> <button class="btn btn-ghost btn-sm" onclick="pnDecide(\''+r.id+'\',\'archived\')">Archive</button>'
+          : '<button class="btn btn-ghost btn-sm" onclick="pnDecide(\''+r.id+'\',\'reviewed\')">Reopen</button>');
+        var trackBadge=(r.track==='accredited')?'<span style="font-size:10px;color:var(--gold,#b8923f)">★ accredited</span>':'<span style="font-size:10px;color:var(--text3)">everyday</span>';
+        return '<div class="card" style="padding:15px 18px;margin-bottom:9px">'+
+          '<div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:flex-start">'+
+            '<div style="min-width:0;flex:1">'+
+              '<div style="font-weight:600;color:var(--text);font-size:14px">'+esc(r.full_name||'—')+' '+trackBadge+' <span style="font-size:10px;font-family:var(--mono);text-transform:uppercase;color:'+st+'">· '+esc(status)+'</span></div>'+
+              '<div style="font-size:11.5px;color:var(--text3);margin-top:5px">'+[r.email?esc(r.email):'',r.org_name?esc(r.org_name):'',r.interest_band?('band '+esc(r.interest_band)):'',r.location?esc(r.location):''].filter(Boolean).join(' · ')+'</div>'+
+              (r.areas?'<div style="font-size:11.5px;color:var(--text2);margin-top:3px">'+esc(r.areas)+'</div>':'')+
+              (r.accredited_self?'<div style="font-size:11px;color:var(--text3);margin-top:3px">self-reported accredited: '+esc(r.accredited_self)+'</div>':'')+
+            '</div>'+
+            '<div style="display:flex;gap:6px;flex-wrap:wrap">'+act+'</div>'+
+          '</div></div>';
+      }).join('')+'</div>';
+    }
+    p.innerHTML=html;
+  }catch(e){
+    console.error('[admin] loadPrivateNetwork failed:',e);
+    p.innerHTML=adminErr((e&&e.message)||'Could not load Private Network data.');
+  }
+}
+window.pnDecide=async function(id,status){
+  try{
+    var c=await window.PegSB.ready;
+    var r=await c.from('private_network_interest').update({status:status}).eq('id',id);
+    if(r.error) throw r.error;
+    loadPrivateNetwork(document.getElementById('apanel'));
   }catch(e){ alert('Could not update: '+((e&&e.message)||'error')); }
 };
 async function loadClaims(p){
@@ -1035,6 +1091,7 @@ var HEALTH_MANUAL_HTML =
 window.aShow=function(s){[...document.querySelectorAll('#atabs .toggle-opt')].forEach(e=>e.classList.toggle('on',e.textContent===s));const p=document.getElementById('apanel');
   if(s==='Users'){ loadUsers(p); return; }
   if(s==='Pegasus AI'){ loadPegasusAI(p); return; }
+  if(s==='Private Network'){ loadPrivateNetwork(p); return; }
   if(s==='Claims'){ loadClaims(p); return; }
   if(s==='Deal Requests'){ loadDealRequests(p); return; }
   if(s==='Duplicates'){ loadDuplicates(p); return; }
