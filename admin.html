@@ -75,7 +75,7 @@ v.insertAdjacentHTML('beforeend',
   '<a href="/showcase-admin.html" style="color:var(--blue)">Showcase Moderation</a> · <a href="/admin/intelligence" style="color:var(--blue)">Capital Intelligence</a> · '+
   '<a href="/admin/partner-network" style="color:var(--blue)">Partner Network</a></div>'+
   '<div style="display:flex;gap:4px;margin-bottom:16px;flex-wrap:wrap" id="atabs"></div><div id="apanel"></div>');
-const sections=['Users','Pegasus AI','Intelligence','Private Network','Feed','Invites','Claims','Deal Requests','Duplicates','Directory','Homepage Event','Subscriptions','Access System','Deal Rooms','Lender Profiles','Growth Partner Submissions','Match Activity','Analytics','Member Log','Manual Review','Platform Health','Schema & Repair'];
+const sections=['Dashboard','Users','Pegasus AI','Intelligence','Private Network','Feed','Invites','Claims','Deal Requests','Duplicates','Directory','Homepage Event','Subscriptions','Access System','Deal Rooms','Lender Profiles','Growth Partner Submissions','Match Activity','Analytics','Member Log','Manual Review','Platform Health','Schema & Repair'];
 document.getElementById('atabs').innerHTML=sections.map((s,i)=>'<div class="toggle-opt '+(i===0?'on':'')+'" style="font-size:11px" onclick="aShow(\''+s+'\')">'+s+'</div>').join('');
 function tbl(cols,rows){return '<div class="card"><table class="tbl"><thead><tr>'+cols.map(c=>'<th>'+c+'</th>').join('')+'</tr></thead><tbody>'+rows.map(r=>'<tr>'+r.map(c=>'<td>'+c+'</td>').join('')+'</tr>').join('')+'</tbody></table></div>';}
 const chip=(t,c)=>'<span class="badge '+c+'">'+t+'</span>';
@@ -373,6 +373,86 @@ window.pnDecide=async function(id,status){
 function diEsc(x){return (x==null?'':String(x)).replace(/[&<>"]/g,function(ch){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch];});}
 var DI_STAGES=['new','verified','matched','pitched','intro','deal','lost'];
 var DI_STAGE_COLOR={'new':'var(--text3)','verified':'var(--amber)','matched':'var(--blue,#235FA6)','pitched':'var(--violet,#8b7bd8)','intro':'var(--green)','deal':'var(--green)','lost':'var(--red,#c0392b)'};
+async function loadDashboard(p){
+  p.innerHTML='<div style="padding:40px;text-align:center;color:var(--text3);font-size:12px">Loading dashboard…</div>';
+  var esc=diEsc;
+  function daysSince(ts){ if(!ts) return null; var d=Math.floor((Date.now()-new Date(ts).getTime())/86400000); return isNaN(d)?null:d; }
+  function todayStr(){ return new Date().toISOString().slice(0,10); }
+  try{
+    var c=await window.PegSB.ready;
+    var sigRes=await c.from('deal_intel_signals').select('id,company_name,signal_title,pipeline_stage,status,ai_intent,owner,next_action,next_action_date,stage_changed_at,created_at').order('created_at',{ascending:false}).limit(400);
+    if(sigRes.error) throw sigRes.error;
+    var sigs=sigRes.data||[];
+    var matRes=await c.from('deal_intel_matches').select('id,signal_id,vendor_name,status,created_at').order('created_at',{ascending:false}).limit(600);
+    var matches=(matRes&&matRes.data)||[];
+    var mBySig={}; matches.forEach(function(m){(mBySig[m.signal_id]=mBySig[m.signal_id]||[]).push(m);});
+
+    // cross-queue counts (best-effort)
+    var aiNew=0,pniNew=0,claimsPending=0;
+    try{ var a=await c.from('ai_needs').select('id,status').eq('status','new'); aiNew=(a&&a.data)?a.data.length:0; }catch(e){}
+    try{ var pn=await c.from('private_network_interest').select('id,status'); pniNew=(pn&&pn.data)?pn.data.filter(function(r){return (r.status||'new')==='new';}).length:0; }catch(e){}
+    try{ var cl=await c.rpc('get_entity_claims_pending'); claimsPending=(cl&&cl.data&&Array.isArray(cl.data))?cl.data.length:0; }catch(e){}
+
+    var today=todayStr();
+    var stage=function(r){return r.pipeline_stage||'new';};
+    var newSigs=sigs.filter(function(r){return stage(r)==='new';});
+    // pending outreach: has >=1 matched vendor but not yet pitched/intro/deal
+    var pendingOutreach=sigs.filter(function(r){ var s=stage(r); return (mBySig[r.id]&&mBySig[r.id].length) && (s==='matched'||s==='verified'); });
+    // stalled: active in pipeline (pitched/intro) and either next action overdue or no movement in 7+ days
+    var stalled=sigs.filter(function(r){ var s=stage(r); if(s!=='pitched'&&s!=='intro') return false; var overdue=r.next_action_date&&r.next_action_date<today; var cold=(!r.next_action_date)&&(daysSince(r.stage_changed_at)!==null&&daysSince(r.stage_changed_at)>=7); return overdue||cold; });
+    var intros=sigs.filter(function(r){return stage(r)==='intro';}).length;
+    var deals=sigs.filter(function(r){return stage(r)==='deal';}).length;
+
+    function kpi(n,label,color){ return '<div class="card" style="padding:14px 18px;min-width:120px"><div style="font-size:24px;font-weight:700;color:'+(color||'var(--text)')+'">'+n+'</div><div style="font-size:10.5px;color:var(--text3);font-family:var(--mono);text-transform:uppercase;letter-spacing:.05em">'+label+'</div></div>'; }
+
+    var html='<div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:10px;margin-bottom:6px">'+
+      '<h2 style="font-family:var(--serif,serif);font-weight:400;font-size:24px">Command center</h2>'+
+      '<div style="font-size:11px;color:var(--text3);font-family:var(--mono)">'+today+'</div></div>'+
+      '<div style="font-size:11.5px;color:var(--text3);margin-bottom:16px;max-width:70ch">Every number here points to a next action. The goal of each one is a qualified contact, a meeting, an agreement, or a closed deal.</div>';
+
+    html+='<div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:22px">'+
+      kpi(newSigs.length,'New signals','var(--amber)')+
+      kpi(pendingOutreach.length,'To pitch','var(--violet,#8b7bd8)')+
+      kpi(stalled.length,'Stalled',stalled.length?'var(--red,#c0392b)':'var(--text3)')+
+      kpi(intros,'Intros','var(--green)')+
+      kpi(deals,'Deals','var(--green)')+
+    '</div>';
+
+    function section(title,rows,emptyMsg,renderRow,target){
+      var h='<div style="display:flex;justify-content:space-between;align-items:center;margin:0 0 10px"><h3 style="font-family:var(--serif,serif);font-weight:400;font-size:18px">'+title+' <span style="font-size:12px;color:var(--text3);font-family:var(--mono)">'+rows.length+'</span></h3>'+(target?'<a href="#" class="link" style="font-size:12px" onclick="aShow(\''+target+'\');return false;">Open '+target+' →</a>':'')+'</div>';
+      if(!rows.length){ h+='<div style="font-size:12px;color:var(--text3);padding:0 0 18px">'+emptyMsg+'</div>'; return h; }
+      h+='<div style="margin-bottom:22px">'+rows.slice(0,8).map(renderRow).join('')+'</div>';
+      return h;
+    }
+    function dash(x){return x?esc(x):'';}
+    function sigLine(r,extra){
+      var s=stage(r);
+      return '<div class="card" style="padding:11px 15px;margin-bottom:7px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center">'+
+        '<div style="min-width:0;flex:1"><span style="font-weight:600;color:var(--text);font-size:13px">'+dash(r.company_name)+'</span> <span style="font-size:9.5px;font-family:var(--mono);text-transform:uppercase;color:'+(DI_STAGE_COLOR[s]||'var(--text3)')+'">· '+s+'</span>'+
+        '<div style="font-size:12px;color:var(--text2);margin-top:2px">'+dash(r.signal_title)+'</div>'+
+        (extra?'<div style="font-size:11px;color:var(--text3);margin-top:2px">'+extra+'</div>':'')+
+        '</div><a href="#" class="link" style="font-size:12px;white-space:nowrap" onclick="aShow(\'Intelligence\');return false;">Open →</a>'+
+      '</div>';
+    }
+
+    html+=section('New signals to review',newSigs,'Nothing new. The weekly scan adds fresh signals every Monday.',function(r){return sigLine(r,(r.ai_intent?(r.ai_intent+' intent'):''));},'Intelligence');
+    html+=section('Matched, ready to pitch',pendingOutreach,'No matched signals waiting. Match a signal to a vendor in Intelligence.',function(r){var ms=mBySig[r.id]||[];var names=ms.map(function(m){return m.vendor_name||'vendor';}).join(', ');return sigLine(r,'pitch to: '+esc(names));},'Intelligence');
+    html+=section('Stalled, needs a push',stalled,'Nothing stalled. Everything in flight is moving.',function(r){var od=r.next_action_date&&r.next_action_date<today;var d=daysSince(r.stage_changed_at);return sigLine(r,(od?('overdue: '+esc(r.next_action||'next action')+' ('+esc(r.next_action_date)+')'):('no movement in '+(d==null?'?':d)+' days'))+(r.owner?(' · '+esc(r.owner)):''));},'Intelligence');
+
+    // other queues
+    html+='<div style="border-top:1px solid var(--line,#2224);margin-top:6px;padding-top:16px"><div style="font-size:10.5px;font-family:var(--mono);color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px">Other queues</div>'+
+      '<div style="display:flex;gap:12px;flex-wrap:wrap">'+
+        '<div class="card" style="padding:12px 16px;min-width:150px"><div style="font-size:20px;font-weight:700;color:'+(aiNew?'var(--amber)':'var(--text3)')+'">'+aiNew+'</div><div style="font-size:10.5px;color:var(--text3);font-family:var(--mono)">AI NEEDS · new</div><a href="#" class="link" style="font-size:11px" onclick="aShow(\'Pegasus AI\');return false;">Open →</a></div>'+
+        '<div class="card" style="padding:12px 16px;min-width:150px"><div style="font-size:20px;font-weight:700;color:'+(pniNew?'var(--amber)':'var(--text3)')+'">'+pniNew+'</div><div style="font-size:10.5px;color:var(--text3);font-family:var(--mono)">PRIVATE · new</div><a href="#" class="link" style="font-size:11px" onclick="aShow(\'Private Network\');return false;">Open →</a></div>'+
+        '<div class="card" style="padding:12px 16px;min-width:150px"><div style="font-size:20px;font-weight:700;color:'+(claimsPending?'var(--amber)':'var(--text3)')+'">'+claimsPending+'</div><div style="font-size:10.5px;color:var(--text3);font-family:var(--mono)">CLAIMS · pending</div><a href="#" class="link" style="font-size:11px" onclick="aShow(\'Claims\');return false;">Open →</a></div>'+
+      '</div></div>';
+
+    p.innerHTML=html;
+  }catch(e){
+    console.error('[admin] loadDashboard failed:',e);
+    p.innerHTML=adminErr((e&&e.message)||'Could not load dashboard.');
+  }
+}
 async function loadDealIntel(p){
   p.innerHTML='<div style="padding:40px;text-align:center;color:var(--text3);font-size:12px">Loading intelligence…</div>';
   var esc=diEsc;
@@ -1277,6 +1357,7 @@ var HEALTH_MANUAL_HTML =
   '</div>';
 
 window.aShow=function(s){[...document.querySelectorAll('#atabs .toggle-opt')].forEach(e=>e.classList.toggle('on',e.textContent===s));const p=document.getElementById('apanel');
+  if(s==='Dashboard'){ loadDashboard(p); return; }
   if(s==='Users'){ loadUsers(p); return; }
   if(s==='Pegasus AI'){ loadPegasusAI(p); return; }
   if(s==='Private Network'){ loadPrivateNetwork(p); return; }
@@ -1444,7 +1525,7 @@ async function loadSchemaRepair(p){
       ((e&&e.message)?': '+srEsc(e.message):'')+'. Apply <span style="font-family:var(--mono)">supabase/062_health_check_schema.sql</span> and try again.</span></div></div>';
   }
 }
-aShow('Users');
+aShow('Dashboard');
 
 });
 </script></body></html>
