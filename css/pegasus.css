@@ -2,19 +2,20 @@
    PEGASUS NETWORK v72 — Premium Design System
    Visual authority pass: institutional quality, Apple-level discipline.
    ============================================================================ */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 :root{
-  /* warm light institutional canvas — refined for premium depth */
-  --bg:#F6F4F0;--bg1:#FFFFFF;--bg2:#EDEBE5;--bg3:#E3E0D8;--bg4:#D6D1C8;--bg5:#C8C3B8;
-  --border:rgba(28,30,26,0.08);--border2:rgba(28,30,26,0.12);--border3:rgba(28,30,26,0.20);
-  --blue:#1D5A9E;--blue-lt:#2971BE;--blue-dim:rgba(29,90,158,0.08);--blue-glow:rgba(29,90,158,0.14);
+  /* unified light system — matches the three-world pages (Inter, white, navy) */
+  --bg:#FFFFFF;--bg1:#FFFFFF;--bg2:#F5F6F8;--bg3:#EEF1F4;--bg4:#E4E7EC;--bg5:#D7DDE4;
+  --border:rgba(14,24,36,0.08);--border2:rgba(14,24,36,0.12);--border3:rgba(14,24,36,0.20);
+  --blue:#1B3A5B;--blue-lt:#2B5580;--blue-dim:rgba(27,58,91,0.08);--blue-glow:rgba(27,58,91,0.14);
   --teal:#0B7488;--teal-dim:rgba(11,116,136,0.08);
   --green:#0C8F5C;--green-dim:rgba(12,143,92,0.08);
   --red:#BF3E38;--red-dim:rgba(191,62,56,0.08);--amber:#A86D0E;--amber-dim:rgba(168,109,14,0.09);
-  --gold:#8E7020;--gold-dim:rgba(142,112,32,0.10);--gold-glow:rgba(142,112,32,0.14);
-  --text:#161B22;--text2:#4A535E;--text3:#6B7580;--text4:#7D858B;
-  --serif:'Cormorant Garamond','IBM Plex Serif',Georgia,serif;
-  --sans:'IBM Plex Sans',system-ui,sans-serif;
-  --mono:'IBM Plex Mono',monospace;
+  --gold:#9A7B3F;--gold-dim:rgba(154,123,63,0.10);--gold-glow:rgba(154,123,63,0.14);
+  --text:#16202E;--text2:#46525F;--text3:#737E8B;--text4:#8A929B;
+  --serif:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  --sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  --mono:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
   --r1:6px;--r2:10px;--r3:14px;--r4:18px;--r5:24px;
   /* premium shadows — softer spread, more ambient depth */
   --sh-card:0 1px 3px rgba(20,24,28,0.04),0 6px 20px rgba(20,24,28,0.06);
@@ -113,8 +114,8 @@ a{color:inherit;text-decoration:none;transition:color var(--dur-fast) ease}
 
 .eyebrow{font-size:9px;font-family:var(--mono);letter-spacing:0.2em;text-transform:uppercase;color:var(--text3);margin-bottom:12px;display:flex;align-items:center;gap:10px}
 .eyebrow::before{content:'';width:20px;height:1px;background:var(--border3)}
-.h1{font-family:var(--serif);font-weight:300;font-size:30px;letter-spacing:-0.025em;margin-bottom:8px;line-height:1.1}
-.h2{font-family:var(--serif);font-weight:300;font-size:25px;letter-spacing:-0.02em;line-height:1.15}
+.h1{font-family:var(--serif);font-weight:800;font-size:32px;letter-spacing:-0.03em;margin-bottom:8px;line-height:1.06}
+.h2{font-family:var(--serif);font-weight:700;font-size:26px;letter-spacing:-0.025em;line-height:1.12}
 .sub{font-size:13.5px;color:var(--text2);font-weight:300;max-width:560px;line-height:1.7}
 .sub-mono{font-size:12px;color:var(--text3);font-family:var(--mono);margin-bottom:24px}
 

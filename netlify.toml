@@ -530,3 +530,78 @@
 # member queuing them; honours the global outreach pause.
 [functions."referral-sender"]
   schedule = "*/15 * * * *"
+
+# ════════════════════════════════════════════════════════════════════════════
+# IA CLEANUP (2026-10) — collapse duplicate pages to one canonical each.
+# force=true so these win over the legacy .html files still on disk.
+# ════════════════════════════════════════════════════════════════════════════
+[[redirects]]
+  from = "/real-estate-agents.html"
+  to = "/realtors.html"
+  status = 301
+  force = true
+[[redirects]]
+  from = "/real-estate-agents"
+  to = "/realtors.html"
+  status = 301
+  force = true
+[[redirects]]
+  from = "/category-real-estate-agents.html"
+  to = "/realtors.html"
+  status = 301
+  force = true
+[[redirects]]
+  from = "/agent-partnership.html"
+  to = "/realtors.html"
+  status = 301
+  force = true
+[[redirects]]
+  from = "/lender-directory.html"
+  to = "/find-a-lender.html"
+  status = 301
+  force = true
+[[redirects]]
+  from = "/mortgage-brokers.html"
+  to = "/find-a-lender.html"
+  status = 301
+  force = true
+[[redirects]]
+  from = "/category-capital-providers.html"
+  to = "/find-a-lender.html"
+  status = 301
+  force = true
+[[redirects]]
+  from = "/category-capital-seekers.html"
+  to = "/borrowers.html"
+  status = 301
+  force = true
+[[redirects]]
+  from = "/intelligence.html"
+  to = "/intel.html"
+  status = 301
+  force = true
+[[redirects]]
+  from = "/explore.html"
+  to = "/showcase.html"
+  status = 301
+  force = true
+[[redirects]]
+  from = "/business-funding-request.html"
+  to = "/deal-requests.html"
+  status = 301
+  force = true
+[[redirects]]
+  from = "/submit-deal.html"
+  to = "/deal-requests.html"
+  status = 301
+  force = true
+[[redirects]]
+  from = "/start.html"
+  to = "/"
+  status = 301
+  force = true
+[[redirects]]
+  from = "/start"
+  to = "/"
+  status = 301
+  force = true
