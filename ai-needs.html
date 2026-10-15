@@ -10,71 +10,72 @@
 <link rel="icon" href="/assets/brand/favicon.ico" sizes="any">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,300&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
-  --ink:#0a1017;--ink2:#0f1824;--panel:#121d2b;--line:rgba(226,232,240,.10);
-  --ivory:#f3efe6;--ivory-dim:#c7cdd6;--muted:#8793a3;
-  --gold:#c9a85c;--blue:#5b9bd5;
-  --sans:'Inter',system-ui,sans-serif;--serif:'Fraunces',Georgia,serif;--mono:'IBM Plex Mono',monospace;
+  --bg:#ffffff;--bg2:#f5f6f8;--panel:#ffffff;--line:#e4e7ec;--line2:#eef0f3;
+  --ink:#16202e;--text:#3a4552;--muted:#6b7682;
+  --navy:#1b3a5b;--navy-d:#152e48;--gold:#9a7b3f;
+  --sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--ink);color:var(--ivory);font-family:var(--sans);font-weight:300;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-weight:400;line-height:1.6;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow-x:hidden}
 a{color:inherit;text-decoration:none}
 .wrap{max-width:1040px;margin:0 auto;padding:0 32px}
 @media(max-width:720px){.wrap{padding:0 20px}}
-.field{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(900px 500px at 74% -8%,rgba(91,155,213,.13),transparent 60%),radial-gradient(700px 440px at 10% 2%,rgba(201,168,92,.07),transparent 55%)}
-header.top{position:relative;z-index:3;display:flex;align-items:center;justify-content:space-between;padding:22px 32px;max-width:1040px;margin:0 auto}
-.brand{display:flex;align-items:center;gap:11px;font-family:var(--serif);font-size:19px}
-.brand .mk{width:26px;height:26px;border:1px solid var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:13px}
-.top .nav{display:flex;gap:20px;font-family:var(--mono);font-size:11.5px;color:var(--muted);letter-spacing:.04em}
-.top .nav a:hover{color:var(--ivory)}
-.top .nav a.on{color:var(--gold)}
+.field{position:fixed;inset:0;z-index:0;pointer-events:none;background:linear-gradient(180deg,#f6f8fb 0,#ffffff 440px)}
+header.top{position:relative;z-index:3;display:flex;align-items:center;justify-content:space-between;padding:18px 32px;max-width:1040px;margin:0 auto;border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:18px;color:var(--ink);letter-spacing:-.01em}
+.brand .mk{width:22px;height:22px;background:var(--navy);border-radius:4px;position:relative;font-size:0}
+.brand .mk::after{content:"";position:absolute;inset:6px;border:1.5px solid #fff;border-radius:2px;transform:rotate(45deg)}
+.top .nav{display:flex;gap:20px;font-size:13px;color:var(--muted);font-weight:500}
+.top .nav a:hover{color:var(--navy)}
+.top .nav a.on{color:var(--navy);font-weight:600}
 @media(max-width:620px){.top .nav{display:none}}
-.hero{position:relative;z-index:2;padding:60px 0 34px}
-.eyebrow{font-family:var(--mono);font-size:11.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin-bottom:22px;display:flex;align-items:center;gap:12px}
-.eyebrow::before{content:"";width:34px;height:1px;background:var(--gold);opacity:.6}
-h1{font-family:var(--serif);font-weight:300;font-size:clamp(34px,5.2vw,58px);line-height:1.03;letter-spacing:-.02em;max-width:17ch}
-h1 em{font-style:italic;color:var(--gold)}
-.lede{margin-top:22px;font-size:clamp(15px,1.8vw,18px);color:var(--ivory-dim);max-width:58ch}
-.cols{position:relative;z-index:2;display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);margin:30px 0 20px}
+.hero{position:relative;z-index:2;padding:60px 0 32px}
+.eyebrow{font-size:12px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--gold);margin-bottom:20px;display:flex;align-items:center;gap:12px}
+.eyebrow::before{content:"";width:30px;height:2px;background:var(--gold)}
+h1{font-weight:800;font-size:clamp(34px,5.2vw,56px);line-height:1.05;letter-spacing:-.03em;max-width:17ch;color:var(--ink)}
+h1 em{font-style:normal;color:var(--navy)}
+.lede{margin-top:22px;font-size:clamp(15px,1.8vw,18px);color:var(--muted);max-width:58ch}
+.cols{position:relative;z-index:2;display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:30px 0 20px}
 @media(max-width:800px){.cols{grid-template-columns:1fr}}
-.col{background:var(--ink2);padding:30px 28px}
-.col h2{font-family:var(--serif);font-weight:400;font-size:23px;margin-bottom:6px}
+.col{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:28px 26px}
+.col h2{font-weight:800;font-size:22px;margin-bottom:6px;color:var(--ink);letter-spacing:-.02em}
 .col .sub{font-size:13.5px;color:var(--muted);margin-bottom:20px}
 .fld{margin-bottom:13px}
-.fld label{display:block;font-family:var(--mono);font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
-.fld input,.fld textarea{width:100%;background:var(--ink);border:1px solid var(--line);color:var(--ivory);font-family:var(--sans);font-size:14px;padding:11px 13px;border-radius:2px}
-.fld input:focus,.fld textarea:focus{outline:none;border-color:var(--gold)}
+.fld label{display:block;font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.fld input,.fld textarea{width:100%;background:#f7f8fa;border:1px solid var(--line);color:var(--ink);font-family:var(--sans);font-size:14px;padding:11px 13px;border-radius:6px}
+.fld input:focus,.fld textarea:focus{outline:none;border-color:var(--navy);background:#fff}
 .fld textarea{resize:vertical;min-height:70px}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:11px}
 @media(max-width:520px){.row2{grid-template-columns:1fr}}
-.submit{width:100%;margin-top:8px;background:var(--gold);color:#1a1205;border:none;font-family:var(--sans);font-weight:600;font-size:14.5px;padding:13px;border-radius:2px;cursor:pointer}
-.submit:hover{opacity:.92}.submit:disabled{opacity:.5}
-.merr{color:#e8836f;font-size:12.5px;min-height:15px;margin-top:9px}
-.howto{font-size:13.5px;color:var(--ivory-dim);line-height:1.7}
+.submit{width:100%;margin-top:8px;background:var(--navy);color:#fff;border:none;font-family:var(--sans);font-weight:600;font-size:14.5px;padding:13px;border-radius:7px;cursor:pointer;transition:background .18s}
+.submit:hover{background:var(--navy-d)}.submit:disabled{opacity:.5}
+.merr{color:#c0392b;font-size:12.5px;min-height:15px;margin-top:9px}
+.howto{font-size:13.5px;color:var(--text);line-height:1.7;list-style:none}
 .howto li{margin:0 0 12px 20px;position:relative}
-.howto li::before{content:"";position:absolute;left:-20px;top:9px;width:7px;height:7px;border-radius:50%;background:var(--gold);opacity:.7}
+.howto li::before{content:"";position:absolute;left:-20px;top:9px;width:7px;height:7px;border-radius:50%;background:var(--gold)}
 .board{position:relative;z-index:2;padding:30px 0 70px}
 .board-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:8px;border-top:1px solid var(--line);padding-top:30px}
-.board-head h2{font-family:var(--serif);font-weight:300;font-size:clamp(22px,2.6vw,30px)}
-.board-head .cnt{font-family:var(--mono);font-size:11.5px;color:var(--muted)}
+.board-head h2{font-weight:800;font-size:clamp(24px,2.8vw,32px);color:var(--ink);letter-spacing:-.02em}
+.board-head .cnt{font-size:12.5px;color:var(--muted);font-weight:500}
 .needs{display:grid;gap:12px}
-.need{background:var(--ink2);border:1px solid var(--line);border-radius:4px;padding:20px 22px;transition:background .2s,border-color .2s}
-.need:hover{background:var(--panel);border-color:rgba(201,168,92,.3)}
+.need{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:20px 22px;transition:box-shadow .18s,border-color .18s}
+.need:hover{box-shadow:0 8px 24px rgba(21,46,72,.07);border-color:#d4d9e0}
 .need-top{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:flex-start}
-.need-ttl{font-family:var(--serif);font-size:19px;color:var(--ivory)}
-.need-budget{font-family:var(--mono);font-size:12.5px;color:var(--gold);white-space:nowrap}
-.need-desc{font-size:13.5px;color:var(--ivory-dim);margin:8px 0 12px}
+.need-ttl{font-weight:700;font-size:18px;color:var(--ink)}
+.need-budget{font-size:12.5px;font-weight:600;color:var(--gold);white-space:nowrap}
+.need-desc{font-size:13.5px;color:var(--text);margin:8px 0 12px}
 .need-meta{display:flex;gap:8px;flex-wrap:wrap}
-.chip{font-family:var(--mono);font-size:10.5px;letter-spacing:.03em;color:var(--ivory-dim);border:1px solid var(--line);border-radius:2px;padding:4px 9px}
-.chip.corp{color:var(--gold);border-color:rgba(201,168,92,.35)}
-.empty{text-align:center;padding:48px 24px;border:1px dashed var(--line);border-radius:6px;color:var(--muted)}
-.empty .big{font-family:var(--serif);font-size:22px;color:var(--ivory);margin-bottom:10px;font-weight:400}
+.chip{font-size:11px;color:var(--text);background:var(--bg2);border:1px solid var(--line);border-radius:4px;padding:4px 9px}
+.chip.corp{color:#fff;background:var(--navy);border-color:var(--navy)}
+.empty{text-align:center;padding:48px 24px;border:1px dashed var(--line);border-radius:10px;color:var(--muted)}
+.empty .big{font-weight:800;font-size:20px;color:var(--ink);margin-bottom:10px;letter-spacing:-.02em}
 footer{position:relative;z-index:2;border-top:1px solid var(--line);padding:30px 0 60px}
 footer .wrap{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
-footer .fnote{font-family:var(--mono);font-size:10.5px;color:var(--muted);max-width:64ch;line-height:1.7}
-.toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%);background:#0f2033;color:#fff;padding:12px 20px;border-radius:10px;font-size:13px;z-index:9500;box-shadow:0 10px 30px rgba(0,0,0,.3);max-width:90vw;text-align:center}
+footer .fnote{font-size:11px;color:var(--muted);max-width:64ch;line-height:1.7}
+.toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%);background:var(--navy);color:#fff;padding:12px 20px;border-radius:10px;font-size:13px;z-index:9500;box-shadow:0 10px 30px rgba(21,46,72,.25);max-width:90vw;text-align:center}
 </style></head>
 <body>
 <div class="field"></div>
@@ -122,7 +123,7 @@ footer .fnote{font-family:var(--mono);font-size:10.5px;color:var(--muted);max-wi
         <li>You post what you need and your budget. It is reviewed, then listed on the board.</li>
         <li>Vetted AI builders in the network see it and reach out with how they would do it.</li>
         <li>You compare, pick who fits, and work directly. Pegasus just made the introduction.</li>
-        <li>Building AI yourself? <a href="/ai-network.html" style="color:var(--gold)">Join as a builder →</a> and get matched to needs like these.</li>
+        <li>Building AI yourself? <a href="/ai-network.html" style="color:var(--navy);font-weight:600">Join as a builder →</a> and get matched to needs like these.</li>
       </ul>
     </div>
   </div>
@@ -185,7 +186,7 @@ footer .fnote{font-family:var(--mono);font-size:10.5px;color:var(--muted);max-wi
       if(r.error) throw r.error;
       var rows=r.data||[];
       if(!rows.length){
-        host.innerHTML='<div class="empty"><div class="big">The board is just opening.</div>Be the first to post what you need built — or <a href="/ai-network.html" style="color:var(--gold)">join as a builder</a> to get matched when needs arrive.</div>';
+        host.innerHTML='<div class="empty"><div class="big">The board is just opening.</div>Be the first to post what you need built — or <a href="/ai-network.html" style="color:var(--navy);font-weight:600">join as a builder</a> to get matched when needs arrive.</div>';
         cnt.textContent='';return;
       }
       cnt.textContent=rows.length+' open';
