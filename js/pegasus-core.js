@@ -17,7 +17,7 @@
       wm.setAttribute('aria-hidden','true');
       // Use pegasus-symbol.svg: vector, crisp at any size, deployed in brand package
       var img=document.createElement('img');
-      img.src='/assets/brand/pegasus-symbol.svg';
+      img.src='/assets/brand/pegasus-mark.png';
       img.alt='';
       img.setAttribute('draggable','false');
       img.setAttribute('fetchpriority','low');  // don't delay critical resources
@@ -93,7 +93,7 @@
     const who=G('Who It’s For',[['Capital Providers','/category-capital-providers.html','Lenders, funds & investors'],['Capital Seekers','/category-capital-seekers.html','Developers & borrowers'],['Real Estate Agents','/category-real-estate-agents.html','Agents & brokers'],['RWA Partners','/category-rwa.html','Real-world asset partners'],['People','/people','Public professional profiles'],['Businesses','/businesses','Companies across the network'],['Events','/events','Capital & industry events']]);
     const learn=G('Learn',[['How Pegasus Works','/how-it-works.html','The system explained'],['Growth Capital','/growth-capital.html','Financing & programs'],['Capital Sessions','/capital-sessions.html','Live institutional briefings'],['Capital Academy','/capital-academy.html','Finance fundamentals'],['Network Badge','/network-badge.html','Show your Pegasus connection'],['FAQ','/faq.html','Common questions']]);
     return `<a href="#maincontent" class="skip-link" onclick="var m=document.getElementById('maincontent')||document.querySelector('main,section,.section,.auth-wrap,.ar-wrap,.view');if(m){m.setAttribute('tabindex','-1');m.focus();}">Skip to content</a><nav class="pub-nav">
-      <a class="brand" href="/"><img class="brand-mark" src="/assets/brand/pegasus-symbol.svg" alt="Pegasus"><span>Pegasus</span></a>
+      <a class="brand" href="/"><img class="brand-mark" src="/assets/brand/pegasus-mark.png" alt="Pegasus"><span>Pegasus</span></a>
       <div class="pub-links"><a href="/people" class="${active==='People'||active==='Capital'?'on':''}">Capital &amp; Real Estate</a><a href="/ai-network.html" class="${active==='AI'?'on':''}">Pegasus AI</a><a href="/private-network.html" class="${active==='Private'?'on':''}">Private Network</a><a href="/how-it-works.html" class="${active==='How'?'on':''}">How it works</a></div>
       <div class="nav-cta" id="pub-nav-cta"><a class="btn btn-ghost" id="nav-signin-btn" href="/signin.html">Sign In</a><a class="btn btn-pri nav-create" id="nav-create-btn" href="/signup.html">Create Free Profile</a></div>
       <button class="mob-menu-btn" id="mobMenuBtn" aria-label="Menu"><span></span><span></span><span></span></button>
@@ -127,7 +127,7 @@
     };
     const isAdm = (typeof Store!=='undefined'&&Store.isAdmin&&Store.isAdmin());
     const sidebar=`<aside class="sidebar">
-      <div class="sb-head"><img class="brand-mark" src="/assets/brand/pegasus-symbol.svg" alt="Pegasus"><div><div class="sb-logo">Pegasus</div><div class="sb-ws">Workspace</div></div></div>
+      <div class="sb-head"><img class="brand-mark" src="/assets/brand/pegasus-mark.png" alt="Pegasus"><div><div class="sb-logo">Pegasus</div><div class="sb-ws">Workspace</div></div></div>
       <div class="sb-nav">
         <div class="sb-sec">Network</div>
         ${item('◎','Network Feed','/feed',{act:'Feed'})}
@@ -313,7 +313,7 @@
     const socRow=`<div style="display:flex;gap:8px;margin-top:16px">${soc.map(s=>`<a href="${s[1]}" target="_blank" rel="noopener" aria-label="Pegasus Capital Network on ${s[0]}" title="${s[0]}" style="display:inline-flex;width:32px;height:32px;align-items:center;justify-content:center;border:1px solid var(--border, rgba(255,255,255,.15));border-radius:8px;color:var(--text2)"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="${s[2]}"/></svg></a>`).join('')}</div>`;
     return `<footer class="footer">
       <div style="max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr 1fr;gap:30px;margin-bottom:32px">
-        <div><div class="brand" style="margin-bottom:12px"><img class="brand-mark" src="/assets/brand/pegasus-symbol.svg" alt="Pegasus"><span>Pegasus</span></div><div style="font-size:12px;color:var(--text3);line-height:1.6;max-width:240px">Three networks, one ecosystem. Capital, AI, and the Private Network.</div>${socRow}</div>
+        <div><div class="brand" style="margin-bottom:12px"><img class="brand-mark" src="/assets/brand/pegasus-mark.png" alt="Pegasus"><span>Pegasus</span></div><div style="font-size:12px;color:var(--text3);line-height:1.6;max-width:240px">Three networks, one ecosystem. Capital, AI, and the Private Network.</div>${socRow}</div>
         ${col('Capital & Real Estate',[['Realtors','/realtors.html'],['Lenders','/find-a-lender'],['Borrowers','/borrowers.html'],['Opportunities','/showcase.html'],['Lender Rankings','/rankings'],['Top Lenders 2025','/awards/top-lenders-2025'],['Financing Requests','/deal-requests.html']])}
         ${col('Pegasus AI',[['AI Network','/ai-network.html'],['Needs Board','/ai-needs.html'],['Intelligence','/intel.html']])}
         ${col('Private & Account',[['Private Network','/private-network.html'],['How It Works','/how-it-works.html'],['Membership','/membership.html'],['Network Feed','/feed']])}
