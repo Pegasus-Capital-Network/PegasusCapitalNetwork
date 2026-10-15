@@ -75,7 +75,7 @@ v.insertAdjacentHTML('beforeend',
   '<a href="/showcase-admin.html" style="color:var(--blue)">Showcase Moderation</a> · <a href="/admin/intelligence" style="color:var(--blue)">Capital Intelligence</a> · '+
   '<a href="/admin/partner-network" style="color:var(--blue)">Partner Network</a></div>'+
   '<div style="display:flex;gap:4px;margin-bottom:16px;flex-wrap:wrap" id="atabs"></div><div id="apanel"></div>');
-const sections=['Dashboard','Users','Pegasus AI','Intelligence','Private Network','Feed','Invites','Claims','Deal Requests','Duplicates','Directory','Homepage Event','Subscriptions','Access System','Deal Rooms','Lender Profiles','Growth Partner Submissions','Match Activity','Analytics','Member Log','Manual Review','Platform Health','Schema & Repair'];
+const sections=['Dashboard','Users','Pegasus AI','Intelligence','Investors','Private Network','Feed','Invites','Claims','Deal Requests','Duplicates','Directory','Homepage Event','Subscriptions','Access System','Deal Rooms','Lender Profiles','Growth Partner Submissions','Match Activity','Analytics','Member Log','Manual Review','Platform Health','Schema & Repair'];
 document.getElementById('atabs').innerHTML=sections.map((s,i)=>'<div class="toggle-opt '+(i===0?'on':'')+'" style="font-size:11px" onclick="aShow(\''+s+'\')">'+s+'</div>').join('');
 function tbl(cols,rows){return '<div class="card"><table class="tbl"><thead><tr>'+cols.map(c=>'<th>'+c+'</th>').join('')+'</tr></thead><tbody>'+rows.map(r=>'<tr>'+r.map(c=>'<td>'+c+'</td>').join('')+'</tr>').join('')+'</tbody></table></div>';}
 const chip=(t,c)=>'<span class="badge '+c+'">'+t+'</span>';
@@ -706,6 +706,163 @@ window.diDraftPitched=async function(){
     diDraftClose();
     loadDealIntel(document.getElementById('apanel'));
   }catch(e){ alert('Could not update stage: '+((e&&e.message)||'error')); }
+};
+var INV_STAGES=['target','contacted','interested','joined','passed'];
+var INV_STAGE_COLOR={'target':'var(--text3)','contacted':'var(--amber)','interested':'var(--blue,#235FA6)','joined':'var(--green)','passed':'var(--red,#c0392b)'};
+var INV_TIER_COLOR={'specialist':'var(--green)','marquee':'var(--amber)','angel':'var(--violet,#8b7bd8)'};
+async function loadInvestors(p){
+  p.innerHTML='<div style="padding:40px;text-align:center;color:var(--text3);font-size:12px">Loading investors…</div>';
+  var esc=diEsc;
+  try{
+    var c=await window.PegSB.ready;
+    var res=await c.from('ai_investors').select('id,name,firm,investor_type,focus,stage,check_size,location,website,tier,angle,status,owner,next_action,next_action_date,source_url,source_name,created_at').order('created_at',{ascending:true}).limit(500);
+    if(res.error) throw res.error;
+    var rows=res.data||[];
+    window.__invRows={}; rows.forEach(function(r){window.__invRows[r.id]=r;});
+    function cnt(st){return rows.filter(function(r){return (r.status||'target')===st;}).length;}
+
+    var html='<div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px">'+
+      '<div class="card" style="padding:14px 18px"><div style="font-size:22px;font-weight:700;color:var(--text)">'+rows.length+'</div><div style="font-size:11px;color:var(--text3);font-family:var(--mono)">INVESTORS</div></div>'+
+      '<div class="card" style="padding:14px 18px"><div style="font-size:22px;font-weight:700;color:var(--amber)">'+cnt('contacted')+'</div><div style="font-size:11px;color:var(--text3);font-family:var(--mono)">CONTACTED</div></div>'+
+      '<div class="card" style="padding:14px 18px"><div style="font-size:22px;font-weight:700;color:var(--blue,#235FA6)">'+cnt('interested')+'</div><div style="font-size:11px;color:var(--text3);font-family:var(--mono)">INTERESTED</div></div>'+
+      '<div class="card" style="padding:14px 18px"><div style="font-size:22px;font-weight:700;color:var(--green)">'+cnt('joined')+'</div><div style="font-size:11px;color:var(--text3);font-family:var(--mono)">JOINED</div></div>'+
+    '</div>'+
+    '<div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin:0 0 14px">'+
+      '<div style="font-size:11.5px;color:var(--text3);max-width:62ch">Curated AI investors to bring into Pegasus AI. Work each one: contact, draft an intro, move the status. Angle = how to approach.</div>'+
+      '<button class="btn btn-pri btn-sm" onclick="invToggleAdd()">+ Add investor</button>'+
+    '</div>';
+
+    html+='<div id="iv-addform" style="display:none;margin-bottom:16px" class="card"><div style="padding:16px 18px">'+
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">'+
+        '<input id="iv-f-name" placeholder="Name *" style="padding:8px 10px">'+
+        '<input id="iv-f-firm" placeholder="Firm" style="padding:8px 10px">'+
+        '<input id="iv-f-type" placeholder="Type (vc_specialist / vc_marquee / angel)" style="padding:8px 10px">'+
+        '<input id="iv-f-focus" placeholder="Focus" style="padding:8px 10px">'+
+        '<input id="iv-f-stage" placeholder="Stage" style="padding:8px 10px">'+
+        '<input id="iv-f-check" placeholder="Check size" style="padding:8px 10px">'+
+        '<input id="iv-f-loc" placeholder="Location" style="padding:8px 10px">'+
+        '<input id="iv-f-web" placeholder="Website" style="padding:8px 10px">'+
+        '<select id="iv-f-tier" style="padding:8px 10px"><option value="specialist">specialist</option><option value="marquee">marquee</option><option value="angel">angel</option></select>'+
+      '</div>'+
+      '<textarea id="iv-f-angle" placeholder="Angle — how to approach, which of our startups fits" style="width:100%;margin-top:10px;padding:8px 10px;min-height:52px"></textarea>'+
+      '<div id="iv-add-err" style="color:var(--red,#c0392b);font-size:12px;margin-top:8px"></div>'+
+      '<div style="margin-top:10px"><button class="btn btn-pri btn-sm" onclick="invAdd()">Save investor</button> <button class="btn btn-ghost btn-sm" onclick="invToggleAdd()">Cancel</button></div>'+
+    '</div></div>';
+
+    if(!rows.length){ html+=adminEmpty('💰','No investors yet','Add AI investors to work, or let the list seed them.'); }
+    else{
+      html+='<div id="iv-list">'+rows.map(function(r){
+        var status=r.status||'target';
+        var sc=INV_STAGE_COLOR[status]||'var(--text3)';
+        var tc=INV_TIER_COLOR[r.tier]||'var(--text3)';
+        var stageOpts=INV_STAGES.map(function(s){return '<option value="'+s+'"'+(s===status?' selected':'')+'>'+s+'</option>';}).join('');
+        var naDate=r.next_action_date?esc(r.next_action_date):'';
+        return '<div class="card" style="padding:15px 18px;margin-bottom:9px">'+
+          '<div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:flex-start">'+
+            '<div style="min-width:0;flex:1">'+
+              '<div style="font-weight:600;color:var(--text);font-size:14px">'+esc(r.name)+(r.firm&&r.firm!==r.name?(' <span style="font-weight:400;color:var(--text2);font-size:12.5px">'+esc(r.firm)+'</span>'):'')+' <span style="font-size:10px;font-family:var(--mono);text-transform:uppercase;color:'+tc+'">· '+esc(r.tier||'')+'</span> <span style="font-size:10px;font-family:var(--mono);text-transform:uppercase;color:'+sc+'">· '+esc(status)+'</span></div>'+
+              (r.focus?'<div style="font-size:12.5px;color:var(--text2);margin-top:4px">'+esc(r.focus)+'</div>':'')+
+              '<div style="font-size:11.5px;color:var(--text3);margin-top:5px">'+[r.stage?esc(r.stage):'',r.check_size?('💵 '+esc(r.check_size)):'',r.location?esc(r.location):''].filter(Boolean).join(' · ')+'</div>'+
+              (r.angle?'<div style="font-size:11.5px;color:var(--text2);margin-top:4px"><span style="color:var(--text3)">angle:</span> '+esc(r.angle)+'</div>':'')+
+              (r.website?'<div style="font-size:11px;margin-top:3px"><a href="'+esc(r.website)+'" target="_blank" rel="noopener" style="color:var(--blue,#235FA6)">'+esc(r.website.replace(/^https?:\/\//,''))+' ↗</a></div>':'')+
+            '</div>'+
+            '<div style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn btn-pri btn-sm" onclick="invDraft(\''+r.id+'\')">✉ draft</button></div>'+
+          '</div>'+
+          '<div style="margin-top:10px;border-top:1px solid var(--line,#2224);padding-top:9px;display:flex;gap:6px;flex-wrap:wrap;align-items:center">'+
+            '<select id="iv-stage-'+r.id+'" onchange="invStage(\''+r.id+'\',this.value)" style="padding:6px 8px;font-size:12px">'+stageOpts+'</select>'+
+            '<input id="iv-owner-'+r.id+'" value="'+esc(r.owner||'')+'" placeholder="Owner" style="padding:6px 8px;font-size:12px;max-width:120px">'+
+            '<input id="iv-na-'+r.id+'" value="'+esc(r.next_action||'')+'" placeholder="Next action" style="padding:6px 8px;font-size:12px;flex:1;min-width:150px">'+
+            '<input id="iv-nad-'+r.id+'" type="date" value="'+naDate+'" style="padding:6px 8px;font-size:12px">'+
+            '<button class="btn btn-ghost btn-sm" onclick="invSaveMeta(\''+r.id+'\')">Save</button>'+
+          '</div>'+
+        '</div>';
+      }).join('')+'</div>';
+    }
+    p.innerHTML=html;
+  }catch(e){
+    console.error('[admin] loadInvestors failed:',e);
+    p.innerHTML=adminErr((e&&e.message)||'Could not load investors.');
+  }
+}
+window.invToggleAdd=function(){var f=document.getElementById('iv-addform');if(f){f.style.display=(f.style.display==='none'?'block':'none');}};
+window.invAdd=async function(){
+  function gv(x){var el=document.getElementById(x);return el?(el.value||'').trim():'';}
+  var err=document.getElementById('iv-add-err'); if(err) err.textContent='';
+  var name=gv('iv-f-name'); if(name.length<2){ if(err) err.textContent='Name is required.'; return; }
+  try{
+    var c=await window.PegSB.ready;
+    var r=await c.from('ai_investors').insert({
+      name:name, firm:gv('iv-f-firm'), investor_type:gv('iv-f-type'), focus:gv('iv-f-focus'),
+      stage:gv('iv-f-stage'), check_size:gv('iv-f-check'), location:gv('iv-f-loc'),
+      website:gv('iv-f-web'), tier:gv('iv-f-tier')||'specialist', angle:gv('iv-f-angle'), status:'target'
+    });
+    if(r.error) throw r.error;
+    loadInvestors(document.getElementById('apanel'));
+  }catch(e){ if(err) err.textContent=(e&&e.message)||'Could not save.'; else alert('Could not save: '+((e&&e.message)||'error')); }
+};
+window.invStage=async function(id,status){
+  try{
+    var c=await window.PegSB.ready;
+    var r=await c.from('ai_investors').update({status:status}).eq('id',id);
+    if(r.error) throw r.error;
+    loadInvestors(document.getElementById('apanel'));
+  }catch(e){ alert('Could not update: '+((e&&e.message)||'error')); }
+};
+window.invSaveMeta=async function(id){
+  function gv(x){var el=document.getElementById(x);return el?(el.value||'').trim():'';}
+  try{
+    var c=await window.PegSB.ready;
+    var r=await c.from('ai_investors').update({ owner:gv('iv-owner-'+id)||null, next_action:gv('iv-na-'+id)||null, next_action_date:gv('iv-nad-'+id)||null }).eq('id',id);
+    if(r.error) throw r.error;
+    loadInvestors(document.getElementById('apanel'));
+  }catch(e){ alert('Could not save: '+((e&&e.message)||'error')); }
+};
+window.invDraft=function(id){
+  var r=(window.__invRows||{})[id]; if(!r){ alert('Investor not found. Reload the tab.'); return; }
+  var first=(r.name||'').split(' ')[0]||'there';
+  var subject='Curated AI dealflow — Pegasus';
+  var body='Hi '+first+',\n\n'+
+    'I run Pegasus, a network on the applied-AI side. We vet early AI startups and, through our intelligence layer, we also see where large companies are actively spending on AI right now.\n\n'+
+    'Given your focus'+(r.focus?(' on '+r.focus):'')+', I think a few of them are a real fit. No blast — I would send you only the ones that match your thesis.\n\n'+
+    'Open to me sending one or two to look at?\n\n'+
+    '— Anatoliy\nPegasus Capital Network';
+  window.__invDraftId=id; window.__diDraftCtx={signalId:null,email:''};
+  var old=document.getElementById('di-draft-ov'); if(old) old.remove();
+  var ov=document.createElement('div'); ov.id='di-draft-ov';
+  ov.setAttribute('style','position:fixed;inset:0;background:rgba(5,8,13,.6);z-index:9600;display:flex;align-items:flex-start;justify-content:center;padding:40px 16px;overflow:auto');
+  var box=document.createElement('div');
+  box.setAttribute('style','background:var(--bg,#0f1824);border:1px solid var(--line,#2a3647);border-radius:10px;max-width:620px;width:100%;padding:22px 22px 18px;box-shadow:0 20px 60px rgba(0,0,0,.5)');
+  var head=document.createElement('div'); head.setAttribute('style','display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px');
+  head.innerHTML='<div style="font-family:var(--serif,serif);font-size:19px;color:var(--text)">Investor outreach draft</div><div style="font-size:11px;color:var(--text3);font-family:var(--mono)">'+diEsc(r.name)+'</div>';
+  box.appendChild(head);
+  var note=document.createElement('div'); note.setAttribute('style','font-size:11.5px;color:var(--text3);margin-bottom:12px');
+  note.textContent='Draft only. Edit, then copy and send it your own way (most funds have a form or a warm-intro path). Nothing is sent automatically.';
+  box.appendChild(note);
+  var subL=document.createElement('label'); subL.setAttribute('style','display:block;font-size:10.5px;font-family:var(--mono);text-transform:uppercase;letter-spacing:.06em;color:var(--text3);margin-bottom:5px'); subL.textContent='Subject';
+  var subI=document.createElement('input'); subI.id='di-draft-sub'; subI.value=subject; subI.setAttribute('style','width:100%;padding:9px 11px;margin-bottom:12px;background:var(--bg2,#0a0f17);border:1px solid var(--line,#2a3647);color:var(--text,#f3efe6);border-radius:4px;font-size:13px');
+  box.appendChild(subL); box.appendChild(subI);
+  var bodL=document.createElement('label'); bodL.setAttribute('style','display:block;font-size:10.5px;font-family:var(--mono);text-transform:uppercase;letter-spacing:.06em;color:var(--text3);margin-bottom:5px'); bodL.textContent='Body';
+  var bodT=document.createElement('textarea'); bodT.id='di-draft-body'; bodT.value=body; bodT.setAttribute('style','width:100%;min-height:210px;padding:11px;background:var(--bg2,#0a0f17);border:1px solid var(--line,#2a3647);color:var(--text,#f3efe6);border-radius:4px;font-size:13px;line-height:1.6;font-family:var(--sans,sans-serif)');
+  box.appendChild(bodL); box.appendChild(bodT);
+  var btns=document.createElement('div'); btns.setAttribute('style','display:flex;gap:8px;flex-wrap:wrap;margin-top:14px');
+  btns.innerHTML='<button class="btn btn-pri btn-sm" onclick="diDraftCopy()">Copy</button>'+
+    '<button class="btn btn-ghost btn-sm" onclick="diDraftSend()">Open in email</button>'+
+    '<button class="btn btn-ghost btn-sm" onclick="invDraftContacted()">Mark as contacted</button>'+
+    '<button class="btn btn-ghost btn-sm" style="margin-left:auto" onclick="diDraftClose()">Close</button>';
+  box.appendChild(btns);
+  ov.appendChild(box);
+  ov.addEventListener('click',function(ev){ if(ev.target===ov) diDraftClose(); });
+  document.body.appendChild(ov);
+};
+window.invDraftContacted=async function(){
+  var id=window.__invDraftId; if(!id){ diDraftClose(); return; }
+  try{
+    var c=await window.PegSB.ready;
+    var r=await c.from('ai_investors').update({status:'contacted'}).eq('id',id);
+    if(r.error) throw r.error;
+    diDraftClose();
+    loadInvestors(document.getElementById('apanel'));
+  }catch(e){ alert('Could not update: '+((e&&e.message)||'error')); }
 };
 async function loadClaims(p){
   p.innerHTML='<div style="padding:40px;text-align:center;color:var(--text3);font-size:12px">Loading claims…</div>';
@@ -1431,6 +1588,7 @@ window.aShow=function(s){[...document.querySelectorAll('#atabs .toggle-opt')].fo
   if(s==='Pegasus AI'){ loadPegasusAI(p); return; }
   if(s==='Private Network'){ loadPrivateNetwork(p); return; }
   if(s==='Intelligence'){ loadDealIntel(p); return; }
+  if(s==='Investors'){ loadInvestors(p); return; }
   if(s==='Claims'){ loadClaims(p); return; }
   if(s==='Deal Requests'){ loadDealRequests(p); return; }
   if(s==='Duplicates'){ loadDuplicates(p); return; }
