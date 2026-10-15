@@ -1,0 +1,142 @@
+<!DOCTYPE html><html lang="en"><head>
+<title>Apply for Funding — Pegasus AI</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="Raising capital for your AI company? Tell us about it. Pegasus puts vetted AI companies in front of the right investors. Free to apply, warm introductions only.">
+<link rel="canonical" href="https://pegasuscapitalnetwork.com/apply-for-funding.html">
+<meta property="og:title" content="Apply for Funding — Pegasus AI">
+<meta property="og:description" content="Raising for your AI company? We put vetted companies in front of the right investors. Free to apply.">
+<meta property="og:type" content="website">
+<link rel="icon" href="/assets/brand/favicon.ico" sizes="any">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#ffffff;--bg2:#f5f6f8;--panel:#ffffff;--line:#e4e7ec;
+  --ink:#16202e;--text:#3a4552;--muted:#6b7682;
+  --navy:#1b3a5b;--navy-d:#152e48;--gold:#9a7b3f;--green:#1b7f3b;--red:#c0392b;
+  --sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-weight:400;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:720px;margin:0 auto;padding:0 24px}
+.field{position:fixed;inset:0;z-index:0;pointer-events:none;background:linear-gradient(180deg,#f6f8fb 0,#ffffff 420px)}
+header.top{position:relative;z-index:3;display:flex;align-items:center;justify-content:space-between;padding:18px 24px;max-width:960px;margin:0 auto;border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:18px;color:var(--ink);letter-spacing:-.01em}
+.top .nav{display:flex;gap:18px;align-items:center;font-size:13px;color:var(--muted);font-weight:500}
+.top .nav a:hover{color:var(--navy)}
+.intro{position:relative;z-index:2;padding:48px 0 18px}
+.kick{font-size:12px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--gold);margin-bottom:14px}
+h1{font-weight:800;font-size:clamp(28px,4.4vw,44px);line-height:1.06;letter-spacing:-.03em;color:var(--ink);max-width:16ch}
+h1 em{font-style:normal;color:var(--navy)}
+.sub{margin:16px 0 0;font-size:16px;color:var(--muted);max-width:56ch}
+.pts{position:relative;z-index:2;display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 2px}
+.pts span{font-size:12px;color:var(--text);background:var(--bg2);border:1px solid var(--line);border-radius:999px;padding:5px 12px}
+.card{position:relative;z-index:2;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:26px 24px;margin:26px 0 20px;box-shadow:0 2px 6px rgba(14,24,36,.05),0 14px 38px rgba(14,24,36,.07)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:560px){.grid2{grid-template-columns:1fr}}
+.fld{display:flex;flex-direction:column;margin-bottom:14px}
+.fld.full{grid-column:1/-1}
+label{font-size:12px;font-weight:600;color:var(--ink);margin-bottom:6px}
+label .req{color:var(--gold)}
+input,select,textarea{font-family:inherit;font-size:14.5px;color:var(--ink);background:#fff;border:1px solid var(--line);border-radius:9px;padding:11px 13px;outline:none;transition:border-color .15s,box-shadow .15s;width:100%}
+input:focus,select:focus,textarea:focus{border-color:var(--navy);box-shadow:0 0 0 3px rgba(27,58,91,.08)}
+textarea{min-height:70px;resize:vertical}
+.hint{font-size:11.5px;color:var(--muted);margin-top:5px}
+.btn{display:inline-block;font-size:14.5px;font-weight:600;padding:13px 26px;border-radius:9px;background:var(--navy);color:#fff;border:none;cursor:pointer;transition:transform .15s,opacity .2s}
+.btn:hover{transform:translateY(-1px);opacity:.96}
+.btn:disabled{opacity:.6;cursor:default;transform:none}
+.err{color:var(--red);font-size:13px;margin:10px 0 0;min-height:1px}
+.foot{position:relative;z-index:2;font-size:11.5px;color:var(--muted);text-align:center;padding:4px 0 50px;max-width:62ch;margin:0 auto;line-height:1.7}
+.done{position:relative;z-index:2;text-align:center;padding:40px 10px 60px}
+.done .chk{width:58px;height:58px;border-radius:50%;background:rgba(27,127,59,.12);color:var(--green);display:flex;align-items:center;justify-content:center;font-size:30px;margin:0 auto 18px}
+.done h2{font-weight:800;font-size:26px;color:var(--ink);letter-spacing:-.02em}
+.done p{font-size:15px;color:var(--muted);max-width:48ch;margin:12px auto 0}
+</style></head>
+<body>
+<div class="field"></div>
+<header class="top">
+  <a class="brand" href="/"><img src="/assets/brand/pegasus-mark.png" alt="Pegasus" style="height:26px;width:auto;display:block"> Pegasus</a>
+  <nav class="nav"><a href="/ai-network.html">Pegasus AI</a><a href="/ai-directory.html">Directory</a><a href="/">All worlds</a></nav>
+</header>
+
+<section class="intro"><div class="wrap">
+  <div class="kick">Pegasus AI · Capital</div>
+  <h1>Raising for your <em>AI company</em>? Let's get you in front of capital.</h1>
+  <p class="sub">We keep a network of AI investors and we read where real demand is. Tell us about your raise. If it's a fit, we make warm introductions to investors whose thesis matches. Free to apply.</p>
+  <div class="pts"><span>Free to apply</span><span>Warm intros only</span><span>Investors pay us, not you</span><span>Your deck stays private</span></div>
+</div></section>
+
+<div class="wrap">
+  <div id="formCard" class="card">
+    <div class="grid2">
+      <div class="fld"><label>Company name <span class="req">*</span></label><input id="f-company" placeholder="Your company"></div>
+      <div class="fld"><label>Website</label><input id="f-web" placeholder="https://"></div>
+      <div class="fld"><label>Sector</label><input id="f-sector" placeholder="e.g. AI agents, healthcare AI, dev tools"></div>
+      <div class="fld"><label>Stage</label><select id="f-stage"><option value="">Select…</option><option>Pre-seed</option><option>Seed</option><option>Series A</option><option>Later</option></select></div>
+      <div class="fld"><label>Raising (amount)</label><input id="f-amount" placeholder="e.g. $750K"></div>
+      <div class="fld"><label>Location</label><input id="f-loc" placeholder="City, country"></div>
+      <div class="fld full"><label>One-liner <span class="req">*</span></label><input id="f-one" maxlength="160" placeholder="What you do, in one sentence"></div>
+      <div class="fld full"><label>Traction</label><textarea id="f-traction" maxlength="500" placeholder="Revenue, users, pilots, key customers, growth — whatever shows it's working"></textarea></div>
+      <div class="fld full"><label>Deck or data room link</label><input id="f-deck" placeholder="https:// (optional, stays private)"></div>
+      <div class="fld"><label>Your name <span class="req">*</span></label><input id="f-name" placeholder="Full name"></div>
+      <div class="fld"><label>Email <span class="req">*</span></label><input id="f-email" type="email" placeholder="you@company.com"></div>
+      <div class="fld full"><label>Phone (optional)</label><input id="f-phone" placeholder="For a faster conversation"></div>
+    </div>
+    <div id="err" class="err"></div>
+    <div style="margin-top:8px"><button id="submit" class="btn" onclick="submitReq()">Submit application →</button></div>
+    <div class="hint" style="margin-top:12px">We review every application. If it's a fit, we reach out to arrange introductions. Nothing is shared with investors without your go-ahead.</div>
+  </div>
+
+  <div id="done" class="done" style="display:none">
+    <div class="chk">&#10003;</div>
+    <h2>Application received.</h2>
+    <p id="doneMsg">Thank you. We'll review your raise and reach out if there's a strong investor fit. Keep an eye on your inbox.</p>
+  </div>
+</div>
+
+<div class="foot wrap">
+  Pegasus facilitates professional introductions. It is not a broker-dealer, investment adviser, or placement agent, does not raise capital or guarantee funding, and takes no part in any transaction terms. Applying is not an offer or solicitation of securities.
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="/js/pegasus-config.js"></script>
+<script>
+(function(){
+  var C=window.PEG_CONFIG||window.PEGASUS_CONFIG||{};
+  var URL=C.SUPABASE_URL||'https://trdwsssouhpawhfdkfqf.supabase.co';
+  var KEY=C.SUPABASE_ANON||'sb_publishable_hrR8wI6hM921mnxk7bBE_A_YKxWsoBI';
+  var sb=(window.supabase&&window.supabase.createClient)?window.supabase.createClient(URL,KEY):null;
+  function v(id){var el=document.getElementById(id);return el?(el.value||'').trim():'';}
+  window.submitReq=async function(){
+    var err=document.getElementById('err'), btn=document.getElementById('submit');
+    err.textContent='';
+    var company=v('f-company'), one=v('f-one'), name=v('f-name'), email=v('f-email');
+    if(company.length<2){ err.textContent='Please add your company name.'; return; }
+    if(one.length<4){ err.textContent='Please add a one-line description.'; return; }
+    if(name.length<2){ err.textContent='Please add your name.'; return; }
+    if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){ err.textContent='Please add a valid email.'; return; }
+    if(!sb){ err.textContent='Connection unavailable, please try again in a moment.'; return; }
+    btn.disabled=true; btn.textContent='Submitting…';
+    try{
+      var r=await sb.from('funding_requests').insert({
+        company_name:company, website:v('f-web')||null, sector:v('f-sector')||null,
+        stage:v('f-stage')||null, raising_amount:v('f-amount')||null, location:v('f-loc')||null,
+        one_liner:one, traction:v('f-traction')||null, deck_url:v('f-deck')||null,
+        contact_name:name, contact_email:email, contact_phone:v('f-phone')||null, source:'form'
+      });
+      if(r.error) throw r.error;
+      document.getElementById('formCard').style.display='none';
+      document.getElementById('done').style.display='block';
+      window.scrollTo({top:0,behavior:'smooth'});
+    }catch(e){
+      console.error('[apply-for-funding] submit failed:',e);
+      err.textContent=(e&&e.message)||'Could not submit. Please try again.';
+      btn.disabled=false; btn.textContent='Submit application →';
+    }
+  };
+})();
+</script>
+</body></html>
