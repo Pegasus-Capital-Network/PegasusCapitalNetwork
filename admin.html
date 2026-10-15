@@ -75,7 +75,7 @@ v.insertAdjacentHTML('beforeend',
   '<a href="/showcase-admin.html" style="color:var(--blue)">Showcase Moderation</a> · <a href="/admin/intelligence" style="color:var(--blue)">Capital Intelligence</a> · '+
   '<a href="/admin/partner-network" style="color:var(--blue)">Partner Network</a></div>'+
   '<div style="display:flex;gap:4px;margin-bottom:16px;flex-wrap:wrap" id="atabs"></div><div id="apanel"></div>');
-const sections=['Dashboard','Users','Pegasus AI','Intelligence','Investors','Private Network','Feed','Invites','Claims','Deal Requests','Duplicates','Directory','Homepage Event','Subscriptions','Access System','Deal Rooms','Lender Profiles','Growth Partner Submissions','Match Activity','Analytics','Member Log','Manual Review','Platform Health','Schema & Repair'];
+const sections=['Dashboard','Users','Pegasus AI','Intelligence','Investors','AI Companies','Intro Requests','Private Network','Feed','Invites','Claims','Deal Requests','Duplicates','Directory','Homepage Event','Subscriptions','Access System','Deal Rooms','Lender Profiles','Growth Partner Submissions','Match Activity','Analytics','Member Log','Manual Review','Platform Health','Schema & Repair'];
 document.getElementById('atabs').innerHTML=sections.map((s,i)=>'<div class="toggle-opt '+(i===0?'on':'')+'" style="font-size:11px" onclick="aShow(\''+s+'\')">'+s+'</div>').join('');
 function tbl(cols,rows){return '<div class="card"><table class="tbl"><thead><tr>'+cols.map(c=>'<th>'+c+'</th>').join('')+'</tr></thead><tbody>'+rows.map(r=>'<tr>'+r.map(c=>'<td>'+c+'</td>').join('')+'</tr>').join('')+'</tbody></table></div>';}
 const chip=(t,c)=>'<span class="badge '+c+'">'+t+'</span>';
@@ -864,6 +864,159 @@ window.invDraftContacted=async function(){
     loadInvestors(document.getElementById('apanel'));
   }catch(e){ alert('Could not update: '+((e&&e.message)||'error')); }
 };
+/* ===== AI Companies (ai_startups) ===== */
+var AS_STAGE_COLOR={'listed':'var(--green)','archived':'var(--text3)','draft':'var(--amber)'};
+async function loadAiStartups(p){
+  p.innerHTML='<div style="padding:40px;text-align:center;color:var(--text3);font-size:12px">Loading AI companies…</div>';
+  var esc=diEsc;
+  try{
+    var c=await window.PegSB.ready;
+    var res=await c.from('ai_startups').select('id,name,one_liner,sector,stage,location,website,contact_email,source,status,tags,created_at').order('created_at',{ascending:true}).limit(1000);
+    if(res.error) throw res.error;
+    var rows=res.data||[];
+    function cnt(st){return rows.filter(function(r){return (r.status||'listed')===st;}).length;}
+    var listed=cnt('listed');
+    var html='<div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px">'+
+      '<div class="card" style="padding:14px 18px"><div style="font-size:22px;font-weight:700;color:var(--text)">'+rows.length+'</div><div style="font-size:11px;color:var(--text3);font-family:var(--mono)">COMPANIES</div></div>'+
+      '<div class="card" style="padding:14px 18px"><div style="font-size:22px;font-weight:700;color:var(--green)">'+listed+'</div><div style="font-size:11px;color:var(--text3);font-family:var(--mono)">LIVE IN DIRECTORY</div></div>'+
+      '<div class="card" style="padding:14px 18px"><div style="font-size:22px;font-weight:700;color:var(--text3)">'+cnt('archived')+'</div><div style="font-size:11px;color:var(--text3);font-family:var(--mono)">ARCHIVED</div></div>'+
+    '</div>'+
+    '<div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin:0 0 14px">'+
+      '<div style="font-size:11.5px;color:var(--text3);max-width:62ch">AI companies shown in the public Directory (teaser only — contacts stay private). Listed = visible to visitors. Archived = hidden. The weekly auto-fill adds fresh ones here.</div>'+
+      '<button class="btn btn-pri btn-sm" onclick="asToggleAdd()">+ Add company</button>'+
+    '</div>';
+
+    html+='<div id="as-addform" style="display:none;margin-bottom:16px" class="card"><div style="padding:16px 18px">'+
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">'+
+        '<input id="as-f-name" placeholder="Name *" style="padding:8px 10px">'+
+        '<input id="as-f-sector" placeholder="Sector" style="padding:8px 10px">'+
+        '<input id="as-f-stage" placeholder="Stage (seed / series A …)" style="padding:8px 10px">'+
+        '<input id="as-f-loc" placeholder="Location" style="padding:8px 10px">'+
+        '<input id="as-f-web" placeholder="Website" style="padding:8px 10px">'+
+        '<input id="as-f-email" placeholder="Contact email (private)" style="padding:8px 10px">'+
+      '</div>'+
+      '<textarea id="as-f-one" placeholder="One-liner — what they do" style="width:100%;margin-top:10px;padding:8px 10px;min-height:52px"></textarea>'+
+      '<div id="as-add-err" style="color:var(--red,#c0392b);font-size:12px;margin-top:8px"></div>'+
+      '<div style="margin-top:10px"><button class="btn btn-pri btn-sm" onclick="asAdd()">Save company</button> <button class="btn btn-ghost btn-sm" onclick="asToggleAdd()">Cancel</button></div>'+
+    '</div></div>';
+
+    if(!rows.length){ html+=adminEmpty('🤖','No AI companies yet','Add one, or let the weekly auto-fill seed the directory.'); }
+    else{
+      html+='<div id="as-list">'+rows.map(function(r){
+        var status=r.status||'listed';
+        var sc=AS_STAGE_COLOR[status]||'var(--text3)';
+        var meta=[r.sector?esc(r.sector):'',r.stage?esc(r.stage):'',r.location?esc(r.location):''].filter(Boolean).join(' · ');
+        var isListed=(status==='listed');
+        return '<div class="card" style="padding:15px 18px;margin-bottom:9px">'+
+          '<div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:flex-start">'+
+            '<div style="min-width:0;flex:1">'+
+              '<div style="font-weight:600;color:var(--text);font-size:14px">'+esc(r.name)+' <span style="font-size:10px;font-family:var(--mono);text-transform:uppercase;color:'+sc+'">· '+esc(status)+'</span></div>'+
+              (r.one_liner?'<div style="font-size:12.5px;color:var(--text2);margin-top:4px">'+esc(r.one_liner)+'</div>':'')+
+              (meta?'<div style="font-size:11.5px;color:var(--text3);margin-top:5px">'+meta+'</div>':'')+
+              (r.contact_email?'<div style="font-size:11px;color:var(--text3);margin-top:3px">✉ '+esc(r.contact_email)+' <span style="color:var(--text3)">(private)</span></div>':'')+
+              (r.website?'<div style="font-size:11px;margin-top:3px"><a href="'+esc(r.website)+'" target="_blank" rel="noopener" style="color:var(--blue,#235FA6)">'+esc(r.website.replace(/^https?:\/\//,''))+' ↗</a></div>':'')+
+              (r.source?'<div style="font-size:10px;color:var(--text3);margin-top:3px;font-family:var(--mono)">src: '+esc(r.source)+'</div>':'')+
+            '</div>'+
+            '<div style="display:flex;gap:6px;flex-wrap:wrap">'+
+              (isListed
+                ? '<button class="btn btn-ghost btn-sm" onclick="asStatus(\''+r.id+'\',\'archived\')">Archive</button>'
+                : '<button class="btn btn-pri btn-sm" onclick="asStatus(\''+r.id+'\',\'listed\')">Publish</button>')+
+            '</div>'+
+          '</div>'+
+        '</div>';
+      }).join('')+'</div>';
+    }
+    p.innerHTML=html;
+  }catch(e){
+    console.error('[admin] loadAiStartups failed:',e);
+    p.innerHTML=adminErr((e&&e.message)||'Could not load AI companies.');
+  }
+}
+window.asToggleAdd=function(){var f=document.getElementById('as-addform');if(f){f.style.display=(f.style.display==='none'?'block':'none');}};
+window.asAdd=async function(){
+  function gv(x){var el=document.getElementById(x);return el?(el.value||'').trim():'';}
+  var err=document.getElementById('as-add-err'); if(err) err.textContent='';
+  var name=gv('as-f-name'); if(name.length<2){ if(err) err.textContent='Name is required.'; return; }
+  try{
+    var c=await window.PegSB.ready;
+    var r=await c.from('ai_startups').insert({
+      name:name, one_liner:gv('as-f-one'), sector:gv('as-f-sector'), stage:gv('as-f-stage'),
+      location:gv('as-f-loc'), website:gv('as-f-web'), contact_email:gv('as-f-email'),
+      source:'admin', status:'listed'
+    });
+    if(r.error) throw r.error;
+    loadAiStartups(document.getElementById('apanel'));
+  }catch(e){ if(err) err.textContent=(e&&e.message)||'Could not save.'; else alert('Could not save: '+((e&&e.message)||'error')); }
+};
+window.asStatus=async function(id,status){
+  try{
+    var c=await window.PegSB.ready;
+    var r=await c.from('ai_startups').update({status:status}).eq('id',id);
+    if(r.error) throw r.error;
+    loadAiStartups(document.getElementById('apanel'));
+  }catch(e){ alert('Could not update: '+((e&&e.message)||'error')); }
+};
+
+/* ===== Intro Requests (ai_intro_requests) ===== */
+var IR_STAGES=['new','reviewing','intro_made','closed'];
+var IR_STAGE_COLOR={'new':'var(--green)','reviewing':'var(--amber)','intro_made':'var(--blue,#235FA6)','closed':'var(--text3)'};
+async function loadIntroRequests(p){
+  p.innerHTML='<div style="padding:40px;text-align:center;color:var(--text3);font-size:12px">Loading intro requests…</div>';
+  var esc=diEsc;
+  try{
+    var c=await window.PegSB.ready;
+    var res=await c.from('ai_intro_requests').select('id,requester_name,requester_email,requester_org,requester_side,target_type,target_id,target_name,message,status,created_at').order('created_at',{ascending:false}).limit(1000);
+    if(res.error) throw res.error;
+    var rows=res.data||[];
+    function cnt(st){return rows.filter(function(r){return (r.status||'new')===st;}).length;}
+    var html='<div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px">'+
+      '<div class="card" style="padding:14px 18px"><div style="font-size:22px;font-weight:700;color:var(--green)">'+cnt('new')+'</div><div style="font-size:11px;color:var(--text3);font-family:var(--mono)">NEW</div></div>'+
+      '<div class="card" style="padding:14px 18px"><div style="font-size:22px;font-weight:700;color:var(--amber)">'+cnt('reviewing')+'</div><div style="font-size:11px;color:var(--text3);font-family:var(--mono)">REVIEWING</div></div>'+
+      '<div class="card" style="padding:14px 18px"><div style="font-size:22px;font-weight:700;color:var(--blue,#235FA6)">'+cnt('intro_made')+'</div><div style="font-size:11px;color:var(--text3);font-family:var(--mono)">INTRO MADE</div></div>'+
+      '<div class="card" style="padding:14px 18px"><div style="font-size:22px;font-weight:700;color:var(--text)">'+rows.length+'</div><div style="font-size:11px;color:var(--text3);font-family:var(--mono)">TOTAL</div></div>'+
+    '</div>'+
+    '<div style="font-size:11.5px;color:var(--text3);max-width:70ch;margin:0 0 14px">Someone asked to meet a company or an investor in the directory. You hold both sides’ contacts — reach out, make the intro, then move the status. This is how Pegasus stays in the middle of every connection.</div>';
+
+    if(!rows.length){ html+=adminEmpty('🤝','No intro requests yet','When a visitor requests an introduction from the AI Directory, it lands here for you to broker.'); }
+    else{
+      html+='<div id="ir-list">'+rows.map(function(r){
+        var status=r.status||'new';
+        var sc=IR_STAGE_COLOR[status]||'var(--text3)';
+        var tt=(r.target_type==='investor')?'investor':'company';
+        var side=r.requester_side?esc(r.requester_side):'';
+        var stageOpts=IR_STAGES.map(function(s){return '<option value="'+s+'"'+(s===status?' selected':'')+'>'+s+'</option>';}).join('');
+        var mailBody='Hi '+((r.requester_name||'there').split(' ')[0])+',%0D%0A%0D%0AThanks for your interest through Pegasus. ';
+        return '<div class="card" style="padding:15px 18px;margin-bottom:9px">'+
+          '<div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:flex-start">'+
+            '<div style="min-width:0;flex:1">'+
+              '<div style="font-size:13.5px;color:var(--text)"><span style="font-weight:600">'+esc(r.requester_name||'Someone')+'</span>'+(r.requester_org?(' <span style="color:var(--text2);font-size:12.5px">· '+esc(r.requester_org)+'</span>'):'')+' <span style="font-size:10px;font-family:var(--mono);text-transform:uppercase;color:'+sc+'">· '+esc(status)+'</span></div>'+
+              '<div style="font-size:12.5px;color:var(--text2);margin-top:5px">wants an intro to <span style="font-weight:600;color:var(--text)">'+esc(r.target_name||'—')+'</span> <span style="font-size:10px;font-family:var(--mono);text-transform:uppercase;color:var(--text3)">· '+tt+'</span></div>'+
+              '<div style="font-size:11.5px;color:var(--text3);margin-top:5px">'+(r.requester_email?('<a href="mailto:'+esc(r.requester_email)+'?subject=Pegasus%20intro&body='+mailBody+'" style="color:var(--blue,#235FA6)">'+esc(r.requester_email)+'</a>'):'no email')+(side?(' · as '+side):'')+'</div>'+
+              (r.message?'<div style="font-size:12px;color:var(--text2);margin-top:8px;padding:9px 11px;background:var(--bg2);border-radius:8px">'+esc(r.message)+'</div>':'')+
+              '<div style="font-size:10px;color:var(--text3);margin-top:6px;font-family:var(--mono)">'+(r.created_at?esc(String(r.created_at).slice(0,10)):'')+'</div>'+
+            '</div>'+
+          '</div>'+
+          '<div style="margin-top:10px;border-top:1px solid var(--line,#2224);padding-top:9px;display:flex;gap:6px;flex-wrap:wrap;align-items:center">'+
+            '<select id="ir-stage-'+r.id+'" onchange="irStage(\''+r.id+'\',this.value)" style="padding:6px 8px;font-size:12px">'+stageOpts+'</select>'+
+            (r.requester_email?'<a class="btn btn-pri btn-sm" href="mailto:'+esc(r.requester_email)+'?subject=Pegasus%20intro&body='+mailBody+'">✉ Reply</a>':'')+
+          '</div>'+
+        '</div>';
+      }).join('')+'</div>';
+    }
+    p.innerHTML=html;
+  }catch(e){
+    console.error('[admin] loadIntroRequests failed:',e);
+    p.innerHTML=adminErr((e&&e.message)||'Could not load intro requests.');
+  }
+}
+window.irStage=async function(id,status){
+  try{
+    var c=await window.PegSB.ready;
+    var r=await c.from('ai_intro_requests').update({status:status}).eq('id',id);
+    if(r.error) throw r.error;
+    loadIntroRequests(document.getElementById('apanel'));
+  }catch(e){ alert('Could not update: '+((e&&e.message)||'error')); }
+};
 async function loadClaims(p){
   p.innerHTML='<div style="padding:40px;text-align:center;color:var(--text3);font-size:12px">Loading claims…</div>';
   try{
@@ -1589,6 +1742,8 @@ window.aShow=function(s){[...document.querySelectorAll('#atabs .toggle-opt')].fo
   if(s==='Private Network'){ loadPrivateNetwork(p); return; }
   if(s==='Intelligence'){ loadDealIntel(p); return; }
   if(s==='Investors'){ loadInvestors(p); return; }
+  if(s==='AI Companies'){ loadAiStartups(p); return; }
+  if(s==='Intro Requests'){ loadIntroRequests(p); return; }
   if(s==='Claims'){ loadClaims(p); return; }
   if(s==='Deal Requests'){ loadDealRequests(p); return; }
   if(s==='Duplicates'){ loadDuplicates(p); return; }
