@@ -370,24 +370,60 @@ window.pnDecide=async function(id,status){
     loadPrivateNetwork(document.getElementById('apanel'));
   }catch(e){ alert('Could not update: '+((e&&e.message)||'error')); }
 };
+function diEsc(x){return (x==null?'':String(x)).replace(/[&<>"]/g,function(ch){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch];});}
 async function loadDealIntel(p){
   p.innerHTML='<div style="padding:40px;text-align:center;color:var(--text3);font-size:12px">Loading intelligence…</div>';
-  function esc(x){return (x==null?'':String(x)).replace(/[&<>"]/g,function(ch){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch];});}
+  var esc=diEsc;
   try{
     var c=await window.PegSB.ready;
     var res=await c.from('deal_intel_signals').select('id,company_name,sector,company_size,signal_type,signal_title,signal_summary,source_url,source_name,ai_intent,budget_signal,region,status,detected_at,created_at').order('created_at',{ascending:false}).limit(400);
     if(res.error) throw res.error;
     var rows=res.data||[];
+    var venRes=await c.from('ai_network_signups').select('id,full_name,org_name,email,focus_area,side').in('side',['company','buyer','client']).order('created_at',{ascending:false}).limit(300);
+    var vendors=(venRes&&venRes.data)||[];
+    var vmap={}; vendors.forEach(function(v){vmap[v.id]=v;}); window.__diVendors=vmap;
+    var matRes=await c.from('deal_intel_matches').select('id,signal_id,vendor_name,vendor_email,note,status').order('created_at',{ascending:false}).limit(600);
+    var matches=(matRes&&matRes.data)||[];
+    var mBySig={}; matches.forEach(function(m){(mBySig[m.signal_id]=mBySig[m.signal_id]||[]).push(m);});
+
     var pub=rows.filter(function(r){return r.status==='published';}).length;
     var pend=rows.filter(function(r){return r.status==='new';}).length;
     var high=rows.filter(function(r){return r.ai_intent==='high';}).length;
+
+    var vOpts='<option value="">Match to a vendor…</option>'+vendors.map(function(v){
+      var label=(v.org_name||v.full_name||v.email||'vendor')+(v.focus_area?(' — '+v.focus_area):'');
+      return '<option value="'+esc(v.id)+'">'+esc(label.slice(0,70))+'</option>';
+    }).join('');
 
     var html='<div style="display:flex;gap:18px;flex-wrap:wrap;margin-bottom:12px">'+
       '<div class="card" style="padding:14px 20px"><div style="font-size:22px;font-weight:700;color:var(--text)">'+rows.length+'</div><div style="font-size:11px;color:var(--text3);font-family:var(--mono)">SIGNALS · '+pend+' new</div></div>'+
       '<div class="card" style="padding:14px 20px"><div style="font-size:22px;font-weight:700;color:var(--text)">'+pub+'</div><div style="font-size:11px;color:var(--text3);font-family:var(--mono)">PUBLISHED (live)</div></div>'+
       '<div class="card" style="padding:14px 20px"><div style="font-size:22px;font-weight:700;color:var(--text)">'+high+'</div><div style="font-size:11px;color:var(--text3);font-family:var(--mono)">HIGH INTENT</div></div>'+
+      '<div class="card" style="padding:14px 20px"><div style="font-size:22px;font-weight:700;color:var(--text)">'+matches.length+'</div><div style="font-size:11px;color:var(--text3);font-family:var(--mono)">VENDOR MATCHES</div></div>'+
     '</div>'+
-    '<div style="font-size:11.5px;color:var(--text3);margin:0 0 16px;max-width:66ch">Detected demand from large companies (hiring, earnings, filings, partnerships). Publish a signal to show it on the public Intelligence board; the source link and budget note stay internal.</div>';
+    '<div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin:0 0 14px">'+
+      '<div style="font-size:11.5px;color:var(--text3);max-width:60ch">Detected demand from large companies. Publish a signal to show it on the public board (source + budget stay internal). Match a signal to a vendor to track who to pitch it to.</div>'+
+      '<button class="btn btn-pri btn-sm" onclick="diToggleAdd()">+ Add signal</button>'+
+    '</div>';
+
+    html+='<div id="di-addform" style="display:none;margin-bottom:16px" class="card">'+
+      '<div style="padding:16px 18px">'+
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">'+
+        '<input id="di-f-company" placeholder="Company *" style="padding:8px 10px">'+
+        '<input id="di-f-title" placeholder="Signal title *" style="padding:8px 10px">'+
+        '<input id="di-f-sector" placeholder="Sector" style="padding:8px 10px">'+
+        '<input id="di-f-size" placeholder="Company size (e.g. Fortune 100)" style="padding:8px 10px">'+
+        '<input id="di-f-type" placeholder="Signal type (hiring / earnings / filing / news / rfp)" style="padding:8px 10px">'+
+        '<select id="di-f-intent" style="padding:8px 10px"><option value="high">high intent</option><option value="medium" selected>medium intent</option><option value="low">low intent</option></select>'+
+        '<input id="di-f-budget" placeholder="Budget signal" style="padding:8px 10px">'+
+        '<input id="di-f-region" placeholder="Region" style="padding:8px 10px">'+
+        '<input id="di-f-source" placeholder="Source URL" style="padding:8px 10px">'+
+        '<input id="di-f-sourcename" placeholder="Source name" style="padding:8px 10px">'+
+      '</div>'+
+      '<textarea id="di-f-summary" placeholder="Signal summary — what they need, who should pitch" style="width:100%;margin-top:10px;padding:8px 10px;min-height:60px"></textarea>'+
+      '<div id="di-add-err" style="color:var(--red,#c0392b);font-size:12px;margin-top:8px"></div>'+
+      '<div style="margin-top:10px"><button class="btn btn-pri btn-sm" onclick="diAdd()">Save signal</button> <button class="btn btn-ghost btn-sm" onclick="diToggleAdd()">Cancel</button></div>'+
+      '</div></div>';
 
     html+='<h3 style="font-family:var(--serif,serif);font-weight:400;font-size:20px;margin:6px 0 12px">Signals</h3>';
     if(!rows.length){ html+=adminEmpty('◆','No signals yet','Detected large-company AI demand signals land here for review before going public.'); }
@@ -399,6 +435,16 @@ async function loadDealIntel(p){
         var act=(status==='published')
           ? '<button class="btn btn-ghost btn-sm" onclick="diDecide(\''+r.id+'\',\'new\')">Unpublish</button> <button class="btn btn-ghost btn-sm" onclick="diDecide(\''+r.id+'\',\'archived\')">Archive</button>'
           : '<button class="btn btn-pri btn-sm" onclick="diDecide(\''+r.id+'\',\'published\')">Publish</button> <button class="btn btn-ghost btn-sm" onclick="diDecide(\''+r.id+'\',\'archived\')">Archive</button>';
+        var ms=mBySig[r.id]||[];
+        var chips=ms.map(function(m){
+          return '<span style="display:inline-flex;align-items:center;gap:6px;font-size:11px;font-family:var(--mono);background:var(--bg2,#1115);border:1px solid var(--line,#2224);border-radius:3px;padding:3px 8px;margin:3px 4px 0 0">→ '+esc(m.vendor_name||m.vendor_email||'vendor')+' <a href="#" onclick="diUnmatch(\''+m.id+'\');return false;" style="color:var(--text3);text-decoration:none">×</a></span>';
+        }).join('');
+        var matchRow='<div style="margin-top:10px;border-top:1px solid var(--line,#2224);padding-top:9px">'+
+          '<div style="font-size:10.5px;font-family:var(--mono);color:var(--text3);text-transform:uppercase;letter-spacing:.08em">Pitch to</div>'+
+          '<div style="margin-top:4px">'+(chips||'<span style="font-size:11px;color:var(--text3)">no vendors matched yet</span>')+'</div>'+
+          '<div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap"><select id="di-vsel-'+r.id+'" style="padding:6px 8px;font-size:12px;max-width:320px">'+vOpts+'</select>'+
+          '<button class="btn btn-ghost btn-sm" onclick="diMatch(\''+r.id+'\')">Link vendor</button></div>'+
+        '</div>';
         return '<div class="card" style="padding:15px 18px;margin-bottom:9px">'+
           '<div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:flex-start">'+
             '<div style="min-width:0;flex:1">'+
@@ -409,7 +455,7 @@ async function loadDealIntel(p){
               (r.source_url?'<div style="font-size:11px;margin-top:3px"><a href="'+esc(r.source_url)+'" target="_blank" rel="noopener" style="color:var(--blue,#235FA6)">source: '+esc(r.source_name||r.source_url)+' ↗</a></div>':'')+
             '</div>'+
             '<div style="display:flex;gap:6px;flex-wrap:wrap">'+act+'</div>'+
-          '</div></div>';
+          '</div>'+matchRow+'</div>';
       }).join('')+'</div>';
     }
     p.innerHTML=html;
@@ -418,6 +464,46 @@ async function loadDealIntel(p){
     p.innerHTML=adminErr((e&&e.message)||'Could not load intelligence data.');
   }
 }
+window.diToggleAdd=function(){var f=document.getElementById('di-addform');if(f){f.style.display=(f.style.display==='none'?'block':'none');}};
+window.diAdd=async function(){
+  function gv(id){var el=document.getElementById(id);return el?(el.value||'').trim():'';}
+  var err=document.getElementById('di-add-err'); if(err) err.textContent='';
+  var company=gv('di-f-company'),title=gv('di-f-title');
+  if(company.length<2||title.length<3){ if(err) err.textContent='Company and signal title are required.'; return; }
+  try{
+    var c=await window.PegSB.ready;
+    var r=await c.from('deal_intel_signals').insert({
+      company_name:company, signal_title:title, signal_summary:gv('di-f-summary'),
+      sector:gv('di-f-sector'), company_size:gv('di-f-size'), signal_type:gv('di-f-type'),
+      ai_intent:gv('di-f-intent')||'medium', budget_signal:gv('di-f-budget'),
+      region:gv('di-f-region'), source_url:gv('di-f-source'), source_name:gv('di-f-sourcename'),
+      status:'new'
+    });
+    if(r.error) throw r.error;
+    loadDealIntel(document.getElementById('apanel'));
+  }catch(e){ if(err) err.textContent=(e&&e.message)||'Could not save.'; else alert('Could not save: '+((e&&e.message)||'error')); }
+};
+window.diMatch=async function(signalId){
+  var sel=document.getElementById('di-vsel-'+signalId); if(!sel||!sel.value) return;
+  var v=(window.__diVendors||{})[sel.value]||{};
+  try{
+    var c=await window.PegSB.ready;
+    var r=await c.from('deal_intel_matches').insert({
+      signal_id:signalId, signup_id:sel.value,
+      vendor_name:(v.org_name||v.full_name||''), vendor_email:(v.email||''), status:'suggested'
+    });
+    if(r.error) throw r.error;
+    loadDealIntel(document.getElementById('apanel'));
+  }catch(e){ alert('Could not link vendor: '+((e&&e.message)||'error')); }
+};
+window.diUnmatch=async function(matchId){
+  try{
+    var c=await window.PegSB.ready;
+    var r=await c.from('deal_intel_matches').delete().eq('id',matchId);
+    if(r.error) throw r.error;
+    loadDealIntel(document.getElementById('apanel'));
+  }catch(e){ alert('Could not remove match: '+((e&&e.message)||'error')); }
+};
 window.diDecide=async function(id,status){
   try{
     var c=await window.PegSB.ready;
