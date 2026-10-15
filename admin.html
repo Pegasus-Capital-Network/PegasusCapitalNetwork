@@ -75,7 +75,7 @@ v.insertAdjacentHTML('beforeend',
   '<a href="/showcase-admin.html" style="color:var(--blue)">Showcase Moderation</a> · <a href="/admin/intelligence" style="color:var(--blue)">Capital Intelligence</a> · '+
   '<a href="/admin/partner-network" style="color:var(--blue)">Partner Network</a></div>'+
   '<div style="display:flex;gap:4px;margin-bottom:16px;flex-wrap:wrap" id="atabs"></div><div id="apanel"></div>');
-const sections=['Users','Pegasus AI','Private Network','Feed','Invites','Claims','Deal Requests','Duplicates','Directory','Homepage Event','Subscriptions','Access System','Deal Rooms','Lender Profiles','Growth Partner Submissions','Match Activity','Analytics','Member Log','Manual Review','Platform Health','Schema & Repair'];
+const sections=['Users','Pegasus AI','Intelligence','Private Network','Feed','Invites','Claims','Deal Requests','Duplicates','Directory','Homepage Event','Subscriptions','Access System','Deal Rooms','Lender Profiles','Growth Partner Submissions','Match Activity','Analytics','Member Log','Manual Review','Platform Health','Schema & Repair'];
 document.getElementById('atabs').innerHTML=sections.map((s,i)=>'<div class="toggle-opt '+(i===0?'on':'')+'" style="font-size:11px" onclick="aShow(\''+s+'\')">'+s+'</div>').join('');
 function tbl(cols,rows){return '<div class="card"><table class="tbl"><thead><tr>'+cols.map(c=>'<th>'+c+'</th>').join('')+'</tr></thead><tbody>'+rows.map(r=>'<tr>'+r.map(c=>'<td>'+c+'</td>').join('')+'</tr>').join('')+'</tbody></table></div>';}
 const chip=(t,c)=>'<span class="badge '+c+'">'+t+'</span>';
@@ -368,6 +368,62 @@ window.pnDecide=async function(id,status){
     var r=await c.from('private_network_interest').update({status:status}).eq('id',id);
     if(r.error) throw r.error;
     loadPrivateNetwork(document.getElementById('apanel'));
+  }catch(e){ alert('Could not update: '+((e&&e.message)||'error')); }
+};
+async function loadDealIntel(p){
+  p.innerHTML='<div style="padding:40px;text-align:center;color:var(--text3);font-size:12px">Loading intelligence…</div>';
+  function esc(x){return (x==null?'':String(x)).replace(/[&<>"]/g,function(ch){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch];});}
+  try{
+    var c=await window.PegSB.ready;
+    var res=await c.from('deal_intel_signals').select('id,company_name,sector,company_size,signal_type,signal_title,signal_summary,source_url,source_name,ai_intent,budget_signal,region,status,detected_at,created_at').order('created_at',{ascending:false}).limit(400);
+    if(res.error) throw res.error;
+    var rows=res.data||[];
+    var pub=rows.filter(function(r){return r.status==='published';}).length;
+    var pend=rows.filter(function(r){return r.status==='new';}).length;
+    var high=rows.filter(function(r){return r.ai_intent==='high';}).length;
+
+    var html='<div style="display:flex;gap:18px;flex-wrap:wrap;margin-bottom:12px">'+
+      '<div class="card" style="padding:14px 20px"><div style="font-size:22px;font-weight:700;color:var(--text)">'+rows.length+'</div><div style="font-size:11px;color:var(--text3);font-family:var(--mono)">SIGNALS · '+pend+' new</div></div>'+
+      '<div class="card" style="padding:14px 20px"><div style="font-size:22px;font-weight:700;color:var(--text)">'+pub+'</div><div style="font-size:11px;color:var(--text3);font-family:var(--mono)">PUBLISHED (live)</div></div>'+
+      '<div class="card" style="padding:14px 20px"><div style="font-size:22px;font-weight:700;color:var(--text)">'+high+'</div><div style="font-size:11px;color:var(--text3);font-family:var(--mono)">HIGH INTENT</div></div>'+
+    '</div>'+
+    '<div style="font-size:11.5px;color:var(--text3);margin:0 0 16px;max-width:66ch">Detected demand from large companies (hiring, earnings, filings, partnerships). Publish a signal to show it on the public Intelligence board; the source link and budget note stay internal.</div>';
+
+    html+='<h3 style="font-family:var(--serif,serif);font-weight:400;font-size:20px;margin:6px 0 12px">Signals</h3>';
+    if(!rows.length){ html+=adminEmpty('◆','No signals yet','Detected large-company AI demand signals land here for review before going public.'); }
+    else{
+      html+='<div id="di-list">'+rows.map(function(r){
+        var status=r.status||'new';
+        var st={'new':'var(--amber)','published':'var(--green)','archived':'var(--text3)'}[status]||'var(--text3)';
+        var ic={'high':'var(--green)','medium':'var(--amber)','low':'var(--text3)'}[r.ai_intent]||'var(--text3)';
+        var act=(status==='published')
+          ? '<button class="btn btn-ghost btn-sm" onclick="diDecide(\''+r.id+'\',\'new\')">Unpublish</button> <button class="btn btn-ghost btn-sm" onclick="diDecide(\''+r.id+'\',\'archived\')">Archive</button>'
+          : '<button class="btn btn-pri btn-sm" onclick="diDecide(\''+r.id+'\',\'published\')">Publish</button> <button class="btn btn-ghost btn-sm" onclick="diDecide(\''+r.id+'\',\'archived\')">Archive</button>';
+        return '<div class="card" style="padding:15px 18px;margin-bottom:9px">'+
+          '<div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:flex-start">'+
+            '<div style="min-width:0;flex:1">'+
+              '<div style="font-weight:600;color:var(--text);font-size:14px">'+esc(r.company_name)+' <span style="font-size:10px;font-family:var(--mono);text-transform:uppercase;color:'+ic+'">· '+esc(r.ai_intent||'')+' intent</span> <span style="font-size:10px;font-family:var(--mono);text-transform:uppercase;color:'+st+'">· '+esc(status)+'</span></div>'+
+              '<div style="font-size:13px;color:var(--text);margin-top:3px;font-weight:500">'+esc(r.signal_title)+'</div>'+
+              (r.signal_summary?'<div style="font-size:12.5px;color:var(--text2);margin-top:4px">'+esc(r.signal_summary)+'</div>':'')+
+              '<div style="font-size:11.5px;color:var(--text3);margin-top:5px">'+[r.sector?esc(r.sector):'',r.company_size?esc(r.company_size):'',r.signal_type?esc(r.signal_type):'',r.budget_signal?('💰 '+esc(r.budget_signal)):'',r.region?esc(r.region):''].filter(Boolean).join(' · ')+'</div>'+
+              (r.source_url?'<div style="font-size:11px;margin-top:3px"><a href="'+esc(r.source_url)+'" target="_blank" rel="noopener" style="color:var(--blue,#235FA6)">source: '+esc(r.source_name||r.source_url)+' ↗</a></div>':'')+
+            '</div>'+
+            '<div style="display:flex;gap:6px;flex-wrap:wrap">'+act+'</div>'+
+          '</div></div>';
+      }).join('')+'</div>';
+    }
+    p.innerHTML=html;
+  }catch(e){
+    console.error('[admin] loadDealIntel failed:',e);
+    p.innerHTML=adminErr((e&&e.message)||'Could not load intelligence data.');
+  }
+}
+window.diDecide=async function(id,status){
+  try{
+    var c=await window.PegSB.ready;
+    var r=await c.from('deal_intel_signals').update({status:status}).eq('id',id);
+    if(r.error) throw r.error;
+    loadDealIntel(document.getElementById('apanel'));
   }catch(e){ alert('Could not update: '+((e&&e.message)||'error')); }
 };
 async function loadClaims(p){
@@ -1092,6 +1148,7 @@ window.aShow=function(s){[...document.querySelectorAll('#atabs .toggle-opt')].fo
   if(s==='Users'){ loadUsers(p); return; }
   if(s==='Pegasus AI'){ loadPegasusAI(p); return; }
   if(s==='Private Network'){ loadPrivateNetwork(p); return; }
+  if(s==='Intelligence'){ loadDealIntel(p); return; }
   if(s==='Claims'){ loadClaims(p); return; }
   if(s==='Deal Requests'){ loadDealRequests(p); return; }
   if(s==='Duplicates'){ loadDuplicates(p); return; }
