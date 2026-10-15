@@ -182,7 +182,9 @@ h1{font-weight:800;font-size:clamp(32px,4.6vw,50px);line-height:1.05;letter-spac
     }catch(e){ console.error('[ai-directory] intro failed:',e); err.textContent=(e&&e.message)||'Could not send. Please try again.'; btn.disabled=false; btn.textContent='Request intro →'; }
   };
 
-  loadTab('startups');
+  function hashTab(){ return ((location.hash||'').replace('#','').toLowerCase()==='investors')?'investors':'startups'; }
+  (hashTab()==='investors') ? showTab('investors') : loadTab('startups');
+  window.addEventListener('hashchange',function(){ showTab(hashTab()); });
 })();
 </script>
 </body></html>

@@ -46,8 +46,13 @@ h1 em{font-style:normal;color:var(--navy)}
 @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(154,123,63,.35)}70%{box-shadow:0 0 0 9px rgba(154,123,63,0)}100%{box-shadow:0 0 0 0 rgba(154,123,63,0)}}
 
 .triad{position:relative;z-index:2;margin:34px 0 10px;display:grid;grid-template-columns:1fr auto 1fr auto 1fr;align-items:center;gap:0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:28px 0}
-.triad .node{font-size:clamp(18px,2.4vw,26px);font-weight:700;text-align:center;color:var(--ink);letter-spacing:-.01em}
+.triad .node{font-size:clamp(18px,2.4vw,26px);font-weight:700;text-align:center;color:var(--ink);letter-spacing:-.01em;display:block;cursor:pointer;transition:color .18s,transform .18s}
+.triad a.node:hover{color:var(--navy);transform:translateY(-2px)}
+.triad a.node:hover span{color:var(--gold)}
 .triad .node span{display:block;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-top:8px}
+.triad .node .go{display:block;font-size:10.5px;font-weight:600;letter-spacing:.04em;text-transform:none;color:var(--gold);margin-top:7px;opacity:0;transition:opacity .18s}
+.triad a.node:hover .go{opacity:1}
+@media(hover:none){.triad .node .go{opacity:1}}
 .triad .link{color:var(--gold);font-size:22px;text-align:center}
 @media(max-width:720px){.triad{grid-template-columns:1fr;gap:18px;text-align:center}.triad .link{display:none}}
 
@@ -121,11 +126,11 @@ footer .fnote{font-size:11px;color:var(--muted);max-width:62ch;line-height:1.7}
 
 <div class="wrap">
   <div class="triad">
-    <div class="node">AI Companies<span>build it</span></div>
+    <a class="node" href="/ai-directory.html#companies">AI Companies<span>build it</span><span class="go">See the companies →</span></a>
     <div class="link">↔</div>
-    <div class="node">Investors<span>fund it</span></div>
+    <a class="node" href="/ai-directory.html#investors">Investors<span>fund it</span><span class="go">See the investors →</span></a>
     <div class="link">↔</div>
-    <div class="node">Buyers<span>deploy it</span></div>
+    <a class="node" href="/ai-directory.html#companies">Buyers<span>deploy it</span><span class="go">Browse the companies →</span></a>
   </div>
 </div>
 
