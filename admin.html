@@ -461,12 +461,14 @@ async function loadDealIntel(p){
     var res=await c.from('deal_intel_signals').select('id,company_name,sector,company_size,signal_type,signal_title,signal_summary,source_url,source_name,ai_intent,budget_signal,region,status,pipeline_stage,owner,next_action,next_action_date,detected_at,created_at').order('created_at',{ascending:false}).limit(400);
     if(res.error) throw res.error;
     var rows=res.data||[];
+    var sigMap={}; rows.forEach(function(r){sigMap[r.id]=r;}); window.__diSignals=sigMap;
     var venRes=await c.from('ai_network_signups').select('id,full_name,org_name,email,focus_area,side').in('side',['company','buyer','client']).order('created_at',{ascending:false}).limit(300);
     var vendors=(venRes&&venRes.data)||[];
     var vmap={}; vendors.forEach(function(v){vmap[v.id]=v;}); window.__diVendors=vmap;
     var matRes=await c.from('deal_intel_matches').select('id,signal_id,vendor_name,vendor_email,note,status').order('created_at',{ascending:false}).limit(600);
     var matches=(matRes&&matRes.data)||[];
     var mBySig={}; matches.forEach(function(m){(mBySig[m.signal_id]=mBySig[m.signal_id]||[]).push(m);});
+    var matMap={}; matches.forEach(function(m){matMap[m.id]=m;}); window.__diMatches=matMap;
 
     var pub=rows.filter(function(r){return r.status==='published';}).length;
     var pend=rows.filter(function(r){return r.status==='new';}).length;
@@ -529,7 +531,7 @@ async function loadDealIntel(p){
           : '<button class="btn btn-pri btn-sm" onclick="diDecide(\''+r.id+'\',\'published\')">Publish</button> <button class="btn btn-ghost btn-sm" onclick="diDecide(\''+r.id+'\',\'archived\')">Archive</button>';
         var ms=mBySig[r.id]||[];
         var chips=ms.map(function(m){
-          return '<span style="display:inline-flex;align-items:center;gap:6px;font-size:11px;font-family:var(--mono);background:var(--bg2,#1115);border:1px solid var(--line,#2224);border-radius:3px;padding:3px 8px;margin:3px 4px 0 0">→ '+esc(m.vendor_name||m.vendor_email||'vendor')+' <a href="#" onclick="diUnmatch(\''+m.id+'\');return false;" style="color:var(--text3);text-decoration:none">×</a></span>';
+          return '<span style="display:inline-flex;align-items:center;gap:8px;font-size:11px;font-family:var(--mono);background:var(--bg2,#1115);border:1px solid var(--line,#2224);border-radius:3px;padding:3px 8px;margin:3px 4px 0 0">→ '+esc(m.vendor_name||m.vendor_email||'vendor')+' <a href="#" onclick="diDraft(\''+m.id+'\');return false;" style="color:var(--blue,#235FA6);text-decoration:none" title="Draft intro email">✉ draft</a> <a href="#" onclick="diUnmatch(\''+m.id+'\');return false;" style="color:var(--text3);text-decoration:none" title="Remove match">×</a></span>';
         }).join('');
         var matchRow='<div style="margin-top:10px;border-top:1px solid var(--line,#2224);padding-top:9px">'+
           '<div style="font-size:10.5px;font-family:var(--mono);color:var(--text3);text-transform:uppercase;letter-spacing:.08em">Pitch to</div>'+
@@ -637,6 +639,73 @@ window.diDecide=async function(id,status){
     if(r.error) throw r.error;
     loadDealIntel(document.getElementById('apanel'));
   }catch(e){ alert('Could not update: '+((e&&e.message)||'error')); }
+};
+window.diDraft=function(matchId){
+  var m=(window.__diMatches||{})[matchId]; if(!m){ alert('Match not found. Reload the tab.'); return; }
+  var s=(window.__diSignals||{})[m.signal_id]||{};
+  var vendor=(m.vendor_name||'').trim();
+  var greet=vendor?vendor.split(' ')[0]:'there';
+  var company=s.company_name||'a large company';
+  var sector=s.sector?(' on the '+s.sector+' side'):'';
+  var subject='A buyer for you — '+company;
+  var body='Hi '+greet+',\n\n'+
+    'Quick one. '+company+' looks like it has real budget and intent right now'+sector+': '+(s.signal_title||'an active AI initiative')+'.\n\n'+
+    'It lines up closely with what you do. If it is useful, I can put you in front of the right people there.\n\n'+
+    'Worth a short call this week?\n\n'+
+    '— Anatoliy\nPegasus Capital Network';
+  window.__diDraftCtx={signalId:m.signal_id, email:(m.vendor_email||'')};
+  var old=document.getElementById('di-draft-ov'); if(old) old.remove();
+  var ov=document.createElement('div'); ov.id='di-draft-ov';
+  ov.setAttribute('style','position:fixed;inset:0;background:rgba(5,8,13,.6);z-index:9600;display:flex;align-items:flex-start;justify-content:center;padding:40px 16px;overflow:auto');
+  var box=document.createElement('div');
+  box.setAttribute('style','background:var(--bg,#0f1824);border:1px solid var(--line,#2a3647);border-radius:10px;max-width:620px;width:100%;padding:22px 22px 18px;box-shadow:0 20px 60px rgba(0,0,0,.5)');
+  var head=document.createElement('div');
+  head.setAttribute('style','display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px');
+  head.innerHTML='<div style="font-family:var(--serif,serif);font-size:19px;color:var(--text)">Intro email draft</div><div style="font-size:11px;color:var(--text3);font-family:var(--mono)">to '+(m.vendor_email?diEsc(m.vendor_email):'no email on file')+'</div>';
+  box.appendChild(head);
+  var note=document.createElement('div');
+  note.setAttribute('style','font-size:11.5px;color:var(--text3);margin-bottom:12px');
+  note.textContent='Draft only. Edit it, then copy or open it in your email. Nothing is sent automatically.';
+  box.appendChild(note);
+  var subL=document.createElement('label'); subL.setAttribute('style','display:block;font-size:10.5px;font-family:var(--mono);text-transform:uppercase;letter-spacing:.06em;color:var(--text3);margin-bottom:5px'); subL.textContent='Subject';
+  var subI=document.createElement('input'); subI.id='di-draft-sub'; subI.value=subject; subI.setAttribute('style','width:100%;padding:9px 11px;margin-bottom:12px;background:var(--bg2,#0a0f17);border:1px solid var(--line,#2a3647);color:var(--text,#f3efe6);border-radius:4px;font-size:13px');
+  box.appendChild(subL); box.appendChild(subI);
+  var bodL=document.createElement('label'); bodL.setAttribute('style','display:block;font-size:10.5px;font-family:var(--mono);text-transform:uppercase;letter-spacing:.06em;color:var(--text3);margin-bottom:5px'); bodL.textContent='Body';
+  var bodT=document.createElement('textarea'); bodT.id='di-draft-body'; bodT.value=body; bodT.setAttribute('style','width:100%;min-height:200px;padding:11px;background:var(--bg2,#0a0f17);border:1px solid var(--line,#2a3647);color:var(--text,#f3efe6);border-radius:4px;font-size:13px;line-height:1.6;font-family:var(--sans,sans-serif)');
+  box.appendChild(bodL); box.appendChild(bodT);
+  var btns=document.createElement('div'); btns.setAttribute('style','display:flex;gap:8px;flex-wrap:wrap;margin-top:14px');
+  btns.innerHTML='<button class="btn btn-pri btn-sm" onclick="diDraftCopy()">Copy</button>'+
+    '<button class="btn btn-ghost btn-sm" onclick="diDraftSend()">Open in email</button>'+
+    '<button class="btn btn-ghost btn-sm" onclick="diDraftPitched()">Mark as pitched</button>'+
+    '<button class="btn btn-ghost btn-sm" style="margin-left:auto" onclick="diDraftClose()">Close</button>';
+  box.appendChild(btns);
+  ov.appendChild(box);
+  ov.addEventListener('click',function(ev){ if(ev.target===ov) diDraftClose(); });
+  document.body.appendChild(ov);
+};
+window.diDraftClose=function(){ var o=document.getElementById('di-draft-ov'); if(o) o.remove(); };
+window.diDraftVals=function(){ return { sub:(document.getElementById('di-draft-sub')||{}).value||'', body:(document.getElementById('di-draft-body')||{}).value||'' }; };
+window.diDraftCopy=function(){
+  var v=diDraftVals(); var txt=v.sub+'\n\n'+v.body;
+  if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(txt).then(function(){alert('Copied. Paste it into your email.');},function(){window.prompt('Copy this:',txt);}); }
+  else { window.prompt('Copy this:',txt); }
+};
+window.diDraftSend=function(){
+  var v=diDraftVals(); var ctx=window.__diDraftCtx||{};
+  var to=ctx.email||'';
+  var url='mailto:'+encodeURIComponent(to)+'?subject='+encodeURIComponent(v.sub)+'&body='+encodeURIComponent(v.body);
+  window.open(url,'_blank');
+};
+window.diDraftPitched=async function(){
+  var ctx=window.__diDraftCtx||{};
+  if(!ctx.signalId){ diDraftClose(); return; }
+  try{
+    var c=await window.PegSB.ready;
+    var r=await c.from('deal_intel_signals').update({pipeline_stage:'pitched',stage_changed_at:new Date().toISOString()}).eq('id',ctx.signalId);
+    if(r.error) throw r.error;
+    diDraftClose();
+    loadDealIntel(document.getElementById('apanel'));
+  }catch(e){ alert('Could not update stage: '+((e&&e.message)||'error')); }
 };
 async function loadClaims(p){
   p.innerHTML='<div style="padding:40px;text-align:center;color:var(--text3);font-size:12px">Loading claims…</div>';
