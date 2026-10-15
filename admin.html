@@ -371,12 +371,14 @@ window.pnDecide=async function(id,status){
   }catch(e){ alert('Could not update: '+((e&&e.message)||'error')); }
 };
 function diEsc(x){return (x==null?'':String(x)).replace(/[&<>"]/g,function(ch){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch];});}
+var DI_STAGES=['new','verified','matched','pitched','intro','deal','lost'];
+var DI_STAGE_COLOR={'new':'var(--text3)','verified':'var(--amber)','matched':'var(--blue,#235FA6)','pitched':'var(--violet,#8b7bd8)','intro':'var(--green)','deal':'var(--green)','lost':'var(--red,#c0392b)'};
 async function loadDealIntel(p){
   p.innerHTML='<div style="padding:40px;text-align:center;color:var(--text3);font-size:12px">Loading intelligence…</div>';
   var esc=diEsc;
   try{
     var c=await window.PegSB.ready;
-    var res=await c.from('deal_intel_signals').select('id,company_name,sector,company_size,signal_type,signal_title,signal_summary,source_url,source_name,ai_intent,budget_signal,region,status,detected_at,created_at').order('created_at',{ascending:false}).limit(400);
+    var res=await c.from('deal_intel_signals').select('id,company_name,sector,company_size,signal_type,signal_title,signal_summary,source_url,source_name,ai_intent,budget_signal,region,status,pipeline_stage,owner,next_action,next_action_date,detected_at,created_at').order('created_at',{ascending:false}).limit(400);
     if(res.error) throw res.error;
     var rows=res.data||[];
     var venRes=await c.from('ai_network_signups').select('id,full_name,org_name,email,focus_area,side').in('side',['company','buyer','client']).order('created_at',{ascending:false}).limit(300);
@@ -389,6 +391,8 @@ async function loadDealIntel(p){
     var pub=rows.filter(function(r){return r.status==='published';}).length;
     var pend=rows.filter(function(r){return r.status==='new';}).length;
     var high=rows.filter(function(r){return r.ai_intent==='high';}).length;
+    var stageCount={}; DI_STAGES.forEach(function(s){stageCount[s]=0;});
+    rows.forEach(function(r){var s=r.pipeline_stage||'new'; stageCount[s]=(stageCount[s]||0)+1;});
 
     var vOpts='<option value="">Match to a vendor…</option>'+vendors.map(function(v){
       var label=(v.org_name||v.full_name||v.email||'vendor')+(v.focus_area?(' — '+v.focus_area):'');
@@ -401,8 +405,16 @@ async function loadDealIntel(p){
       '<div class="card" style="padding:14px 20px"><div style="font-size:22px;font-weight:700;color:var(--text)">'+high+'</div><div style="font-size:11px;color:var(--text3);font-family:var(--mono)">HIGH INTENT</div></div>'+
       '<div class="card" style="padding:14px 20px"><div style="font-size:22px;font-weight:700;color:var(--text)">'+matches.length+'</div><div style="font-size:11px;color:var(--text3);font-family:var(--mono)">VENDOR MATCHES</div></div>'+
     '</div>'+
+    '<div style="display:flex;gap:0;flex-wrap:wrap;align-items:stretch;border:1px solid var(--line,#2224);border-radius:6px;overflow:hidden;margin-bottom:14px">'+
+      DI_STAGES.map(function(s,i){
+        return '<div style="flex:1;min-width:84px;padding:10px 12px;text-align:center;'+(i<DI_STAGES.length-1?'border-right:1px solid var(--line,#2224);':'')+'">'+
+          '<div style="font-size:19px;font-weight:700;color:'+DI_STAGE_COLOR[s]+'">'+(stageCount[s]||0)+'</div>'+
+          '<div style="font-size:9.5px;font-family:var(--mono);text-transform:uppercase;letter-spacing:.06em;color:var(--text3)">'+s+'</div>'+
+        '</div>';
+      }).join('')+
+    '</div>'+
     '<div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin:0 0 14px">'+
-      '<div style="font-size:11.5px;color:var(--text3);max-width:60ch">Detected demand from large companies. Publish a signal to show it on the public board (source + budget stay internal). Match a signal to a vendor to track who to pitch it to.</div>'+
+      '<div style="font-size:11.5px;color:var(--text3);max-width:60ch">Detected demand from large companies. Move each signal through the pipeline (new to deal), set an owner and a next action. Publishing (public board) is separate from pipeline stage.</div>'+
       '<button class="btn btn-pri btn-sm" onclick="diToggleAdd()">+ Add signal</button>'+
     '</div>';
 
@@ -445,17 +457,30 @@ async function loadDealIntel(p){
           '<div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap"><select id="di-vsel-'+r.id+'" style="padding:6px 8px;font-size:12px;max-width:320px">'+vOpts+'</select>'+
           '<button class="btn btn-ghost btn-sm" onclick="diMatch(\''+r.id+'\')">Link vendor</button></div>'+
         '</div>';
+        var stage=r.pipeline_stage||'new';
+        var stageOpts=DI_STAGES.map(function(s){return '<option value="'+s+'"'+(s===stage?' selected':'')+'>'+s+'</option>';}).join('');
+        var naDate=r.next_action_date?esc(r.next_action_date):'';
+        var pipeRow='<div style="margin-top:10px;border-top:1px solid var(--line,#2224);padding-top:9px">'+
+          '<div style="font-size:10.5px;font-family:var(--mono);color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px">Pipeline</div>'+
+          '<div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">'+
+            '<select id="di-stage-'+r.id+'" onchange="diStage(\''+r.id+'\',this.value)" style="padding:6px 8px;font-size:12px">'+stageOpts+'</select>'+
+            '<input id="di-owner-'+r.id+'" value="'+esc(r.owner||'')+'" placeholder="Owner" style="padding:6px 8px;font-size:12px;max-width:130px">'+
+            '<input id="di-na-'+r.id+'" value="'+esc(r.next_action||'')+'" placeholder="Next action" style="padding:6px 8px;font-size:12px;flex:1;min-width:160px">'+
+            '<input id="di-nad-'+r.id+'" type="date" value="'+naDate+'" style="padding:6px 8px;font-size:12px">'+
+            '<button class="btn btn-ghost btn-sm" onclick="diSaveMeta(\''+r.id+'\')">Save</button>'+
+          '</div>'+
+        '</div>';
         return '<div class="card" style="padding:15px 18px;margin-bottom:9px">'+
           '<div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:flex-start">'+
             '<div style="min-width:0;flex:1">'+
-              '<div style="font-weight:600;color:var(--text);font-size:14px">'+esc(r.company_name)+' <span style="font-size:10px;font-family:var(--mono);text-transform:uppercase;color:'+ic+'">· '+esc(r.ai_intent||'')+' intent</span> <span style="font-size:10px;font-family:var(--mono);text-transform:uppercase;color:'+st+'">· '+esc(status)+'</span></div>'+
+              '<div style="font-weight:600;color:var(--text);font-size:14px">'+esc(r.company_name)+' <span style="font-size:10px;font-family:var(--mono);text-transform:uppercase;color:'+(DI_STAGE_COLOR[stage]||'var(--text3)')+'">· '+esc(stage)+'</span> <span style="font-size:10px;font-family:var(--mono);text-transform:uppercase;color:'+ic+'">· '+esc(r.ai_intent||'')+' intent</span> <span style="font-size:10px;font-family:var(--mono);text-transform:uppercase;color:'+st+'">· '+esc(status)+'</span></div>'+
               '<div style="font-size:13px;color:var(--text);margin-top:3px;font-weight:500">'+esc(r.signal_title)+'</div>'+
               (r.signal_summary?'<div style="font-size:12.5px;color:var(--text2);margin-top:4px">'+esc(r.signal_summary)+'</div>':'')+
               '<div style="font-size:11.5px;color:var(--text3);margin-top:5px">'+[r.sector?esc(r.sector):'',r.company_size?esc(r.company_size):'',r.signal_type?esc(r.signal_type):'',r.budget_signal?('💰 '+esc(r.budget_signal)):'',r.region?esc(r.region):''].filter(Boolean).join(' · ')+'</div>'+
               (r.source_url?'<div style="font-size:11px;margin-top:3px"><a href="'+esc(r.source_url)+'" target="_blank" rel="noopener" style="color:var(--blue,#235FA6)">source: '+esc(r.source_name||r.source_url)+' ↗</a></div>':'')+
             '</div>'+
             '<div style="display:flex;gap:6px;flex-wrap:wrap">'+act+'</div>'+
-          '</div>'+matchRow+'</div>';
+          '</div>'+pipeRow+matchRow+'</div>';
       }).join('')+'</div>';
     }
     p.innerHTML=html;
@@ -503,6 +528,27 @@ window.diUnmatch=async function(matchId){
     if(r.error) throw r.error;
     loadDealIntel(document.getElementById('apanel'));
   }catch(e){ alert('Could not remove match: '+((e&&e.message)||'error')); }
+};
+window.diStage=async function(id,stage){
+  try{
+    var c=await window.PegSB.ready;
+    var r=await c.from('deal_intel_signals').update({pipeline_stage:stage,stage_changed_at:new Date().toISOString()}).eq('id',id);
+    if(r.error) throw r.error;
+    loadDealIntel(document.getElementById('apanel'));
+  }catch(e){ alert('Could not update stage: '+((e&&e.message)||'error')); }
+};
+window.diSaveMeta=async function(id){
+  function gv(x){var el=document.getElementById(x);return el?(el.value||'').trim():'';}
+  try{
+    var c=await window.PegSB.ready;
+    var r=await c.from('deal_intel_signals').update({
+      owner:gv('di-owner-'+id)||null,
+      next_action:gv('di-na-'+id)||null,
+      next_action_date:gv('di-nad-'+id)||null
+    }).eq('id',id);
+    if(r.error) throw r.error;
+    loadDealIntel(document.getElementById('apanel'));
+  }catch(e){ alert('Could not save: '+((e&&e.message)||'error')); }
 };
 window.diDecide=async function(id,status){
   try{
