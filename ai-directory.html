@@ -1,0 +1,188 @@
+<!DOCTYPE html><html lang="en"><head>
+<title>AI Directory — Pegasus AI</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="AI companies and the investors who back them, in one network. Browse the directory and request a warm introduction — Pegasus brokers the connection.">
+<link rel="canonical" href="https://pegasuscapitalnetwork.com/ai-directory.html">
+<meta property="og:title" content="Pegasus AI Directory">
+<meta property="og:description" content="AI companies and investors in one network. Request a warm introduction.">
+<meta property="og:type" content="website">
+<link rel="icon" href="/assets/brand/favicon.ico" sizes="any">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#fff;--bg2:#f5f6f8;--panel:#fff;--line:#e6e9ed;--ink:#0e1824;--ink2:#2a3a4e;--text:#46525f;--muted:#737e8b;--navy:#1b3a5b;--navy-d:#14304b;--gold:#9a7b3f;
+--sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;--shadow-sm:0 1px 2px rgba(14,24,36,.06);--shadow:0 2px 6px rgba(14,24,36,.05),0 14px 38px rgba(14,24,36,.10)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-weight:400;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1080px;margin:0 auto;padding:0 32px}@media(max-width:640px){.wrap{padding:0 20px}}
+.bg{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(1000px 540px at 50% -10%,rgba(27,58,91,.06),transparent 60%),linear-gradient(180deg,#fbfcfe 0,#fff 460px)}
+header.top{position:relative;z-index:3;border-bottom:1px solid var(--line)}
+.top-in{max-width:1080px;margin:0 auto;padding:16px 32px;display:flex;align-items:center;justify-content:space-between}@media(max-width:640px){.top-in{padding:14px 20px}}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:18px;color:var(--ink);letter-spacing:-.01em}
+.top .nav{display:flex;gap:18px;align-items:center;font-size:13px;color:var(--muted);font-weight:500}
+.top .nav a:hover{color:var(--navy)}
+.hero{position:relative;z-index:2;padding:48px 0 14px}
+.kick{font-size:11.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--gold);margin-bottom:14px}
+h1{font-weight:800;font-size:clamp(32px,4.6vw,50px);line-height:1.05;letter-spacing:-.03em;color:var(--ink)}
+.sub{margin:16px 0 0;font-size:clamp(15px,1.7vw,17.5px);color:var(--muted);max-width:62ch}
+.gate{margin-top:14px;display:inline-flex;align-items:center;gap:8px;font-size:12.5px;color:var(--navy);background:var(--bg2);border:1px solid var(--line);border-radius:8px;padding:8px 14px}
+.tabs{position:relative;z-index:2;display:flex;gap:8px;margin:24px 0 6px}
+.tab{font-size:14px;font-weight:600;padding:9px 18px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--text);cursor:pointer}
+.tab.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+.count{position:relative;z-index:2;font-size:12.5px;color:var(--muted);font-weight:500;padding:10px 0 4px}
+.grid{position:relative;z-index:2;display:grid;grid-template-columns:repeat(3,1fr);gap:16px;padding:8px 0 10px}
+@media(max-width:860px){.grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:560px){.grid{grid-template-columns:1fr;max-width:440px;margin:0 auto}}
+.c{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px 20px 16px;display:flex;flex-direction:column;box-shadow:var(--shadow-sm);transition:transform .18s,box-shadow .18s,border-color .18s}
+.c:hover{transform:translateY(-3px);box-shadow:var(--shadow);border-color:#d7dde4}
+.c .nm{font-size:17px;font-weight:700;color:var(--ink);letter-spacing:-.01em}
+.c .ds{font-size:13px;color:var(--text);margin-top:7px;flex:1;line-height:1.5}
+.c .tags{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0 14px}
+.c .tags span{font-size:11px;color:var(--ink2);background:var(--bg2);border:1px solid var(--line);border-radius:999px;padding:3px 10px}
+.c .req{font-size:12.5px;font-weight:600;color:#fff;background:var(--navy);border:none;border-radius:8px;padding:9px 14px;cursor:pointer;transition:background .18s;text-align:center}
+.c .req:hover{background:var(--navy-d)}
+.loading,.empty{position:relative;z-index:2;text-align:center;color:var(--muted);font-size:13px;padding:40px 0}
+.foot{position:relative;z-index:2;border-top:1px solid var(--line);margin-top:26px;padding:26px 0 60px;font-size:11px;color:var(--muted);line-height:1.7;max-width:80ch}
+.foot a{color:var(--navy);font-weight:600}
+.ov{position:fixed;inset:0;background:rgba(18,28,42,.45);backdrop-filter:blur(3px);z-index:9600;display:none;align-items:flex-start;justify-content:center;padding:40px 16px;overflow:auto}
+.ov.open{display:flex}
+.box{background:#fff;border:1px solid var(--line);border-radius:12px;max-width:500px;width:100%;padding:26px 26px 22px;box-shadow:0 24px 60px rgba(14,24,36,.2)}
+.box h3{font-size:21px;font-weight:800;color:var(--ink);letter-spacing:-.02em;margin-bottom:4px}
+.box .note{font-size:12.5px;color:var(--muted);margin-bottom:16px}
+.fld{margin-bottom:11px}
+.fld label{display:block;font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
+.fld input,.fld select,.fld textarea{width:100%;background:#f7f8fa;border:1px solid var(--line);color:var(--ink);font-family:var(--sans);font-size:14px;padding:10px 12px;border-radius:7px}
+.fld input:focus,.fld select:focus,.fld textarea:focus{outline:none;border-color:var(--navy);background:#fff}
+.fld textarea{min-height:60px;resize:vertical}
+.err{color:#c0392b;font-size:12.5px;min-height:15px;margin-top:6px}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.btn{font-size:13.5px;font-weight:600;padding:11px 18px;border-radius:8px;cursor:pointer;border:none}
+.btn.pri{background:var(--navy);color:#fff}.btn.pri:hover{background:var(--navy-d)}
+.btn.gh{background:#fff;border:1px solid var(--line);color:var(--ink);margin-left:auto}
+</style></head>
+<body>
+<div class="bg"></div>
+<header class="top"><div class="top-in">
+  <a class="brand" href="/"><img src="/assets/brand/pegasus-mark.png" alt="Pegasus" style="height:26px;width:auto;display:block"> Pegasus</a>
+  <nav class="nav"><a href="/ai-network.html">Pegasus AI</a><a href="/ai-needs.html">Needs Board</a><a href="/intel.html">Intelligence</a><a href="/">All worlds</a></nav>
+</div></header>
+
+<section class="hero"><div class="wrap">
+  <div class="kick">Pegasus AI · Directory</div>
+  <h1>AI companies and the capital behind them.</h1>
+  <p class="sub">One network for AI builders and the investors who fund them. Browse who's here, then request a warm introduction — we broker the connection so both sides meet the right match.</p>
+  <div class="gate">&#128274; Contacts are private. You tell us who you want to meet, we make the intro.</div>
+</div></section>
+
+<div class="wrap">
+  <div class="tabs">
+    <button class="tab on" id="tab-startups" onclick="showTab('startups')">AI Companies</button>
+    <button class="tab" id="tab-investors" onclick="showTab('investors')">Investors</button>
+  </div>
+  <div class="count" id="count"></div>
+  <div class="grid" id="grid"></div>
+  <div class="loading" id="loading">Loading the network…</div>
+</div>
+
+<div class="foot wrap">
+  Pegasus facilitates professional introductions. It is not a broker-dealer, investment adviser, or placement agent, does not raise capital or guarantee funding, and takes no part in any transaction terms. Listings compile publicly available information; being listed is not a solicitation. <a href="/ai-network.html">Join the network →</a>
+</div>
+
+<!-- intro modal -->
+<div class="ov" id="ov"><div class="box">
+  <h3 id="ovTitle">Request an introduction</h3>
+  <div class="note" id="ovNote"></div>
+  <div class="fld"><label>Your name</label><input id="rName" placeholder="Full name"></div>
+  <div class="fld"><label>Email</label><input id="rEmail" type="email" placeholder="you@company.com"></div>
+  <div class="fld"><label>Company / fund</label><input id="rOrg" placeholder="Organization"></div>
+  <div class="fld"><label>You are</label><select id="rSide"><option value="investor">An investor</option><option value="startup">An AI company / founder</option><option value="other">Other</option></select></div>
+  <div class="fld"><label>Why this match (optional)</label><textarea id="rMsg" maxlength="400" placeholder="A line on why you want this intro"></textarea></div>
+  <div class="err" id="rErr"></div>
+  <div class="row"><button class="btn pri" id="rSubmit" onclick="submitIntro()">Request intro →</button><button class="btn gh" onclick="closeOv()">Cancel</button></div>
+</div></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="/js/pegasus-config.js"></script>
+<script>
+(function(){
+  var C=window.PEG_CONFIG||window.PEGASUS_CONFIG||{};
+  var URL=C.SUPABASE_URL||'https://trdwsssouhpawhfdkfqf.supabase.co';
+  var KEY=C.SUPABASE_ANON||'sb_publishable_hrR8wI6hM921mnxk7bBE_A_YKxWsoBI';
+  var sb=(window.supabase&&window.supabase.createClient)?window.supabase.createClient(URL,KEY):null;
+  function esc(x){return (x==null?'':String(x)).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+  var grid=document.getElementById('grid'),loading=document.getElementById('loading'),count=document.getElementById('count');
+  var data={startups:null,investors:null}, cur='startups';
+
+  function startupCard(r){
+    var tags=[r.sector,r.location,r.stage].filter(Boolean).map(function(t){return '<span>'+esc(t)+'</span>';}).join('');
+    return '<div class="c"><div class="nm">'+esc(r.name)+'</div>'+
+      (r.one_liner?'<div class="ds">'+esc(r.one_liner)+'</div>':'<div class="ds"></div>')+
+      '<div class="tags">'+tags+'</div>'+
+      '<button class="req" onclick="askIntro(\'startup\',\''+r.id+'\',\''+esc(r.name).replace(/'/g,"&#39;")+'\')">Request an introduction</button></div>';
+  }
+  function investorCard(r){
+    var title=r.firm||r.name;
+    var tags=[r.tier,r.stage,r.check_size,r.location].filter(Boolean).map(function(t){return '<span>'+esc(t)+'</span>';}).join('');
+    return '<div class="c"><div class="nm">'+esc(title)+'</div>'+
+      (r.focus?'<div class="ds">'+esc(r.focus)+'</div>':'<div class="ds"></div>')+
+      '<div class="tags">'+tags+'</div>'+
+      '<button class="req" onclick="askIntro(\'investor\',\''+r.id+'\',\''+esc(title).replace(/'/g,"&#39;")+'\')">Request an introduction</button></div>';
+  }
+  function render(){
+    var rows=data[cur]||[];
+    if(!rows.length){ grid.innerHTML='<div class="empty" style="grid-column:1/-1">Nothing listed yet.</div>'; count.textContent=''; return; }
+    count.textContent=rows.length+(cur==='startups'?' AI companies':' investors');
+    grid.innerHTML=rows.map(cur==='startups'?startupCard:investorCard).join('');
+  }
+  window.showTab=function(t){
+    cur=t;
+    document.getElementById('tab-startups').classList.toggle('on',t==='startups');
+    document.getElementById('tab-investors').classList.toggle('on',t==='investors');
+    if(data[t]===null){ grid.innerHTML=''; loading.style.display='block'; loading.textContent='Loading…'; loadTab(t); }
+    else { render(); }
+  };
+  async function loadTab(t){
+    if(!sb){ loading.textContent='Connection unavailable, refresh shortly.'; return; }
+    try{
+      var q = t==='startups'
+        ? sb.from('public_ai_startups').select('id,name,one_liner,sector,stage,location').order('name',{ascending:true}).limit(300)
+        : sb.from('public_ai_investors').select('id,name,firm,focus,stage,check_size,tier,location').order('firm',{ascending:true}).limit(300);
+      var r=await q; if(r.error) throw r.error;
+      data[t]=r.data||[]; loading.style.display='none'; render();
+    }catch(e){ console.error('[ai-directory]',e); loading.textContent='Could not load right now. Please refresh.'; }
+  }
+
+  // intro modal
+  var ctx={};
+  window.askIntro=function(type,id,name){ ctx={type:type,id:id,name:name};
+    document.getElementById('ovTitle').textContent='Request an intro to '+name;
+    document.getElementById('ovNote').textContent=(type==='investor'?'We will pass your details to our team and broker the introduction if it is a fit.':'We will connect you with this company through our team.');
+    document.getElementById('rErr').textContent='';
+    document.getElementById('ov').classList.add('open');
+  };
+  window.closeOv=function(){ document.getElementById('ov').classList.remove('open'); };
+  document.getElementById('ov').addEventListener('click',function(e){ if(e.target===this) closeOv(); });
+  function v(id){var el=document.getElementById(id);return el?(el.value||'').trim():'';}
+  window.submitIntro=async function(){
+    var err=document.getElementById('rErr'),btn=document.getElementById('rSubmit');
+    err.textContent='';
+    var email=v('rEmail');
+    if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){ err.textContent='Please add a valid email.'; return; }
+    if(!sb){ err.textContent='Connection unavailable, try again shortly.'; return; }
+    btn.disabled=true; btn.textContent='Sending…';
+    try{
+      var r=await sb.from('ai_intro_requests').insert({
+        requester_name:v('rName'), requester_email:email, requester_org:v('rOrg'),
+        requester_side:v('rSide'), target_type:ctx.type, target_id:ctx.id, target_name:ctx.name,
+        message:v('rMsg')
+      });
+      if(r.error) throw r.error;
+      document.querySelector('#ov .box').innerHTML='<h3>Request received.</h3><div class="note" style="margin-top:8px">Thank you. We’ll review the match and reach out at '+esc(email)+' to make the introduction. Nothing is shared without both sides agreeing.</div><div class="row"><button class="btn pri" onclick="closeOv()">Done</button></div>';
+    }catch(e){ console.error('[ai-directory] intro failed:',e); err.textContent=(e&&e.message)||'Could not send. Please try again.'; btn.disabled=false; btn.textContent='Request intro →'; }
+  };
+
+  loadTab('startups');
+})();
+</script>
+</body></html>
