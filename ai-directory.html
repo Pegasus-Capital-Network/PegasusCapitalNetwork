@@ -80,6 +80,7 @@ h1{font-weight:800;font-size:clamp(32px,4.6vw,50px);line-height:1.05;letter-spac
     <button class="tab on" id="tab-startups" onclick="showTab('startups')">AI Companies</button>
     <button class="tab" id="tab-investors" onclick="showTab('investors')">Investors</button>
   </div>
+  <input id="q" type="search" placeholder="Search by name, sector, stage, location…" autocomplete="off" spellcheck="false" style="width:100%;max-width:540px;padding:11px 15px;border:1px solid #e6e9ed;border-radius:10px;font-size:14px;font-family:inherit;color:#16202e;background:#fff;margin:4px 0 14px;outline:none">
   <div class="count" id="count"></div>
   <div class="grid" id="grid"></div>
   <div class="loading" id="loading">Loading the network…</div>
@@ -129,10 +130,21 @@ h1{font-weight:800;font-size:clamp(32px,4.6vw,50px);line-height:1.05;letter-spac
       '<div class="tags">'+tags+'</div>'+
       '<button class="req" onclick="askIntro(\'investor\',\''+r.id+'\',\''+esc(title).replace(/'/g,"&#39;")+'\')">Request an introduction</button></div>';
   }
+  var QV='';
+  function matches(r,q){
+    var hay=((cur==='startups')
+      ? [r.name,r.one_liner,r.sector,r.stage,r.location]
+      : [r.firm,r.name,r.focus,r.stage,r.check_size,r.tier,r.location]).filter(Boolean).join(' ').toLowerCase();
+    return q.split(/\s+/).every(function(w){return hay.indexOf(w)>=0;});
+  }
   function render(){
-    var rows=data[cur]||[];
-    if(!rows.length){ grid.innerHTML='<div class="empty" style="grid-column:1/-1">Nothing listed yet.</div>'; count.textContent=''; return; }
-    count.textContent=rows.length+(cur==='startups'?' AI companies':' investors');
+    var all=data[cur]||[];
+    if(!all.length){ grid.innerHTML='<div class="empty" style="grid-column:1/-1">Nothing listed yet.</div>'; count.textContent=''; return; }
+    var q=(QV||'').trim().toLowerCase();
+    var rows=q?all.filter(function(r){return matches(r,q);}):all;
+    var label=(cur==='startups'?' AI companies':' investors');
+    if(!rows.length){ grid.innerHTML='<div class="empty" style="grid-column:1/-1">No '+(cur==='startups'?'companies':'investors')+' match your search.</div>'; count.textContent='0 matches'; return; }
+    count.textContent=rows.length+label+(q?' found':'');
     grid.innerHTML=rows.map(cur==='startups'?startupCard:investorCard).join('');
   }
   window.showTab=function(t){
@@ -182,6 +194,8 @@ h1{font-weight:800;font-size:clamp(32px,4.6vw,50px);line-height:1.05;letter-spac
     }catch(e){ console.error('[ai-directory] intro failed:',e); err.textContent=(e&&e.message)||'Could not send. Please try again.'; btn.disabled=false; btn.textContent='Request intro →'; }
   };
 
+  var qEl=document.getElementById('q'), qt;
+  if(qEl){ qEl.addEventListener('input',function(){ clearTimeout(qt); qt=setTimeout(function(){ QV=qEl.value; render(); },150); }); }
   function hashTab(){ return ((location.hash||'').replace('#','').toLowerCase()==='investors')?'investors':'startups'; }
   (hashTab()==='investors') ? showTab('investors') : loadTab('startups');
   window.addEventListener('hashchange',function(){ showTab(hashTab()); });

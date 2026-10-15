@@ -80,6 +80,7 @@ h1{font-weight:800;font-size:clamp(34px,5vw,52px);line-height:1.04;letter-spacin
 </div></section>
 
 <div class="wrap">
+  <input id="q" type="search" placeholder="Search by name, brokerage, city, or specialty…" autocomplete="off" spellcheck="false" style="width:100%;max-width:540px;padding:12px 16px;border:1px solid #e6e9ed;border-radius:10px;font-size:14.5px;font-family:inherit;color:#16202e;background:#fff;margin:0 0 14px;outline:none;box-shadow:0 1px 2px rgba(14,24,36,.05)">
   <div class="count" id="count"></div>
   <div class="grid" id="grid"></div>
   <div class="loading" id="loading">Loading agents…</div>
@@ -122,22 +123,32 @@ h1{font-weight:800;font-size:clamp(34px,5vw,52px);line-height:1.04;letter-spacin
     '</div></div>';
   }
 
-  async function load(){
-    if(!sb){ loading.textContent='Connection unavailable, refresh in a moment.'; return; }
+  var LIMIT=300, seq=0;
+  async function run(q){
+    if(!sb){ loading.style.display='block'; loading.textContent='Connection unavailable, refresh in a moment.'; return; }
+    var my=++seq;
+    loading.style.display='block'; loading.textContent='Searching…';
     try{
-      var r=await sb.from('public_realtors').select('full_name,job_title,brokerage,dre,city,state,specialty,phone,email,photo_url,profile_url').order('full_name',{ascending:true}).limit(200);
+      var sel=sb.from('public_realtors').select('full_name,job_title,brokerage,dre,city,state,specialty,phone,email,photo_url,profile_url');
+      q=(q||'').trim().replace(/[,%()*]/g,' ').replace(/\s+/g,' ').trim();
+      if(q){ var p='%'+q+'%'; sel=sel.or('full_name.ilike.'+p+',brokerage.ilike.'+p+',city.ilike.'+p+',specialty.ilike.'+p+',state.ilike.'+p); }
+      var r=await sel.order('full_name',{ascending:true}).limit(LIMIT);
+      if(my!==seq) return; // a newer search started
       if(r.error) throw r.error;
       var rows=r.data||[];
       loading.style.display='none';
-      if(!rows.length){ grid.innerHTML='<div class="empty" style="grid-column:1/-1">No agents listed yet.</div>'; return; }
-      count.textContent=rows.length+' agent'+(rows.length===1?'':'s');
+      if(!rows.length){ grid.innerHTML='<div class="empty" style="grid-column:1/-1">'+(q?'No agents match "'+esc(q)+'".':'No agents listed yet.')+'</div>'; count.textContent=q?'0 matches':''; return; }
+      count.textContent=(rows.length>=LIMIT?('showing first '+LIMIT+(q?' matches':'')+' — refine your search'):(rows.length+' agent'+(rows.length===1?'':'s')+(q?' found':'')));
       grid.innerHTML=rows.map(card).join('');
     }catch(e){
+      if(my!==seq) return;
       console.error('[realtors] load failed:',e);
-      loading.textContent='Could not load agents right now. Please refresh.';
+      loading.style.display='block'; loading.textContent='Could not load agents right now. Please refresh.';
     }
   }
-  load();
+  var qEl=document.getElementById('q'), t;
+  if(qEl){ qEl.addEventListener('input',function(){ clearTimeout(t); t=setTimeout(function(){ run(qEl.value); },250); }); }
+  run('');
 })();
 </script>
 </body></html>
