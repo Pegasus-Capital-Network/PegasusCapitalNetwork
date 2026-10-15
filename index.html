@@ -1,845 +1,142 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Pegasus Capital Network — Where Capital Finds Its Deal</title>
+<!DOCTYPE html><html lang="en"><head>
+<title>Pegasus — Capital, AI, and the Private Network</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="Three networks, one ecosystem. Capital & Real Estate, Pegasus AI, and the Private Network. Choose where you want to go.">
 <link rel="canonical" href="https://pegasuscapitalnetwork.com/">
-<meta name="description" content="Pegasus Capital Network — the compliance-first marketplace where capital finds its deal. Connect verified borrowers, lenders, brokers, investors, and capital partners.">
-<meta property="og:title" content="Pegasus Capital Network — Where capital finds its deal">
-<meta property="og:site_name" content="Pegasus Capital Network">
-<meta property="og:description" content="A private network connecting verified borrowers, lenders, brokers, and capital partners across real estate and structured finance.">
-<meta property="og:image" content="https://pegasuscapitalnetwork.com/assets/brand/og-default.png">
-<meta property="og:url" content="https://pegasuscapitalnetwork.com/">
+<meta property="og:title" content="Pegasus — three networks, one ecosystem">
+<meta property="og:description" content="Capital & Real Estate, Pegasus AI, and the Private Network. Choose your world.">
 <meta property="og:type" content="website">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Pegasus Capital Network — Where capital finds its deal">
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://pegasuscapitalnetwork.com/#org","name":"Pegasus Capital Network","alternateName":"Pegasus Network","url":"https://pegasuscapitalnetwork.com/","description":"The compliance-first network where capital finds its deal.","logo":"https://pegasuscapitalnetwork.com/assets/brand/app-icon-512.png","sameAs":["https://www.facebook.com/profile.php?id=61595469772616","https://www.instagram.com/pegasuscapitalnetwork/","https://www.linkedin.com/company/pegasus-capital-network/","https://www.facebook.com/groups/2541152063054447"]},{"@type":"WebSite","@id":"https://pegasuscapitalnetwork.com/#website","name":"Pegasus Capital Network","alternateName":"Pegasus Network","url":"https://pegasuscapitalnetwork.com/","publisher":{"@id":"https://pegasuscapitalnetwork.com/#org"}}]}</script>
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:ital,wght@0,300;0,400;0,600;1,300&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet"><link rel="stylesheet" href="/css/pegasus.css?v=8">
+<link rel="icon" href="/assets/brand/favicon.ico" sizes="any">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-/* Inlined so these sections render even if an old pegasus.css is cached */
-.why-join .eyebrow,.how-works .eyebrow,.sessions-soon .eyebrow{justify-content:center}
-.why-intro{text-align:center;font-size:14.5px;color:var(--text2);max-width:580px;margin:6px auto 32px;line-height:1.65}
-.how-works{max-width:1100px;margin:0 auto;padding:28px 40px 44px;scroll-margin-top:90px;text-align:center}
-.how-sub{text-align:center;font-size:14.5px;color:var(--text2);max-width:600px;margin:8px auto 36px;line-height:1.65}
-.how-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;text-align:left}
-.how-step{background:var(--bg1);border:1px solid var(--border);border-radius:var(--r3);padding:30px 26px;transition:all var(--dur-normal,0.25s) cubic-bezier(0.16,1,0.3,1)}
-.how-step:hover{transform:translateY(-3px);box-shadow:var(--sh-raise);border-color:var(--border2)}
-.how-num{font-family:var(--mono);font-size:12px;color:var(--blue);letter-spacing:.12em;margin-bottom:16px}
-.how-step h3{font-size:17px;font-weight:600;letter-spacing:-.01em;margin:0 0 10px;color:var(--text)}
-.how-step p{font-size:13.5px;color:var(--text2);line-height:1.65;margin:0}
-.sessions-soon{max-width:1100px;margin:0 auto;padding:28px 40px 60px}
-.sessions-card{background:var(--bg1);border:1px solid var(--border);border-radius:var(--r4);padding:52px 36px;text-align:center;box-shadow:var(--sh-card)}
-.sessions-sub{font-size:14.5px;color:var(--text2);line-height:1.65;max-width:560px;margin:0 auto 26px}
-.why-cta{text-align:center;margin-top:36px}
-.areas-home-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:32px}
-.ah-card{display:block;text-decoration:none;background:var(--bg1);border:1px solid var(--border);border-radius:var(--r3);padding:22px 20px;transition:all var(--dur-normal,0.25s) cubic-bezier(0.16,1,0.3,1)}
-.ah-card:hover{transform:translateY(-3px);box-shadow:var(--sh-raise);border-color:var(--border2)}
-.ah-card .ic{font-size:20px;color:var(--teal);margin-bottom:12px}
-.ah-card h3{font-size:13.5px;font-weight:600;margin:0 0 6px;color:var(--text);letter-spacing:-0.01em}
-.ah-card p{font-size:11.5px;color:var(--text2);line-height:1.55;margin:0}
-@media(max-width:900px){.areas-home-grid{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:760px){.how-grid{grid-template-columns:1fr}.how-works{padding:18px 20px 30px}.sessions-soon{padding:20px 20px 44px}.sessions-card{padding:38px 24px}}
-/* ── Front hero — clean, product-led entry (no movie hero) ── */
-/* Editorial hero — a private capital institution */
-.lhero{--ehnavy:#0E1E36;--ehgold:#9B7B22;--ehgold2:#B4892B;position:relative;background:#FAF7F1;border-bottom:1px solid var(--border)}
-.eh{max-width:1240px;margin:0 auto;padding:clamp(46px,6vw,82px) 40px clamp(40px,5vw,64px);display:grid;grid-template-columns:1.08fr .92fr;gap:60px;align-items:center}
-.eh.solo{grid-template-columns:1fr;max-width:840px;text-align:center}
-.eh.solo .eh-kick,.eh.solo .eh-cta,.eh.solo .eh-index{justify-content:center}
-.eh.solo .eh-lead{margin-left:auto;margin-right:auto}
-.eh-kick{display:flex;align-items:center;gap:13px;margin-bottom:24px}
-.eh-kick .rule{width:38px;height:1px;background:var(--ehgold2)}
-.eh-kick span{font-family:var(--mono);font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--ehgold)}
-.eh-h1{font-family:var(--serif);font-weight:500;font-size:clamp(40px,5.2vw,70px);line-height:1.0;letter-spacing:-.015em;color:var(--ehnavy);margin:0;text-shadow:0 1px 0 rgba(255,255,255,.7),0 3px 16px rgba(14,30,54,.13)}
-.eh-h1 em{font-style:italic;color:var(--ehgold);text-shadow:0 1px 0 rgba(255,255,255,.6),0 3px 18px rgba(155,123,34,.20)}
-.eh-lead{font-size:17px;line-height:1.62;color:var(--text2);max-width:480px;margin:24px 0 0}
-.eh-cta{display:flex;gap:13px;align-items:center;flex-wrap:wrap;margin-top:32px}
-.eh-btn{font-size:14px;font-weight:600;padding:15px 28px;border-radius:9px;text-decoration:none;cursor:pointer;letter-spacing:.01em;transition:transform .18s,box-shadow .18s;display:inline-block}
-.eh-btn-pri{color:#FFFDF9;background:linear-gradient(180deg,#1C3A66,#0E1E36 70%);box-shadow:0 2px 4px rgba(14,30,54,.28),0 10px 24px rgba(14,30,54,.22),inset 0 1px 0 rgba(255,255,255,.16)}
-.eh-btn-pri:hover{transform:translateY(-1px);box-shadow:0 4px 8px rgba(14,30,54,.30),0 16px 32px rgba(14,30,54,.26),inset 0 1px 0 rgba(255,255,255,.18)}
-.eh-btn-out{color:var(--ehnavy);background:linear-gradient(180deg,#FFFFFF,#F7F3EC);border:1px solid rgba(26,34,49,.14);box-shadow:0 1px 2px rgba(26,34,49,.06),0 6px 16px rgba(26,34,49,.07)}
-.eh-btn-out:hover{transform:translateY(-1px)}
-.eh-btn-link{color:var(--text2);font-size:13px;font-family:var(--mono);text-decoration:none}
-.eh-welcome{display:inline-flex;align-items:center;gap:9px;font-size:12.5px;color:var(--text2);background:#fff;border:1px solid var(--border);border-radius:24px;padding:7px 14px;margin-bottom:18px;box-shadow:var(--sh-card)}
-.eh-welcome .d{width:7px;height:7px;border-radius:50%;background:var(--green)}
-.eh-index{display:flex;margin-top:44px;border-top:1px solid var(--border);padding-top:24px}
-.eh-index .it{padding-right:38px;margin-right:38px;border-right:1px solid var(--border)}
-.eh-index .it:last-child{border-right:none}
-.eh-index .n{font-family:var(--serif);font-weight:500;font-size:30px;color:var(--ehnavy);line-height:1;text-shadow:0 1px 0 rgba(255,255,255,.6)}
-.eh-index .l{font-size:10px;font-family:var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--text3);margin-top:7px}
-.eh-dossier{position:relative;border-radius:16px;overflow:hidden;background:linear-gradient(158deg,#17315A 0%,#0E1E36 54%,#091428 100%);box-shadow:0 34px 80px rgba(14,30,54,.30),0 6px 16px rgba(14,30,54,.16),inset 0 1px 0 rgba(255,255,255,.07),inset 0 -60px 90px rgba(0,0,0,.28)}
-.eh-dossier::after{content:"";position:absolute;top:-30%;right:-10%;width:60%;height:70%;background:radial-gradient(circle,rgba(29,90,158,.22),transparent 65%);pointer-events:none}
-.eh-dossier::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--ehgold2),rgba(180,137,43,.15));z-index:2}
-.ehd-h{position:relative;z-index:3;display:flex;align-items:center;justify-content:space-between;padding:18px 26px;border-bottom:1px solid rgba(255,255,255,.08)}
-.ehd-lab{font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.5)}
-.ehd-live{display:flex;align-items:center;gap:7px;font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#C9A24B}
-.ehd-live .d{width:6px;height:6px;border-radius:50%;background:#C9A24B;box-shadow:0 0 8px rgba(201,162,75,.6)}
-.ehd-b{position:relative;z-index:3;padding:28px 30px 24px}
-.ehd-person{display:flex;align-items:center;gap:17px}
-.ehd-av{width:72px;height:72px;border-radius:50%;flex:none;background:linear-gradient(140deg,#234277,#16335C);border:1px solid rgba(201,162,75,.4);display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:28px;color:#EAD9A8;overflow:hidden;box-shadow:0 8px 22px rgba(0,0,0,.30),inset 0 1px 0 rgba(255,255,255,.12)}
-.ehd-av img{width:100%;height:100%;object-fit:cover}
-.ehd-name{font-family:var(--serif);font-size:25px;font-weight:500;color:#fff;line-height:1.05}
-.ehd-title{font-size:13px;color:rgba(255,255,255,.6);margin-top:4px}
-.ehd-quote{font-family:var(--serif);font-style:italic;font-size:21px;line-height:1.42;color:rgba(255,255,255,.92);margin:24px 0 0;padding-left:17px;border-left:2px solid var(--ehgold2)}
-.ehd-chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:22px;padding-top:20px;border-top:1px solid rgba(255,255,255,.08)}
-.ehd-chip{font-size:11px;font-family:var(--mono);letter-spacing:.04em;color:rgba(255,255,255,.78);border:1px solid rgba(255,255,255,.16);border-radius:20px;padding:6px 13px;background:rgba(255,255,255,.03)}
-.ehd-chip.gold{color:#E8C46A;border-color:rgba(201,162,75,.4)}
-.ehd-foot{position:relative;z-index:3;display:flex;align-items:center;justify-content:space-between;padding:15px 30px;background:rgba(0,0,0,.18);border-top:1px solid rgba(255,255,255,.08)}
-.ehd-foot a{font-size:12.5px;color:#9FC0EF;text-decoration:none;font-weight:500}
-.ehd-foot .seal{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.4)}
-@media(max-width:980px){.eh{grid-template-columns:1fr;gap:34px}.eh>div,.eh-dossier{min-width:0}}
-@media(max-width:760px){.eh{padding:34px 20px 38px}.eh-index{flex-wrap:wrap;gap:16px 0}.eh-index .it{padding-right:18px;margin-right:18px}.eh-h1{font-size:clamp(32px,8.6vw,44px)}.eh-lead,.eh-cta,.eh-index{max-width:100%}.eh-btn{font-size:13px;padding:13px 20px}}
-/* ── Product panels — large Apple-style sections ── */
-.lpanels{max-width:1120px;margin:0 auto;padding:8px 40px}
-.lpanels-head{text-align:center;max-width:640px;margin:0 auto;padding:44px 0 8px}
-.lpanel{display:grid;grid-template-columns:1fr 1fr;gap:clamp(28px,5vw,56px);align-items:center;padding:clamp(36px,5vw,56px) 0}
-.lpanel+.lpanel{border-top:1px solid var(--border)}
-.lpanel.rev .lpanel-media{order:2}
-.lpanel-copy{max-width:460px}
-.lpanel-step{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);margin-bottom:14px}
-.lpanel h3{font-family:var(--serif);font-weight:400;font-size:clamp(25px,3.1vw,36px);letter-spacing:-0.018em;color:var(--text);margin:0 0 13px;line-height:1.08}
-.lpanel p{font-size:15px;color:var(--text2);line-height:1.62;margin:0 0 22px}
-.lpanel-link{font-size:13.5px;font-weight:500;color:var(--blue);text-decoration:none}
-.lpanel-link:hover{color:var(--blue-lt)}
-.lpanel-media{position:relative;aspect-ratio:4/3;border-radius:var(--r5);border:1px solid var(--border);overflow:hidden;box-shadow:var(--sh-raise);display:flex;align-items:center;justify-content:center}
-.lpanel-mock{position:relative;z-index:2;width:78%;max-width:320px;background:rgba(255,255,255,.10);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.20);border-radius:16px;padding:17px;box-shadow:0 26px 64px rgba(0,0,0,.34)}
-.lpanel-mock-row{display:flex;align-items:center;gap:11px}
-.lpanel-mock-av{width:42px;height:42px;border-radius:50%;background:rgba(255,255,255,.92);flex:none;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:14px;color:#16335C}
-.lpanel-mock-sq{width:42px;height:42px;border-radius:10px;background:rgba(255,255,255,.92);flex:none;display:flex;align-items:center;justify-content:center;color:#16335C;font-size:18px;font-weight:600}
-.lp-bar{height:9px;border-radius:5px;background:rgba(255,255,255,.88)}
-.lp-bar.dim{background:rgba(255,255,255,.42)}
-.lp-pill{display:inline-block;height:21px;border-radius:11px;background:rgba(255,255,255,.20);border:1px solid rgba(255,255,255,.32);padding:0 12px;font-family:var(--mono);font-weight:600;font-size:10px;color:#fff;line-height:20px;letter-spacing:.03em}
-.lp-pill.solid{background:rgba(255,255,255,.94);color:#16335C;border:none}
-.lp-img{height:70px;border-radius:11px;background:linear-gradient(135deg,rgba(255,255,255,.40),rgba(255,255,255,.12));border:1px solid rgba(255,255,255,.20)}
-.lpanel-mock-ttl{font-weight:600;font-size:13px;color:#fff}
-.lpanel-mock-sub{font-size:11px;color:rgba(255,255,255,.72);margin-top:2px}
-.lpanel-media-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,0.05) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.05) 1px,transparent 1px);background-size:34px 34px}
-.lpanel-media-tag{position:absolute;left:18px;bottom:16px;font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.82);background:rgba(8,17,28,.32);border:1px solid rgba(255,255,255,.16);backdrop-filter:blur(6px);border-radius:20px;padding:4px 11px}
-@media(max-width:820px){.lpanel{grid-template-columns:1fr;gap:22px;padding:34px 0}.lpanel.rev .lpanel-media{order:0}.lpanel-copy{max-width:none}}
-.peg-who-chip{display:inline-flex;align-items:center;font-size:13px;color:var(--text2);background:var(--bg1);border:1px solid var(--border);border-radius:24px;padding:9px 16px;line-height:1}
-.why-matters{max-width:760px;margin:0 auto;padding:54px 40px 30px;text-align:center;scroll-margin-top:90px}
-.wm-lead{font-family:var(--serif);font-weight:300;font-size:clamp(20px,2.8vw,28px);line-height:1.4;letter-spacing:-0.01em;color:var(--text);margin:0 0 20px}
-.wm-body{font-size:14.5px;color:var(--text2);line-height:1.7;max-width:600px;margin:0 auto 30px}
-.wm-body strong{color:var(--text);font-weight:600}
-.wm-signals{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin:0 auto 26px;max-width:680px}
-.wm-sig{display:inline-flex;align-items:center;gap:8px;font-size:11.5px;color:var(--text2);background:var(--bg1);border:1px solid var(--border);border-radius:20px;padding:7px 14px;opacity:0;animation:wmFade .55s ease forwards}
-@keyframes wmFade{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
-.wm-sig .d{width:6px;height:6px;border-radius:50%;flex-shrink:0;animation:wmDot 2.8s infinite}
-@keyframes wmDot{0%,100%{opacity:1}50%{opacity:.4}}
-.wm-founding{display:inline-flex;align-items:center;gap:9px;font-size:12px;color:var(--text2);background:var(--gold-dim,rgba(154,123,34,0.12));border:1px solid var(--gold-dim,rgba(154,123,34,0.12));border-radius:22px;padding:9px 18px;letter-spacing:0.01em}
-.wm-founding-dot{width:7px;height:7px;border-radius:50%;background:var(--gold,#CDA748);box-shadow:0 0 0 0 rgba(154,123,34,0.4);animation:wmPulse 2.4s infinite;flex-shrink:0}
-@keyframes wmPulse{0%{box-shadow:0 0 0 0 rgba(154,123,34,0.35)}70%{box-shadow:0 0 0 8px rgba(154,123,34,0)}100%{box-shadow:0 0 0 0 rgba(154,123,34,0)}}
-@media(max-width:760px){.why-matters{padding:38px 20px 22px}.wm-founding{font-size:11px;padding:8px 14px}}
-/* ── Live Lobby ── */
-.lobby-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:28px}
-@media(max-width:900px){.lobby-grid{grid-template-columns:1fr 1fr}}
-@media(max-width:600px){.lobby-grid{grid-template-columns:1fr}}
-.lobby-card{display:block;text-decoration:none;background:var(--bg1);border:1px solid var(--border);border-radius:var(--r3);overflow:hidden;transition:all var(--dur-normal,0.25s) cubic-bezier(0.16,1,0.3,1)}
-.lobby-card:hover{transform:translateY(-4px);box-shadow:var(--sh-raise);border-color:var(--border2)}
-.lobby-cover{width:100%;height:148px;object-fit:cover;display:block;border-bottom:1px solid var(--border)}
-.lobby-body{padding:16px 18px}
-.lobby-kind{font-size:8.5px;font-family:var(--mono);letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px;font-weight:500}
-.lobby-name{font-size:14.5px;font-weight:600;color:var(--text);line-height:1.3;letter-spacing:-0.01em}
-.lobby-sub{font-size:11.5px;color:var(--text3);margin-top:4px}
-.lobby-action{font-size:11px;color:var(--blue);margin-top:10px;font-family:var(--mono);transition:color 0.15s ease}
-.lobby-card:hover .lobby-action{color:var(--blue-lt)}
-.lobby-loading{grid-column:1/-1;text-align:center;color:var(--text3);font-size:13px;padding:40px}
-.lobby-pill{display:inline-block;font-size:8px;font-family:var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--text4);border:1px solid var(--border2);border-radius:10px;padding:2px 7px;margin-left:6px;vertical-align:middle}
-.present-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:26px}
-@media(max-width:900px){.present-grid{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:520px){.present-grid{grid-template-columns:1fr}}
-.present-card{background:var(--bg1);border:1px solid var(--border);border-radius:var(--r3);padding:22px 20px;transition:all var(--dur-normal,0.25s) cubic-bezier(0.16,1,0.3,1)}
-.present-card:hover{border-color:var(--border2);transform:translateY(-2px);box-shadow:var(--sh-card)}
-.present-card .ic{font-size:18px;color:var(--blue);margin-bottom:10px}
-.present-card h3{font-size:13.5px;font-weight:600;margin:0 0 6px;color:var(--text);letter-spacing:-0.01em}
-.present-card p{font-size:11.5px;color:var(--text2);line-height:1.55;margin:0}
-.access-wrap{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:26px}
-@media(max-width:600px){.access-wrap{grid-template-columns:1fr}}
-.access-col{background:var(--bg1);border:1px solid var(--border);border-radius:var(--r3);padding:26px;transition:all var(--dur-normal,0.25s) ease}
-.access-col:hover{border-color:var(--border2);box-shadow:var(--sh-card)}
-.access-col h3{font-size:16px;margin:6px 0 0;font-weight:600;letter-spacing:-0.01em}
-.access-col .tag{font-size:9px;font-family:var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--text3)}
-.access-col ul{list-style:none;padding:0;margin:16px 0 0}
-.access-col li{font-size:12.5px;color:var(--text2);padding:6px 0 6px 20px;position:relative;line-height:1.5}
-.access-col li::before{content:"✓";position:absolute;left:0;color:var(--green)}
-</style><link rel="icon" href="/assets/brand/favicon.ico" sizes="any">
-<link rel="icon" type="image/png" sizes="32x32" href="/assets/brand/icon-32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="/assets/brand/icon-16.png">
-<link rel="apple-touch-icon" href="/assets/brand/apple-touch-icon.png">
-<link rel="manifest" href="/site.webmanifest">
-<meta name="theme-color" content="#08111C">
-</head>
+:root{
+  --bg:#ffffff;--bg2:#f6f7f9;--panel:#ffffff;--line:#e6e9ed;--line2:#eef1f4;
+  --ink:#0e1824;--ink2:#2a3a4e;--text:#46525f;--muted:#737e8b;
+  --navy:#1b3a5b;--navy-d:#14304b;--navy-l:#2b5580;--gold:#9a7b3f;--gold-l:#c0923f;
+  --sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  --shadow-sm:0 1px 2px rgba(14,24,36,.06);
+  --shadow:0 2px 6px rgba(14,24,36,.05),0 14px 38px rgba(14,24,36,.10);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-weight:400;line-height:1.6;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;min-height:100vh;position:relative;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1080px;margin:0 auto;padding:0 32px}
+@media(max-width:640px){.wrap{padding:0 20px}}
+
+/* soft premium backdrop */
+.bg{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+   radial-gradient(1100px 620px at 50% -8%,rgba(27,58,91,.07),transparent 60%),
+   radial-gradient(760px 520px at 88% 2%,rgba(154,123,63,.06),transparent 58%),
+   radial-gradient(760px 520px at 8% 6%,rgba(43,85,128,.05),transparent 55%),
+   linear-gradient(180deg,#fbfcfe 0,#ffffff 560px);}
+
+/* header */
+header.top{position:relative;z-index:3}
+.top-in{max-width:1080px;margin:0 auto;padding:20px 32px;display:flex;align-items:center;justify-content:space-between}
+@media(max-width:640px){.top-in{padding:16px 20px}}
+.brand{display:flex;align-items:center;gap:11px}
+.brand .mk{width:30px;height:30px;display:block;filter:drop-shadow(0 3px 6px rgba(20,48,75,.28))}
+.brand .wm{font-weight:700;font-size:19px;letter-spacing:-.015em;color:var(--ink)}
+.top .si{font-size:13.5px;color:var(--muted);font-weight:500;padding:8px 14px;border:1px solid var(--line);border-radius:8px;transition:border-color .18s,color .18s}
+.top .si:hover{color:var(--navy);border-color:#cfd6de}
+
+/* hero */
+.hero{position:relative;z-index:2;text-align:center;padding:84px 0 46px}
+@media(max-width:640px){.hero{padding:56px 0 34px}}
+.eyebrow{display:inline-flex;align-items:center;gap:9px;font-size:11.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:26px}
+.eyebrow::before,.eyebrow::after{content:"";width:22px;height:1px;background:linear-gradient(90deg,transparent,var(--gold))}
+.eyebrow::after{background:linear-gradient(90deg,var(--gold),transparent)}
+h1{font-weight:800;font-size:clamp(40px,7vw,74px);line-height:1.02;letter-spacing:-.035em;color:var(--ink);
+  background:linear-gradient(177deg,#16293f 0%,#31485f 115%);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  padding-bottom:4px}
+.sub{margin:22px auto 0;font-size:clamp(16px,1.9vw,19.5px);color:var(--muted);max-width:56ch;line-height:1.55;font-weight:400}
+
+/* worlds */
+.worlds{position:relative;z-index:2;display:grid;grid-template-columns:repeat(3,1fr);gap:22px;padding:30px 0 10px}
+@media(max-width:860px){.worlds{grid-template-columns:1fr;max-width:480px;margin:0 auto}}
+.world{position:relative;display:flex;flex-direction:column;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:30px 28px 26px;min-height:300px;box-shadow:var(--shadow-sm);transition:transform .22s cubic-bezier(.2,.7,.2,1),box-shadow .22s,border-color .22s;overflow:hidden}
+.world::before{content:"";position:absolute;left:0;right:0;top:0;height:4px;background:linear-gradient(90deg,var(--navy),var(--navy-l));transform:scaleX(0);transform-origin:left;transition:transform .3s cubic-bezier(.2,.7,.2,1)}
+.world:hover{transform:translateY(-6px);box-shadow:var(--shadow);border-color:#d7dde4}
+.world:hover::before{transform:scaleX(1)}
+.w-ico{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:linear-gradient(160deg,#f2f5f9,#e9eef4);border:1px solid var(--line);margin-bottom:20px;color:var(--navy)}
+.w-ico svg{width:23px;height:23px}
+.w-label{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:9px}
+.w-ttl{font-size:23px;font-weight:700;color:var(--ink);letter-spacing:-.02em;margin-bottom:10px}
+.w-desc{font-size:14px;color:var(--text);flex:1;line-height:1.56}
+.w-tags{display:flex;flex-wrap:wrap;gap:7px;margin:18px 0 20px}
+.w-tags span{font-size:11.5px;color:var(--ink2);background:var(--bg2);border:1px solid var(--line);border-radius:999px;padding:4px 11px}
+.w-enter{font-size:14px;font-weight:600;color:var(--navy);display:inline-flex;align-items:center;gap:7px}
+.w-enter .ar{transition:transform .2s}
+.world:hover .w-enter .ar{transform:translateX(5px)}
+
+.foot{position:relative;z-index:2;text-align:center;color:var(--muted);font-size:13.5px;padding:38px 0 64px}
+.foot a{color:var(--navy);font-weight:600}
+</style></head>
 <body>
-<!-- Password-recovery guard: if Supabase dropped a recovery token at the root
-     (Site URL fallback), route to the set-new-password page BEFORE the Supabase
-     client loads and consumes the token. Must be the first script in <body>. -->
-<script>
-(function(){
-  try{
-    var h=window.location.hash||'', q=window.location.search||'';
-    if((h+q).indexOf('type=recovery')!==-1){
-      // preserve the token hash so reset-password.html can establish the session
-      window.location.replace('/reset-password.html'+h+(h?'':q));
-    }
-  }catch(e){}
-}());
-</script>
-<!-- Front entry: the homepage is the intelligent entry for EVERYONE — anonymous,
-     returning, and logged-in members. Logged-in members are NOT auto-redirected
-     away; they see member-aware actions in the hero (handled after render). The
-     ONLY redirect here is the protected-route return: if a visitor was sent to
-     ?next=<protected page> and is already signed in, take them there. -->
-<script>
-(function(){
-  try{
-    var qs=new URLSearchParams(location.search||'');
-    var nxt=qs.get('next');
-    if(nxt && /^\/[A-Za-z0-9][A-Za-z0-9\/_?=&.\-]*$/.test(nxt)){
-      var raw=localStorage.getItem('pegasus.auth'); if(!raw) return;       // anonymous → front page (sign in first)
-      var pj=null; try{ pj=JSON.parse(raw); }catch(e){}
-      var tok=pj && (pj.access_token||(pj.currentSession&&pj.currentSession.access_token));
-      if(tok){ location.replace(nxt); return; }                            // signed-in → intended protected page
-    }
-    /* No ?next= → stay on the front page. No auto-redirect to Members/Profile. */
-  }catch(e){}
-})();
-</script>
-<!-- PEGASUS_BUILD_VERSION = dealroom-entitlements-20260524-1529 -->
-<script>window.PEGASUS_BUILD_VERSION="dealroom-entitlements-20260524-1529";console.log("%cPEGASUS BUILD","color:#235FA6;font-weight:bold","dealroom-entitlements-20260524-1529");</script>
+<div class="bg"></div>
 
-<div class="ticker"><div class="ticker-label"><span class="dot" style="background:var(--green);animation:pulse 2s infinite"></span>NETWORK LIVE</div><div class="ticker-track"><div class="ticker-inner" id="tk"></div></div></div>
-<div id="nav"></div>
-<section class="lhero">
-  <div class="eh solo" id="ehGrid">
-    <div>
-      <div class="eh-welcome" id="heroWelcome" style="display:none"><span class="d"></span><span id="heroWelcomeTxt">Welcome back</span></div>
-      <div class="eh-kick"><span class="rule"></span><span>A Private Capital Network</span></div>
-      <h1 class="eh-h1">Where serious people and <em>serious capital</em> find each other.</h1>
-      <p class="eh-lead">A private network for founders, investors, operators, and capital partners — across AI, real estate, and the companies building what’s next. Present who you are and what you’re building to an audience that can actually move.</p>
-      <form class="eh-enter" id="heroEnter" onsubmit="return pegHeroEnter(event)">
-        <input id="heroEmail" type="email" placeholder="Enter your email to start" autocomplete="email" aria-label="Email">
-        <button type="submit" class="eh-btn eh-btn-pri">Get started →</button>
-      </form>
-      <div class="eh-enter-sub">Free to join · <a href="/start.html">Explore the network</a> · <a href="/how-it-works.html">How it works</a></div>
-      <div class="eh-index" id="ehIndex" style="display:none"></div>
-    </div>
+<header class="top">
+  <div class="top-in">
+    <a class="brand" href="/">
+      <span class="mk" aria-hidden="true">
+        <svg viewBox="0 0 32 32" width="30" height="30" xmlns="http://www.w3.org/2000/svg">
+          <defs><linearGradient id="pg" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#2b5580"/><stop offset="1" stop-color="#15304c"/>
+          </linearGradient></defs>
+          <rect x="1" y="1" width="30" height="30" rx="8.5" fill="url(#pg)"/>
+          <path d="M8.5 21.5 L16 8.5 L23.5 21.5" fill="none" stroke="#ffffff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M12.4 21.5 L16 15.2 L19.6 21.5" fill="none" stroke="#ffffff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" opacity="0.55"/>
+          <circle cx="16" cy="24.4" r="1.7" fill="#d8b24a"/>
+        </svg>
+      </span>
+      <span class="wm">Pegasus</span>
+    </a>
+    <a class="si" href="/signin.html">Sign in</a>
   </div>
-</section>
-<script>
-function pegHeroEnter(e){e.preventDefault();var v=(document.getElementById('heroEmail').value||'').trim();var u='/signup.html';if(/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v)){u+='?email='+encodeURIComponent(v);}location.href=u;return false;}
-</script>
-<style>
-.eh-enter{display:flex;gap:10px;max-width:480px;margin:8px 0 14px;flex-wrap:wrap}
-.eh-enter input{flex:1;min-width:220px;padding:14px 16px;border:1px solid var(--border,rgba(20,40,70,.18));border-radius:8px;font-size:15px;font-family:inherit;background:#fff;color:var(--text,#13233b)}
-.eh-enter input:focus{outline:none;border-color:var(--gold,#b8923f);box-shadow:0 0 0 3px rgba(184,146,63,.14)}
-.eh-enter .eh-btn-pri{white-space:nowrap;padding:14px 22px}
-.eh-enter-sub{font-size:13px;color:var(--text2,#5a6b82)}
-.eh-enter-sub a{color:var(--text2,#5a6b82);text-decoration:underline;text-underline-offset:2px}
-.eh-enter-sub a:hover{color:var(--text,#13233b)}
-@media(max-width:560px){.eh-enter .eh-btn-pri{width:100%}}
-</style>
+</header>
 
-<!-- WHY CREATE A PROFILE — large product panels -->
-<div class="lpanels" id="why-profile">
-  <div class="lpanels-head">
-    <div class="eyebrow" style="text-align:center;justify-content:center">How Pegasus works</div>
-    <h2 class="why-h2" style="text-align:center">People can’t connect with what they can’t see.</h2>
-    <p class="why-intro" style="margin-bottom:0">Five steps turn what you do into something the right people can discover — and bring them back to you.</p>
-  </div>
+<section class="hero"><div class="wrap">
+  <div class="eyebrow">Welcome to Pegasus</div>
+  <h1>Three networks,<br>one ecosystem.</h1>
+  <p class="sub">Tell us where you want to go. Each one is its own network of people and opportunities, built on a single trusted platform.</p>
+</div></section>
 
-  <div class="lpanel">
-    <div class="lpanel-media" style="background:linear-gradient(140deg,#0E1E36,#1D5A9E)"><div class="lpanel-media-grid"></div><div class="lpanel-mock"><div class="lpanel-mock-row"><div class="lpanel-mock-av">AM</div><div style="flex:1"><div class="lp-bar" style="width:72%"></div><div class="lp-bar dim" style="width:46%;margin-top:7px"></div></div></div><div style="margin-top:14px;display:flex;gap:6px"><span class="lp-pill solid">✓ Verified</span><span class="lp-pill">Ambassador</span></div></div><div class="lpanel-media-tag">Your profile</div></div>
-    <div class="lpanel-copy">
-      <div class="lpanel-step">Step 01</div>
-      <h3>Create your profile</h3>
-      <p>A professional place that shows who you are, what you represent, and why the right people should connect with you. It’s free, and it takes a minute to start.</p>
-      <a class="lpanel-link" data-cta="profile" href="/signup.html?intent=profile">Create your free profile →</a>
-    </div>
-  </div>
-
-  <div class="lpanel rev">
-    <div class="lpanel-media" style="background:linear-gradient(140deg,#06363E,#0B7488)"><div class="lpanel-media-grid"></div><div class="lpanel-mock"><div class="lpanel-mock-row"><div class="lpanel-mock-sq">◈</div><div style="flex:1"><div class="lpanel-mock-ttl">Pegasus Capital</div><div class="lpanel-mock-sub">Private credit · Southeast</div></div></div><div style="margin-top:14px;display:flex;gap:6px"><span class="lp-pill">Lender</span><span class="lp-pill">Multifamily</span></div></div><div class="lpanel-media-tag">Business pages</div></div>
-    <div class="lpanel-copy">
-      <div class="lpanel-step">Step 02</div>
-      <h3>Connect your business pages</h3>
-      <p>Promote your company, project, fund, or capital program on its own premium page — connected to your profile and ready to share.</p>
-      <a class="lpanel-link" data-cta="business" href="/signup.html?intent=business">Add a business page →</a>
-    </div>
-  </div>
-
-  <div class="lpanel">
-    <div class="lpanel-media" style="background:linear-gradient(140deg,#2A1A4A,#6B4FB0)"><div class="lpanel-media-grid"></div><div class="lpanel-mock"><div class="lp-img"></div><div style="margin-top:12px;display:flex;align-items:center;gap:8px"><span class="lp-pill solid" style="background:#EBC4E2;color:#5A1D47">Showcase</span><div class="lp-bar" style="flex:1"></div></div><div class="lp-bar dim" style="width:62%;margin-top:8px"></div></div><div class="lpanel-media-tag">Opportunities &amp; showcases</div></div>
-    <div class="lpanel-copy">
-      <div class="lpanel-step">Step 03</div>
-      <h3>Present opportunities and showcases</h3>
-      <p>Build a capital program, project, listing, startup need, showcase, event, or partnership request — then publish it inside Pegasus.</p>
-      <a class="lpanel-link" data-cta="presentation" href="/signup.html?intent=presentation">Present an opportunity →</a>
-    </div>
-  </div>
-
-  <div class="lpanel rev">
-    <div class="lpanel-media" style="background:linear-gradient(140deg,#3A2A0A,#8E7020)"><div class="lpanel-media-grid"></div><div class="lpanel-mock"><div class="lp-img" style="height:56px"></div><div class="lp-bar" style="width:80%;margin-top:11px"></div><div class="lp-bar dim" style="width:55%;margin-top:7px"></div><div style="margin-top:13px;display:flex;gap:6px"><span class="lp-pill">LinkedIn</span><span class="lp-pill">Instagram</span><span class="lp-pill">X</span></div></div><div class="lpanel-media-tag">Share anywhere</div></div>
-    <div class="lpanel-copy">
-      <div class="lpanel-step">Step 04</div>
-      <h3>Share outside Pegasus</h3>
-      <p>Turn any profile, business page, or presentation into a share-ready asset — with images and captions prepared for you in Share Studio.</p>
-      <a class="lpanel-link" data-cta="share" href="/signup.html?intent=share">Share outside Pegasus →</a>
-    </div>
-  </div>
-
-  <div class="lpanel">
-    <div class="lpanel-media" style="background:linear-gradient(140deg,#06351F,#0C8F5C)"><div class="lpanel-media-grid"></div><div class="lpanel-mock"><div class="lpanel-mock-row"><div class="lpanel-mock-av">JR</div><div style="flex:1"><div class="lpanel-mock-ttl">Jordan Reyes</div><div class="lpanel-mock-sub">wants to connect</div></div></div><div style="margin-top:14px;display:flex;gap:6px"><span class="lp-pill solid">Accept</span><span class="lp-pill">Decline</span></div></div><div class="lpanel-media-tag">Inbound interest</div></div>
-    <div class="lpanel-copy">
-      <div class="lpanel-step">Step 05</div>
-      <h3>Receive interest requests</h3>
-      <p>The right people reach out — curated, never cold. Requests arrive in your workspace where you decide who to engage.</p>
-      <a class="lpanel-link" data-cta="requests" href="/signup.html?intent=requests">Start receiving interest →</a>
-    </div>
-  </div>
-
-  <div class="why-cta" style="margin-top:38px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap" id="panelsCta">
-    <a class="btn btn-pri btn-lg" href="/signup.html">Create your free profile →</a>
+<div class="wrap">
+  <div class="worlds">
+    <a class="world" href="/people">
+      <span class="w-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21V8l6-4 6 4v13"/><path d="M15 21V11l6 4v6"/><path d="M7 11h0M7 15h0M11 11h0M11 15h0"/></svg></span>
+      <div class="w-label">Pegasus Capital Network</div>
+      <div class="w-ttl">Capital &amp; Real Estate</div>
+      <div class="w-desc">Where capital finds its deal. Lenders, borrowers, developers, agents, and capital partners across real estate and private finance.</div>
+      <div class="w-tags"><span>Lenders</span><span>Borrowers</span><span>Agents</span><span>Developers</span></div>
+      <span class="w-enter">Enter <span class="ar">&rarr;</span></span>
+    </a>
+    <a class="world" href="/ai-network.html">
+      <span class="w-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="8" width="8" height="8" rx="1.5"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.5 4.5l2 2M17.5 17.5l2 2M19.5 4.5l-2 2M6.5 17.5l-2 2"/></svg></span>
+      <div class="w-label">Pegasus AI</div>
+      <div class="w-ttl">AI &amp; Technology</div>
+      <div class="w-desc">Where AI companies, capital, and clients meet. Startups, investors, enterprise clients, and a needs board where demand finds the builders.</div>
+      <div class="w-tags"><span>Startups</span><span>Investors</span><span>Clients</span><span>Intelligence</span></div>
+      <span class="w-enter">Enter <span class="ar">&rarr;</span></span>
+    </a>
+    <a class="world" href="/private-network.html">
+      <span class="w-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/><path d="M12 14.5v2.5"/></svg></span>
+      <div class="w-label">Pegasus Private Network</div>
+      <div class="w-ttl">Private &amp; Tokenized</div>
+      <div class="w-desc">Tokenized real estate and digital assets, built the right way. A forming investor community with compliant access through licensed partners.</div>
+      <div class="w-tags"><span>Investors</span><span>Tokenization</span><span>Digital assets</span></div>
+      <span class="w-enter">Enter <span class="ar">&rarr;</span></span>
+    </a>
   </div>
 </div>
 
-<!-- INSIDE PEGASUS — live public-safe preview -->
-<section class="home-section" style="max-width:1100px;margin:0 auto;padding:50px 40px 10px">
-  <div class="eyebrow" style="text-align:center;justify-content:center"><span class="dot" style="background:var(--green);animation:pulse 2s infinite;margin-right:7px"></span>Inside Pegasus</div>
-  <h2 class="why-h2" style="text-align:center">A glimpse of what’s moving inside.</h2>
-  <p class="why-intro">A small, public-safe preview of the people, businesses, and opportunities inside the network. Member-only and private content stays protected — the full picture is inside.</p>
-  <div id="lobby-grid" class="lobby-grid"><div class="lobby-loading">Loading the network…</div></div>
-  <div class="why-cta" style="margin-top:28px"><a class="btn btn-ghost btn-lg" href="/start.html">See everything inside Pegasus →</a></div>
-</section>
-
-<!-- WHAT YOU CAN PRESENT — 7 formats -->
-<section class="home-section" style="max-width:1100px;margin:0 auto;padding:46px 40px 10px">
-  <div class="eyebrow" style="text-align:center;justify-content:center">What you can present</div>
-  <h2 class="why-h2" style="text-align:center">Seven ways to be discovered</h2>
-  <p class="why-intro">Build it once. Publish inside Pegasus. Share everywhere else.</p>
-  <div class="present-grid">
-    <div class="present-card"><div class="ic">◈</div><h3>Capital / Financing Program</h3><p>Offer lending, funding, or capital solutions.</p></div>
-    <div class="present-card"><div class="ic">◭</div><h3>Project / Development</h3><p>Present a real project people can understand.</p></div>
-    <div class="present-card"><div class="ic">⌂</div><h3>Property / Listing</h3><p>Show an asset, property, land, or listing.</p></div>
-    <div class="present-card"><div class="ic">✦</div><h3>Startup / Business Need</h3><p>Attract capital, partners, clients, or support.</p></div>
-    <div class="present-card"><div class="ic">❖</div><h3>Showcase</h3><p>Show completed work, video, photos, case studies, or portfolio proof.</p></div>
-    <div class="present-card"><div class="ic">◷</div><h3>Event / Session</h3><p>Invite the right people into a private session.</p></div>
-    <div class="present-card"><div class="ic">⬡</div><h3>Partnership Request</h3><p>Tell the network who you want to meet.</p></div>
-  </div>
-  <p class="why-intro" style="margin-top:22px">Create your first presentation after building your profile.</p>
-</section>
-
-<!-- FREE ENTRY / GROWTH POSITIONING -->
-<section class="home-section" style="max-width:900px;margin:0 auto;padding:46px 40px 10px">
-  <div class="eyebrow" style="text-align:center;justify-content:center">Free to enter. Value to upgrade.</div>
-  <h2 class="why-h2" style="text-align:center">Start free. Build value first.</h2>
-  <p class="why-intro">Create your profile, connect your first business page, and begin presenting opportunities or showcases before you ever need to upgrade.</p>
-  <div class="access-wrap">
-    <div class="access-col"><div class="tag">Free access</div><h3>Start building</h3><ul><li>Create a personal profile</li><li>Add a basic business presence</li><li>Present initial opportunities &amp; showcases</li><li>Share outside Pegasus</li><li>Receive initial interest</li></ul></div>
-    <div class="access-col"><div class="tag">Growth access</div><h3>Scale your reach</h3><ul><li>More business pages</li><li>More showcases &amp; opportunities</li><li>More visibility &amp; priority placement</li><li>Advanced matching</li><li>Deal Rooms &amp; Capital Intelligence</li></ul></div>
-  </div>
-  <div class="why-cta" style="margin-top:24px"><a class="btn btn-ghost" href="/membership.html">See membership →</a></div>
-</section>
-
-<!-- FINAL CTA -->
-<section class="home-section" style="text-align:center;max-width:900px;margin:0 auto;padding:34px 40px 66px">
-  <h2 class="why-h2">Build your presence inside Pegasus.</h2>
-  <p class="why-intro">Create your free profile, present your business, and become visible to the right people.</p>
-  <div class="why-cta" id="finalCta" style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
-    <a class="btn btn-pri btn-lg hero-cta-pri" href="/signup.html">Create your free profile →</a>
-  </div>
-</section>
-<div id="footer"></div>
-<script src="/js/pegasus-visit.js"></script>
-<script src="/js/pegasus-config.js"></script>
-<script src="/js/pegasus-supabase.js"></script>
-<script src="/js/pegasus-entitlements.js"></script>
-<script src="/js/pegasus-data.js"></script>
-<script src="/js/pegasus-content.js"></script>
-<script src="/js/pegasus-match.js"></script>
-<script src="/js/pegasus-store.js"></script>
-<script src="/js/pegasus-api.js"></script>
-<script src="/js/pegasus-forms.js"></script>
-<script src="/js/pegasus-auth.js"></script>
-<script src="/js/pegasus-core.js"></script>
-<script src="/js/pegasus-billing.js"></script>
-<script src="/js/pegasus-pages.js"></script>
-<script>
-Pegasus.mountPublic('');
-/* Homepage: keep the nav visible (incl. Explore) so visitors can browse the
-   ecosystem before committing. The hero carries the primary CTAs. */
-
-/* ── Member-aware front entry ───────────────────────────────────────────────
-   The homepage is the front door for everyone. Anonymous visitors keep the
-   default Create/Sign In actions. Logged-in members are NOT redirected away —
-   instead the hero swaps to member actions: Continue to Members Network,
-   My Profile, Workspace. Returning anonymous visitors get a light touch. */
-(function(){
-  function authed(){
-    try{ var raw=localStorage.getItem('pegasus.auth'); if(!raw) return false;
-      var pj=JSON.parse(raw); return !!(pj && (pj.access_token||(pj.currentSession&&pj.currentSession.access_token))); }
-    catch(e){ return false; }
-  }
-  function mySlug(){ try{ return localStorage.getItem('peg_slug')||''; }catch(e){ return ''; } }
-  var welcome=document.getElementById('heroWelcome');
-  var welcomeTxt=document.getElementById('heroWelcomeTxt');
-  var cta=document.getElementById('heroCta');
-  var panelsCta=document.getElementById('panelsCta');
-
-  if(authed()){
-    var slug=mySlug();
-    var profileHref=slug?('/u/'+encodeURIComponent(slug)):'/profile.html';
-    var memberActions=''+
-      '<a class="eh-btn eh-btn-pri" href="/members.html">Continue to Members Network</a>'+
-      '<a class="eh-btn eh-btn-out" href="'+profileHref+'">My Profile</a>'+
-      '<a class="eh-btn-link" href="/dashboard.html">Workspace →</a>';
-    if(cta) cta.innerHTML=memberActions;
-    /* Signed-in members never see the anonymous "Create Free Profile / Sign In" close. */
-    var finalCta=document.getElementById('finalCta');
-    if(finalCta) finalCta.innerHTML=''+
-      '<a class="btn btn-pri btn-lg" href="'+profileHref+'">My Profile</a>'+
-      '<a class="btn btn-ghost btn-lg" href="/members.html">Members Network</a>'+
-      '<a class="btn btn-ghost btn-lg" href="/my-presences.html">Business Pages</a>';
-    if(panelsCta) panelsCta.innerHTML=''+
-      '<a class="btn btn-pri btn-lg" href="/members.html">Continue to Members Network</a>'+
-      '<a class="btn btn-ghost btn-lg" href="/dashboard.html">Open Workspace</a>';
-    /* Process-panel CTAs become real next-step actions for a signed-in member,
-       never the anonymous signup intent. Each routes to exactly one destination. */
-    var LOGGED={
-      profile:      [slug?('/u/'+encodeURIComponent(slug)):'/profile-edit.html', slug?'View My Profile →':'Complete My Profile →'],
-      business:     ['/my-presences.html','Manage business pages →'],
-      presentation: ['/showcase.html','Present something →'],
-      share:        ['/share-studio.html','Open Share Studio →'],
-      requests:     ['/network-requests.html','Open Requests →']
-    };
-    try{ document.querySelectorAll('.lpanel-link[data-cta]').forEach(function(a){
-      var m=LOGGED[a.getAttribute('data-cta')]; if(m){ a.setAttribute('href',m[0]); a.textContent=m[1]; }
-    }); }catch(_){}
-    if(welcome && welcomeTxt){
-      var nm=''; try{ nm=(Pegasus.store&&Pegasus.store.get&&Pegasus.store.get().profile&&Pegasus.store.get().profile.full_name)||''; }catch(_){}
-      welcomeTxt.textContent = nm ? ('Welcome back, '+nm.split(/\s+/)[0]) : 'Welcome back';
-      welcome.style.display='';
-    }
-    /* Fill in the first name once the store hydrates (no layout shift). */
-    try{ if(Pegasus.store && Pegasus.store.hydrate){ Pegasus.store.hydrate().then(function(){
-      try{ var p=Pegasus.store.get().profile; if(p){ if(p.profile_slug){ try{localStorage.setItem('peg_slug',p.profile_slug);}catch(e){} }
-        if(p.full_name && welcomeTxt){ welcomeTxt.textContent='Welcome back, '+String(p.full_name).split(/\s+/)[0]; } } }catch(_){}
-    }); } }catch(_){}
-  } else if(welcome && welcomeTxt && window.PegasusVisit && PegasusVisit.isReturning && PegasusVisit.isReturning()){
-    welcomeTxt.textContent='Welcome back to Pegasus';
-    welcome.style.display='';
-  }
-})();
-
-/* ── Featured Member + network index — REAL data only ────────────────────────
-   Both pull from public-safe RPCs (migration 066). If the RPCs aren't applied
-   yet, or there's no data, the dossier and index hide and the hero collapses to
-   a single clean column. Nothing is ever invented. */
-(async function(){
-  var host=document.getElementById('ehFeatured'), grid=document.getElementById('ehGrid');
-  var esc=Pegasus.esc;
-  function prettyRole(r){ return String(r||'').replace(/_/g,' ').replace(/\b\w/g,function(c){return c.toUpperCase();}); }
-  function hideFeatured(){ if(host) host.style.display='none'; if(grid) grid.classList.add('solo'); }
-  try{
-    var sb=await window.PegSB.ready;
-    var r=await sb.rpc('get_featured_member');
-    var m=(r && !r.error && r.data) ? (Array.isArray(r.data)?r.data[0]:r.data) : null;
-    if(!m || !m.full_name){ hideFeatured(); }
-    else{
-      var ini=(m.full_name||'?').trim().split(/\s+/).map(function(w){return w[0];}).slice(0,2).join('').toUpperCase();
-      var av = m.avatar_url ? '<img src="'+esc(m.avatar_url)+'" alt="">' : esc(ini);
-      var slug=m.profile_slug; var href=slug?('/u/'+encodeURIComponent(slug)):'#';
-      var title=[m.professional_title||prettyRole(m.role), m.company_name, m.location].filter(Boolean).map(esc).join(' · ');
-      var focus=m.headline||m.current_focus||'';
-      var chips='';
-      if(m.reviewed_by_pegasus) chips+='<span class="ehd-chip gold">✦ Verified</span>';
-      if(m.role) chips+='<span class="ehd-chip">'+esc(prettyRole(m.role))+'</span>';
-      if(m.markets&&m.markets[0]) chips+='<span class="ehd-chip">'+esc(m.markets[0])+'</span>';
-      host.innerHTML='<div class="ehd-h"><span class="ehd-lab">Featured Member</span></div>'+
-        '<div class="ehd-b"><div class="ehd-person"><div class="ehd-av">'+av+'</div><div><div class="ehd-name">'+esc(m.full_name)+'</div>'+(title?'<div class="ehd-title">'+title+'</div>':'')+'</div></div>'+
-        (focus?'<div class="ehd-quote">'+esc(focus)+'</div>':'')+
-        (chips?'<div class="ehd-chips">'+chips+'</div>':'')+'</div>'+
-        '<div class="ehd-foot"><a href="'+esc(href)+'">View full profile →</a><span class="seal">Pegasus Verified</span></div>';
-      host.style.display='';
-      if(grid) grid.classList.remove('solo');
-    }
-  }catch(e){ hideFeatured(); }
-
-  /* Real network index — hidden entirely if no safe source. No invented numbers. */
-  try{
-    var ih=document.getElementById('ehIndex'); if(!ih) return;
-    var sb2=await window.PegSB.ready;
-    var ir=await sb2.rpc('get_network_index');
-    var d=(ir && !ir.error && ir.data) ? (Array.isArray(ir.data)?ir.data[0]:ir.data) : null;
-    if(!d){ return; }
-    function nf(n){ try{ return Number(n).toLocaleString('en-US'); }catch(_){ return n; } }
-    var items=[];
-    if(d.members) items.push([nf(d.members),'Members']);
-    if(d.markets) items.push([nf(d.markets),'Markets']);
-    /* A 0% figure reads as "nobody here is real" — show it only once it means something. */
-    if(d.verified_pct!=null && Number(d.verified_pct)>0) items.push([d.verified_pct+'%','Verified']);
-    if(!items.length) return;
-    ih.innerHTML=items.map(function(it){return '<div class="it"><div class="n">'+esc(String(it[0]))+'</div><div class="l">'+esc(it[1])+'</div></div>';}).join('');
-    ih.style.display='';
-  }catch(e){}
-})();
-
-/* ── Inside Pegasus — live, public-safe preview ──────────────────────────────
-   Real data only: public presentations (get_public_presentations) + public
-   businesses/members (get_recent_network_activity, which for anonymous visitors
-   returns public business pages only — never private profiles/opportunities).
-   Every card opens a real public page. If there is not enough real content yet,
-   we show a small set of clearly-labelled "Example" cards that route to signup —
-   never fake live objects. */
-(async function loadLobby(){
-  var host=document.getElementById('lobby-grid'); if(!host) return;
-  var esc=Pegasus.esc;
-  var KIND={person:['Member','#3A8FE8'],company:['Business Page','#3A8FE8'],project:['Project','#7C5CFF'],showcase:['Showcase','#D14FB0'],event:['Event','#C9A227'],capital_program:['Capital Program','#3A8FE8'],property:['Property','#1FA37A'],fund:['Fund','#3A8FE8']};
-  var TMPL={capital_program:['Capital Program','#3A8FE8'],project:['Project','#7C5CFF'],property_listing:['Listing','#1FA37A'],startup_business_need:['Startup','#E8923A'],showcase:['Showcase','#D14FB0'],event_session:['Event','#C9A227'],partnership_request:['Partnership','#3AB0E8']};
-  function card(x){
-    var cover=x.cover?'<img class="lobby-cover" src="'+esc(x.cover)+'" alt="">':'';
-    return '<a class="lobby-card" href="'+esc(x.href)+'">'+cover+'<div class="lobby-body">'+
-      '<div class="lobby-kind" style="color:'+x.color+'">'+esc(x.kind)+(x.pill?'<span class="lobby-pill">'+esc(x.pill)+'</span>':'')+'</div>'+
-      '<div class="lobby-name">'+esc(x.name)+'</div>'+
-      (x.sub?'<div class="lobby-sub">'+esc(x.sub)+'</div>':'')+
-      '<div class="lobby-action">'+esc(x.action)+'</div>'+
-    '</div></a>';
-  }
-  var presos=[], biz=[];
-  try{
-    var c=await window.PegSB.ready;
-    try{
-      var pr=await c.rpc('get_public_presentations',{p_limit:12});
-      if(pr&&!pr.error&&Array.isArray(pr.data)) pr.data.forEach(function(o){
-        var t=TMPL[o.template_type]||['Opportunity','#3A8FE8']; var bn=(o.presented_by&&o.presented_by.name)||'';
-        presos.push({ owner:(bn||('preso-'+o.slug)).toLowerCase(), href:'/opportunity/'+encodeURIComponent(o.slug), cover:o.cover_url||'', kind:t[0], color:t[1], name:o.title||'Untitled', sub:bn?('Presented by '+bn):'', action:(o.template_type==='showcase'?'View showcase →':'View opportunity →') });
-      });
-    }catch(e){ console.warn('[lobby] presentations:',e); }
-    try{
-      var na=await c.rpc('get_recent_network_activity');
-      if(na&&!na.error&&Array.isArray(na.data)) na.data.forEach(function(a){
-        var isPerson=a.kind==='person'; var k=KIND[a.kind]||[a.kind,'#3A8FE8'];
-        var href=isPerson?(a.url||'#'):Pegasus.presencePath(a.kind,a.slug);
-        /* No owner id is exposed by the RPC (privacy). owner_group, when present,
-           is an opaque server-provided key used only to diversify the strip. */
-        biz.push({ owner:(a.owner_group||a.name||'').toLowerCase(), href:href, cover:(!isPerson&&a.logo)?a.logo:'', kind:k[0], color:k[1], name:a.name||'—', sub:[a.meta,a.location].filter(Boolean).join(' · '), action:(isPerson?'View profile →':'View business →') });
-      });
-    }catch(e){ console.warn('[lobby] activity:',e); }
-  }catch(e){ console.warn('[lobby] supabase unavailable:',e); }
-
-  /* Never surface the current user's OWN profile as a generic preview card — a
-     visitor must never click an unlabeled front-page card and land on the
-     owner's / their own personal profile. */
-  try{
-    var mySlug=(localStorage.getItem('peg_slug')||'').toLowerCase();
-    if(mySlug){
-      var isMine=function(x){ var h=(x.href||'').toLowerCase(); return h.indexOf('/u/'+mySlug)>=0; };
-      biz=biz.filter(function(x){ return !isMine(x); });
-      presos=presos.filter(function(x){ return !isMine(x); });
-    }
-  }catch(_){}
-
-  /* Curate: small, diverse, public-safe. Interleave presentations + businesses
-     so types are mixed, cap to 2 items per owner so the homepage never becomes
-     one person's portfolio, and cap the whole strip at 10 (8–12 target). */
-  var MAX=6, PER_OWNER=1, seen={}, cards=[];   /* front page = small proof-of-life strip; full directory lives on /explore */
-  var qa=presos.slice(), qb=biz.slice();
-  while((qa.length||qb.length) && cards.length<MAX){
-    [qa,qb].forEach(function(q){
-      if(cards.length>=MAX) return;
-      var x=q.shift(); if(!x) return;
-      var key=x.owner||x.name; if((seen[key]||0)>=PER_OWNER) return;
-      seen[key]=(seen[key]||0)+1; cards.push(x);
-    });
-  }
-  if(cards.length){
-    host.innerHTML = cards.map(card).join('');
-    return;
-  }
-  // Fallback — clearly-labelled examples (never shown as real live objects).
-  var examples=[
-    {kind:'Business Page',color:'#3A8FE8',name:'Your company or project',sub:'Promote what you represent',pill:'Example',action:'Create yours →',href:'/signup.html'},
-    {kind:'Showcase',color:'#D14FB0',name:'Your completed work',sub:'Photos, video, case studies',pill:'Example',action:'Create yours →',href:'/signup.html'},
-    {kind:'Opportunity',color:'#7C5CFF',name:'A deal or capital program',sub:'Presented by your business',pill:'Example',action:'Create yours →',href:'/signup.html'}
-  ];
-  host.innerHTML='<div style="grid-column:1/-1;font-size:12px;color:var(--text3);text-align:center;margin-bottom:6px">Be among the first. Here’s what members create:</div>'+examples.map(card).join('');
-})();
-
-/* Living activity signals — subtle, anonymized, believable. No names, no numbers. */
-(function(){
-  var el=document.getElementById('wmSignals'); if(!el) return;
-  var SIG=[
-    ['var(--teal)','Business funding request being routed'],
-    ['var(--blue)','Capital provider active in California'],
-    ['var(--green)','Founder session opening soon'],
-    ['var(--gold)','Private introduction forming — Dubai'],
-    ['var(--teal)','Real estate opportunity awaiting visibility'],
-    ['var(--blue)','Professional services network expanding'],
-  ];
-  el.innerHTML=SIG.map(function(s,i){
-    return '<span class="wm-sig" style="animation-delay:'+(i*0.1)+'s"><span class="d" style="background:'+s[0]+'"></span>'+s[1]+'</span>';
-  }).join('');
-}());
-
-/* Homepage ecosystem areas (link into explore + categories) */
-(function(){
-  var el=document.getElementById('areasHome'); if(!el) return;
-  var A=[
-    ['◈','Capital Network','Where capital meets aligned opportunity.','/category-capital-providers.html'],
-    ['◆','Capital Seekers','For those building deals, projects & companies.','/category-capital-seekers.html'],
-    ['🏠','Real Estate Agents','Put listings & clients in front of capital.','/category-real-estate-agents.html'],
-    ['⬢','RWA / Tokenization','The real-world asset ecosystem.','/category-rwa.html'],
-    ['◎','Deal Rooms','Private workspaces for real financings.','/explore.html'],
-    ['◷','Capital Sessions','Closed-door educational sessions.','/capital-sessions.html'],
-    ['⬡','Member Network','A private network of verified professionals.','/members.html'],
-    ['→','Business Capital','Working capital for operating businesses.','/business-capital-funding.html'],
-  ];
-  el.innerHTML=A.map(function(a){
-    return '<a class="ah-card" href="'+a[3]+'"><div class="ic">'+a[0]+'</div><h3>'+a[1]+'</h3><p>'+a[2]+'</p></a>';
-  }).join('');
-}());
-document.getElementById('footer').outerHTML=Pegasus.footer();
-(document.getElementById('rolepills')||{}).innerHTML='<span style="font-size:9px;color:var(--text3);font-family:var(--mono);letter-spacing:0.1em;text-transform:uppercase;margin-right:4px">I am a</span>'+['Growth Partner','Lender','Broker','Investor','Developer','+ more'].map(r=>'<span class="tier-chip" style="background:var(--bg2);border:1px solid var(--border2);color:var(--text2)">'+r+'</span>').join('');
-const ticks=[
-  'Private Capital Network',
-  'Institutional Deal Rooms',
-  'Capital Match Engine',
-  'Growth Capital Infrastructure',
-  'RWA Partner Network',
-  'Founder – Investor Alignment',
-  'AI Capital Intelligence',
-  'Compliance-First Platform',
-  'Institutional Capital Sessions',
-  'Structured Real Estate Capital',
-  'Member-Directed Introductions',
-  'Deal Room Infrastructure',
-  'Investor Roundtables',
-  'Capital Formation Workshops',
-  'Private Credit Access Network',
-];
-(document.getElementById('tk')||{}).innerHTML=[''].concat([...ticks,...ticks]).map(t=>'<div class="tick">'+(t?'<span class="dot" style="background:var(--green)"></span>':'')+t+'</div>').join('');
-(document.getElementById('modules')||{}).innerHTML=[['◈','Pegasus Deal Rooms™','Private institutional workspaces where Growth Partners, lenders, and capital partners coordinate a structured financing — documents, workflow, alignment scoring.'],['◎','Pegasus Match Engine','Active capital matching. Growth Partner deal profiles scored against live lender appetite — Capital Alignment, Deal Strength, Funding Probability.'],['🧠','Capital Intelligence','Institutional AI — DSCR qualification, debt yield screening, risk tiering, and documentation readiness, on demand.']].map(m=>'<div class="card hc"><div class="card-body"><div style="font-size:22px;margin-bottom:12px">'+m[0]+'</div><div style="font-size:14px;font-weight:600;margin-bottom:8px;letter-spacing:-0.01em">'+m[1]+'</div><div style="font-size:12px;color:var(--text2);line-height:1.6">'+m[2]+'</div></div></div>').join('');
-(document.getElementById('members')||{}).innerHTML=PEG_DATA.members&&PEG_DATA.members.length?PEG_DATA.members.map(function(m){return '<div class="amb-card"><div class="amb-av" style="background:'+m.av+'">'+m.i+'</div><div class="amb-name">'+m.n+'</div><div class="amb-role" style="color:'+(m.color||m.c||'var(--text2)')+'">'+m.role+'</div><a class="btn btn-ghost btn-sm amb-cta" href="public-profile.html?id='+m.id+'">View Profile →</a></div>';}).join('')
-  :'<div style="grid-column:1/-1;text-align:center;padding:48px 32px;background:var(--bg1);border:1px solid var(--border);border-radius:var(--r4)"><div style="font-family:var(--serif);font-weight:300;font-size:22px;margin-bottom:10px">Apply for featured placement</div><div style="font-size:13px;color:var(--text2);max-width:420px;margin:0 auto 22px;line-height:1.6">Verified Gold members, Ambassadors, and institutional authorities can receive homepage placement. Build your profile and apply.</div><a class="btn btn-pri" href="/signup.html">Join &amp; Apply →</a><a class="btn btn-ghost" href="/membership.html" style="margin-left:10px">Membership</a></div>';
-(document.getElementById('sessionBlock')||{}).innerHTML='<div style="font-family:var(--serif);font-weight:300;font-size:22px;margin-bottom:10px;color:var(--text)">Sessions launching soon</div>'+
-  '<div><div class="session-eyebrow"><span class="dot" style="background:var(--teal);animation:pulse 2s infinite"></span>Live Capital Session</div>'+
-  '<div class="session-title">How Institutional Investors Evaluate Development Risk in 2026</div>'+
-  '<div class="session-speaker"></div></div>'+
-  '<div style="display:flex;flex-direction:column;gap:8px"><a class="btn btn-pri" href="/capital-sessions.html">Reserve Seat →</a><span style="font-size:9px;color:var(--text3);font-family:var(--mono);text-align:center">Pro &amp; Gold access</span></div>';
-(document.getElementById('pricing')||{}).innerHTML=PegBilling.plans('monthly');
-
-/* ── SECTION 3 — What Becomes Possible (aspirational outcomes) ── */
-(document.getElementById('possible')||{}).innerHTML=[
-  ['◇','Access aligned capital','Be matched with institutional capital that fits your goals — not a list to chase, but relationships brought to you.'],
-  ['◷','Build institutional visibility','A premium profile that signals seriousness to the right people across the network.'],
-  ['◆','Join private capital sessions','Closed-door educational sessions on capital, structure, and strategy — for members only.'],
-  ['→','Receive curated introductions','Intelligent, intentional introductions to partners who align with where you are headed.'],
-  ['▲','Expand strategically','Grow into new markets and structures with an ecosystem built to support your next move.'],
-  ['✦','Move with intelligent guidance','The Match Engine and Capital Intelligence work quietly in your corner, every step.'],
-].map(function(m){return '<div class="card hc"><div class="card-body"><div style="font-size:20px;margin-bottom:12px;color:var(--teal)">'+m[0]+'</div><div style="font-size:14px;font-weight:600;margin-bottom:8px;letter-spacing:-0.01em">'+m[1]+'</div><div style="font-size:12px;color:var(--text2);line-height:1.65">'+m[2]+'</div></div></div>';}).join('');
-
-/* ── SECTION 4 — How Pegasus Works (the Growth Path) ── */
-(document.getElementById('growthpath')||{}).innerHTML=[
-  ['01','Build your presence','Create a premium profile that represents you with institutional credibility.'],
-  ['02','Define your goals','Tell the ecosystem where you are headed — your markets, your ambitions, your needs.'],
-  ['03','Receive aligned opportunities','Curated opportunities surface, matched intelligently to your goals.'],
-  ['04','Access capital relationships','Connect with institutional capital partners through member-directed introductions.'],
-  ['05','Grow your visibility','Strengthen your standing across a high-trust network of serious participants.'],
-  ['06','Move forward intelligently','Advance with guidance, structure, and aligned partners — at your pace.'],
-].map(function(m){return '<div class="card"><div class="card-body" style="display:flex;gap:16px;align-items:flex-start"><div style="font-family:var(--mono);font-size:13px;color:var(--gold);font-weight:500;flex-shrink:0;padding-top:1px">'+m[0]+'</div><div><div style="font-size:13.5px;font-weight:600;margin-bottom:6px;letter-spacing:-0.01em">'+m[1]+'</div><div style="font-size:12px;color:var(--text2);line-height:1.6">'+m[2]+'</div></div></div></div>';}).join('');
-
-/* ── SECTION 5 — Pegasus Signals (curated, institutional, not a feed) ── */
-(document.getElementById('signals')||{}).innerHTML=[
-  ['◇','New aligned opportunity detected','A capital partner profile aligns with Growth Partner goals in your network.','var(--teal)'],
-  ['◆','Capital Session this week','A private educational session on structuring institutional capital is open to members.','var(--green)'],
-  ['↗','Institutional visibility increased','Network presence is strengthening across verified participants this month.','var(--blue)'],
-  ['★','Founder spotlight available','A Growth Capital founder profile is featured for the ecosystem this week.','var(--gold)'],
-  ['→','Strategic introduction available','A member-directed introduction is ready to be reviewed in your workspace.','var(--teal)'],
-].map(function(s,i){return '<div style="display:flex;gap:14px;align-items:center;padding:16px 22px;'+(i>0?'border-top:1px solid var(--border);':'')+'">'+
-  '<div style="width:30px;height:30px;border-radius:7px;background:var(--bg2);display:flex;align-items:center;justify-content:center;font-size:14px;color:'+s[3]+';flex-shrink:0">'+s[0]+'</div>'+
-  '<div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:500;color:var(--text);letter-spacing:-0.01em">'+s[1]+'</div><div style="font-size:11.5px;color:var(--text2);margin-top:2px;line-height:1.45">'+s[2]+'</div></div>'+
-  '<a href="/signup.html" style="font-size:10px;font-family:var(--mono);color:var(--text3);text-decoration:none;flex-shrink:0;white-space:nowrap">Enter →</a>'+
-  '</div>';}).join('');
-
-/* Event of the Month */
-(async function(){
-  /* Static fallback so the Webinar slot is NEVER empty — even if Supabase is
-   * slow, errors, or the events table is empty. Replaced by live data below. */
-  var STATIC_EVT={event_type:'webinar',event_date:'2026-05-27',event_time:'14:00',
-    title:'Private Credit Strategies for Residential Brokers',
-    host:'Pegasus Capital Intelligence',
-    description:'Live session covering bridge loan mechanics, alternative financing structures, and private credit networks for residential brokers. Q&A included.',
-    cta_label:'Register Free →',cta_url:'/webinars.html'};
-  function renderEvt(evt){
-    var spot=document.getElementById('evt-spotlight'); if(!spot||!evt)return;
-    var typeIcons={'webinar':'🎥','session':'📡','workshop':'🛠','summit':'🏛','roundtable':'🔄','networking':'🤝'};
-    var icon=typeIcons[(evt.event_type||'').toLowerCase()]||'📅';
-    var d=evt.event_date?new Date(evt.event_date+'T00:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):'';
-    var t=evt.event_time?String(evt.event_time).slice(0,5)+' PT':'';
-    function setT(id,val){var el=document.getElementById(id); if(el)el.textContent=val;}
-    setT('evt-type-label',(evt.event_type||'Event').toUpperCase()+' OF THE MONTH');
-    setT('evt-date-label',d+(t?' · '+t:''));
-    setT('evt-type-icon',icon);
-    setT('evt-title',evt.title||'');
-    setT('evt-host',evt.host||evt.speaker||'');
-    setT('evt-desc',evt.description||'');
-    var cta=document.getElementById('evt-cta'); if(cta){cta.textContent=(evt.cta_label||'Register →');cta.href=evt.cta_url||'/webinars.html';}
-    spot.style.display='block';
-  }
-  renderEvt(STATIC_EVT); /* fill the slot immediately on every domain */
-  try {
-    var c=await window.PegSB.ready;
-    var res=await c.from('homepage_events').select('*').eq('active',true).order('event_date',{ascending:true}).gte('event_date',new Date().toISOString().slice(0,10)).limit(1);
-    var evt=res.data&&res.data[0];
-    if(!evt){
-      var res2=await c.from('homepage_events').select('*').eq('active',true).order('event_date',{ascending:false}).limit(1);
-      evt=res2.data&&res2.data[0];
-    }
-    if(evt)renderEvt(evt); /* live DB data overrides the static fallback */
-  }catch(e){console.warn('[Evt] live load failed, static card shown:',e);}
-})();
-
-/* Ambassador of the Month */
-(async function(){
-  try {
-    var c=await window.PegSB.ready;
-    var res=await c.from('profiles').select('id,full_name,role,professional_title,headline,bio,avatar_url,profile_slug,company_name').eq('ambassador_status',true).order('updated_at',{ascending:false}).limit(1);
-    var amb=res.data&&res.data[0];
-    if(!amb)return;
-    var spot=document.getElementById('amb-spotlight'); if(!spot)return;
-    var w=function(n){return(amb[n]||'');};
-    var ini=function(n){var p=(n||'').trim().split(/\s+/);return(p[0]?p[0][0]:'')+(p[1]?p[1][0]:'');};
-    var sl=w('profile_slug')||(w('full_name').toLowerCase().replace(/[^a-z0-9\s]/g,'').replace(/\s+/g,'-'));
-    var av=document.getElementById('amb-av');
-    if(w('avatar_url')){var img=document.createElement('img');img.src=w('avatar_url');img.style.cssText='width:100%;height:100%;object-fit:cover';av.appendChild(img);}
-    else{av.textContent=ini(w('full_name'))||'?';}
-    document.getElementById('amb-name').textContent=w('full_name');
-    document.getElementById('amb-role').textContent=(w('professional_title')||w('role').replace(/_/g,' '))+(w('company_name')?' \u00b7 '+w('company_name'):'');
-    document.getElementById('amb-quote').textContent=w('headline')||w('bio').slice(0,120)||'Pegasus Network Ambassador';
-    var lnk=document.getElementById('amb-link');if(lnk)lnk.href=w('profile_slug')?'/u/'+w('profile_slug'):(amb.id?'/public-profile.html?id='+amb.id:'/members.html');
-    spot.style.display='block';
-  }catch(e){console.warn('[Amb]',e);}
-})();
-</script><script>
-(function(){
-  var ROUTE={
-    home:{h:"/signup.html?intent=home-financing",cta:"build"},
-    business:{h:"/signup.html?intent=business-funding",cta:"build"},
-    raise:{h:"/signup.html?intent=capital-raise",cta:"build"},
-    showcase:{h:"/threshold.html?intent=showcase",cta:"build"},
-    professionals:{h:"/members.html?intent=find-professionals",cta:"browse"},
-    host:{h:"/threshold.html?intent=ecosystem-contributor",cta:"build"},
-    explore:{h:"/threshold.html?intent=explore",cta:"build"}
-  };
-  var COPY={
-    en:{ctaContinue:"Continue →",intakePrompt:"Pegasus will begin assembling the right people. Where should we reach you?",emailPh:"Email so the right people can reach you",namePh:"Your name (optional)",emailErr:"Please add an email so the right people can reach you.",ack:"Understood.",revealIntro:"How the ecosystem works",facets:["Curated professionals — never cold outreach.","Opportunities that move through trusted relationships.","A private space to collaborate when the moment is right."],eyebrow:"Welcome to Pegasus",q:"What are you trying to accomplish?",lead:"You don't need to fit into a category. Tell Pegasus what brought you here.",ph:"I'm looking to\u2026",
-      ctaBuild:"Build Your Presence \u2192",ctaBrowse:"Browse the Network \u2192",
-      firstStep:"Your first step is to build a profile \u2014 so the ecosystem understands your goals and can guide the right opportunities toward you.",
-      chips:["Buy or finance a home","Grow or fund my business","Raise capital or find investors","Showcase listings or opportunities","Find trusted professionals","Host sessions or share expertise","Join the ecosystem and explore"],
-      resp:{home:"Pegasus can connect you with aligned financing professionals and trusted guidance for buying or financing a home \u2014 without running between brokers.",business:"Pegasus can guide you toward aligned funding professionals, strategic capital relationships, and trusted ecosystem introductions for your business.",raise:"Pegasus can connect you with capital partners and investors, and the relationships that move a raise forward.",showcase:"Pegasus can help you present your listings, programs, or opportunities to an aligned, high-signal audience.",professionals:"Pegasus can introduce you to trusted, reviewed professionals across the ecosystem \u2014 curated, never cold outreach.",host:"Pegasus can give you a place to host sessions and share your expertise with a serious, aligned audience.",explore:"Pegasus can guide you into the ecosystem, toward the relationships and opportunities that fit your goals."}},
-    es:{ctaContinue:"Continuar →",intakePrompt:"Pegasus comenzará a reunir a las personas adecuadas. ¿Cómo podemos contactarte?",emailPh:"Correo para que las personas adecuadas te contacten",namePh:"Tu nombre (opcional)",emailErr:"Añade un correo para que las personas adecuadas puedan contactarte.",ack:"Entendido.",revealIntro:"Cómo funciona el ecosistema",facets:["Profesionales seleccionados, nunca contacto en frío.","Oportunidades que avanzan a través de relaciones de confianza.","Un espacio privado para colaborar cuando llegue el momento."],eyebrow:"Bienvenido a Pegasus",q:"\u00bfQu\u00e9 quieres lograr?",lead:"No necesitas encajar en una categor\u00eda. Dile a Pegasus qu\u00e9 te trajo aqu\u00ed.",ph:"Estoy buscando\u2026",
-      ctaBuild:"Crea tu presencia \u2192",ctaBrowse:"Explorar la red \u2192",
-      firstStep:"Tu primer paso es crear un perfil, para que el ecosistema entienda tus objetivos y pueda guiar las oportunidades correctas hacia ti.",
-      chips:["Comprar o financiar una vivienda","Hacer crecer o financiar mi negocio","Levantar capital o encontrar inversores","Mostrar propiedades u oportunidades","Encontrar profesionales de confianza","Organizar sesiones o compartir experiencia","Unirme al ecosistema y explorar"],
-      resp:{home:"Pegasus puede conectarte con profesionales de financiamiento alineados y orientaci\u00f3n confiable para comprar o financiar una vivienda, sin ir de corredor en corredor.",business:"Pegasus puede guiarte hacia profesionales de financiamiento alineados, relaciones de capital estrat\u00e9gicas e introducciones de confianza para tu negocio.",raise:"Pegasus puede conectarte con socios de capital e inversores, y las relaciones que impulsan una ronda.",showcase:"Pegasus puede ayudarte a presentar tus propiedades, programas u oportunidades ante una audiencia alineada y de alto valor.",professionals:"Pegasus puede presentarte a profesionales revisados y de confianza dentro del ecosistema, de forma seleccionada y nunca intrusiva.",host:"Pegasus puede darte un espacio para organizar sesiones y compartir tu experiencia con una audiencia seria y alineada.",explore:"Pegasus puede guiarte dentro del ecosistema hacia las relaciones y oportunidades que encajan con tus objetivos."}},
-    fr:{ctaContinue:"Continuer →",intakePrompt:"Pegasus va réunir les bonnes personnes. Comment vous joindre ?",emailPh:"E-mail pour que les bonnes personnes vous contactent",namePh:"Votre nom (facultatif)",emailErr:"Ajoutez un e-mail pour que les bonnes personnes puissent vous joindre.",ack:"Compris.",revealIntro:"Comment fonctionne l’écosystème",facets:["Des professionnels sélectionnés, jamais de démarchage à froid.","Des opportunités qui avancent par des relations de confiance.","Un espace privé pour collaborer le moment venu."],eyebrow:"Bienvenue chez Pegasus",q:"Que cherchez-vous \u00e0 accomplir ?",lead:"Pas besoin d\u2019entrer dans une cat\u00e9gorie. Dites \u00e0 Pegasus ce qui vous am\u00e8ne.",ph:"Je cherche \u00e0\u2026",
-      ctaBuild:"Construisez votre pr\u00e9sence \u2192",ctaBrowse:"Explorer le r\u00e9seau \u2192",
-      firstStep:"Votre premi\u00e8re \u00e9tape est de cr\u00e9er un profil, afin que l\u2019\u00e9cosyst\u00e8me comprenne vos objectifs et oriente les bonnes opportunit\u00e9s vers vous.",
-      chips:["Acheter ou financer un logement","D\u00e9velopper ou financer mon entreprise","Lever des capitaux ou trouver des investisseurs","Pr\u00e9senter des biens ou des opportunit\u00e9s","Trouver des professionnels de confiance","Animer des sessions ou partager mon expertise","Rejoindre l\u2019\u00e9cosyst\u00e8me et explorer"],
-      resp:{home:"Pegasus peut vous mettre en relation avec des professionnels du financement align\u00e9s et un accompagnement de confiance pour acheter ou financer un logement, sans courir d\u2019un courtier \u00e0 l\u2019autre.",business:"Pegasus peut vous orienter vers des professionnels du financement align\u00e9s, des relations de capital strat\u00e9giques et des introductions de confiance pour votre entreprise.",raise:"Pegasus peut vous mettre en relation avec des partenaires de capital et des investisseurs, et les relations qui font avancer une lev\u00e9e.",showcase:"Pegasus peut vous aider \u00e0 pr\u00e9senter vos biens, programmes ou opportunit\u00e9s \u00e0 un public align\u00e9 et exigeant.",professionals:"Pegasus peut vous pr\u00e9senter des professionnels v\u00e9rifi\u00e9s et de confiance au sein de l\u2019\u00e9cosyst\u00e8me, de mani\u00e8re s\u00e9lectionn\u00e9e, jamais intrusive.",host:"Pegasus peut vous offrir un espace pour animer des sessions et partager votre expertise avec un public s\u00e9rieux et align\u00e9.",explore:"Pegasus peut vous guider dans l\u2019\u00e9cosyst\u00e8me vers les relations et opportunit\u00e9s qui correspondent \u00e0 vos objectifs."}},
-    ar:{ctaContinue:"متابعة →",intakePrompt:"سيبدأ بيغاسوس في جمع الأشخاص المناسبين. كيف يمكننا التواصل معك؟",emailPh:"بريد إلكتروني ليتواصل معك الأشخاص المناسبون",namePh:"اسمك (اختياري)",emailErr:"أضف بريدًا إلكترونيًا ليتمكن الأشخاص المناسبون من التواصل معك.",ack:"مفهوم.",revealIntro:"كيف تعمل المنظومة",facets:["محترفون منتقون، دون تواصل بارد.","فرص تتحرك عبر علاقات موثوقة.","مساحة خاصة للتعاون عندما يحين الوقت."],eyebrow:"\u0645\u0631\u062d\u0628\u064b\u0627 \u0628\u0643 \u0641\u064a \u0628\u064a\u063a\u0627\u0633\u0648\u0633",q:"\u0645\u0627 \u0627\u0644\u0630\u064a \u062a\u0633\u0639\u0649 \u0625\u0644\u0649 \u062a\u062d\u0642\u064a\u0642\u0647\u061f",lead:"\u0644\u0627 \u062d\u0627\u062c\u0629 \u0644\u0623\u0646 \u062a\u0646\u062a\u0645\u064a \u0625\u0644\u0649 \u0641\u0626\u0629. \u0623\u062e\u0628\u0631 \u0628\u064a\u063a\u0627\u0633\u0648\u0633 \u0628\u0645\u0627 \u062c\u0627\u0621 \u0628\u0643 \u0625\u0644\u0649 \u0647\u0646\u0627.",ph:"\u0623\u0628\u062d\u062b \u0639\u0646\u2026",
-      ctaBuild:"\u0627\u0628\u0646\u0650 \u062d\u0636\u0648\u0631\u0643 \u2192",ctaBrowse:"\u062a\u0635\u0641\u0651\u062d \u0627\u0644\u0634\u0628\u0643\u0629 \u2192",
-      firstStep:"\u062e\u0637\u0648\u062a\u0643 \u0627\u0644\u0623\u0648\u0644\u0649 \u0647\u064a \u0625\u0646\u0634\u0627\u0621 \u0645\u0644\u0641 \u062a\u0639\u0631\u064a\u0641\u064a\u060c \u062d\u062a\u0649 \u062a\u0641\u0647\u0645 \u0627\u0644\u0645\u0646\u0638\u0648\u0645\u0629 \u0623\u0647\u062f\u0627\u0641\u0643 \u0648\u062a\u0648\u062c\u0651\u0647 \u0627\u0644\u0641\u0631\u0635 \u0627\u0644\u0645\u0646\u0627\u0633\u0628\u0629 \u0646\u062d\u0648\u0643.",
-      chips:["\u0634\u0631\u0627\u0621 \u0623\u0648 \u062a\u0645\u0648\u064a\u0644 \u0645\u0646\u0632\u0644","\u062a\u0646\u0645\u064a\u0629 \u0623\u0648 \u062a\u0645\u0648\u064a\u0644 \u0623\u0639\u0645\u0627\u0644\u064a","\u062c\u0645\u0639 \u0631\u0623\u0633 \u0627\u0644\u0645\u0627\u0644 \u0623\u0648 \u0625\u064a\u062c\u0627\u062f \u0645\u0633\u062a\u062b\u0645\u0631\u064a\u0646","\u0639\u0631\u0636 \u0627\u0644\u0639\u0642\u0627\u0631\u0627\u062a \u0623\u0648 \u0627\u0644\u0641\u0631\u0635","\u0625\u064a\u062c\u0627\u062f \u0645\u062d\u062a\u0631\u0641\u064a\u0646 \u0645\u0648\u062b\u0648\u0642\u064a\u0646","\u0627\u0633\u062a\u0636\u0627\u0641\u0629 \u062c\u0644\u0633\u0627\u062a \u0623\u0648 \u0645\u0634\u0627\u0631\u0643\u0629 \u0627\u0644\u062e\u0628\u0631\u0629","\u0627\u0644\u0627\u0646\u0636\u0645\u0627\u0645 \u0625\u0644\u0649 \u0627\u0644\u0645\u0646\u0638\u0648\u0645\u0629 \u0648\u0627\u0644\u0627\u0633\u062a\u0643\u0634\u0627\u0641"],
-      resp:{home:"\u064a\u0645\u0643\u0646 \u0644\u0628\u064a\u063a\u0627\u0633\u0648\u0633 \u0631\u0628\u0637\u0643 \u0628\u0645\u062a\u062e\u0635\u0635\u064a \u062a\u0645\u0648\u064a\u0644 \u0645\u062a\u0648\u0627\u0641\u0642\u064a\u0646 \u0648\u0625\u0631\u0634\u0627\u062f \u0645\u0648\u062b\u0648\u0642 \u0644\u0634\u0631\u0627\u0621 \u0623\u0648 \u062a\u0645\u0648\u064a\u0644 \u0645\u0646\u0632\u0644\u060c \u062f\u0648\u0646 \u0627\u0644\u062a\u0646\u0642\u0651\u0644 \u0628\u064a\u0646 \u0627\u0644\u0648\u0633\u0637\u0627\u0621.",business:"\u064a\u0645\u0643\u0646 \u0644\u0628\u064a\u063a\u0627\u0633\u0648\u0633 \u062a\u0648\u062c\u064a\u0647\u0643 \u0646\u062d\u0648 \u0645\u062a\u062e\u0635\u0635\u064a \u062a\u0645\u0648\u064a\u0644 \u0645\u062a\u0648\u0627\u0641\u0642\u064a\u0646 \u0648\u0639\u0644\u0627\u0642\u0627\u062a \u0631\u0623\u0633 \u0645\u0627\u0644 \u0627\u0633\u062a\u0631\u0627\u062a\u064a\u062c\u064a\u0629 \u0648\u062a\u0639\u0627\u0631\u0641 \u0645\u0648\u062b\u0648\u0642 \u0644\u0623\u0639\u0645\u0627\u0644\u0643.",raise:"\u064a\u0645\u0643\u0646 \u0644\u0628\u064a\u063a\u0627\u0633\u0648\u0633 \u0631\u0628\u0637\u0643 \u0628\u0634\u0631\u0643\u0627\u0621 \u0631\u0623\u0633 \u0627\u0644\u0645\u0627\u0644 \u0648\u0627\u0644\u0645\u0633\u062a\u062b\u0645\u0631\u064a\u0646\u060c \u0648\u0627\u0644\u0639\u0644\u0627\u0642\u0627\u062a \u0627\u0644\u062a\u064a \u062a\u062f\u0641\u0639 \u062c\u0648\u0644\u062a\u0643 \u0644\u0644\u0623\u0645\u0627\u0645.",showcase:"\u064a\u0645\u0643\u0646 \u0644\u0628\u064a\u063a\u0627\u0633\u0648\u0633 \u0645\u0633\u0627\u0639\u062f\u062a\u0643 \u0641\u064a \u0639\u0631\u0636 \u0639\u0642\u0627\u0631\u0627\u062a\u0643 \u0623\u0648 \u0628\u0631\u0627\u0645\u062c\u0643 \u0623\u0648 \u0641\u0631\u0635\u0643 \u0623\u0645\u0627\u0645 \u062c\u0645\u0647\u0648\u0631 \u0645\u062a\u0648\u0627\u0641\u0642 \u0648\u0639\u0627\u0644\u064a \u0627\u0644\u0642\u064a\u0645\u0629.",professionals:"\u064a\u0645\u0643\u0646 \u0644\u0628\u064a\u063a\u0627\u0633\u0648\u0633 \u062a\u0639\u0631\u064a\u0641\u0643 \u0628\u0645\u062d\u062a\u0631\u0641\u064a\u0646 \u0645\u0648\u062b\u0648\u0642\u064a\u0646 \u0648\u0645\u064f\u0631\u0627\u062c\u064e\u0639\u064a\u0646 \u062f\u0627\u062e\u0644 \u0627\u0644\u0645\u0646\u0638\u0648\u0645\u0629\u060c \u0628\u0634\u0643\u0644 \u0645\u0646\u062a\u0642\u0649 \u0648\u0628\u0639\u064a\u062f \u0639\u0646 \u0627\u0644\u062a\u0648\u0627\u0635\u0644 \u0627\u0644\u0628\u0627\u0631\u062f.",host:"\u064a\u0645\u0643\u0646 \u0644\u0628\u064a\u063a\u0627\u0633\u0648\u0633 \u0623\u0646 \u064a\u0645\u0646\u062d\u0643 \u0645\u0643\u0627\u0646\u064b\u0627 \u0644\u0627\u0633\u062a\u0636\u0627\u0641\u0629 \u0627\u0644\u062c\u0644\u0633\u0627\u062a \u0648\u0645\u0634\u0627\u0631\u0643\u0629 \u062e\u0628\u0631\u062a\u0643 \u0645\u0639 \u062c\u0645\u0647\u0648\u0631 \u062c\u0627\u062f \u0648\u0645\u062a\u0648\u0627\u0641\u0642.",explore:"\u064a\u0645\u0643\u0646 \u0644\u0628\u064a\u063a\u0627\u0633\u0648\u0633 \u0625\u0631\u0634\u0627\u062f\u0643 \u062f\u0627\u062e\u0644 \u0627\u0644\u0645\u0646\u0638\u0648\u0645\u0629 \u0646\u062d\u0648 \u0627\u0644\u0639\u0644\u0627\u0642\u0627\u062a \u0648\u0627\u0644\u0641\u0631\u0635 \u0627\u0644\u062a\u064a \u062a\u0646\u0627\u0633\u0628 \u0623\u0647\u062f\u0627\u0641\u0643."}}
-  };
-  var REGION={
-    la:"You don't need to fit into a category. Tell Pegasus what you're building \u2014 growth, real estate, or something larger.",
-    dubai:"You don't need to fit into a category. Tell Pegasus what you're moving toward \u2014 capital, relationships, or global reach.",
-    ny:"You don't need to fit into a category. Tell Pegasus what you're working toward \u2014 capital, strategy, or precise introductions.",
-    miami:"You don't need to fit into a category. Tell Pegasus what you're building \u2014 ventures, capital, or cross-border reach."
-  };
-  function regionKey(){try{var tz=(Intl.DateTimeFormat().resolvedOptions().timeZone||"");
-    if(tz==="America/Los_Angeles")return "la";
-    if(/Asia\/(Dubai|Riyadh|Qatar|Muscat|Bahrain)/.test(tz))return "dubai";
-    if(/America\/(New_York|Detroit|Toronto)/.test(tz))return "ny";
-    return "global";}catch(e){return "global";}}
-  function langKey(){var l=((navigator.language||"en").slice(0,2)).toLowerCase();return COPY[l]?l:"en";}
-  function set(id,txt){var e=document.getElementById(id);if(e)e.textContent=txt;}
-  var C=COPY.en;
-  function applyContext(){
-    var lang=langKey(); C=COPY[lang]||COPY.en; var reg=regionKey();
-    var lead=C.lead; if(lang==="en"&&REGION[reg])lead=REGION[reg];
-    set("cinEyebrow",C.eyebrow); set("cinQ",C.q); set("cinLead",lead);
-    var inp=document.getElementById("cinInput"); if(inp)inp.setAttribute("placeholder",C.ph);
-    var chips=document.querySelectorAll("#cinChips .cin-chip");
-    for(var k=0;k<chips.length;k++){ if(C.chips[k]) chips[k].textContent=C.chips[k]; }
-    if(lang==="ar"){var box=document.querySelector(".cin-in"); if(box)box.setAttribute("dir","rtl");}
-  }
-  function infer(t){t=(t||"").toLowerCase();
-    if(/buy|home|house|first home|finance a home|mortgage|purchase|property/.test(t))return "home";
-    if(/business|fund my business|grow my business|kitchen|shop|company|working capital|equipment|expand/.test(t))return "business";
-    if(/raise|investor|capital raise|seed|round|fundrais|venture/.test(t))return "raise";
-    if(/showcase|list|listing|present|program|opportunit|sell|market my/.test(t))return "showcase";
-    if(/find|trusted|professional|broker|agent|lender|advisor|connect with|introduc/.test(t))return "professionals";
-    if(/host|webinar|session|share|teach|expertise|knowledge|educat|speak|content/.test(t))return "host";
-    return "explore";
-  }
-  var RM=false; try{RM=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;}catch(e){}
-  var seq=0;
-  function cinCue(n){ /* reserved hook for future subtle ambient sound */ }
-  function addFacet(text){var li=document.createElement("li");li.className="cin-facet";li.textContent=text;var ul=document.getElementById("cinFacets");if(ul){ul.appendChild(li);requestAnimationFrame(function(){li.classList.add("show");});}}
-  var REQ={home:"property",business:"business",raise:"business"};
-  async function submitRequest(reqType){
-    var emailEl=document.getElementById("cinEmail"),nameEl=document.getElementById("cinName"),msg=document.getElementById("cinIntakeMsg"),btn=document.getElementById("cinNextBtn"),inp=document.getElementById("cinInput");
-    var email=emailEl?emailEl.value.trim():"", name=nameEl?nameEl.value.trim():"", note=inp?inp.value.trim():"";
-    if(!email||email.indexOf("@")<1){ if(msg)msg.textContent=C.emailErr||"Please add an email so the right people can reach you."; if(emailEl)emailEl.focus(); return; }
-    if(btn){btn.style.pointerEvents="none";btn.textContent="\u2026";}
-    try{
-      var sb=await window.PegSB.ready;
-      var rr=await sb.rpc("create_request",{p_type:reqType,p_note:note||null,p_contact_name:name||null,p_contact_email:email});
-      if(rr.error) throw rr.error;
-      var tok=rr.data&&rr.data.public_token;
-      location.href="/request.html"+(tok?("?token="+encodeURIComponent(tok)):"");
-    }catch(e){ if(msg)msg.textContent="Something went wrong — please try again."; if(btn){btn.style.pointerEvents="";btn.textContent=C.ctaContinue||"Continue \u2192";} }
-  }
-  function reveal(key){
-    seq++; var my=seq;
-    var fm=document.getElementById("cinForm"),ch=document.querySelector(".cin-chips"),nx=document.getElementById("cinNext"),sec=document.querySelector(".cin");
-    if(fm)fm.style.display="none"; if(ch)ch.style.display="none"; if(sec)sec.classList.add("cin-engaged"); if(window.cinEnergize)window.cinEnergize();
-    var ack=document.getElementById("cinAck"),intro=document.getElementById("cinRevealIntro"),facets=document.getElementById("cinFacets"),step=document.getElementById("cinNextStep"),btn=document.getElementById("cinNextBtn"),intake=document.getElementById("cinIntake");
-    var reqType=REQ[key]||null;
-    if(ack){ack.textContent=C.ack||"";ack.classList.remove("show");}
-    set("cinNextLabel",""); if(intro)intro.textContent=""; if(facets)facets.innerHTML=""; set("cinNextStep","");
-    if(intake)intake.hidden=true;
-    var r=ROUTE[key]||ROUTE.explore;
-    if(reqType){ btn.setAttribute("href","#"); btn.dataset.req=reqType; btn.textContent=C.ctaContinue||"Continue \u2192";
-      var ne=document.getElementById("cinEmail"),nn=document.getElementById("cinName"); if(ne&&C.emailPh)ne.setAttribute("placeholder",C.emailPh); if(nn&&C.namePh)nn.setAttribute("placeholder",C.namePh); }
-    else { btn.setAttribute("href",r.h); btn.dataset.req=""; btn.textContent=(r.cta==="browse")?C.ctaBrowse:C.ctaBuild; }
-    step.style.visibility="hidden"; btn.style.visibility="hidden";
-    if(nx)nx.hidden=false;
-    var help=(C.resp&&C.resp[key])||C.resp.explore, items=C.facets||[];
-    function finishStep(){ if(reqType){ set("cinNextStep",C.intakePrompt||""); if(intake)intake.hidden=false; } else { set("cinNextStep",C.firstStep); if(intake)intake.hidden=true; } step.style.visibility=""; btn.style.visibility=""; }
-    if(RM){ if(ack)ack.classList.add("show"); set("cinNextLabel",help); if(intro)intro.textContent=C.revealIntro; items.forEach(addFacet); finishStep(); return; }
-    if(ack)requestAnimationFrame(function(){ack.classList.add("show");}); cinCue("ack");
-    setTimeout(function(){if(my!==seq)return; set("cinNextLabel",help); cinCue("help");},800);
-    setTimeout(function(){if(my!==seq)return; if(intro)intro.textContent=C.revealIntro; cinCue("reveal");},1700);
-    items.forEach(function(it,idx){setTimeout(function(){if(my!==seq)return; addFacet(it);},2100+idx*560);});
-    setTimeout(function(){if(my!==seq)return; finishStep();},2100+items.length*560+320);
-  }
-  window.cinGo=function(){var i=document.getElementById("cinInput");reveal(infer(i?i.value:""));return false;};
-  window.cinChip=function(key,btn){var i=document.getElementById("cinInput"); if(i&&btn)i.value=btn.textContent; reveal(key);};
-  window.cinReset=function(){seq++; var sec=document.querySelector(".cin"),fm=document.getElementById("cinForm"),ch=document.querySelector(".cin-chips"),nx=document.getElementById("cinNext"),i=document.getElementById("cinInput"),fc=document.getElementById("cinFacets"),intro=document.getElementById("cinRevealIntro"),ack=document.getElementById("cinAck"),intake=document.getElementById("cinIntake"),em=document.getElementById("cinEmail"),nm=document.getElementById("cinName"),im=document.getElementById("cinIntakeMsg"),b=document.getElementById("cinNextBtn"); if(sec)sec.classList.remove("cin-engaged"); if(fm)fm.style.display=""; if(ch)ch.style.display=""; if(nx)nx.hidden=true; if(fc)fc.innerHTML=""; if(intro)intro.textContent=""; if(ack){ack.classList.remove("show");ack.textContent="";} if(intake)intake.hidden=true; if(em)em.value=""; if(nm)nm.value=""; if(im)im.textContent=""; if(b)b.dataset.req=""; if(i){i.value="";i.focus();}};
-  try{ applyContext(); }catch(e){}
-  try{(function(){
-    var inp=document.getElementById("cinInput"),form=document.getElementById("cinForm"),sec=document.querySelector(".cin");
-    function energize(){ if(window.cinEnergize){try{window.cinEnergize();}catch(e){}} }
-    var ex=(C&&C.chips)?C.chips.slice():[], ei=0;
-    function rotate(){ if(!inp||!ex.length)return; if(document.activeElement===inp||inp.value)return; ei=(ei+1)%ex.length; inp.setAttribute("placeholder",ex[ei]); }
-    if(ex.length) setInterval(rotate,3600);
-    if(inp){
-      inp.addEventListener("focus",function(){ if(sec)sec.classList.add("cin-focused"); if(C)inp.setAttribute("placeholder",C.ph); energize(); });
-      inp.addEventListener("blur",function(){ if(sec)sec.classList.remove("cin-focused"); });
-      inp.addEventListener("input",function(){ if(form)form.classList.toggle("has-text",inp.value.trim().length>0); energize(); });
-    }
-    var ctaBtn=document.getElementById("cinNextBtn");
-    if(ctaBtn) ctaBtn.addEventListener("click",function(e){ if(ctaBtn.dataset&&ctaBtn.dataset.req){ e.preventDefault(); submitRequest(ctaBtn.dataset.req); } });
-  })();}catch(e){}
-})();
-</script>
-<script src="/js/pegasus-living.js"></script>
+<div class="foot">
+  Not sure where to start? <a href="/ai-network.html">Pegasus AI</a> is where it's happening right now, or <a href="/how-it-works.html">see how it works</a>.
+</div>
 </body></html>
