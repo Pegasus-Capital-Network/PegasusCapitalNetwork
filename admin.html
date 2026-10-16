@@ -75,7 +75,7 @@ v.insertAdjacentHTML('beforeend',
   '<a href="/showcase-admin.html" style="color:var(--blue)">Showcase Moderation</a> · <a href="/admin/intelligence" style="color:var(--blue)">Capital Intelligence</a> · '+
   '<a href="/admin/partner-network" style="color:var(--blue)">Partner Network</a></div>'+
   '<div style="display:flex;gap:4px;margin-bottom:16px;flex-wrap:wrap" id="atabs"></div><div id="apanel"></div>');
-const sections=['Dashboard','Users','Pegasus AI','Intelligence','Investors','AI Companies','Intro Requests','Funding','Private Network','Feed','Invites','Claims','Deal Requests','Duplicates','Directory','Homepage Event','Subscriptions','Access System','Deal Rooms','Lender Profiles','Growth Partner Submissions','Match Activity','Analytics','Member Log','Manual Review','Platform Health','Schema & Repair'];
+const sections=['Dashboard','Users','Pegasus AI','Intelligence','Investors','AI Companies','Intro Requests','Funding','Private Network','Capital Pipeline','Feed','Invites','Claims','Deal Requests','Duplicates','Directory','Homepage Event','Subscriptions','Access System','Deal Rooms','Lender Profiles','Growth Partner Submissions','Match Activity','Analytics','Member Log','Manual Review','Platform Health','Schema & Repair'];
 document.getElementById('atabs').innerHTML=sections.map((s,i)=>'<div class="toggle-opt '+(i===0?'on':'')+'" style="font-size:11px" onclick="aShow(\''+s+'\')">'+s+'</div>').join('');
 function tbl(cols,rows){return '<div class="card"><table class="tbl"><thead><tr>'+cols.map(c=>'<th>'+c+'</th>').join('')+'</tr></thead><tbody>'+rows.map(r=>'<tr>'+r.map(c=>'<td>'+c+'</td>').join('')+'</tr>').join('')+'</tbody></table></div>';}
 const chip=(t,c)=>'<span class="badge '+c+'">'+t+'</span>';
@@ -1095,6 +1095,105 @@ window.frSaveMeta=async function(id){
     loadFunding(document.getElementById('apanel'));
   }catch(e){ alert('Could not save: '+((e&&e.message)||'error')); }
 };
+/* ===== Private Network capital pipeline (pn_capital_pipeline) ===== */
+var PNC_STAGES=['new','drafted','contacted','replied','in_review','passed'];
+var PNC_STAGE_COLOR={'new':'var(--text3)','drafted':'var(--amber)','contacted':'var(--blue,#235FA6)','replied':'var(--green)','in_review':'var(--violet,#8b7bd8)','passed':'var(--red,#c0392b)'};
+var PNC_PRIO_COLOR={'HIGH':'var(--green)','MEDIUM':'var(--amber)','LOW–MEDIUM':'var(--amber)','LOW':'var(--text3)'};
+async function loadCapitalPipeline(p){
+  p.innerHTML='<div style="padding:40px;text-align:center;color:var(--text3);font-size:12px">Loading capital pipeline…</div>';
+  var esc=diEsc;
+  try{
+    var c=await window.PegSB.ready;
+    var res=await c.from('pn_capital_pipeline').select('id,candidate,base_location,classification,priority,relevance,evidence,source1,source2,contact_path,min_cheque,caveat,next_action,draft_subject,draft_body,draft_destination,status,owner,next_action_date,created_at').order('created_at',{ascending:true}).limit(500);
+    if(res.error) throw res.error;
+    var rows=res.data||[];
+    window.__pncRows={}; rows.forEach(function(r){window.__pncRows[r.id]=r;});
+    function cnt(st){return rows.filter(function(r){return (r.status||'new')===st;}).length;}
+    var html='<div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px">'+
+      '<div class="card" style="padding:14px 18px"><div style="font-size:22px;font-weight:700;color:var(--text)">'+rows.length+'</div><div style="font-size:11px;color:var(--text3);font-family:var(--mono)">CAPITAL LEADS</div></div>'+
+      '<div class="card" style="padding:14px 18px"><div style="font-size:22px;font-weight:700;color:var(--green)">'+rows.filter(function(r){return r.priority==="HIGH";}).length+'</div><div style="font-size:11px;color:var(--text3);font-family:var(--mono)">HIGH</div></div>'+
+      '<div class="card" style="padding:14px 18px"><div style="font-size:22px;font-weight:700;color:var(--amber)">'+cnt('drafted')+'</div><div style="font-size:11px;color:var(--text3);font-family:var(--mono)">DRAFTED</div></div>'+
+      '<div class="card" style="padding:14px 18px"><div style="font-size:22px;font-weight:700;color:var(--blue,#235FA6)">'+cnt('contacted')+'</div><div style="font-size:11px;color:var(--text3);font-family:var(--mono)">CONTACTED</div></div>'+
+    '</div>'+
+    '<div class="banner bn-cancel" style="margin-bottom:12px"><div class="banner-msg">⚠ <span>Private, internal only. Nothing here has been sent. Before any financial terms go out, clear the securities route (Reg D 506b/506c), OFAC, CFIUS and KYC/AML. Minimum cheques are unverified. Drafts are fit inquiries, not offers.</span></div></div>'+
+    '<div style="font-size:11.5px;color:var(--text3);max-width:72ch;margin:0 0 14px">Outbound capital targets for Pegasus Private Network (US / California residential). Work each one, copy the draft, send it yourself, then move the status.</div>';
+
+    if(!rows.length){ html+=adminEmpty('🏦','No capital leads yet','Research pipeline loads here.'); }
+    else{
+      html+='<div id="pnc-list">'+rows.map(function(r){
+        var status=r.status||'new';
+        var sc=PNC_STAGE_COLOR[status]||'var(--text3)';
+        var pc=PNC_PRIO_COLOR[r.priority]||'var(--text3)';
+        var stageOpts=PNC_STAGES.map(function(s){return '<option value="'+s+'"'+(s===status?' selected':'')+'>'+s+'</option>';}).join('');
+        var meta=[r.classification?esc(r.classification):'',r.base_location?esc(r.base_location):'',r.min_cheque?('min: '+esc(r.min_cheque)):''].filter(Boolean).join(' · ');
+        var links=[r.source1?('<a href="'+esc(r.source1)+'" target="_blank" rel="noopener" style="color:var(--blue,#235FA6)">source ↗</a>'):'',r.source2&&r.source2!==r.source1?('<a href="'+esc(r.source2)+'" target="_blank" rel="noopener" style="color:var(--blue,#235FA6)">source 2 ↗</a>'):''].filter(Boolean).join(' · ');
+        return '<div class="card" style="padding:15px 18px;margin-bottom:9px">'+
+          '<div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:flex-start">'+
+            '<div style="min-width:0;flex:1">'+
+              '<div style="font-weight:600;color:var(--text);font-size:14.5px">'+esc(r.candidate)+' <span style="font-size:10px;font-family:var(--mono);text-transform:uppercase;color:'+pc+'">· '+esc(r.priority||'')+'</span> <span style="font-size:10px;font-family:var(--mono);text-transform:uppercase;color:'+sc+'">· '+esc(status)+'</span></div>'+
+              (r.relevance?'<div style="font-size:12.5px;color:var(--text2);margin-top:4px">'+esc(r.relevance)+'</div>':'')+
+              (meta?'<div style="font-size:11.5px;color:var(--text3);margin-top:5px">'+meta+'</div>':'')+
+              (r.evidence?'<div style="font-size:11.5px;color:var(--text2);margin-top:6px;padding:8px 10px;background:var(--bg2);border-radius:8px">'+esc(r.evidence)+'</div>':'')+
+              (r.caveat?'<div style="font-size:11px;color:var(--amber);margin-top:5px">caveat: '+esc(r.caveat)+'</div>':'')+
+              (r.contact_path?'<div style="font-size:11.5px;color:var(--text3);margin-top:5px">contact: '+esc(r.contact_path)+'</div>':'')+
+              (links?'<div style="font-size:11px;margin-top:4px">'+links+'</div>':'')+
+              (r.next_action?'<div style="font-size:11.5px;color:var(--text2);margin-top:5px"><span style="color:var(--text3)">next:</span> '+esc(r.next_action)+'</div>':'')+
+            '</div>'+
+            '<div style="display:flex;gap:6px;flex-wrap:wrap">'+
+              (r.draft_body?'<button class="btn btn-pri btn-sm" onclick="pncViewDraft(\''+r.id+'\')">✉ View draft</button>':'')+
+            '</div>'+
+          '</div>'+
+          '<div style="margin-top:10px;border-top:1px solid var(--line,#2224);padding-top:9px;display:flex;gap:6px;flex-wrap:wrap;align-items:center">'+
+            '<select id="pnc-stage-'+r.id+'" onchange="pncStage(\''+r.id+'\',this.value)" style="padding:6px 8px;font-size:12px">'+stageOpts+'</select>'+
+            '<input id="pnc-owner-'+r.id+'" value="'+esc(r.owner||'')+'" placeholder="Owner" style="padding:6px 8px;font-size:12px;max-width:110px">'+
+            '<input id="pnc-nad-'+r.id+'" type="date" value="'+(r.next_action_date?esc(r.next_action_date):'')+'" style="padding:6px 8px;font-size:12px">'+
+            '<button class="btn btn-ghost btn-sm" onclick="pncSaveMeta(\''+r.id+'\')">Save</button>'+
+          '</div>'+
+        '</div>';
+      }).join('')+'</div>';
+    }
+    p.innerHTML=html;
+  }catch(e){
+    console.error('[admin] loadCapitalPipeline failed:',e);
+    p.innerHTML=adminErr((e&&e.message)||'Could not load capital pipeline.');
+  }
+}
+window.pncStage=async function(id,status){
+  try{ var c=await window.PegSB.ready; var r=await c.from('pn_capital_pipeline').update({status:status}).eq('id',id); if(r.error) throw r.error; loadCapitalPipeline(document.getElementById('apanel')); }
+  catch(e){ alert('Could not update: '+((e&&e.message)||'error')); }
+};
+window.pncSaveMeta=async function(id){
+  function gv(x){var el=document.getElementById(x);return el?(el.value||'').trim():'';}
+  try{ var c=await window.PegSB.ready; var r=await c.from('pn_capital_pipeline').update({ owner:gv('pnc-owner-'+id)||null, next_action_date:gv('pnc-nad-'+id)||null }).eq('id',id); if(r.error) throw r.error; loadCapitalPipeline(document.getElementById('apanel')); }
+  catch(e){ alert('Could not save: '+((e&&e.message)||'error')); }
+};
+window.pncViewDraft=function(id){
+  var r=(window.__pncRows||{})[id]; if(!r){ alert('Lead not found. Reload the tab.'); return; }
+  var old=document.getElementById('di-draft-ov'); if(old) old.remove();
+  var ov=document.createElement('div'); ov.id='di-draft-ov';
+  ov.setAttribute('style','position:fixed;inset:0;background:rgba(5,8,13,.6);z-index:9600;display:flex;align-items:flex-start;justify-content:center;padding:40px 16px;overflow:auto');
+  var box=document.createElement('div');
+  box.setAttribute('style','background:var(--bg,#0f1824);border:1px solid var(--line,#2a3647);border-radius:10px;max-width:640px;width:100%;padding:22px 22px 18px;box-shadow:0 20px 60px rgba(0,0,0,.5)');
+  var head=document.createElement('div'); head.setAttribute('style','display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px');
+  head.innerHTML='<div style="font-family:var(--serif,serif);font-size:19px;color:var(--text)">Outreach draft</div><div style="font-size:11px;color:var(--text3);font-family:var(--mono)">'+diEsc(r.candidate)+'</div>';
+  box.appendChild(head);
+  var note=document.createElement('div'); note.setAttribute('style','font-size:11.5px;color:var(--text3);margin-bottom:12px');
+  note.textContent='Not sent. Send to: '+(r.draft_destination||'see contact path')+'. A fit inquiry, not an offer. Clear compliance before any terms.';
+  box.appendChild(note);
+  var subL=document.createElement('label'); subL.setAttribute('style','display:block;font-size:10.5px;font-family:var(--mono);text-transform:uppercase;letter-spacing:.06em;color:var(--text3);margin-bottom:5px'); subL.textContent='Subject';
+  var subI=document.createElement('input'); subI.id='di-draft-sub'; subI.value=r.draft_subject||''; subI.setAttribute('style','width:100%;padding:9px 11px;margin-bottom:12px;background:var(--bg2,#0a0f17);border:1px solid var(--line,#2a3647);color:var(--text,#f3efe6);border-radius:4px;font-size:13px');
+  box.appendChild(subL); box.appendChild(subI);
+  var bodL=document.createElement('label'); bodL.setAttribute('style','display:block;font-size:10.5px;font-family:var(--mono);text-transform:uppercase;letter-spacing:.06em;color:var(--text3);margin-bottom:5px'); bodL.textContent='Body';
+  var bodT=document.createElement('textarea'); bodT.id='di-draft-body'; bodT.value=r.draft_body||''; bodT.setAttribute('style','width:100%;min-height:260px;padding:11px;background:var(--bg2,#0a0f17);border:1px solid var(--line,#2a3647);color:var(--text,#f3efe6);border-radius:4px;font-size:13px;line-height:1.6;font-family:var(--sans,sans-serif)');
+  box.appendChild(bodL); box.appendChild(bodT);
+  var btns=document.createElement('div'); btns.setAttribute('style','display:flex;gap:8px;flex-wrap:wrap;margin-top:14px');
+  btns.innerHTML='<button class="btn btn-pri btn-sm" onclick="diDraftCopy()">Copy</button>'+
+    '<button class="btn btn-ghost btn-sm" style="margin-left:auto" onclick="diDraftClose()">Close</button>';
+  box.appendChild(btns);
+  ov.appendChild(box);
+  ov.addEventListener('click',function(ev){ if(ev.target===ov) diDraftClose(); });
+  document.body.appendChild(ov);
+};
 async function loadClaims(p){
   p.innerHTML='<div style="padding:40px;text-align:center;color:var(--text3);font-size:12px">Loading claims…</div>';
   try{
@@ -1818,6 +1917,7 @@ window.aShow=function(s){[...document.querySelectorAll('#atabs .toggle-opt')].fo
   if(s==='Users'){ loadUsers(p); return; }
   if(s==='Pegasus AI'){ loadPegasusAI(p); return; }
   if(s==='Private Network'){ loadPrivateNetwork(p); return; }
+  if(s==='Capital Pipeline'){ loadCapitalPipeline(p); return; }
   if(s==='Intelligence'){ loadDealIntel(p); return; }
   if(s==='Investors'){ loadInvestors(p); return; }
   if(s==='AI Companies'){ loadAiStartups(p); return; }
