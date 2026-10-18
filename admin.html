@@ -75,7 +75,7 @@ v.insertAdjacentHTML('beforeend',
   '<a href="/showcase-admin.html" style="color:var(--blue)">Showcase Moderation</a> · <a href="/admin/intelligence" style="color:var(--blue)">Capital Intelligence</a> · '+
   '<a href="/admin/partner-network" style="color:var(--blue)">Partner Network</a></div>'+
   '<div style="display:flex;gap:4px;margin-bottom:16px;flex-wrap:wrap" id="atabs"></div><div id="apanel"></div>');
-const sections=['Dashboard','Users','Pegasus AI','Intelligence','Investors','AI Companies','Intro Requests','Funding','Private Network','Capital Pipeline','Feed','Invites','Claims','Deal Requests','Duplicates','Directory','Homepage Event','Subscriptions','Access System','Deal Rooms','Lender Profiles','Growth Partner Submissions','Match Activity','Analytics','Member Log','Manual Review','Platform Health','Schema & Repair'];
+const sections=['Dashboard','Users','Pegasus AI','Intelligence','Investors','AI Companies','Intro Requests','Funding','Private Network','Capital Pipeline','Capital Metrics','Feed','Invites','Claims','Deal Requests','Duplicates','Directory','Homepage Event','Subscriptions','Access System','Deal Rooms','Lender Profiles','Growth Partner Submissions','Match Activity','Analytics','Member Log','Manual Review','Platform Health','Schema & Repair'];
 document.getElementById('atabs').innerHTML=sections.map((s,i)=>'<div class="toggle-opt '+(i===0?'on':'')+'" style="font-size:11px" onclick="aShow(\''+s+'\')">'+s+'</div>').join('');
 function tbl(cols,rows){return '<div class="card"><table class="tbl"><thead><tr>'+cols.map(c=>'<th>'+c+'</th>').join('')+'</tr></thead><tbody>'+rows.map(r=>'<tr>'+r.map(c=>'<td>'+c+'</td>').join('')+'</tr>').join('')+'</tbody></table></div>';}
 const chip=(t,c)=>'<span class="badge '+c+'">'+t+'</span>';
@@ -1095,6 +1095,63 @@ window.frSaveMeta=async function(id){
     loadFunding(document.getElementById('apanel'));
   }catch(e){ alert('Could not save: '+((e&&e.message)||'error')); }
 };
+/* ===== Capital Metrics (CFO view, read-only, real numbers) ===== */
+async function loadCapitalMetrics(p){
+  p.innerHTML='<div style="padding:40px;text-align:center;color:var(--text3);font-size:12px">Loading capital metrics…</div>';
+  try{
+    var c=await window.PegSB.ready;
+    function cnt(table, build){
+      var q=c.from(table).select('*',{count:'exact',head:true});
+      if(build) q=build(q);
+      return q.then(function(r){ return r.error?null:(r.count||0); });
+    }
+    var res=await Promise.all([
+      cnt('pn_agents',function(q){return q.eq('status','active');}),      // 0 realtors/agents
+      cnt('ai_startups',function(q){return q.eq('status','listed');}),    // 1 ai companies
+      cnt('ai_investors'),                                                // 2 ai investors
+      cnt('pn_capital_pipeline'),                                         // 3 capital leads
+      cnt('deal_intel_signals',function(q){return q.eq('status','published');}), // 4 published signals
+      cnt('funding_requests'),                                            // 5 funding apps
+      cnt('ai_intro_requests')                                            // 6 intro requests
+    ]);
+    function n(v){ return (v==null)?'—':String(v); }
+    var realtors=res[0]||0, companies=res[1]||0, investors=res[2]||0, capital=res[3]||0;
+    var signals=res[4]||0, funding=res[5]||0, intros=res[6]||0;
+    var participants=realtors+companies+investors+capital;
+    var opportunities=signals+funding+intros;
+
+    function tile(big,label,sub,color){
+      return '<div class="card" style="padding:18px 20px;min-width:180px;flex:1">'+
+        '<div style="font-size:30px;font-weight:800;color:'+(color||'var(--text)')+';letter-spacing:-.02em">'+big+'</div>'+
+        '<div style="font-size:12px;color:var(--text2);font-weight:600;margin-top:2px">'+label+'</div>'+
+        (sub?'<div style="font-size:11px;color:var(--text3);margin-top:6px;line-height:1.5">'+sub+'</div>':'')+
+      '</div>';
+    }
+    function bar(cur,target){
+      var pct=Math.max(0,Math.min(100, target?Math.round(cur/target*100):0));
+      return '<div style="height:7px;border-radius:4px;background:var(--bg2);overflow:hidden;margin-top:8px"><div style="height:100%;width:'+pct+'%;background:linear-gradient(90deg,var(--blue,#235FA6),var(--green))"></div></div>';
+    }
+
+    var html='<div style="font-size:13px;color:var(--text2);max-width:72ch;margin:0 0 4px">CFO view. Real numbers from the live database, not targets. "Participants" counts everyone actually in the network across the directories; it is not capital available to Pegasus.</div>'+
+      '<div style="font-size:11px;color:var(--text3);margin:0 0 16px">Updated live on load.</div>'+
+      '<div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:10px">'+
+        tile(n(participants),'Network participants','Realtors '+realtors+' · AI companies '+companies+' · Investors '+investors+' · Capital leads '+capital,'var(--text)')+
+        tile(n(opportunities),'Confirmed opportunities','Published signals '+signals+' · Funding apps '+funding+' · Intro requests '+intros,'var(--blue,#235FA6)')+
+        tile('—','Claimed capital','Not captured yet. Add a capital field at investor/funding intake to track this honestly.','var(--amber)')+
+        tile('0','Funded deals','No closed, funded deals recorded yet. This is the only number that means real revenue.','var(--green)')+
+      '</div>'+
+      '<div class="banner bn-cancel" style="margin:4px 0 16px"><div class="banner-msg">⚠ <span>Member or participant assets are never Pegasus capital. Only "Funded deals" reflects real completed transactions. Nothing is presented as verified without documents, risk analysis and the required approvals.</span></div></div>'+
+      '<div style="font-size:12px;font-family:var(--mono);text-transform:uppercase;letter-spacing:.06em;color:var(--text3);margin:0 0 10px">Long-term targets (aspirational, not current)</div>'+
+      '<div class="card" style="padding:16px 20px;margin-bottom:9px"><div style="display:flex;justify-content:space-between;font-size:13px;color:var(--text)"><span>Verified participants</span><span>'+participants+' / 10,000</span></div>'+bar(participants,10000)+'</div>'+
+      '<div class="card" style="padding:16px 20px;margin-bottom:9px"><div style="display:flex;justify-content:space-between;font-size:13px;color:var(--text)"><span>National coverage</span><span>target 50 states</span></div><div style="font-size:11px;color:var(--text3);margin-top:6px">State coverage not tracked yet; add a state field to profiles/investors to measure it.</div></div>'+
+      '<div class="card" style="padding:16px 20px"><div style="display:flex;justify-content:space-between;font-size:13px;color:var(--text)"><span>Participant investable assets</span><span>target $20B</span></div><div style="font-size:11px;color:var(--text3);margin-top:6px">Aspirational reference only, never shown publicly as committed or available capital.</div></div>';
+    p.innerHTML=html;
+  }catch(e){
+    console.error('[admin] loadCapitalMetrics failed:',e);
+    p.innerHTML=adminErr((e&&e.message)||'Could not load capital metrics.');
+  }
+}
+
 /* ===== Private Network capital pipeline (pn_capital_pipeline) ===== */
 var PNC_STAGES=['new','drafted','contacted','replied','in_review','passed'];
 var PNC_STAGE_COLOR={'new':'var(--text3)','drafted':'var(--amber)','contacted':'var(--blue,#235FA6)','replied':'var(--green)','in_review':'var(--violet,#8b7bd8)','passed':'var(--red,#c0392b)'};
@@ -2001,6 +2058,7 @@ window.aShow=function(s){[...document.querySelectorAll('#atabs .toggle-opt')].fo
   if(s==='Pegasus AI'){ loadPegasusAI(p); return; }
   if(s==='Private Network'){ loadPrivateNetwork(p); return; }
   if(s==='Capital Pipeline'){ loadCapitalPipeline(p); return; }
+  if(s==='Capital Metrics'){ loadCapitalMetrics(p); return; }
   if(s==='Intelligence'){ loadDealIntel(p); return; }
   if(s==='Investors'){ loadInvestors(p); return; }
   if(s==='AI Companies'){ loadAiStartups(p); return; }
