@@ -1116,7 +1116,10 @@ async function loadCapitalPipeline(p){
       '<div class="card" style="padding:14px 18px"><div style="font-size:22px;font-weight:700;color:var(--blue,#235FA6)">'+cnt('contacted')+'</div><div style="font-size:11px;color:var(--text3);font-family:var(--mono)">CONTACTED</div></div>'+
     '</div>'+
     '<div class="banner bn-cancel" style="margin-bottom:12px"><div class="banner-msg">⚠ <span>Private, internal only. Nothing here has been sent. Before any financial terms go out, clear the securities route (Reg D 506b/506c), OFAC, CFIUS and KYC/AML. Minimum cheques are unverified. Drafts are fit inquiries, not offers.</span></div></div>'+
-    '<div style="font-size:11.5px;color:var(--text3);max-width:72ch;margin:0 0 14px">Outbound capital targets for Pegasus Private Network (US / California residential). Work each one, copy the draft, send it yourself, then move the status.</div>';
+    '<div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin:0 0 14px">'+
+      '<div style="font-size:11.5px;color:var(--text3);max-width:62ch">Outbound capital targets for Pegasus Private Network (US / California residential). Work each one, copy the draft, send it yourself, then move the status.</div>'+
+      '<button class="btn btn-pri btn-sm" onclick="pncEdit(null)">+ Add lead</button>'+
+    '</div>';
 
     if(!rows.length){ html+=adminEmpty('🏦','No capital leads yet','Research pipeline loads here.'); }
     else{
@@ -1141,6 +1144,7 @@ async function loadCapitalPipeline(p){
             '</div>'+
             '<div style="display:flex;gap:6px;flex-wrap:wrap">'+
               (r.draft_body?'<button class="btn btn-pri btn-sm" onclick="pncViewDraft(\''+r.id+'\')">✉ View draft</button>':'')+
+              '<button class="btn btn-ghost btn-sm" onclick="pncEdit(\''+r.id+'\')">✎ Edit</button>'+
             '</div>'+
           '</div>'+
           '<div style="margin-top:10px;border-top:1px solid var(--line,#2224);padding-top:9px;display:flex;gap:6px;flex-wrap:wrap;align-items:center">'+
@@ -1193,6 +1197,85 @@ window.pncViewDraft=function(id){
   ov.appendChild(box);
   ov.addEventListener('click',function(ev){ if(ev.target===ov) diDraftClose(); });
   document.body.appendChild(ov);
+};
+window.pncEditClose=function(){ var o=document.getElementById('pnc-edit-ov'); if(o) o.remove(); };
+function pncValidUrl(v){ try{ var u=new window.URL(String(v)); return (u.protocol==='http:'||u.protocol==='https:'); }catch(e){ return false; } }
+window.pncEdit=function(id){
+  var r=(id?(window.__pncRows||{})[id]:null)||{};
+  window.__pncEditId=id||null;
+  var old=document.getElementById('pnc-edit-ov'); if(old) old.remove();
+  var ov=document.createElement('div'); ov.id='pnc-edit-ov';
+  ov.setAttribute('style','position:fixed;inset:0;background:rgba(5,8,13,.6);z-index:9600;display:flex;align-items:flex-start;justify-content:center;padding:40px 16px;overflow:auto');
+  var box=document.createElement('div');
+  box.setAttribute('style','background:var(--bg,#0f1824);border:1px solid var(--line,#2a3647);border-radius:10px;max-width:680px;width:100%;padding:22px 22px 18px;box-shadow:0 20px 60px rgba(0,0,0,.5)');
+  var head=document.createElement('div'); head.setAttribute('style','display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px');
+  head.innerHTML='<div style="font-family:var(--serif,serif);font-size:19px;color:var(--text)">'+(id?'Edit capital lead':'Add capital lead')+'</div>';
+  box.appendChild(head);
+  var note=document.createElement('div'); note.setAttribute('style','font-size:11.5px;color:var(--text3);margin-bottom:14px');
+  note.textContent='Evidence-backed records only. A valid source link is required. Nothing is sent from here.';
+  box.appendChild(note);
+  var fields=[
+    ['candidate','Candidate *','input',''],
+    ['classification','Classification *','input',''],
+    ['priority','Priority','select',['','HIGH','MEDIUM','LOW–MEDIUM','LOW']],
+    ['base_location','Base / location','input',''],
+    ['min_cheque','Minimum cheque','input',''],
+    ['source1','Source 1 URL *','input',''],
+    ['source2','Source 2 URL','input',''],
+    ['contact_path','Contact path','input',''],
+    ['relevance','Pegasus relevance','textarea',''],
+    ['evidence','Evidence','textarea',''],
+    ['caveat','Caveat','textarea',''],
+    ['next_action','Next action','input',''],
+    ['draft_subject','Draft subject','input',''],
+    ['draft_destination','Draft destination','input',''],
+    ['draft_body','Draft body','textarea',''],
+    ['status','Status','select',PNC_STAGES]
+  ];
+  var grid=document.createElement('div'); grid.setAttribute('style','display:grid;grid-template-columns:1fr 1fr;gap:10px');
+  var isLong={relevance:1,evidence:1,caveat:1,draft_body:1};
+  fields.forEach(function(f){
+    var wrap=document.createElement('div');
+    if(isLong[f[0]]||f[0]==='draft_subject'||f[0]==='draft_destination'||f[0]==='next_action'||f[0]==='contact_path') wrap.setAttribute('style','grid-column:1/-1');
+    var lab=document.createElement('label'); lab.setAttribute('style','display:block;font-size:10.5px;font-family:var(--mono);text-transform:uppercase;letter-spacing:.05em;color:var(--text3);margin:0 0 5px'); lab.textContent=f[1];
+    var inp;
+    if(f[2]==='select'){ inp=document.createElement('select'); f[3].forEach(function(o){ var op=document.createElement('option'); op.value=o; op.textContent=(o===''?'(none)':o); inp.appendChild(op); }); inp.value=(r[f[0]]!=null?String(r[f[0]]):(f[0]==='status'?'new':'')); }
+    else if(f[2]==='textarea'){ inp=document.createElement('textarea'); inp.setAttribute('style','min-height:60px'); inp.value=(r[f[0]]!=null?String(r[f[0]]):''); }
+    else { inp=document.createElement('input'); inp.value=(r[f[0]]!=null?String(r[f[0]]):''); }
+    inp.id='pnce-'+f[0];
+    inp.setAttribute('style',(inp.getAttribute('style')||'')+';width:100%;padding:8px 10px;background:var(--bg2,#0a0f17);border:1px solid var(--line,#2a3647);color:var(--text,#f3efe6);border-radius:4px;font-size:13px;font-family:var(--sans,sans-serif)');
+    wrap.appendChild(lab); wrap.appendChild(inp); grid.appendChild(wrap);
+  });
+  box.appendChild(grid);
+  var err=document.createElement('div'); err.id='pnce-err'; err.setAttribute('style','color:var(--red,#c0392b);font-size:12px;margin-top:10px;min-height:1px'); box.appendChild(err);
+  var btns=document.createElement('div'); btns.setAttribute('style','display:flex;gap:8px;flex-wrap:wrap;margin-top:12px');
+  btns.innerHTML='<button class="btn btn-pri btn-sm" onclick="pncSaveEdit()">Save lead</button><button class="btn btn-ghost btn-sm" style="margin-left:auto" onclick="pncEditClose()">Cancel</button>';
+  box.appendChild(btns);
+  ov.appendChild(box);
+  ov.addEventListener('click',function(ev){ if(ev.target===ov) pncEditClose(); });
+  document.body.appendChild(ov);
+};
+window.pncSaveEdit=async function(){
+  function gv(k){var el=document.getElementById('pnce-'+k);return el?(el.value||'').trim():'';}
+  var err=document.getElementById('pnce-err'); if(err) err.textContent='';
+  var candidate=gv('candidate'), classification=gv('classification'), source1=gv('source1'), source2=gv('source2');
+  if(candidate.length<2){ if(err) err.textContent='Candidate is required.'; return; }
+  if(classification.length<2){ if(err) err.textContent='Classification is required.'; return; }
+  if(!pncValidUrl(source1)){ if(err) err.textContent='Source 1 must be a valid http(s) URL.'; return; }
+  if(source2 && !pncValidUrl(source2)){ if(err) err.textContent='Source 2 must be a valid URL or left blank.'; return; }
+  var row={ candidate:candidate, classification:classification, priority:gv('priority')||null, base_location:gv('base_location')||null,
+    min_cheque:gv('min_cheque')||null, source1:source1, source2:source2||null, contact_path:gv('contact_path')||null,
+    relevance:gv('relevance')||null, evidence:gv('evidence')||null, caveat:gv('caveat')||null, next_action:gv('next_action')||null,
+    draft_subject:gv('draft_subject')||null, draft_destination:gv('draft_destination')||null, draft_body:gv('draft_body')||null,
+    status:gv('status')||'new' };
+  try{
+    var c=await window.PegSB.ready;
+    var id=window.__pncEditId;
+    var r = id ? await c.from('pn_capital_pipeline').update(row).eq('id',id) : await c.from('pn_capital_pipeline').insert(Object.assign({source:'manual'},row));
+    if(r.error) throw r.error;
+    pncEditClose();
+    loadCapitalPipeline(document.getElementById('apanel'));
+  }catch(e){ if(err) err.textContent=(e&&e.message)||'Could not save.'; }
 };
 async function loadClaims(p){
   p.innerHTML='<div style="padding:40px;text-align:center;color:var(--text3);font-size:12px">Loading claims…</div>';
