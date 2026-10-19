@@ -104,7 +104,7 @@
       <div class="mob-drawer-nav" id="mobDrawerNav">
         <a href="/people">Capital &amp; Real Estate</a><a href="/ai-network.html">Pegasus AI</a><a href="/private-network.html">Private Network</a><a href="/how-it-works.html">How it works</a>
         <div class="mob-sec">Capital &amp; Real Estate</div>
-        <a href="/realtors.html">Realtors</a><a href="/find-a-lender.html">Lenders</a><a href="/showcase.html">Opportunities</a>
+        <a href="/realtors.html">Realtors</a><a href="/lenders">Lender Directory</a><a href="/find-a-lender">Find a Lender</a><a href="/showcase.html">Opportunities</a>
         <div class="mob-sec">More</div>
         <a href="/about.html">About</a><a href="/contact.html">Contact</a><a href="/faq.html">FAQ</a>
       </div>
