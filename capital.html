@@ -1,0 +1,122 @@
+<!DOCTYPE html><html lang="en"><head>
+<title>Pegasus Capital Network — Capital & Real Estate</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="Private investors discover real estate-backed lending opportunities, borrowers find financing for bridge, construction and investment properties, and professionals connect across the Pegasus capital network.">
+<link rel="canonical" href="https://pegasuscapitalnetwork.com/capital.html">
+<meta property="og:title" content="Pegasus Capital Network — Capital & Real Estate">
+<meta property="og:description" content="Invest in real estate-backed loans, get financing, or explore the network.">
+<meta property="og:type" content="website">
+<link rel="icon" href="/assets/brand/favicon.ico" sizes="any">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#ffffff;--bg2:#f6f7f9;--panel:#ffffff;--line:#e6e9ed;--line2:#eef1f4;
+  --ink:#0e1824;--ink2:#2a3a4e;--text:#46525f;--muted:#737e8b;
+  --navy:#1b3a5b;--navy-d:#14304b;--navy-l:#2b5580;--gold:#9a7b3f;
+  --sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  --shadow-sm:0 1px 2px rgba(14,24,36,.06);--shadow:0 2px 6px rgba(14,24,36,.05),0 16px 40px rgba(14,24,36,.10);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-weight:400;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1080px;margin:0 auto;padding:0 32px}
+@media(max-width:640px){.wrap{padding:0 20px}}
+.bg{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(1100px 600px at 50% -10%,rgba(27,58,91,.07),transparent 60%),linear-gradient(180deg,#fbfcfe 0,#ffffff 520px)}
+/* trust strip */
+.trust{position:relative;z-index:3;background:var(--navy);color:#dfe8f1;font-size:12px;letter-spacing:.01em}
+.trust .wrap{display:flex;gap:8px 20px;flex-wrap:wrap;align-items:center;justify-content:center;padding:9px 32px;text-align:center}
+.trust b{color:#fff;font-weight:600}
+.trust .sep{opacity:.4}
+/* header */
+header.top{position:relative;z-index:3}
+.top-in{max-width:1080px;margin:0 auto;padding:18px 32px;display:flex;align-items:center;justify-content:space-between}
+@media(max-width:640px){.top-in{padding:14px 20px}}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:18px;letter-spacing:-.015em;color:var(--ink)}
+.brand img{height:26px;width:auto;display:block}
+.nav{display:flex;gap:18px;align-items:center;font-size:13px;color:var(--muted);font-weight:500}
+.nav a:hover{color:var(--navy)}
+@media(max-width:640px){.nav{display:none}}
+/* hero */
+.hero{position:relative;z-index:2;text-align:center;padding:60px 0 30px}
+.eyebrow{font-size:11.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:16px}
+h1{font-weight:800;font-size:clamp(32px,5vw,52px);line-height:1.04;letter-spacing:-.03em;color:var(--ink)}
+.sub{margin:18px auto 0;font-size:clamp(15px,1.8vw,18px);color:var(--muted);max-width:60ch}
+/* choices */
+.choices{position:relative;z-index:2;display:grid;grid-template-columns:repeat(3,1fr);gap:20px;padding:36px 0 8px}
+@media(max-width:860px){.choices{grid-template-columns:1fr;max-width:520px;margin:0 auto}}
+.choice{display:flex;flex-direction:column;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:28px 26px 24px;min-height:252px;box-shadow:var(--shadow-sm);transition:transform .22s cubic-bezier(.2,.7,.2,1),box-shadow .22s,border-color .22s;position:relative;overflow:hidden}
+.choice::before{content:"";position:absolute;left:0;right:0;top:0;height:4px;background:linear-gradient(90deg,var(--navy),var(--navy-l));transform:scaleX(0);transform-origin:left;transition:transform .3s}
+.choice:hover{transform:translateY(-6px);box-shadow:var(--shadow);border-color:#d7dde4}
+.choice:hover::before{transform:scaleX(1)}
+.c-ico{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:linear-gradient(160deg,#f2f5f9,#e9eef4);border:1px solid var(--line);margin-bottom:18px;color:var(--navy)}
+.c-ico svg{width:23px;height:23px}
+.c-ttl{font-size:21px;font-weight:700;color:var(--ink);letter-spacing:-.02em;margin-bottom:9px}
+.c-desc{font-size:13.5px;color:var(--text);flex:1;line-height:1.56}
+.c-go{margin-top:18px;font-size:14px;font-weight:600;color:var(--navy);display:inline-flex;align-items:center;gap:7px}
+.choice:hover .c-go .ar{transform:translateX(5px)}
+.c-go .ar{transition:transform .2s}
+.badge{position:absolute;top:16px;right:16px;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--gold);background:rgba(154,123,63,.1);border:1px solid rgba(154,123,63,.25);border-radius:999px;padding:3px 9px}
+/* subnav */
+.subnav{position:relative;z-index:2;display:flex;flex-wrap:wrap;gap:10px;justify-content:center;padding:30px 0 6px}
+.subnav a{font-size:13px;font-weight:500;color:var(--ink2);background:var(--bg2);border:1px solid var(--line);border-radius:999px;padding:8px 16px;transition:border-color .18s,color .18s}
+.subnav a:hover{color:var(--navy);border-color:#cfd6de}
+.disc{position:relative;z-index:2;font-size:11px;color:var(--muted);text-align:center;padding:26px 0 54px;max-width:74ch;margin:0 auto;line-height:1.7}
+</style></head>
+<body>
+<div class="bg"></div>
+<div class="trust"><div class="wrap">
+  <span>West Coast Capital Mortgage Inc.</span><span class="sep">·</span>
+  <span>NMLS <b>#2817729</b></span><span class="sep">·</span>
+  <span>DRE <b>#01385024</b></span><span class="sep">·</span>
+  <span>Los Angeles</span><span class="sep">·</span>
+  <span>Lending &amp; real estate since <b>2004</b></span>
+</div></div>
+
+<header class="top"><div class="top-in">
+  <a class="brand" href="/"><img src="/assets/brand/pegasus-mark.png" alt="Pegasus"> Pegasus</a>
+  <nav class="nav"><a href="/pegasus-direct-lending.html">Invest</a><a href="/get-financing.html">Get financing</a><a href="/people">Directory</a><a href="/">All worlds</a></nav>
+</div></header>
+
+<section class="hero"><div class="wrap">
+  <div class="eyebrow">Pegasus Capital Network</div>
+  <h1>Capital &amp; Real Estate</h1>
+  <p class="sub">Private investors discover real estate-backed lending opportunities. Borrowers find financing for bridge, construction and investment properties. Professionals connect across the network. Choose where you want to go.</p>
+</div></section>
+
+<div class="wrap">
+  <div class="choices">
+    <a class="choice" href="/pegasus-direct-lending.html">
+      <span class="badge">Live</span>
+      <span class="c-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V8l7-4 7 4v13"/><path d="M9 21v-6h6v6"/></svg></span>
+      <div class="c-ttl">I want to invest</div>
+      <div class="c-desc">Be the lender. Review real estate-backed loans secured by a recorded deed of trust, choose the deals that fit you, and earn monthly interest. The borrower pays the fees, not you.</div>
+      <span class="c-go">Pegasus Direct Lending <span class="ar">&rarr;</span></span>
+    </a>
+    <a class="choice" href="/get-financing.html">
+      <span class="c-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span>
+      <div class="c-ttl">I need financing</div>
+      <div class="c-desc">Funding for bridge, construction, fix-and-flip and investment properties. Tell us about your deal and we run a fast preliminary review, then match it to the right capital.</div>
+      <span class="c-go">Get financing <span class="ar">&rarr;</span></span>
+    </a>
+    <a class="choice" href="/people">
+      <span class="c-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M3 20c0-3 3-5 6-5s6 2 6 5"/><circle cx="17.5" cy="9.5" r="2.5"/><path d="M15 15.5c3 0 6 1.5 6 4.5"/></svg></span>
+      <div class="c-ttl">Explore the network</div>
+      <div class="c-desc">Browse lenders, mortgage brokers, real estate agents, developers and capital partners already in Pegasus. Claim your business and make the connections your next deal needs.</div>
+      <span class="c-go">Open the directory <span class="ar">&rarr;</span></span>
+    </a>
+  </div>
+
+  <div class="subnav">
+    <a href="/pegasus-direct-lending.html">Private Investors</a>
+    <a href="/get-financing.html">Borrowers / Get Financing</a>
+    <a href="/pegasus-direct-lending.html#deals">Direct Lending Opportunities</a>
+    <a href="/people">Lenders &amp; Business Directory</a>
+    <a href="/pegasus-direct-lending.html#invest">Investor Relations</a>
+  </div>
+
+  <p class="disc">Pegasus Capital Network facilitates professional connections and, through the licensed brokerage West Coast Capital Mortgage Inc. (NMLS #2817729, DRE #01385024), arranges real estate-secured loans. This page is informational and is not an offer to sell or a solicitation to buy any security or investment. Real estate lending involves risk, including possible loss of principal. Returns are not guaranteed and are not insured. Pegasus AI and Pegasus Private Network (tokenized assets) are separate directions.</p>
+</div>
+</body></html>
