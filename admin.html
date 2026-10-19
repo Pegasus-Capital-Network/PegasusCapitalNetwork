@@ -75,7 +75,7 @@ v.insertAdjacentHTML('beforeend',
   '<a href="/showcase-admin.html" style="color:var(--blue)">Showcase Moderation</a> · <a href="/admin/intelligence" style="color:var(--blue)">Capital Intelligence</a> · '+
   '<a href="/admin/partner-network" style="color:var(--blue)">Partner Network</a></div>'+
   '<div style="display:flex;gap:4px;margin-bottom:16px;flex-wrap:wrap" id="atabs"></div><div id="apanel"></div>');
-const sections=['Dashboard','Users','Pegasus AI','Intelligence','Investors','AI Companies','Intro Requests','Funding','Private Network','Capital Pipeline','Capital Metrics','Direct Lending','Feed','Invites','Claims','Deal Requests','Duplicates','Directory','Homepage Event','Subscriptions','Access System','Deal Rooms','Lender Profiles','Growth Partner Submissions','Match Activity','Analytics','Member Log','Manual Review','Platform Health','Schema & Repair'];
+const sections=['Dashboard','Users','Pegasus AI','Intelligence','Investors','AI Companies','Intro Requests','Funding','Private Network','Capital Pipeline','Capital Metrics','Direct Lending','PN Capital Leads','Feed','Invites','Claims','Deal Requests','Duplicates','Directory','Homepage Event','Subscriptions','Access System','Deal Rooms','Lender Profiles','Growth Partner Submissions','Match Activity','Analytics','Member Log','Manual Review','Platform Health','Schema & Repair'];
 document.getElementById('atabs').innerHTML=sections.map((s,i)=>'<div class="toggle-opt '+(i===0?'on':'')+'" style="font-size:11px" onclick="aShow(\''+s+'\')">'+s+'</div>').join('');
 function tbl(cols,rows){return '<div class="card"><table class="tbl"><thead><tr>'+cols.map(c=>'<th>'+c+'</th>').join('')+'</tr></thead><tbody>'+rows.map(r=>'<tr>'+r.map(c=>'<td>'+c+'</td>').join('')+'</tr>').join('')+'</tbody></table></div>';}
 const chip=(t,c)=>'<span class="badge '+c+'">'+t+'</span>';
@@ -1294,6 +1294,58 @@ window.dlSaveEdit=async function(){
 };
 
 /* ===== Capital Metrics (CFO view, read-only, real numbers) ===== */
+/* ===== Private Network capital leads (pn_investor_qualification) ===== */
+var PNQ_STAGES=['new','reviewing','aligned','intro_made','closed'];
+var PNQ_COLOR={'new':'var(--green)','reviewing':'var(--amber)','aligned':'var(--blue,#235FA6)','intro_made':'var(--violet,#8b7bd8)','closed':'var(--text3)'};
+async function loadPnQualify(p){
+  p.innerHTML='<div style="padding:40px;text-align:center;color:var(--text3);font-size:12px">Loading capital leads…</div>';
+  var esc=diEsc;
+  try{
+    var c=await window.PegSB.ready;
+    var res=await c.from('pn_investor_qualification').select('id,investor_type,country,investment_focus,preferred_markets,typical_allocation,investment_structure,investment_timeline,name,company,email,phone,message,area,status,created_at').order('created_at',{ascending:false}).limit(1000);
+    if(res.error) throw res.error;
+    var rows=res.data||[];
+    function cnt(st){return rows.filter(function(r){return (r.status||'new')===st;}).length;}
+    var html='<div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px">'+
+      '<div class="card" style="padding:14px 18px"><div style="font-size:22px;font-weight:700;color:var(--green)">'+cnt('new')+'</div><div style="font-size:11px;color:var(--text3);font-family:var(--mono)">NEW</div></div>'+
+      '<div class="card" style="padding:14px 18px"><div style="font-size:22px;font-weight:700;color:var(--amber)">'+cnt('reviewing')+'</div><div style="font-size:11px;color:var(--text3);font-family:var(--mono)">REVIEWING</div></div>'+
+      '<div class="card" style="padding:14px 18px"><div style="font-size:22px;font-weight:700;color:var(--text)">'+rows.length+'</div><div style="font-size:11px;color:var(--text3);font-family:var(--mono)">TOTAL</div></div>'+
+    '</div>'+
+    '<div style="font-size:11.5px;color:var(--text3);max-width:72ch;margin:0 0 14px">Investor qualification submissions from the Private Network page (international private capital for U.S. real estate). Informational relationship inquiries, not offers. Securities, OFAC and KYC review belong to the separate, gated process before any terms.</div>';
+    if(!rows.length){ html+=adminEmpty('🌐','No capital leads yet','When someone submits the Private Network qualification form, it lands here.'); }
+    else{
+      html+='<div id="pnq-list">'+rows.map(function(r){
+        var st=r.status||'new'; var sc=PNQ_COLOR[st]||'var(--text3)';
+        var opts=PNQ_STAGES.map(function(s){return '<option value="'+s+'"'+(s===st?' selected':'')+'>'+s+'</option>';}).join('');
+        var meta=[r.investor_type?esc(r.investor_type):'',r.country?esc(r.country):'',r.investment_focus?esc(r.investment_focus):'',r.preferred_markets?esc(r.preferred_markets):''].filter(Boolean).join(' · ');
+        var meta2=[r.typical_allocation?('alloc '+esc(r.typical_allocation)):'',r.investment_structure?esc(r.investment_structure):'',r.investment_timeline?esc(r.investment_timeline):''].filter(Boolean).join(' · ');
+        var mb='Hi '+((r.name||'there').split(' ')[0])+',%0D%0A%0D%0AThank you for your interest in Pegasus. ';
+        return '<div class="card" style="padding:15px 18px;margin-bottom:9px">'+
+          '<div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:flex-start">'+
+            '<div style="min-width:0;flex:1">'+
+              '<div style="font-size:13.5px;color:var(--text)"><b>'+esc(r.name||'Investor')+'</b>'+(r.company?(' <span style="color:var(--text2);font-size:12.5px">· '+esc(r.company)+'</span>'):'')+' <span style="font-size:10px;font-family:var(--mono);text-transform:uppercase;color:'+sc+'">· '+esc(st)+'</span>'+(r.area?(' <span style="font-size:10px;color:var(--text3)">via '+esc(r.area)+'</span>'):'')+'</div>'+
+              (meta?'<div style="font-size:12px;color:var(--text2);margin-top:5px">'+meta+'</div>':'')+
+              (meta2?'<div style="font-size:11.5px;color:var(--text3);margin-top:4px">'+meta2+'</div>':'')+
+              '<div style="font-size:11.5px;color:var(--text3);margin-top:5px">'+(r.email?('<a href="mailto:'+esc(r.email)+'?subject=Pegasus&body='+mb+'" style="color:var(--blue,#235FA6)">'+esc(r.email)+'</a>'):'')+(r.phone?(' · '+esc(r.phone)):'')+'</div>'+
+              (r.message?'<div style="font-size:12px;color:var(--text2);margin-top:6px;padding:8px 10px;background:var(--bg2);border-radius:8px">'+esc(r.message)+'</div>':'')+
+              '<div style="font-size:10px;color:var(--text3);margin-top:5px;font-family:var(--mono)">'+(r.created_at?esc(String(r.created_at).slice(0,10)):'')+'</div>'+
+            '</div>'+
+            (r.email?'<a class="btn btn-pri btn-sm" href="mailto:'+esc(r.email)+'?subject=Pegasus&body='+mb+'">✉ Reply</a>':'')+
+          '</div>'+
+          '<div style="margin-top:10px;border-top:1px solid var(--line,#2224);padding-top:9px"><select onchange="pnqStatus(\''+r.id+'\',this.value)" style="padding:6px 8px;font-size:12px">'+opts+'</select></div>'+
+        '</div>';
+      }).join('')+'</div>';
+    }
+    p.innerHTML=html;
+  }catch(e){
+    console.error('[admin] loadPnQualify failed:',e);
+    p.innerHTML=adminErr((e&&e.message)||'Could not load capital leads.');
+  }
+}
+window.pnqStatus=async function(id,status){
+  try{ var c=await window.PegSB.ready; var r=await c.from('pn_investor_qualification').update({status:status}).eq('id',id); if(r.error) throw r.error; loadPnQualify(document.getElementById('apanel')); }
+  catch(e){ alert('Could not update: '+((e&&e.message)||'error')); }
+};
 async function loadCapitalMetrics(p){
   p.innerHTML='<div style="padding:40px;text-align:center;color:var(--text3);font-size:12px">Loading capital metrics…</div>';
   try{
@@ -2258,6 +2310,7 @@ window.aShow=function(s){[...document.querySelectorAll('#atabs .toggle-opt')].fo
   if(s==='Capital Pipeline'){ loadCapitalPipeline(p); return; }
   if(s==='Capital Metrics'){ loadCapitalMetrics(p); return; }
   if(s==='Direct Lending'){ loadDirectLending(p); return; }
+  if(s==='PN Capital Leads'){ loadPnQualify(p); return; }
   if(s==='Intelligence'){ loadDealIntel(p); return; }
   if(s==='Investors'){ loadInvestors(p); return; }
   if(s==='AI Companies'){ loadAiStartups(p); return; }
