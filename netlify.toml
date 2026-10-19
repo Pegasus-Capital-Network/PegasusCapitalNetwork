@@ -390,6 +390,20 @@
   to = "/feed.html"
   status = 200
 
+# Canonical public lender directory. Keep the old lender-directory URL as a
+# permanent redirect; /find-a-lender remains the deal-matching tool.
+[[redirects]]
+  from = "/lenders"
+  to = "/businesses/capital"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/lender-directory.html"
+  to = "/businesses/capital"
+  status = 301
+  force = true
+
 # Lender Matcher (public, indexable) and the lender-side inbox (members, noindex).
 [[redirects]]
   from = "/find-a-lender"
