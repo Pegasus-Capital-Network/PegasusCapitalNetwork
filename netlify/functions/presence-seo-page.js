@@ -85,12 +85,13 @@ async function getDirectoryRow(slug){
     const headers={apikey:key,Authorization:"Bearer "+key,Accept:"application/json"};
     const s=encodeURIComponent(slug);
     const get=path=>fetch(url+"/rest/v1/"+path,{headers}).then(r=>r.ok?r.json():null).catch(()=>null);
-    const [cr,dr]=await Promise.all([
+    const [cr,dr,discovery]=await Promise.all([
       get("public_presence_previews?select=is_claimable&slug=eq."+s+"&limit=1"),
-      get("public_business_directory?select=cat_slug,cat_label,section_slug,section_label,state_code,city,hmda_rank,hmda_volume_usd,hmda_count,unclaimed&slug=eq."+s+"&limit=1")
+      get("public_business_directory?select=cat_slug,cat_label,section_slug,section_label,state_code,city,hmda_rank,hmda_volume_usd,hmda_count,unclaimed&slug=eq."+s+"&limit=1"),
+      get("public_business_discovery?select=conference_affiliation&slug=eq."+s+"&limit=1")
     ]);
     out.is_claimable=!!(Array.isArray(cr)&&cr[0]&&cr[0].is_claimable===true);
-    if(Array.isArray(dr)&&dr[0]&&typeof dr[0]==="object") out.dir=dr[0];
+    if(Array.isArray(dr)&&dr[0]&&typeof dr[0]==="object") out.dir={...dr[0],conference_affiliation:discovery?.[0]?.conference_affiliation};
     if(out.dir) out.award=await isHonoree(slug,out.dir);
   }catch(_){}
   return out;
@@ -171,6 +172,7 @@ function snapshot(p,kind,canonical){
     (tagline?'<p style="font-size:17px;line-height:1.5;margin:8px 0">'+esc(tagline)+'</p>':'')+
     (meta.length?'<div style="color:#5b6573">'+esc(meta.join(" · "))+'</div>':'')+
     hmda+
+    (d?.conference_affiliation ? '<p style="font-size:13px;margin-top:12px"><a href="https://aaplonline.com/conference/" rel="noopener">'+esc(d.conference_affiliation)+'</a></p>' : '')+
     '</div></div>'+
     (desc?'<p style="font-size:15px;line-height:1.65;margin:22px 0 0">'+esc(desc)+'</p>':'')+
     (txt(p.offers)?'<section><h2 style="font-size:18px;margin:22px 0 6px">What we offer</h2><p style="line-height:1.6">'+esc(trunc(p.offers,700))+'</p></section>':'')+

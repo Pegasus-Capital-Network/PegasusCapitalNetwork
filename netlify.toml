@@ -110,6 +110,13 @@
   status = 200
   force = true
 
+# Public lender discovery; canonical company pages remain /business/:slug.
+[[redirects]]
+  from = "/lenders"
+  to = "/.netlify/functions/lenders-directory"
+  status = 200
+  force = true
+
 [[redirects]]
   from = "/businesses"
   to = "/.netlify/functions/public-directory?kind=businesses"
