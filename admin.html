@@ -75,7 +75,7 @@ v.insertAdjacentHTML('beforeend',
   '<a href="/showcase-admin.html" style="color:var(--blue)">Showcase Moderation</a> · <a href="/admin/intelligence" style="color:var(--blue)">Capital Intelligence</a> · '+
   '<a href="/admin/partner-network" style="color:var(--blue)">Partner Network</a></div>'+
   '<div style="display:flex;gap:4px;margin-bottom:16px;flex-wrap:wrap" id="atabs"></div><div id="apanel"></div>');
-const sections=['Dashboard','Users','Pegasus AI','Intelligence','Investors','AI Companies','Intro Requests','Funding','Private Network','Capital Pipeline','Capital Metrics','Feed','Invites','Claims','Deal Requests','Duplicates','Directory','Homepage Event','Subscriptions','Access System','Deal Rooms','Lender Profiles','Growth Partner Submissions','Match Activity','Analytics','Member Log','Manual Review','Platform Health','Schema & Repair'];
+const sections=['Dashboard','Users','Pegasus AI','Intelligence','Investors','AI Companies','Intro Requests','Funding','Private Network','Capital Pipeline','Capital Metrics','Direct Lending','Feed','Invites','Claims','Deal Requests','Duplicates','Directory','Homepage Event','Subscriptions','Access System','Deal Rooms','Lender Profiles','Growth Partner Submissions','Match Activity','Analytics','Member Log','Manual Review','Platform Health','Schema & Repair'];
 document.getElementById('atabs').innerHTML=sections.map((s,i)=>'<div class="toggle-opt '+(i===0?'on':'')+'" style="font-size:11px" onclick="aShow(\''+s+'\')">'+s+'</div>').join('');
 function tbl(cols,rows){return '<div class="card"><table class="tbl"><thead><tr>'+cols.map(c=>'<th>'+c+'</th>').join('')+'</tr></thead><tbody>'+rows.map(r=>'<tr>'+r.map(c=>'<td>'+c+'</td>').join('')+'</tr>').join('')+'</tbody></table></div>';}
 const chip=(t,c)=>'<span class="badge '+c+'">'+t+'</span>';
@@ -1095,6 +1095,204 @@ window.frSaveMeta=async function(id){
     loadFunding(document.getElementById('apanel'));
   }catch(e){ alert('Could not save: '+((e&&e.message)||'error')); }
 };
+/* ===== Pegasus Direct Lending (deed of trust) ===== */
+var DL_STAGES=['draft','open','funding','funded','closed'];
+var DL_STAGE_COLOR={'draft':'var(--text3)','open':'var(--green)','funding':'var(--amber)','funded':'var(--blue,#235FA6)','closed':'var(--text3)'};
+function dlNum(v){ if(v==null||v==='') return null; var n=parseFloat(String(v).replace(/[^0-9.\-]/g,'')); return isNaN(n)?null:n; }
+function dlMoney(v){ if(v==null) return ''; return '$'+Number(v).toLocaleString('en-US'); }
+function dlEcon(r){
+  var yrs=(r.term_months?r.term_months/12:null);
+  var br=(r.borrower_rate!=null?Number(r.borrower_rate):null);
+  var op=(r.origination_points!=null?Number(r.origination_points):null);
+  var ip=(r.investor_points!=null?Number(r.investor_points):null);
+  var gross=(br!=null&&op!=null&&yrs)?(br+op/yrs):null;
+  var net=(br!=null&&ip!=null&&yrs)?(br+ip/yrs):(r.investor_yield!=null?Number(r.investor_yield):null);
+  function pct(x){ return x==null?'—':(Math.round(x*100)/100)+'%'; }
+  return {gross:gross,net:net,brStr:pct(br),grossStr:pct(gross),netStr:pct(net)};
+}
+async function loadDirectLending(p){
+  p.innerHTML='<div style="padding:40px;text-align:center;color:var(--text3);font-size:12px">Loading Direct Lending…</div>';
+  var esc=diEsc;
+  try{
+    var c=await window.PegSB.ready;
+    var r1=await c.from('dl_deals').select('*').order('created_at',{ascending:false}).limit(500);
+    if(r1.error) throw r1.error;
+    var r2=await c.from('dl_investor_interest').select('*').order('created_at',{ascending:false}).limit(500);
+    var r3=await c.from('dl_borrower_requests').select('*').order('created_at',{ascending:false}).limit(500);
+    var deals=r1.data||[], interest=(r2&&r2.data)||[], borrowers=(r3&&r3.data)||[];
+    window.__dlDeals={}; deals.forEach(function(d){window.__dlDeals[d.id]=d;});
+    function dcnt(st){return deals.filter(function(d){return (d.status||'draft')===st;}).length;}
+    var html='<div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px">'+
+      '<div class="card" style="padding:14px 18px"><div style="font-size:22px;font-weight:700;color:var(--green)">'+dcnt('open')+'</div><div style="font-size:11px;color:var(--text3);font-family:var(--mono)">OPEN DEALS</div></div>'+
+      '<div class="card" style="padding:14px 18px"><div style="font-size:22px;font-weight:700;color:var(--text)">'+deals.length+'</div><div style="font-size:11px;color:var(--text3);font-family:var(--mono)">TOTAL DEALS</div></div>'+
+      '<div class="card" style="padding:14px 18px"><div style="font-size:22px;font-weight:700;color:var(--blue,#235FA6)">'+interest.filter(function(x){return (x.status||'new')==='new';}).length+'</div><div style="font-size:11px;color:var(--text3);font-family:var(--mono)">NEW INVESTOR INTEREST</div></div>'+
+      '<div class="card" style="padding:14px 18px"><div style="font-size:22px;font-weight:700;color:var(--amber)">'+borrowers.filter(function(x){return (x.status||'new')==='new';}).length+'</div><div style="font-size:11px;color:var(--text3);font-family:var(--mono)">NEW BORROWER REQUESTS</div></div>'+
+    '</div>'+
+    '<div class="banner bn-cancel" style="margin-bottom:12px"><div class="banner-msg">⚠ <span>Loan origination comp flows through the licensed brokerage (West Coast Capital Mortgage, NMLS 2817729 / DRE 01385024). Borrower pays all fees; investor pays none. One investor per trust deed is the clean path; fractionalizing one note across investors triggers DRE multi-lender rules and possible securities review. No guarantee of return; principal at risk. Clear DRE/DFPI before any live deal.</span></div></div>'+
+    '<div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin:0 0 12px">'+
+      '<div style="font-size:12px;font-family:var(--mono);text-transform:uppercase;letter-spacing:.06em;color:var(--text3)">Deals · investor sees net yield only</div>'+
+      '<button class="btn btn-pri btn-sm" onclick="dlEdit(null)">+ Add deal</button>'+
+    '</div>';
+
+    if(!deals.length){ html+=adminEmpty('🏷️','No deals yet','Add a first-trust-deed opportunity. Only open or funding deals show on the public board.'); }
+    else{
+      html+='<div id="dl-list">'+deals.map(function(d){
+        var status=d.status||'draft'; var sc=DL_STAGE_COLOR[status]||'var(--text3)';
+        var e=dlEcon(d);
+        var stageOpts=DL_STAGES.map(function(s){return '<option value="'+s+'"'+(s===status?' selected':'')+'>'+s+'</option>';}).join('');
+        var meta=[d.property_type?esc(d.property_type):'',[d.city,d.state].filter(Boolean).map(esc).join(', '),d.lien_position?esc(d.lien_position):'',d.purpose?esc(d.purpose):''].filter(Boolean).join(' · ');
+        var nums=[d.loan_amount!=null?('loan '+dlMoney(d.loan_amount)):'',d.ltv!=null?('LTV '+d.ltv+'%'):'',d.term_months?('term '+d.term_months+'mo'):'',d.min_investment!=null?('min '+dlMoney(d.min_investment)):''].filter(Boolean).join(' · ');
+        return '<div class="card" style="padding:15px 18px;margin-bottom:9px">'+
+          '<div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:flex-start">'+
+            '<div style="min-width:0;flex:1">'+
+              '<div style="font-weight:600;color:var(--text);font-size:14.5px">'+esc(d.title)+' <span style="font-size:10px;font-family:var(--mono);text-transform:uppercase;color:'+sc+'">· '+esc(status)+'</span></div>'+
+              (meta?'<div style="font-size:12px;color:var(--text2);margin-top:4px">'+meta+'</div>':'')+
+              (nums?'<div style="font-size:11.5px;color:var(--text3);margin-top:5px">'+nums+'</div>':'')+
+              '<div style="font-size:11.5px;margin-top:7px;display:flex;gap:14px;flex-wrap:wrap">'+
+                '<span style="color:var(--text3)">borrower <b style="color:var(--text2)">'+e.brStr+'</b></span>'+
+                '<span style="color:var(--text3)">gross <b style="color:var(--text2)">'+e.grossStr+'</b></span>'+
+                '<span style="color:var(--text3)">net investor <b style="color:var(--green)">'+e.netStr+'</b></span>'+
+                (d.origination_points!=null?'<span style="color:var(--text3)">pts '+d.origination_points+' (inv '+(d.investor_points!=null?d.investor_points:'0')+')</span>':'')+
+              '</div>'+
+              (d.summary?'<div style="font-size:12px;color:var(--text2);margin-top:7px">'+esc(d.summary)+'</div>':'')+
+            '</div>'+
+            '<div style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn btn-ghost btn-sm" onclick="dlEdit(\''+d.id+'\')">✎ Edit</button></div>'+
+          '</div>'+
+          '<div style="margin-top:10px;border-top:1px solid var(--line,#2224);padding-top:9px;display:flex;gap:6px;flex-wrap:wrap;align-items:center">'+
+            '<select id="dl-stage-'+d.id+'" onchange="dlStatus(\''+d.id+'\',this.value)" style="padding:6px 8px;font-size:12px">'+stageOpts+'</select>'+
+            '<span style="font-size:11px;color:var(--text3)">open or funding = visible to investors on the public board</span>'+
+          '</div>'+
+        '</div>';
+      }).join('')+'</div>';
+    }
+
+    // investor interest
+    html+='<div style="font-size:12px;font-family:var(--mono);text-transform:uppercase;letter-spacing:.06em;color:var(--text3);margin:22px 0 10px">Investor interest</div>';
+    if(!interest.length){ html+='<div style="font-size:12px;color:var(--text3);margin-bottom:8px">No investor interest yet.</div>'; }
+    else{
+      html+=interest.map(function(x){
+        var st=x.status||'new';
+        var opts=['new','reviewing','matched','invested','passed'].map(function(s){return '<option value="'+s+'"'+(s===st?' selected':'')+'>'+s+'</option>';}).join('');
+        var deal=x.deal_id&&window.__dlDeals[x.deal_id]?window.__dlDeals[x.deal_id].title:'general';
+        return '<div class="card" style="padding:12px 16px;margin-bottom:7px"><div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:flex-start">'+
+          '<div style="min-width:0;flex:1"><div style="font-size:13px;color:var(--text)"><b>'+esc(x.name||'Investor')+'</b> <span style="font-size:11px;color:var(--text3)">· '+esc(deal)+'</span></div>'+
+          '<div style="font-size:11.5px;color:var(--text3);margin-top:3px">'+(x.email?('<a href="mailto:'+esc(x.email)+'" style="color:var(--blue,#235FA6)">'+esc(x.email)+'</a>'):'')+(x.phone?(' · '+esc(x.phone)):'')+(x.accredited?(' · accredited: '+esc(x.accredited)):'')+(x.amount_range?(' · '+esc(x.amount_range)):'')+'</div>'+
+          (x.message?'<div style="font-size:12px;color:var(--text2);margin-top:5px">'+esc(x.message)+'</div>':'')+'</div>'+
+          '<select onchange="dliStatus(\''+x.id+'\',this.value)" style="padding:5px 7px;font-size:12px">'+opts+'</select>'+
+        '</div></div>';
+      }).join('');
+    }
+
+    // borrower requests
+    html+='<div style="font-size:12px;font-family:var(--mono);text-transform:uppercase;letter-spacing:.06em;color:var(--text3);margin:22px 0 10px">Borrower loan requests (CADeed intake)</div>';
+    if(!borrowers.length){ html+='<div style="font-size:12px;color:var(--text3)">No borrower requests yet.</div>'; }
+    else{
+      html+=borrowers.map(function(x){
+        var st=x.status||'new';
+        var opts=['new','reviewing','underwriting','approved','declined'].map(function(s){return '<option value="'+s+'"'+(s===st?' selected':'')+'>'+s+'</option>';}).join('');
+        var meta=[x.property_type?esc(x.property_type):'',[x.city,x.state].filter(Boolean).map(esc).join(', '),x.loan_amount!=null?('loan '+dlMoney(x.loan_amount)):'',x.purpose?esc(x.purpose):''].filter(Boolean).join(' · ');
+        return '<div class="card" style="padding:12px 16px;margin-bottom:7px"><div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:flex-start">'+
+          '<div style="min-width:0;flex:1"><div style="font-size:13px;color:var(--text)"><b>'+esc(x.name||'Borrower')+'</b></div>'+
+          '<div style="font-size:11.5px;color:var(--text3);margin-top:3px">'+(x.email?('<a href="mailto:'+esc(x.email)+'" style="color:var(--blue,#235FA6)">'+esc(x.email)+'</a>'):'')+(x.phone?(' · '+esc(x.phone)):'')+'</div>'+
+          (meta?'<div style="font-size:11.5px;color:var(--text2);margin-top:4px">'+meta+'</div>':'')+
+          (x.property_address?'<div style="font-size:11px;color:var(--text3);margin-top:3px">'+esc(x.property_address)+'</div>':'')+
+          (x.message?'<div style="font-size:12px;color:var(--text2);margin-top:5px">'+esc(x.message)+'</div>':'')+'</div>'+
+          '<select onchange="dlbStatus(\''+x.id+'\',this.value)" style="padding:5px 7px;font-size:12px">'+opts+'</select>'+
+        '</div></div>';
+      }).join('');
+    }
+    p.innerHTML=html;
+  }catch(e){
+    console.error('[admin] loadDirectLending failed:',e);
+    p.innerHTML=adminErr((e&&e.message)||'Could not load Direct Lending.');
+  }
+}
+window.dlStatus=async function(id,status){
+  try{ var c=await window.PegSB.ready; var r=await c.from('dl_deals').update({status:status}).eq('id',id); if(r.error) throw r.error; loadDirectLending(document.getElementById('apanel')); }
+  catch(e){ alert('Could not update: '+((e&&e.message)||'error')); }
+};
+window.dliStatus=async function(id,status){
+  try{ var c=await window.PegSB.ready; var r=await c.from('dl_investor_interest').update({status:status}).eq('id',id); if(r.error) throw r.error; loadDirectLending(document.getElementById('apanel')); }
+  catch(e){ alert('Could not update: '+((e&&e.message)||'error')); }
+};
+window.dlbStatus=async function(id,status){
+  try{ var c=await window.PegSB.ready; var r=await c.from('dl_borrower_requests').update({status:status}).eq('id',id); if(r.error) throw r.error; loadDirectLending(document.getElementById('apanel')); }
+  catch(e){ alert('Could not update: '+((e&&e.message)||'error')); }
+};
+window.dlEditClose=function(){ var o=document.getElementById('dl-edit-ov'); if(o) o.remove(); };
+window.dlEdit=function(id){
+  var r=(id?(window.__dlDeals||{})[id]:null)||{};
+  window.__dlEditId=id||null;
+  var old=document.getElementById('dl-edit-ov'); if(old) old.remove();
+  var ov=document.createElement('div'); ov.id='dl-edit-ov';
+  ov.setAttribute('style','position:fixed;inset:0;background:rgba(5,8,13,.6);z-index:9600;display:flex;align-items:flex-start;justify-content:center;padding:40px 16px;overflow:auto');
+  var box=document.createElement('div');
+  box.setAttribute('style','background:var(--bg,#0f1824);border:1px solid var(--line,#2a3647);border-radius:10px;max-width:720px;width:100%;padding:22px 22px 18px;box-shadow:0 20px 60px rgba(0,0,0,.5)');
+  box.innerHTML='<div style="font-family:var(--serif,serif);font-size:19px;color:var(--text);margin-bottom:4px">'+(id?'Edit deal':'Add deal')+'</div><div style="font-size:11.5px;color:var(--text3);margin-bottom:14px">Internal economics (borrower rate, points) stay private. Investors only ever see net yield, LTV, term, type, city, loan amount and your summary.</div>';
+  var fields=[
+    ['title','Title *','input',''],
+    ['property_type','Property type','select',['','SFR','Condo','Townhome','Multifamily 2-4','Multifamily 5+','Mixed-use','Commercial','Land']],
+    ['lien_position','Lien position','select',['','First Trust Deed','Second Trust Deed']],
+    ['city','City','input',''],
+    ['state','State','input',''],
+    ['purpose','Purpose','select',['','Purchase','Refinance','Bridge','Rehab / fix-and-flip','Construction','Cash-out']],
+    ['loan_amount','Loan amount ($)','input',''],
+    ['ltv','LTV (%)','input',''],
+    ['term_months','Term (months)','input',''],
+    ['min_investment','Min investment ($)','input',''],
+    ['borrower_rate','Borrower rate (% annual)','input',''],
+    ['origination_points','Origination points (total)','input',''],
+    ['investor_points','Investor points','input',''],
+    ['investor_yield','Investor net yield (% — optional, auto if blank)','input',''],
+    ['funded_pct','Funded (%)','input',''],
+    ['exit_strategy','Exit strategy','input',''],
+    ['summary','Investor summary (public)','textarea',''],
+    ['risk_notes','Risk notes (internal)','textarea',''],
+    ['status','Status','select',DL_STAGES]
+  ];
+  var grid=document.createElement('div'); grid.setAttribute('style','display:grid;grid-template-columns:1fr 1fr;gap:10px');
+  var longF={summary:1,risk_notes:1,exit_strategy:1,title:1};
+  fields.forEach(function(f){
+    var wrap=document.createElement('div'); if(longF[f[0]]) wrap.setAttribute('style','grid-column:1/-1');
+    var lab=document.createElement('label'); lab.setAttribute('style','display:block;font-size:10.5px;font-family:var(--mono);text-transform:uppercase;letter-spacing:.05em;color:var(--text3);margin:0 0 5px'); lab.textContent=f[1];
+    var inp;
+    if(f[2]==='select'){ inp=document.createElement('select'); f[3].forEach(function(o){ var op=document.createElement('option'); op.value=o; op.textContent=(o===''?'(none)':o); inp.appendChild(op); }); inp.value=(r[f[0]]!=null?String(r[f[0]]):(f[0]==='status'?'draft':(f[0]==='state'?'CA':''))); }
+    else if(f[2]==='textarea'){ inp=document.createElement('textarea'); inp.setAttribute('style','min-height:58px'); inp.value=(r[f[0]]!=null?String(r[f[0]]):''); }
+    else { inp=document.createElement('input'); inp.value=(r[f[0]]!=null?String(r[f[0]]):(f[0]==='state'?'CA':'')); }
+    inp.id='dle-'+f[0];
+    inp.setAttribute('style',(inp.getAttribute('style')||'')+';width:100%;padding:8px 10px;background:var(--bg2,#0a0f17);border:1px solid var(--line,#2a3647);color:var(--text,#f3efe6);border-radius:4px;font-size:13px;font-family:var(--sans,sans-serif)');
+    wrap.appendChild(lab); wrap.appendChild(inp); grid.appendChild(wrap);
+  });
+  box.appendChild(grid);
+  var err=document.createElement('div'); err.id='dle-err'; err.setAttribute('style','color:var(--red,#c0392b);font-size:12px;margin-top:10px;min-height:1px'); box.appendChild(err);
+  var btns=document.createElement('div'); btns.setAttribute('style','display:flex;gap:8px;flex-wrap:wrap;margin-top:12px');
+  btns.innerHTML='<button class="btn btn-pri btn-sm" onclick="dlSaveEdit()">Save deal</button><button class="btn btn-ghost btn-sm" style="margin-left:auto" onclick="dlEditClose()">Cancel</button>';
+  box.appendChild(btns);
+  ov.appendChild(box);
+  ov.addEventListener('click',function(ev){ if(ev.target===ov) dlEditClose(); });
+  document.body.appendChild(ov);
+};
+window.dlSaveEdit=async function(){
+  function gv(k){var el=document.getElementById('dle-'+k);return el?(el.value||'').trim():'';}
+  var err=document.getElementById('dle-err'); if(err) err.textContent='';
+  var title=gv('title'); if(title.length<2){ if(err) err.textContent='Title is required.'; return; }
+  var row={ title:title, property_type:gv('property_type')||null, lien_position:gv('lien_position')||null,
+    city:gv('city')||null, state:gv('state')||null, purpose:gv('purpose')||null, exit_strategy:gv('exit_strategy')||null,
+    summary:gv('summary')||null, risk_notes:gv('risk_notes')||null, status:gv('status')||'draft',
+    loan_amount:dlNum(gv('loan_amount')), ltv:dlNum(gv('ltv')), term_months:dlNum(gv('term_months')),
+    min_investment:dlNum(gv('min_investment')), borrower_rate:dlNum(gv('borrower_rate')),
+    origination_points:dlNum(gv('origination_points')), investor_points:dlNum(gv('investor_points')),
+    investor_yield:dlNum(gv('investor_yield')), funded_pct:dlNum(gv('funded_pct')) };
+  try{
+    var c=await window.PegSB.ready;
+    var id=window.__dlEditId;
+    var r = id ? await c.from('dl_deals').update(row).eq('id',id) : await c.from('dl_deals').insert(Object.assign({source:'manual'},row));
+    if(r.error) throw r.error;
+    dlEditClose();
+    loadDirectLending(document.getElementById('apanel'));
+  }catch(e){ if(err) err.textContent=(e&&e.message)||'Could not save.'; }
+};
+
 /* ===== Capital Metrics (CFO view, read-only, real numbers) ===== */
 async function loadCapitalMetrics(p){
   p.innerHTML='<div style="padding:40px;text-align:center;color:var(--text3);font-size:12px">Loading capital metrics…</div>';
@@ -2059,6 +2257,7 @@ window.aShow=function(s){[...document.querySelectorAll('#atabs .toggle-opt')].fo
   if(s==='Private Network'){ loadPrivateNetwork(p); return; }
   if(s==='Capital Pipeline'){ loadCapitalPipeline(p); return; }
   if(s==='Capital Metrics'){ loadCapitalMetrics(p); return; }
+  if(s==='Direct Lending'){ loadDirectLending(p); return; }
   if(s==='Intelligence'){ loadDealIntel(p); return; }
   if(s==='Investors'){ loadInvestors(p); return; }
   if(s==='AI Companies'){ loadAiStartups(p); return; }
