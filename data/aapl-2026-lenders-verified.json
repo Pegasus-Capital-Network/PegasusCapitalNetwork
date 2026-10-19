@@ -1,0 +1,103 @@
+{
+  "event": "AAPL Annual Conference 2026",
+  "event_url": "https://aaplonline.com/conference/",
+  "note": "Company names came from the conference participant list supplied by the Pegasus founder. Descriptions below were verified against each company's public website before use.",
+  "lenders": [
+    {
+      "name": "Anchor Loans",
+      "website": "https://www.anchorloans.com/",
+      "description": "Private direct lender providing business-purpose real estate financing to investors, builders and developers, including bridge, renovation, ground-up construction and rental financing.",
+      "category": "Private Real Estate Lender"
+    },
+    {
+      "name": "Backflip",
+      "website": "https://backflip.com/",
+      "description": "Real estate investment platform and lender offering financing for residential investors alongside property analysis and deal-evaluation tools.",
+      "category": "Real Estate Investor Lender"
+    },
+    {
+      "name": "Boomerang Capital Partners",
+      "website": "https://boomerangcapital.com/",
+      "description": "Private real estate finance company focused on asset-backed lending for experienced investors and builders, including fix-and-flip and renovation financing.",
+      "category": "Private Real Estate Lender"
+    },
+    {
+      "name": "Carolina Capital Management",
+      "website": "https://www.carolinahardmoney.com/",
+      "description": "Hard money lender serving real estate investors and small builders with business-purpose financing for investment properties.",
+      "category": "Private / Hard Money Lender"
+    },
+    {
+      "name": "Constructive Capital",
+      "website": "https://www.constructiveloans.com/",
+      "description": "Business-purpose real estate lender offering DSCR, fix-and-flip, ground-up construction, line-of-credit and portfolio financing programs.",
+      "category": "Private Real Estate Lender"
+    },
+    {
+      "name": "CV3 Financial Services",
+      "website": "https://www.cv3financial.com/",
+      "description": "Private lender providing financing for non-owner-occupied investment properties, including bridge, rental, fix-and-flip and ground-up construction loans.",
+      "category": "Private Real Estate Lender"
+    },
+    {
+      "name": "Iron Trust Capital",
+      "website": "https://www.irontrustcapital.com/",
+      "description": "Real estate investment-property lender offering ground-up construction, fix-and-flip, DSCR rental, portfolio and bridge loan programs.",
+      "category": "Private Real Estate Lender"
+    },
+    {
+      "name": "Kennedy Funding",
+      "website": "https://www.kennedyfunding.com/",
+      "description": "Direct private lender specializing in commercial bridge loans for acquisitions, land, development, workouts, bankruptcies and other time-sensitive real estate situations.",
+      "category": "Commercial Bridge Lender"
+    },
+    {
+      "name": "Laker Lending",
+      "website": "https://lakerlending.com/",
+      "description": "Direct private lender focused on short-term bridge and rehabilitation loans for residential real estate investors.",
+      "category": "Private Real Estate Lender"
+    },
+    {
+      "name": "Lima One Capital",
+      "website": "https://www.limaone.com/",
+      "description": "Nationwide real estate investment lender offering specialized financing for fix-and-flip, rental, multifamily and new-construction strategies.",
+      "category": "Real Estate Investor Lender"
+    },
+    {
+      "name": "Newport Capital",
+      "website": "https://newportcapital.com/",
+      "description": "Private credit provider to middle-market commercial and residential real estate owners, operators and developers, with senior bridge, liquidity and structured capital solutions.",
+      "category": "Real Estate Private Credit"
+    },
+    {
+      "name": "Park Place Finance",
+      "website": "https://parkplacefinance.com/",
+      "description": "Nationwide private lender providing renovation, bridge, rental and ground-up construction financing for real estate investors.",
+      "category": "Private Real Estate Lender"
+    },
+    {
+      "name": "Rain City Capital",
+      "website": "https://www.raincitycapital.com/",
+      "description": "Private and hard money lender serving real estate investors with fix-and-flip, DSCR rental and ground-up construction financing.",
+      "category": "Private / Hard Money Lender"
+    },
+    {
+      "name": "RCN Capital",
+      "website": "https://rcncapital.com/",
+      "description": "Nationwide private direct lender offering fix-and-flip, DSCR rental, multifamily and ground-up construction financing for real estate investors.",
+      "category": "Private Real Estate Lender"
+    },
+    {
+      "name": "Red Tower Capital, Inc.",
+      "website": "https://redtowercapital.com/",
+      "description": "Independent private real estate lending and investment firm specializing in bridge loans, bespoke lending solutions and alternative investments.",
+      "category": "Private Real Estate Lender"
+    },
+    {
+      "name": "Roc Capital",
+      "website": "https://roccapital.com/",
+      "description": "Capital provider for private lenders and originators offering residential real estate investor loan programs including fix-and-flip, ground-up construction, bridge and rental financing.",
+      "category": "Private Lending Capital Provider"
+    }
+  ]
+}
