@@ -252,7 +252,7 @@ async function presenceSitemap(kind) {
     order: "name.asc",
   });
   const seen = new Set();
-  const urls = [];
+  const urls = kind === "businesses" ? [urlNode(ORIGIN + "/lenders", "", "0.8")] : [];
   if (kind === "businesses") urls.push(...(await businessFacetUrls()), ...(await businessStateUrls()), ...(await rankingUrls()));
   for (const row of rows) {
     const slug = cleanSlug(row.slug);

@@ -110,6 +110,13 @@
   status = 200
   force = true
 
+# Public lender discovery; canonical company pages remain /business/:slug.
+[[redirects]]
+  from = "/lenders"
+  to = "/.netlify/functions/lenders-directory"
+  status = 200
+  force = true
+
 [[redirects]]
   from = "/businesses"
   to = "/.netlify/functions/public-directory?kind=businesses"
@@ -390,17 +397,10 @@
   to = "/feed.html"
   status = 200
 
-# Canonical public lender directory. Keep the old lender-directory URL as a
-# permanent redirect; /find-a-lender remains the deal-matching tool.
-[[redirects]]
-  from = "/lenders"
-  to = "/businesses/capital"
-  status = 301
-  force = true
-
+# Keep the legacy directory URL connected to the public lenders section.
 [[redirects]]
   from = "/lender-directory.html"
-  to = "/businesses/capital"
+  to = "/lenders"
   status = 301
   force = true
 
