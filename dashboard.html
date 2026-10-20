@@ -22,7 +22,7 @@
 <script src="/js/pegasus-core.js?v=dealroom-entitlements-20260524-1529"></script>
 <script src="/js/pegasus-billing.js?v=dealroom-entitlements-20260524-1529"></script>
 <script src="/js/pegasus-pages.js?v=dealroom-entitlements-20260524-1529"></script>
-<script src="/js/profile/profile-system.js"></script>
+<script src="/js/profile/profile-system.js?v=20261020-memberdir"></script>
 <script>/* Human role labels — backend role values stay unchanged. */
 window.__RL={borrower:'Growth Partner',agent:'Real Estate Professional',investor:'Capital Partner',rwa_partner:'RWA Partner',business_funding_provider:'Business Funding Provider'};window.__roleLbl=function(r){r=String(r||'').toLowerCase();return __RL[r]||(r||'member').replace(/_/g,' ').replace(/\b\w/g,function(c){return c.toUpperCase();});};</script>
 <script>
@@ -356,7 +356,7 @@ Pegasus.boot((st)=>{
     }
     try{
       var c=await window.PegSB.ready;
-      var q=c.from('profiles').select('id,full_name,role,profile_slug,location,headline').not('full_name','is',null).order('created_at',{ascending:false}).limit(8);
+      var q=c.from('member_directory').select('id,full_name,role,profile_slug,location,headline').not('full_name','is',null).order('created_at',{ascending:false}).limit(8);
       if(roles&&roles.length) q=q.in('role',roles);
       var {data}=await q;
       if(!data||!data.length){feedEl.remove();return;}
@@ -454,7 +454,7 @@ Pegasus.boot((st)=>{
       var seen={}, ids=[];
       msgs.forEach(function(m){ if(m.receiver_id&&!seen[m.receiver_id]){seen[m.receiver_id]=1;ids.push(m.receiver_id);} });
       if(!ids.length){host.innerHTML='';return;}
-      var {data:profs}=await c.from('profiles').select('id,full_name,role,profile_slug,location').in('id',ids.slice(0,12));
+      var {data:profs}=await c.from('member_directory').select('id,full_name,role,profile_slug,location').in('id',ids.slice(0,12));
       if(!profs||!profs.length){host.innerHTML='';return;}
       var byId={}; profs.forEach(function(p){byId[p.id]=p;});
       var rows=ids.slice(0,12).map(function(id){

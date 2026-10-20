@@ -465,7 +465,7 @@
       /* Public/member-discovery fields ONLY — never pull another member's
          private email into the browser or the caller's CRM (they can fill
          contact details in themselves). */
-      var pr=await c.from('profiles').select('id,full_name,role,company_name,profile_completion')
+      var pr=await c.from('member_directory').select('id,full_name,role,company_name,profile_completion')
         .not('full_name','is',null).order('profile_completion',{ascending:false}).limit(100);
       var profiles=pr.data||[];
       var existing=new Set();

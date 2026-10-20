@@ -265,7 +265,7 @@ Pegasus.boot(async function(){
   /* ── Load members + my profile + relationship states (parallel-safe) ───── */
   var profilesRes;
   try{
-    profilesRes = await sb.from('profiles')
+    profilesRes = await sb.from('member_directory')
       .select('id,full_name,role,headline,bio,professional_title,company_name,markets,specialties,avatar_url,profile_slug,profile_completion,reviewed_by_pegasus,location,updated_at')
       .not('full_name','is',null)
       .eq('status','active')

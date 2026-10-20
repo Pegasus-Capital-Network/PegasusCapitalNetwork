@@ -61,7 +61,7 @@ Pegasus.boot(async (st) => {
     var sb = await window.PegSB.ready;
 
     /* Public member profiles */
-    var pr = await sb.from('profiles')
+    var pr = await sb.from('member_directory')
       .select('full_name, role, profile_slug, id, location, headline')
       .not('full_name','is',null)
       .limit(100);

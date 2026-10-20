@@ -83,13 +83,21 @@
     if (!c) return null;
     try {
       var signedIn = isSignedIn();
-      var q = c.from('profiles').select(signedIn ? '*' : PUBLIC_PROFILE_FIELDS);
+      var usr = signedIn ? currentUser() : null, own = ownProfile();
+      /* Own profile keeps the full read path. Anyone else's profile is read from
+         the member_directory view: signed-in members can only SELECT their own
+         row in profiles (RLS), so reading others there returned nothing. */
+      var isOwn = !!(usr && ((opts.id && opts.id === usr.id) ||
+                    (opts.slug && own && own.profile_slug === opts.slug)));
+      var src = isOwn ? 'profiles' : 'member_directory';
+      var q = c.from(src).select(isOwn ? '*' : PUBLIC_PROFILE_FIELDS);
       q = opts.slug ? q.eq('profile_slug', opts.slug) : q.eq('id', opts.id);
       var res = await q.maybeSingle();
-      if (!signedIn && res && res.error) {
+      if ((!res || res.error || !res.data) && !isOwn) {
         var q2 = c.from('profiles').select(PUBLIC_PROFILE_FIELDS_CORE);
         q2 = opts.slug ? q2.eq('profile_slug', opts.slug) : q2.eq('id', opts.id);
-        res = await q2.maybeSingle();
+        var res2 = await q2.maybeSingle();
+        if (res2 && !res2.error && res2.data) res = res2;
       }
       return (res && !res.error) ? (res.data || null) : null;
     } catch (e) {
