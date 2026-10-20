@@ -102,6 +102,13 @@
 .fd-act{border:1px solid transparent;background:none;color:var(--text3);font-size:12px;cursor:pointer;padding:5px 10px;border-radius:var(--r1);font-family:inherit;display:inline-flex;align-items:center;gap:6px;transition:all var(--dur-fast)}
 .fd-act:hover{background:var(--bg2);color:var(--text)}
 .fd-act.liked{color:#c0392b}
+.fd-video{display:block;width:100%;max-height:540px;margin-top:10px;border-radius:12px;background:#000}
+.fd-embed{position:relative;width:100%;padding-top:56.25%;margin-top:10px;border-radius:12px;overflow:hidden;background:#000}
+.fd-embed iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.fd-up-prev{margin:10px 0 0;position:relative}
+.fd-up-prev img,.fd-up-prev video{display:block;max-height:220px;max-width:100%;border-radius:12px;background:#000}
+.fd-up-prev .fd-up-rm{margin-top:8px;font-size:12px;color:var(--text2);background:none;border:1px solid var(--border);border-radius:8px;padding:5px 11px;cursor:pointer}
+.fd-up-busy{font-size:13px;color:var(--text3)}
 .fd-act.del{margin-left:auto;color:var(--text4)}
 .fd-act.del:hover{color:var(--gold)}
 .fd-empty{padding:var(--sp-xl);text-align:center;color:var(--text3);font-size:13px;line-height:1.6}
@@ -242,6 +249,43 @@ Pegasus.boot(async function(){
   var permalink=(pathPost||qs.get('post')||'').replace(/[^0-9a-f-]/gi,'');
   var snap=document.getElementById('peg-seo-snapshot'); if(snap) snap.remove();
   var postType='update', mediaOpen=false, before=null, exhausted=false, loading=false;
+  var upImg='', upLink='';
+  function uploadPreviewHTML(){
+    if(upImg) return '<img src="'+safeUrl(upImg)+'" alt=""><button type="button" class="fd-up-rm" id="fdUpRm">Remove</button>';
+    if(upLink) return '<video src="'+safeUrl(upLink)+'" controls muted playsinline></video><button type="button" class="fd-up-rm" id="fdUpRm">Remove</button>';
+    return '';
+  }
+  async function handleUpload(input){
+    var f=input.files&&input.files[0]; if(!f) return;
+    var err=document.getElementById('fdErr'); if(err) err.textContent='';
+    var isVid=/^video\//.test(f.type), isImg=/^image\//.test(f.type);
+    if(!isVid&&!isImg){ if(err) err.textContent='Please choose a photo or a video.'; input.value=''; return; }
+    var max=isVid?75*1024*1024:10*1024*1024;
+    if(f.size>max){ if(err) err.textContent=isVid?'That video is too large (max 75MB).':'That image is too large (max 10MB).'; input.value=''; return; }
+    var prev=document.getElementById('fdUpPrev'); if(prev){ prev.hidden=false; prev.innerHTML='<span class="fd-up-busy">Uploading '+esc(f.name)+'…</span>'; }
+    try{
+      var sres=await sb.auth.getSession(); var uid=sres&&sres.data&&sres.data.session&&sres.data.session.user&&sres.data.session.user.id;
+      if(!uid){ if(err) err.textContent='Please sign in to upload.'; if(prev){ prev.hidden=true; prev.innerHTML=''; } input.value=''; return; }
+      var ext=((f.name.split('.').pop()||'').toLowerCase().replace(/[^a-z0-9]/g,''))||(isVid?'mp4':'jpg');
+      var path=uid+'/'+Date.now()+'-'+Math.random().toString(36).slice(2,8)+'.'+ext;
+      var up=await sb.storage.from('feed-media').upload(path,f,{contentType:f.type,cacheControl:'3600',upsert:false});
+      if(up.error) throw up.error;
+      var pub=sb.storage.from('feed-media').getPublicUrl(path); var url=pub&&pub.data&&pub.data.publicUrl;
+      if(!url) throw new Error('no public url');
+      if(isImg){ upImg=url; upLink=''; } else { upLink=url; upImg=''; }
+      input.value='';
+      var keep=val('fdTa'), kt=val('fdTitle'); renderComposer(); setVal('fdTa',keep); setVal('fdTitle',kt); upd();
+    }catch(e){ if(err) err.textContent='Upload failed. Please try again with a smaller file.'; var p2=document.getElementById('fdUpPrev'); if(p2){ p2.hidden=true; p2.innerHTML=''; } input.value=''; }
+  }
+  function videoEmbed(u){
+    u=(u||'').trim(); if(!u) return '';
+    var m=u.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([A-Za-z0-9_-]{6,})/);
+    if(m) return '<div class="fd-embed"><iframe src="https://www.youtube.com/embed/'+m[1]+'" frameborder="0" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen loading="lazy"></iframe></div>';
+    m=u.match(/vimeo\.com\/(?:video\/)?(\d+)/);
+    if(m) return '<div class="fd-embed"><iframe src="https://player.vimeo.com/video/'+m[1]+'" frameborder="0" allow="autoplay;fullscreen;picture-in-picture" allowfullscreen loading="lazy"></iframe></div>';
+    if(/\.(mp4|webm|mov|m4v)(\?.*)?$/i.test(u)) return '<video class="fd-video" src="'+safeUrl(u)+'" controls preload="metadata" playsinline></video>';
+    return '';
+  }
 
   /* ── First-post nudge: signed-in members who haven't posted yet ──────────
      Shown above the composer; "Write my intro" pre-fills a template. */
@@ -288,13 +332,18 @@ Pegasus.boot(async function(){
       '<input class="fd-in title" id="fdTitle" type="text" maxlength="140" placeholder="'+(isEv?'Event title':'Headline (optional)')+'">'+
       '<textarea class="fd-in fd-ta" id="fdTa" maxlength="1000" placeholder="'+esc(PLACEHOLDER[postType]||PLACEHOLDER.update)+'"></textarea>'+
       evFields+media+
-      '<div class="fd-foot"><button class="fd-attach" id="fdAttach" type="button">'+(isEv?'':(mediaOpen?'– Hide photo / link':'+ Add photo / link'))+'</button><span class="fd-count" id="fdCount">0 / 1000</span><button class="btn btn-pri btn-sm" id="fdPost">'+(isEv?'Post Event':'Post to Feed')+'</button></div>'+
+      '<div class="fd-up-prev" id="fdUpPrev"'+((upImg||upLink)?'':' hidden')+'>'+uploadPreviewHTML()+'</div>'+
+      '<input type="file" id="fdFile" accept="image/*,video/*" style="display:none">'+
+      '<div class="fd-foot">'+(isEv?'':'<button class="fd-attach" id="fdUpload" type="button">📷 Photo / video</button>')+'<button class="fd-attach" id="fdAttach" type="button">'+(isEv?'':(mediaOpen?'– Hide link':'🔗 Add link'))+'</button><span class="fd-count" id="fdCount">0 / 1000</span><button class="btn btn-pri btn-sm" id="fdPost">'+(isEv?'Post Event':'Post to Feed')+'</button></div>'+
       '<div class="fd-err" id="fdErr"></div>'+
       '</div></div>';
     host.querySelectorAll('.fd-chip').forEach(function(b){ b.onclick=function(){ var keep=val('fdTa'), kt=val('fdTitle'); postType=b.getAttribute('data-t'); renderComposer(); setVal('fdTa',keep); setVal('fdTitle',kt); upd(); }; });
     var ta=document.getElementById('fdTa'); if(ta) ta.addEventListener('input',upd);
     var at=document.getElementById('fdAttach'); if(at) at.onclick=function(){ var keep=val('fdTa'), kt=val('fdTitle'); mediaOpen=!mediaOpen; renderComposer(); setVal('fdTa',keep); setVal('fdTitle',kt); upd(); var t2=document.getElementById('fdTa'); if(t2) t2.focus(); };
     var btn=document.getElementById('fdPost'); if(btn) btn.onclick=submit;
+    var upBtn=document.getElementById('fdUpload'), upFile=document.getElementById('fdFile');
+    if(upBtn&&upFile){ upBtn.onclick=function(){ upFile.click(); }; upFile.onchange=function(){ handleUpload(upFile); }; }
+    var rmBtn=document.getElementById('fdUpRm'); if(rmBtn) rmBtn.onclick=function(){ upImg=''; upLink=''; var keep=val('fdTa'), kt=val('fdTitle'); renderComposer(); setVal('fdTa',keep); setVal('fdTitle',kt); upd(); };
   }
   function val(id){ var e=document.getElementById(id); return e?e.value:''; }
   function setVal(id,v){ var e=document.getElementById(id); if(e) e.value=v||''; }
@@ -302,7 +351,7 @@ Pegasus.boot(async function(){
 
   async function submit(){
     var btn=document.getElementById('fdPost'), err=document.getElementById('fdErr');
-    var txt=val('fdTa').trim(), title=val('fdTitle').trim(), img=val('fdImg').trim(), lnk=val('fdLink').trim();
+    var txt=val('fdTa').trim(), title=val('fdTitle').trim(), img=(val('fdImg')||upImg||'').trim(), lnk=(val('fdLink')||upLink||'').trim();
     var evAt=null, evLoc=null;
     if(!txt){ err.textContent='Write something first.'; return; }
     if(postType==='event'){
@@ -318,7 +367,7 @@ Pegasus.boot(async function(){
       var resp=rr.data||{};
       if(!resp.ok){ err.textContent=resp.message||'Could not post right now.'; btn.disabled=false; btn.textContent='Post to Feed'; return; }
       Pegasus.toast('✓','var(--green-dim)','Posted to the network','It’s live in the feed and on your profile.');
-      mediaOpen=false; postType='update'; renderComposer();
+      mediaOpen=false; postType='update'; upImg=''; upLink=''; renderComposer();
       var nd=document.getElementById('fdNudge'); if(nd) nd.innerHTML='';
       before=null; exhausted=false; await loadFeed(true); loadEvents();
     }catch(e){ err.textContent='Could not post right now. Please try again.'; btn.disabled=false; btn.textContent='Post to Feed'; }
@@ -338,7 +387,8 @@ Pegasus.boot(async function(){
     var role=[p.author_title,p.author_company].filter(Boolean).join(' · ');
     var type=p.signal_type||'update';
     var img=p.image_url?'<a class="fd-img" href="'+safeUrl(p.image_url)+'" target="_blank" rel="noopener noreferrer"><img src="'+safeUrl(p.image_url)+'" alt="" loading="lazy"></a>':'';
-    var link=(p.link_url&&type!=='event')?'<a class="fd-linkcard" href="'+safeUrl(p.link_url)+'" target="_blank" rel="noopener noreferrer nofollow"><span>↗</span><span class="dom">'+esc(domainOf(p.link_url))+'</span></a>':'';
+    var vid=(type!=='event')?videoEmbed(p.link_url):'';
+    var link=(p.link_url&&type!=='event'&&!vid)?'<a class="fd-linkcard" href="'+safeUrl(p.link_url)+'" target="_blank" rel="noopener noreferrer nofollow"><span>↗</span><span class="dom">'+esc(domainOf(p.link_url))+'</span></a>':'';
     var ev='';
     if(type==='event'&&p.event_at){
       var e=evParts(p.event_at);
@@ -354,7 +404,7 @@ Pegasus.boot(async function(){
       '<div class="fd-post-meta"><span class="fd-type '+esc(type)+'">'+esc(LBL[type]||'Update')+'</span><span>'+esc(ago(p.created_at))+'</span>'+(p.author_location?'<span>· '+esc(p.author_location)+'</span>':'')+'</div></div></div>'+
       (p.title?'<h3 class="fd-post-title">'+esc(p.title)+'</h3>':'')+
       '<div class="fd-post-txt'+(long?' clamp':'')+'">'+linkify(p.content||'')+'</div>'+(long?'<button class="fd-more" type="button">Show more</button>':'')+
-      ev+img+link+
+      ev+img+vid+link+
       '<div class="fd-post-f">'+
       '<button class="fd-act like'+(p.liked_by_me?' liked':'')+'" type="button" data-id="'+esc(p.id)+'"><span class="ic">'+(p.liked_by_me?'♥':'♡')+'</span><span class="n">'+(p.like_count||0)+'</span></button>'+
       '<button class="fd-act cmt" type="button" data-id="'+esc(p.id)+'"><span class="ic">💬</span><span class="n">'+(p.comment_count||0)+'</span></button>'+
