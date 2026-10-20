@@ -166,6 +166,7 @@ h1{font-weight:800;font-size:clamp(30px,4.6vw,48px);line-height:1.05;letter-spac
     <input type="hidden" id="pId">
     <div class="g2">
       <div class="fld full"><label for="pName">Program name *</label><input id="pName" maxlength="90" placeholder="e.g. California bridge & fix-and-flip, up to 75% LTV"></div>
+      <div class="fld full" id="pCoWrap" style="display:none"><label for="pCo">Published under company page</label><select id="pCo"></select></div>
       <div class="fld full"><label>Loan types *</label><div class="checks" id="pTypes"></div></div>
       <div class="fld"><label for="pMin">Minimum loan</label><input id="pMin" inputmode="numeric" placeholder="$100,000"></div>
       <div class="fld"><label for="pMax">Maximum loan</label><input id="pMax" inputmode="numeric" placeholder="$5,000,000"></div>
@@ -281,7 +282,16 @@ h1{font-weight:800;font-size:clamp(30px,4.6vw,48px);line-height:1.05;letter-spac
   }
 
   /* ── editor ─────────────────────────────────────────────────────────── */
-  var ME=null, MINE=[];
+  var ME=null, MINE=[], COS=[];
+  async function loadCompanies(){
+    COS=[];
+    try{ var r=await sb.from('presence_members').select('role,presences(id,name,presence_type,status)').eq('user_id',ME.id);
+      (r&&r.data||[]).forEach(function(m){ var p=m.presences; if(p&&p.presence_type==='company'&&['owner','admin','editor'].indexOf(m.role)>=0&&(p.status||'active')==='active') COS.push(p); });
+    }catch(e){}
+    COS.sort(function(a,b){ return String(a.name).localeCompare(String(b.name)); });
+    $('pCo').innerHTML='<option value="">My profile (no company page)</option>'+COS.map(function(p){ return '<option value="'+p.id+'">'+esc(p.name)+'</option>'; }).join('');
+    $('pCoWrap').style.display=COS.length?'':'none';
+  }
   Object.keys(TYPES).forEach(function(k){ $('pTypes').insertAdjacentHTML('beforeend','<label><input type="checkbox" value="'+k+'"> '+esc(TYPES[k])+'</label>'); });
   ASSETS.forEach(function(a){ $('pAssets').insertAdjacentHTML('beforeend','<label><input type="checkbox" value="'+esc(a)+'"> '+esc(a)+'</label>'); });
   fmtInput($('pMin')); fmtInput($('pMax'));
@@ -293,6 +303,7 @@ h1{font-weight:800;font-size:clamp(30px,4.6vw,48px);line-height:1.05;letter-spac
     $('pMin').value=p.min_loan!=null?('$'+Number(p.min_loan).toLocaleString('en-US')):''; $('pMax').value=p.max_loan!=null?('$'+Number(p.max_loan).toLocaleString('en-US')):'';
     $('pLtv').value=p.max_ltv||''; $('pDscr').value=p.dscr_min||''; $('pRate').value=p.rate_from||''; $('pYears').value=p.pref_sponsor_years||'';
     $('pStates').value=(p.states||[]).join(', '); $('pActive').checked=p.id?!!p.active:true;
+    $('pCo').value=p.presence_id||(COS.length===1?COS[0].id:($('pCo').value||''));
     $('pSave').textContent=p.id?'Save changes':'Publish program'; $('pNew').style.display=p.id?'':'none';
     $('pErr').textContent=''; $('pOk').textContent='';
   }
@@ -315,7 +326,7 @@ h1{font-weight:800;font-size:clamp(30px,4.6vw,48px);line-height:1.05;letter-spac
   async function openEditor(){
     var s=await session();
     if(!(s&&s.user)){ location.href='/signup.html?role=lender&intent=program&next='+encodeURIComponent('/lending-programs.html#post'); return; }
-    ME=s.user; fill(null); $('ov').classList.add('open'); await loadMine();
+    ME=s.user; $('ov').classList.add('open'); await loadCompanies(); fill(null); await loadMine();
   }
   $('postBtn').onclick=openEditor;
   $('ovClose').onclick=function(){ $('ov').classList.remove('open'); };
@@ -336,7 +347,7 @@ h1{font-weight:800;font-size:clamp(30px,4.6vw,48px);line-height:1.05;letter-spac
     var row={ user_id:ME.id, name:name, loan_types:types, asset_types:checked('pAssets'), states:states,
       min_loan:min, max_loan:max, max_ltv:ltv, dscr_min:dscr, rate_from:$('pRate').value.trim()||null,
       pref_sponsor_years:years, bridge_ok:types.indexOf('bridge')>=0, construction_ok:types.indexOf('construction')>=0,
-      active:$('pActive').checked, updated_at:new Date().toISOString() };
+      active:$('pActive').checked, presence_id:($('pCo').value||null), updated_at:new Date().toISOString() };
     btn.disabled=true; btn.textContent='Saving…';
     try{
       var id=$('pId').value, r;
