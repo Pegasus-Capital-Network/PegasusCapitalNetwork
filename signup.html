@@ -15,8 +15,8 @@
 <script src="/js/pegasus-store.js"></script>
 <script src="/js/pegasus-api.js"></script>
 <script src="/js/pegasus-forms.js"></script>
-<script src="/js/pegasus-auth.js"></script>
-<script src="/js/pegasus-core.js"></script>
+<script src="/js/pegasus-auth.js?v=20261020b"></script>
+<script src="/js/pegasus-core.js?v=20261020b"></script>
 <script src="/js/pegasus-billing.js"></script>
 <script src="/js/pegasus-pages.js"></script>
 <script src="/js/access/access-validate.js"></script>
@@ -85,7 +85,7 @@ Pegasus.mountPublic();
     if(role){ var rs=document.getElementById('role'); if(rs){ for(var i=0;i<rs.options.length;i++){ if(rs.options[i].value===role){ rs.selectedIndex=i; break; } } try{ onRoleChange(); }catch(_){} } }
     var nx=(qs.get('next')||'').trim(); if(nx && nx.charAt(0)==='/' && nx.indexOf('//')!==0){ try{ localStorage.setItem('pegasus.redirectAfterAuth', nx); }catch(_){} }
     var intent=(qs.get('intent')||'').trim().toLowerCase();
-    var MAP={ 'invest':'Create your free investor account to review live deals and invest.', 'private-network':'Create your free account to join the private capital network.', 'financing':'Create your free account to submit your deal and get matched with capital.', 'find-a-lender':'Create your free account to send your deal to lenders.', 'ai-network':'Create your free account to join the Pegasus AI network.', 'ai-intro':'Create your free account to request introductions in the Pegasus AI network.', 'deal':'Create your free investor account to see the full deal package.' };
+    var MAP={ 'invest':'Create your free investor account to review live deals and invest.', 'private-network':'Create your free account to join the private capital network.', 'financing':'Create your free account to submit your deal and get matched with capital.', 'find-a-lender':'Create your free account to send your deal to lenders.', 'ai-network':'Create your free account to join the Pegasus AI network.', 'ai-intro':'Create your free account to request introductions in the Pegasus AI network.', 'deal':'Create your free investor account to see the full deal package.', 'program':'Create your free lender account to publish your lending program.' };
     var msg=null; for(var k in MAP){ if(intent.indexOf(k)===0){ msg=MAP[k]; break; } }
     if(msg){ var sub=document.querySelector('.auth-sub'); if(sub){ sub.textContent=msg; sub.style.textTransform='none'; sub.style.letterSpacing='0'; sub.style.fontSize='13px'; } }
   }catch(_){}

@@ -1,0 +1,361 @@
+<!DOCTYPE html><html lang="en"><head>
+<title>Lending Programs — Pegasus Capital Network</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="Who lends what, where and how much. Private lenders, banks and capital providers publish their lending programs on Pegasus; borrowers and brokers find the right fit and send a deal.">
+<link rel="canonical" href="https://pegasuscapitalnetwork.com/lending-programs.html">
+<meta property="og:title" content="Lending Programs — Pegasus Capital Network">
+<meta property="og:description" content="Who lends what, where and how much. Publish your lending program or find the right lender for your deal.">
+<meta property="og:type" content="website">
+<link rel="icon" href="/assets/brand/favicon.ico" sizes="any">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#ffffff;--bg2:#f6f7f9;--panel:#ffffff;--line:#e6e9ed;
+  --ink:#0e1824;--ink2:#2a3a4e;--text:#46525f;--muted:#737e8b;
+  --navy:#1b3a5b;--navy-d:#14304b;--navy-l:#2b5580;--gold:#9a7b3f;--green:#1b7f3b;--red:#b3261e;
+  --sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  --shadow-sm:0 1px 2px rgba(14,24,36,.06);--shadow:0 2px 6px rgba(14,24,36,.05),0 16px 40px rgba(14,24,36,.10);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1120px;margin:0 auto;padding:0 32px}
+@media(max-width:640px){.wrap{padding:0 18px}}
+.bg{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(1100px 600px at 50% -10%,rgba(27,58,91,.07),transparent 60%),linear-gradient(180deg,#fbfcfe 0,#ffffff 520px)}
+header.top{position:relative;z-index:3;border-bottom:1px solid var(--line);background:rgba(255,255,255,.85);backdrop-filter:blur(6px)}
+.top-in{max-width:1120px;margin:0 auto;padding:16px 32px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+@media(max-width:640px){.top-in{padding:12px 18px}}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:18px;letter-spacing:-.015em;color:var(--ink)}
+.brand img{height:26px;width:auto;display:block}
+.nav{display:flex;gap:18px;align-items:center;font-size:13px;color:var(--muted);font-weight:500}
+.nav a:hover{color:var(--navy)}
+.nav .btn{color:#fff}
+@media(max-width:760px){.nav .hideSm{display:none}}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;font-family:inherit;font-size:14px;font-weight:600;padding:11px 20px;border-radius:9px;background:var(--navy);color:#fff;border:1px solid var(--navy);cursor:pointer;transition:transform .15s,opacity .2s,background .2s}
+.btn:hover{transform:translateY(-1px);opacity:.96}
+.btn:disabled{opacity:.55;cursor:default;transform:none}
+.btn.gold{background:var(--gold);border-color:var(--gold)}
+.btn.ghost{background:#fff;color:var(--navy);border-color:var(--line)}
+.btn.ghost:hover{border-color:#cfd6de}
+.btn.sm{font-size:12.5px;padding:7px 13px;border-radius:8px}
+.btn.danger{background:#fff;color:var(--red);border-color:#f1c9c5}
+.hero{position:relative;z-index:2;padding:54px 0 18px}
+.eyebrow{font-size:11.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:14px}
+h1{font-weight:800;font-size:clamp(30px,4.6vw,48px);line-height:1.05;letter-spacing:-.03em;color:var(--ink);max-width:18ch}
+.sub{margin:16px 0 0;font-size:clamp(15px,1.7vw,17.5px);color:var(--muted);max-width:62ch}
+.cta-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px}
+.stats{display:flex;flex-wrap:wrap;gap:26px;margin-top:26px;font-size:13px;color:var(--muted)}
+.stats b{display:block;font-size:22px;color:var(--ink);font-weight:800;letter-spacing:-.02em}
+.sec{position:relative;z-index:2;padding:22px 0}
+.h2{font-size:22px;font-weight:800;color:var(--ink);letter-spacing:-.02em}
+.h2-sub{font-size:14px;color:var(--muted);margin-top:6px;max-width:70ch}
+.filters{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:16px;background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:12px}
+.filters select,.filters input{font-family:inherit;font-size:14px;color:var(--ink);background:#fff;border:1px solid var(--line);border-radius:9px;padding:9px 12px;outline:none;min-width:0}
+.filters select:focus,.filters input:focus{border-color:var(--navy)}
+.filters .grow{flex:1;min-width:170px}
+.filters .clear{font-size:12.5px;color:var(--muted);background:none;border:none;cursor:pointer;text-decoration:underline}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px;margin-top:18px}
+@media(max-width:520px){.grid{grid-template-columns:1fr}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px;box-shadow:var(--shadow-sm);display:flex;flex-direction:column;transition:box-shadow .2s,border-color .2s,transform .2s}
+.card:hover{box-shadow:var(--shadow);border-color:#d7dde4;transform:translateY(-2px)}
+.lender{display:flex;gap:12px;align-items:center}
+.logo{width:44px;height:44px;border-radius:10px;flex:none;background:linear-gradient(160deg,#f2f5f9,#e9eef4);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--navy);overflow:hidden}
+.logo img{width:100%;height:100%;object-fit:cover}
+.lname{font-weight:700;color:var(--ink);font-size:15px;line-height:1.25}
+.lsub{font-size:12px;color:var(--muted)}
+.pname{margin-top:14px;font-size:13px;font-weight:600;color:var(--ink2)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.chip{font-size:11.5px;color:var(--navy);background:rgba(27,58,91,.06);border:1px solid rgba(27,58,91,.12);border-radius:999px;padding:3px 9px}
+.facts{display:grid;grid-template-columns:1fr 1fr;gap:10px 14px;margin-top:14px;font-size:13px}
+.fact .k{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.fact .v{color:var(--ink);font-weight:600}
+.states{font-size:12.5px;color:var(--text);margin-top:12px}
+.card .acts{display:flex;gap:8px;margin-top:auto;padding-top:16px}
+.card .acts .btn{flex:1}
+.empty{grid-column:1/-1;text-align:center;background:var(--bg2);border:1px dashed #d5dbe2;border-radius:14px;padding:36px 22px;color:var(--muted);font-size:14.5px}
+.empty b{display:block;color:var(--ink);font-size:17px;margin-bottom:6px}
+.empty .btn{margin-top:16px}
+.deals{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin-top:16px}
+.deal{display:block;background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px;transition:border-color .2s,box-shadow .2s}
+.deal:hover{border-color:#d7dde4;box-shadow:var(--shadow-sm)}
+.deal .y{font-size:22px;font-weight:800;color:var(--green)}
+.deal .t{font-weight:600;color:var(--ink);margin-top:4px;font-size:14px}
+.deal .m{font-size:12.5px;color:var(--muted);margin-top:4px}
+.note{font-size:13px;color:var(--muted)}
+.note a{color:var(--navy);font-weight:600}
+.foot{position:relative;z-index:2;font-size:11.5px;color:var(--muted);text-align:center;padding:26px 0 54px;max-width:78ch;margin:0 auto;line-height:1.7}
+/* editor */
+.ov{position:fixed;inset:0;z-index:50;background:rgba(14,24,36,.45);display:none;align-items:flex-start;justify-content:center;overflow-y:auto;padding:40px 16px}
+.ov.open{display:flex}
+.box{background:#fff;border-radius:16px;max-width:720px;width:100%;padding:26px 24px;box-shadow:var(--shadow)}
+.box h3{font-size:20px;font-weight:800;color:var(--ink);letter-spacing:-.02em}
+.box .hint{font-size:13px;color:var(--muted);margin-top:6px;line-height:1.55}
+.box .hint a{color:var(--navy);font-weight:600}
+.mine{margin-top:16px;display:flex;flex-direction:column;gap:8px}
+.mine .row{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:13.5px}
+.mine .row .nm{flex:1;color:var(--ink);font-weight:600}
+.mine .row .st{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.st.on{color:var(--green)}.st.off{color:var(--muted)}
+.form{margin-top:18px;border-top:1px solid var(--line);padding-top:18px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:560px){.g2{grid-template-columns:1fr}}
+.fld{display:flex;flex-direction:column;margin-bottom:12px}
+.fld.full{grid-column:1/-1}
+.fld label{font-size:12px;font-weight:600;color:var(--ink);margin-bottom:6px}
+.fld input,.fld select{font-family:inherit;font-size:14px;color:var(--ink);border:1px solid var(--line);border-radius:9px;padding:10px 12px;outline:none;background:#fff}
+.fld input:focus{border-color:var(--navy)}
+.checks{display:flex;flex-wrap:wrap;gap:8px}
+.checks label{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:500;color:var(--text);border:1px solid var(--line);border-radius:999px;padding:6px 11px;cursor:pointer;margin:0}
+.checks input{accent-color:var(--navy)}
+.err{color:var(--red);font-size:13px;min-height:18px;margin-top:6px}
+.ok{color:var(--green);font-size:13px;min-height:18px;margin-top:6px}
+.formacts{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+</style></head>
+<body>
+<div class="bg"></div>
+<header class="top"><div class="top-in">
+  <a class="brand" href="/"><img src="/assets/brand/pegasus-mark.png" alt="Pegasus"> Pegasus</a>
+  <nav class="nav"><a href="/capital.html" class="hideSm">Capital</a><a href="/find-a-lender" class="hideSm">Find a lender</a><a href="/pegasus-direct-lending.html" class="hideSm">Direct Lending</a><span id="navAuth"><a class="btn sm" href="/signin.html">Sign in</a></span></nav>
+</div></header>
+
+<section class="hero"><div class="wrap">
+  <div class="eyebrow">Pegasus Capital Network · Lending Programs</div>
+  <h1>Who lends what, where and how much.</h1>
+  <p class="sub">Private lenders, banks and capital providers publish their lending programs here. Borrowers, brokers and developers find the right fit in seconds and send a deal straight to the lender.</p>
+  <div class="cta-row">
+    <a class="btn gold" href="/find-a-lender">Find a lender for my deal &rarr;</a>
+    <button class="btn ghost" type="button" id="postBtn">I'm a lender: publish my program</button>
+  </div>
+  <div class="stats"><div><b id="stPrograms">—</b>active programs</div><div><b id="stLenders">—</b>lenders publishing</div><div><b id="stStates">—</b>states covered</div></div>
+</div></section>
+
+<section class="sec" id="programs"><div class="wrap">
+  <div class="h2">Lending programs</div>
+  <div class="h2-sub">Filter by your deal. Every program is published by the lender; terms are subject to the lender's own underwriting.</div>
+  <div class="filters">
+    <select id="fType" class="grow" aria-label="Loan type"><option value="">Any loan type</option></select>
+    <select id="fState" aria-label="State"><option value="">Any state</option></select>
+    <input id="fAmount" inputmode="numeric" placeholder="Loan amount, e.g. $750,000" aria-label="Loan amount" class="grow">
+    <button class="clear" type="button" id="fClear">Clear</button>
+  </div>
+  <div class="grid" id="grid"><div class="empty">Loading programs…</div></div>
+</div></section>
+
+<section class="sec" id="deals"><div class="wrap">
+  <div class="h2">Live trust-deed opportunities</div>
+  <div class="h2-sub">Real estate-secured loans open to private investors through Pegasus Direct Lending.</div>
+  <div class="deals" id="dealGrid"></div>
+  <p class="note" id="dealNote" style="margin-top:12px"></p>
+</div></section>
+
+<div class="foot wrap">
+  Programs are published by the lenders themselves and are not offers or commitments to lend. All loans are subject to each lender's underwriting, property review and approval. Pegasus Capital Network is a membership marketplace and does not make loans. Direct Lending opportunities are arranged through West Coast Capital Mortgage Inc. (NMLS #2817729, DRE #01385024), Los Angeles. Real estate lending involves risk, including loss of principal.
+</div>
+
+<!-- program editor -->
+<div class="ov" id="ov"><div class="box">
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px">
+    <div><h3>Your lending programs</h3><div class="hint">Publish the box you lend in. Borrowers and brokers who match it can send you deals. To also be ranked in <a href="/find-a-lender" target="_blank">Find a Lender</a>, make sure your company page is listed in the Lenders directory — manage it in <a href="/my-presences.html" target="_blank">Business Pages</a>.</div></div>
+    <button class="btn ghost sm" type="button" id="ovClose">Close</button>
+  </div>
+  <div class="mine" id="mine"></div>
+  <div class="form" id="form">
+    <input type="hidden" id="pId">
+    <div class="g2">
+      <div class="fld full"><label for="pName">Program name *</label><input id="pName" maxlength="90" placeholder="e.g. California bridge & fix-and-flip, up to 75% LTV"></div>
+      <div class="fld full"><label>Loan types *</label><div class="checks" id="pTypes"></div></div>
+      <div class="fld"><label for="pMin">Minimum loan</label><input id="pMin" inputmode="numeric" placeholder="$100,000"></div>
+      <div class="fld"><label for="pMax">Maximum loan</label><input id="pMax" inputmode="numeric" placeholder="$5,000,000"></div>
+      <div class="fld"><label for="pLtv">Max LTV (%)</label><input id="pLtv" inputmode="numeric" maxlength="3" placeholder="75"></div>
+      <div class="fld"><label for="pDscr">Min DSCR (rental)</label><input id="pDscr" inputmode="decimal" maxlength="5" placeholder="1.10"></div>
+      <div class="fld"><label for="pRate">Rates from</label><input id="pRate" maxlength="40" placeholder="e.g. 9.99% or Prime + 2"></div>
+      <div class="fld"><label for="pYears">Preferred sponsor experience (yrs)</label><input id="pYears" inputmode="numeric" maxlength="2" placeholder="0"></div>
+      <div class="fld full"><label>Property types</label><div class="checks" id="pAssets"></div></div>
+      <div class="fld full"><label for="pStates">States you lend in</label><input id="pStates" placeholder="Leave empty for nationwide, or e.g. CA, NV, AZ, TX"></div>
+      <div class="fld full"><label>Program status</label><div class="checks"><label><input type="checkbox" id="pActive" checked> Active and visible on Pegasus</label></div></div>
+    </div>
+    <div class="err" id="pErr"></div><div class="ok" id="pOk"></div>
+    <div class="formacts"><button class="btn" type="button" id="pSave">Publish program</button><button class="btn ghost" type="button" id="pNew" style="display:none">New program</button></div>
+  </div>
+</div></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="/js/pegasus-config.js"></script>
+<script>
+(function(){
+  var C=window.PEG_CONFIG||window.PEGASUS_CONFIG||{};
+  var URL=C.SUPABASE_URL||'https://trdwsssouhpawhfdkfqf.supabase.co';
+  var KEY=C.SUPABASE_ANON||'sb_publishable_hrR8wI6hM921mnxk7bBE_A_YKxWsoBI';
+  var sb=(window.supabase&&window.supabase.createClient)?window.supabase.createClient(URL,KEY,{auth:{persistSession:true,autoRefreshToken:true,storageKey:'pegasus.auth'}}):null;
+  var TYPES={residential_purchase:'Home purchase (1–4)',residential_refi:'Refinance (1–4)',dscr_rental:'DSCR / rental',fix_flip:'Fix & flip',bridge:'Bridge',construction:'Construction',multifamily:'Multifamily 5+',commercial:'Commercial',sba_business:'SBA / business'};
+  var ASSETS=['SFR','Condo / townhome','2–4 units','Multifamily 5+','Mixed-use','Commercial','Land'];
+  var STATES={AL:'Alabama',AK:'Alaska',AZ:'Arizona',AR:'Arkansas',CA:'California',CO:'Colorado',CT:'Connecticut',DE:'Delaware',DC:'District of Columbia',FL:'Florida',GA:'Georgia',HI:'Hawaii',ID:'Idaho',IL:'Illinois',IN:'Indiana',IA:'Iowa',KS:'Kansas',KY:'Kentucky',LA:'Louisiana',ME:'Maine',MD:'Maryland',MA:'Massachusetts',MI:'Michigan',MN:'Minnesota',MS:'Mississippi',MO:'Missouri',MT:'Montana',NE:'Nebraska',NV:'Nevada',NH:'New Hampshire',NJ:'New Jersey',NM:'New Mexico',NY:'New York',NC:'North Carolina',ND:'North Dakota',OH:'Ohio',OK:'Oklahoma',OR:'Oregon',PA:'Pennsylvania',RI:'Rhode Island',SC:'South Carolina',SD:'South Dakota',TN:'Tennessee',TX:'Texas',UT:'Utah',VT:'Vermont',VA:'Virginia',WA:'Washington',WV:'West Virginia',WI:'Wisconsin',WY:'Wyoming'};
+  function $(id){ return document.getElementById(id); }
+  function esc(x){ return (x==null?'':String(x)).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];}); }
+  function digits(x){ var d=String(x==null?'':x).replace(/[^0-9]/g,''); return d?Number(d):null; }
+  function money(n){ if(n==null||n==='') return null; n=Number(n); if(!isFinite(n)) return null; if(n>=1e6) return '$'+(Math.round(n/1e5)/10).toString().replace(/\.0$/,'')+'M'; if(n>=1e3) return '$'+Math.round(n/1e3)+'K'; return '$'+n; }
+  function fmtInput(el){ el.addEventListener('input',function(){ var d=digits(el.value); el.value=d!=null?('$'+d.toLocaleString('en-US')):''; }); }
+  async function session(){ try{ var r=await sb.auth.getSession(); return (r&&r.data)?r.data.session:null; }catch(e){ return null; } }
+
+  /* filters */
+  Object.keys(TYPES).forEach(function(k){ var o=document.createElement('option'); o.value=k; o.textContent=TYPES[k]; $('fType').appendChild(o); });
+  Object.keys(STATES).forEach(function(k){ var o=document.createElement('option'); o.value=k; o.textContent=STATES[k]; $('fState').appendChild(o); });
+  fmtInput($('fAmount'));
+  (function(){ var qs=new URLSearchParams(location.search); var t=(qs.get('type')||'').replace(/[^a-z_]/g,''); if(TYPES[t]) $('fType').value=t; var s=(qs.get('state')||'').toUpperCase(); if(STATES[s]) $('fState').value=s; })();
+
+  var ALL=[];
+  function amountRange(p){ var a=money(p.min_loan), b=money(p.max_loan); if(a&&b) return a+' – '+b; if(b) return 'Up to '+b; if(a) return 'From '+a; return 'Flexible'; }
+  function lenderHref(p){ return p.company_slug?('/business/'+encodeURIComponent(p.company_slug)):(p.profile_slug?('/u/'+encodeURIComponent(p.profile_slug)):'#'); }
+  function card(p){
+    var name=p.company_page_name||p.company_name||p.lender_name||'Lender';
+    var who=(p.company_page_name||p.company_name)&&p.lender_name&&p.lender_name!==name?p.lender_name:(p.location||'');
+    var initials=name.split(/\s+/).map(function(w){return w.charAt(0);}).join('').slice(0,2).toUpperCase();
+    var logo=p.logo_url?('<img src="'+esc(p.logo_url)+'" alt="">'):(p.avatar_url?('<img src="'+esc(p.avatar_url)+'" alt="">'):esc(initials));
+    var types=(p.loan_types||[]).map(function(t){ return '<span class="chip">'+esc(TYPES[t]||t)+'</span>'; }).join('');
+    var st=(p.states&&p.states.length)?(p.states.slice(0,8).join(', ')+(p.states.length>8?' +'+(p.states.length-8):'')):'Nationwide';
+    var facts=[['Loan size',amountRange(p)]];
+    if(p.max_ltv) facts.push(['Max LTV',p.max_ltv+'%']);
+    if(p.rate_from) facts.push(['Rates from',p.rate_from]);
+    if(p.dscr_min) facts.push(['Min DSCR',String(p.dscr_min)]);
+    var firstType=(p.loan_types&&p.loan_types[0])||'';
+    var href=lenderHref(p);
+    return '<div class="card"><a class="lender" href="'+href+'"><span class="logo">'+logo+'</span><span><span class="lname">'+esc(name)+'</span><br><span class="lsub">'+esc(who)+'</span></span></a>'+
+      '<div class="pname">'+esc(p.program_name||'')+'</div>'+
+      (types?'<div class="chips">'+types+'</div>':'')+
+      '<div class="facts">'+facts.map(function(f){ return '<div class="fact"><div class="k">'+esc(f[0])+'</div><div class="v">'+esc(f[1])+'</div></div>'; }).join('')+'</div>'+
+      '<div class="states"><span style="color:var(--muted)">Lends in:</span> '+esc(st)+(p.bridge_ok?' · Bridge OK':'')+(p.construction_ok?' · Construction OK':'')+'</div>'+
+      '<div class="acts"><a class="btn sm" href="/find-a-lender'+(firstType?('?type='+encodeURIComponent(firstType)):'')+'">Send a deal</a>'+(href!=='#'?'<a class="btn ghost sm" href="'+href+'">View lender</a>':'')+'</div></div>';
+  }
+  function render(){
+    var t=$('fType').value, s=$('fState').value, amt=digits($('fAmount').value);
+    var rows=ALL.filter(function(p){
+      if(t && p.loan_types && p.loan_types.length && p.loan_types.indexOf(t)<0) return false;
+      if(s && p.states && p.states.length && p.states.indexOf(s)<0) return false;
+      if(amt!=null){ if(p.min_loan!=null && amt<Number(p.min_loan)) return false; if(p.max_loan!=null && amt>Number(p.max_loan)) return false; }
+      return true;
+    });
+    var g=$('grid');
+    if(!ALL.length){
+      g.innerHTML='<div class="empty"><b>Lenders are joining Pegasus now.</b>Be one of the first to publish your lending program. It takes a minute, and borrowers, brokers and developers whose deals fit your box can send them straight to you.<br><button class="btn gold" type="button" data-post="1">Publish my program</button></div>';
+    }else if(!rows.length){
+      g.innerHTML='<div class="empty"><b>No published program matches that exact deal yet.</b>Try another state or amount, or run it through Find a Lender, which also ranks lenders by their real lending history.<br><a class="btn" href="/find-a-lender'+(t?('?type='+t):'')+'">Find a lender</a></div>';
+    }else{
+      g.innerHTML=rows.map(card).join('');
+    }
+    var pb=g.querySelector('[data-post]'); if(pb) pb.onclick=openEditor;
+  }
+  ['fType','fState'].forEach(function(id){ $(id).addEventListener('change',render); });
+  $('fAmount').addEventListener('input',render);
+  $('fClear').onclick=function(){ $('fType').value=''; $('fState').value=''; $('fAmount').value=''; render(); };
+
+  async function loadPrograms(){
+    if(!sb){ $('grid').innerHTML='<div class="empty">Connection unavailable. Please refresh shortly.</div>'; return; }
+    try{
+      var r=await sb.from('public_lender_programs').select('*').order('updated_at',{ascending:false}).limit(300);
+      if(r.error) throw r.error;
+      ALL=r.data||[];
+    }catch(e){ console.error('[programs]',e); ALL=[]; }
+    var lenders={}, states={}, national=false;
+    ALL.forEach(function(p){ lenders[p.user_id]=1; if(!p.states||!p.states.length) national=true; else p.states.forEach(function(x){ states[x]=1; }); });
+    $('stPrograms').textContent=ALL.length; $('stLenders').textContent=Object.keys(lenders).length;
+    $('stStates').textContent=national?'All':Object.keys(states).length;
+    render();
+  }
+
+  async function loadDeals(){
+    var host=$('dealGrid'), note=$('dealNote');
+    try{
+      var r=await sb.from('public_dl_deals').select('id,title,city,state,lien_position,ltv,term_months,investor_yield,min_investment').order('created_at',{ascending:false}).limit(6);
+      var rows=(r&&r.data)||[];
+      if(!rows.length){ host.innerHTML=''; note.innerHTML='New first-deed opportunities are posted as they come up. <a href="/pegasus-direct-lending.html#invest">Join as an investor</a> to see them first.'; return; }
+      host.innerHTML=rows.map(function(d){
+        var y=d.investor_yield!=null?(Math.round(d.investor_yield*100)/100+'%'):'Set per deal';
+        var meta=[d.lien_position,d.ltv!=null?('LTV '+d.ltv+'%'):'',d.term_months?(d.term_months+' mo'):'',[d.city,d.state].filter(Boolean).join(', ')].filter(Boolean).join(' · ');
+        return '<a class="deal" href="/pegasus-direct-lending.html#deals"><div class="y">'+esc(y)+'</div><div class="t">'+esc(d.title)+'</div><div class="m">'+esc(meta)+'</div></a>';
+      }).join('');
+      note.innerHTML='<a href="/pegasus-direct-lending.html">See all Direct Lending opportunities &rarr;</a>';
+    }catch(e){ host.innerHTML=''; note.textContent=''; }
+  }
+
+  /* ── editor ─────────────────────────────────────────────────────────── */
+  var ME=null, MINE=[];
+  Object.keys(TYPES).forEach(function(k){ $('pTypes').insertAdjacentHTML('beforeend','<label><input type="checkbox" value="'+k+'"> '+esc(TYPES[k])+'</label>'); });
+  ASSETS.forEach(function(a){ $('pAssets').insertAdjacentHTML('beforeend','<label><input type="checkbox" value="'+esc(a)+'"> '+esc(a)+'</label>'); });
+  fmtInput($('pMin')); fmtInput($('pMax'));
+  function checked(id){ return Array.prototype.slice.call(document.querySelectorAll('#'+id+' input:checked')).map(function(i){ return i.value; }); }
+  function setChecked(id,vals){ vals=vals||[]; document.querySelectorAll('#'+id+' input').forEach(function(i){ i.checked=vals.indexOf(i.value)>=0; }); }
+  function fill(p){
+    p=p||{}; $('pId').value=p.id||''; $('pName').value=p.name||'';
+    setChecked('pTypes',p.loan_types); setChecked('pAssets',p.asset_types);
+    $('pMin').value=p.min_loan!=null?('$'+Number(p.min_loan).toLocaleString('en-US')):''; $('pMax').value=p.max_loan!=null?('$'+Number(p.max_loan).toLocaleString('en-US')):'';
+    $('pLtv').value=p.max_ltv||''; $('pDscr').value=p.dscr_min||''; $('pRate').value=p.rate_from||''; $('pYears').value=p.pref_sponsor_years||'';
+    $('pStates').value=(p.states||[]).join(', '); $('pActive').checked=p.id?!!p.active:true;
+    $('pSave').textContent=p.id?'Save changes':'Publish program'; $('pNew').style.display=p.id?'':'none';
+    $('pErr').textContent=''; $('pOk').textContent='';
+  }
+  function renderMine(){
+    var h=$('mine');
+    if(!MINE.length){ h.innerHTML=''; return; }
+    h.innerHTML=MINE.map(function(p){
+      return '<div class="row"><span class="nm">'+esc(p.name||'Untitled program')+'</span><span class="st '+(p.active?'on':'off')+'">'+(p.active?'Active':'Paused')+'</span>'+
+        '<button class="btn ghost sm" type="button" data-edit="'+p.id+'">Edit</button><button class="btn ghost sm" type="button" data-tog="'+p.id+'">'+(p.active?'Pause':'Activate')+'</button><button class="btn danger sm" type="button" data-del="'+p.id+'">Delete</button></div>';
+    }).join('');
+    h.querySelectorAll('[data-edit]').forEach(function(b){ b.onclick=function(){ fill(MINE.filter(function(x){return x.id===b.getAttribute('data-edit');})[0]); $('pName').focus(); }; });
+    h.querySelectorAll('[data-tog]').forEach(function(b){ b.onclick=async function(){ var p=MINE.filter(function(x){return x.id===b.getAttribute('data-tog');})[0]; if(!p) return; b.disabled=true; var r=await sb.from('lender_appetite_profiles').update({active:!p.active,updated_at:new Date().toISOString()}).eq('id',p.id); if(r.error){ $('pErr').textContent=r.error.message; b.disabled=false; return; } await loadMine(); loadPrograms(); }; });
+    h.querySelectorAll('[data-del]').forEach(function(b){ b.onclick=async function(){ if(!confirm('Delete this program? This cannot be undone.')) return; b.disabled=true; var r=await sb.from('lender_appetite_profiles').delete().eq('id',b.getAttribute('data-del')); if(r.error){ $('pErr').textContent=r.error.message; b.disabled=false; return; } fill(null); await loadMine(); loadPrograms(); }; });
+  }
+  async function loadMine(){
+    if(!ME) return;
+    var r=await sb.from('lender_appetite_profiles').select('*').eq('user_id',ME.id).order('created_at',{ascending:true});
+    MINE=(r&&r.data)||[]; renderMine();
+  }
+  async function openEditor(){
+    var s=await session();
+    if(!(s&&s.user)){ location.href='/signup.html?role=lender&intent=program&next='+encodeURIComponent('/lending-programs.html#post'); return; }
+    ME=s.user; fill(null); $('ov').classList.add('open'); await loadMine();
+  }
+  $('postBtn').onclick=openEditor;
+  $('ovClose').onclick=function(){ $('ov').classList.remove('open'); };
+  $('ov').addEventListener('click',function(e){ if(e.target===this) this.classList.remove('open'); });
+  $('pNew').onclick=function(){ fill(null); $('pName').focus(); };
+  $('pSave').onclick=async function(){
+    var err=$('pErr'), ok=$('pOk'), btn=$('pSave'); err.textContent=''; ok.textContent='';
+    var name=$('pName').value.trim(), types=checked('pTypes');
+    if(name.length<3){ err.textContent='Give your program a short name.'; return; }
+    if(!types.length){ err.textContent='Pick at least one loan type.'; return; }
+    var min=digits($('pMin').value), max=digits($('pMax').value);
+    if(min!=null&&max!=null&&min>max){ err.textContent='Minimum loan is larger than the maximum.'; return; }
+    var ltv=digits($('pLtv').value); if(ltv!=null&&(ltv<1||ltv>100)){ err.textContent='Max LTV should be between 1 and 100.'; return; }
+    var dscr=parseFloat($('pDscr').value); dscr=isNaN(dscr)?null:dscr;
+    var years=digits($('pYears').value);
+    var states=$('pStates').value.toUpperCase().split(/[^A-Z]+/).filter(function(x){ return STATES[x]; });
+    states=states.filter(function(x,i){ return states.indexOf(x)===i; });
+    var row={ user_id:ME.id, name:name, loan_types:types, asset_types:checked('pAssets'), states:states,
+      min_loan:min, max_loan:max, max_ltv:ltv, dscr_min:dscr, rate_from:$('pRate').value.trim()||null,
+      pref_sponsor_years:years, bridge_ok:types.indexOf('bridge')>=0, construction_ok:types.indexOf('construction')>=0,
+      active:$('pActive').checked, updated_at:new Date().toISOString() };
+    btn.disabled=true; btn.textContent='Saving…';
+    try{
+      var id=$('pId').value, r;
+      if(id) r=await sb.from('lender_appetite_profiles').update(row).eq('id',id).select().single();
+      else r=await sb.from('lender_appetite_profiles').insert(row).select().single();
+      if(r.error) throw r.error;
+      ok.textContent=row.active?'Published. Your program is live on Pegasus.':'Saved as paused.';
+      fill(r.data); await loadMine(); loadPrograms();
+    }catch(e){ console.error('[programs] save',e); err.textContent=(e&&e.message)||'Could not save. Please try again.'; }
+    btn.disabled=false; btn.textContent=$('pId').value?'Save changes':'Publish program';
+  };
+
+  /* nav state + deep link */
+  session().then(function(s){
+    if(s&&s.user){ $('navAuth').innerHTML='<a class="btn sm" href="/dashboard.html">My workspace</a>'; }
+    if(location.hash==='#post' && s && s.user) openEditor();
+  });
+
+  loadPrograms(); loadDeals();
+})();
+</script>
+</body></html>

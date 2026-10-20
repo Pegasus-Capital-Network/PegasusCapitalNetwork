@@ -104,7 +104,7 @@
       <div class="mob-drawer-nav" id="mobDrawerNav">
         <a href="/capital.html">Capital &amp; Real Estate</a><a href="/ai-network.html">Pegasus AI</a><a href="/private-network.html">Private Network</a><a href="/how-it-works.html">How it works</a>
         <div class="mob-sec">Capital &amp; Real Estate</div>
-        <a href="/realtors.html">Realtors</a><a href="/lenders">Lender Directory</a><a href="/find-a-lender">Find a Lender</a><a href="/showcase.html">Opportunities</a>
+        <a href="/realtors.html">Realtors</a><a href="/lenders">Lender Directory</a><a href="/find-a-lender">Find a Lender</a><a href="/lending-programs.html">Lending Programs</a>
         <div class="mob-sec">More</div>
         <a href="/about.html">About</a><a href="/contact.html">Contact</a><a href="/faq.html">FAQ</a>
       </div>
@@ -132,6 +132,7 @@
         <div class="sb-sec">Network</div>
         ${item('◎','Network Feed','/feed',{act:'Feed'})}
         ${item('◆','Find a Lender','/find-a-lender',{act:'Find a Lender'})}
+        ${item('▤','Lending Programs','/lending-programs.html',{act:'Programs'})}
         ${item('⬡','Members Network','/members.html',{act:'Members'})}
         ${item('▤','Business Directory','/businesses')}
         <div class="sb-sec">My Work</div>
@@ -314,7 +315,7 @@
     return `<footer class="footer">
       <div style="max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr 1fr;gap:30px;margin-bottom:32px">
         <div><div class="brand" style="margin-bottom:12px"><img class="brand-mark" src="/assets/brand/pegasus-mark.png" alt="Pegasus"><span>Pegasus</span></div><div style="font-size:12px;color:var(--text3);line-height:1.6;max-width:240px">Three networks, one ecosystem. Capital, AI, and the Private Network.</div>${socRow}</div>
-        ${col('Capital & Real Estate',[['Realtors','/realtors.html'],['Lenders Directory','/lenders'],['Find Financing','/find-a-lender'],['Borrowers','/borrowers.html'],['Opportunities','/showcase.html'],['Lender Rankings','/rankings'],['Top Lenders 2025','/awards/top-lenders-2025'],['Financing Requests','/deal-requests.html']])}
+        ${col('Capital & Real Estate',[['Realtors','/realtors.html'],['Lenders Directory','/lenders'],['Find Financing','/find-a-lender'],['Borrowers','/borrowers.html'],['Lending Programs','/lending-programs.html'],['Lender Rankings','/rankings'],['Top Lenders 2025','/awards/top-lenders-2025'],['Financing Requests','/deal-requests.html']])}
         ${col('Pegasus AI',[['AI Network','/ai-network.html'],['Needs Board','/ai-needs.html'],['Intelligence','/intel.html']])}
         ${col('Private & Account',[['Private Network','/private-network.html'],['How It Works','/how-it-works.html'],['Membership','/membership.html'],['Network Feed','/feed']])}
         ${col('Company',[['About','/about.html'],['Contact','/contact.html'],['FAQ','/faq.html'],['Trust & Safety','/trust-and-safety.html']])}
@@ -902,7 +903,7 @@
       var on = function(p){ return location.pathname.indexOf(p) === 0 ? ' on' : ''; };
       links.innerHTML =
         '<a class="member'+on('/businesses')+'" href="/businesses">Directory</a>'+
-        '<a class="member'+on('/showcase')+'" href="/showcase.html">Opportunities</a>'+
+        '<a class="member'+on('/lending-programs')+'" href="/lending-programs.html">Programs</a>'+
         '<a class="member'+on('/dashboard')+'" href="/dashboard.html">My Workspace</a>'+
         '<a class="member'+(slug?on('/u/'):'')+'" href="'+(slug?'/u/'+slug:'/profile.html')+'">My Profile</a>';
     }
@@ -912,7 +913,7 @@
       mdn.setAttribute('data-member', '1');
       mdn.innerHTML =
         '<a href="/businesses">Directory</a>'+
-        '<a href="/showcase.html">Opportunities</a>'+
+        '<a href="/lending-programs.html">Lending Programs</a>'+
         '<a href="/dashboard.html">My Workspace</a>'+
         '<a href="'+(slug?'/u/'+slug:'/profile.html')+'">My Profile</a>'+
         '<div class="mob-sec">Account</div>'+

@@ -45,7 +45,7 @@ header.top{position:relative;z-index:3}
 h1{font-weight:800;font-size:clamp(32px,5vw,52px);line-height:1.04;letter-spacing:-.03em;color:var(--ink)}
 .sub{margin:18px auto 0;font-size:clamp(15px,1.8vw,18px);color:var(--muted);max-width:60ch}
 /* choices */
-.choices{position:relative;z-index:2;display:grid;grid-template-columns:repeat(3,1fr);gap:20px;padding:36px 0 8px}
+.choices{position:relative;z-index:2;display:grid;grid-template-columns:repeat(2,1fr);gap:20px;padding:36px 0 8px}
 @media(max-width:860px){.choices{grid-template-columns:1fr;max-width:520px;margin:0 auto}}
 .choice{display:flex;flex-direction:column;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:28px 26px 24px;min-height:252px;box-shadow:var(--shadow-sm);transition:transform .22s cubic-bezier(.2,.7,.2,1),box-shadow .22s,border-color .22s;position:relative;overflow:hidden}
 .choice::before{content:"";position:absolute;left:0;right:0;top:0;height:4px;background:linear-gradient(90deg,var(--navy),var(--navy-l));transform:scaleX(0);transform-origin:left;transition:transform .3s}
@@ -77,13 +77,13 @@ h1{font-weight:800;font-size:clamp(32px,5vw,52px);line-height:1.04;letter-spacin
 
 <header class="top"><div class="top-in">
   <a class="brand" href="/"><img src="/assets/brand/pegasus-mark.png" alt="Pegasus"> Pegasus</a>
-  <nav class="nav"><a href="/pegasus-direct-lending.html">Invest</a><a href="/get-financing.html">Get financing</a><a href="/businesses">Directory</a><a href="/">All worlds</a></nav>
+  <nav class="nav"><a href="/pegasus-direct-lending.html">Invest</a><a href="/find-a-lender">Find a lender</a><a href="/lending-programs.html">Programs</a><a href="/">All worlds</a></nav>
 </div></header>
 
 <section class="hero"><div class="wrap">
   <div class="eyebrow">Pegasus Capital Network</div>
   <h1>Capital &amp; Real Estate</h1>
-  <p class="sub">Private investors discover real estate-backed lending opportunities. Borrowers find financing for bridge, construction and investment properties. Professionals connect across the network. Choose where you want to go.</p>
+  <p class="sub">Private investors discover real estate-backed lending opportunities. Homebuyers and investors find financing, from a home purchase or refinance to bridge, construction and investment loans. Lenders publish their programs. Professionals connect across the network. Choose where you want to go.</p>
 </div></section>
 
 <div class="wrap">
@@ -95,26 +95,34 @@ h1{font-weight:800;font-size:clamp(32px,5vw,52px);line-height:1.04;letter-spacin
       <div class="c-desc">Be the lender. Review real estate-backed loans secured by a recorded deed of trust, choose the deals that fit you, and earn monthly interest. The borrower pays the fees, not you.</div>
       <span class="c-go">Pegasus Direct Lending <span class="ar">&rarr;</span></span>
     </a>
+    <a class="choice" href="/find-a-lender?type=residential_purchase">
+      <span class="c-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><circle cx="12" cy="14" r="2"/><path d="M12 16v3"/></svg></span>
+      <div class="c-ttl">Buy or refinance a home</div>
+      <div class="c-desc">Purchase or refinance a home, 1 to 4 units. Enter the amount and state and see matched lenders in seconds, or work directly with our licensed California brokerage.</div>
+      <span class="c-go">Find a lender <span class="ar">&rarr;</span></span>
+    </a>
     <a class="choice" href="/get-financing.html">
       <span class="c-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span>
-      <div class="c-ttl">I need financing</div>
-      <div class="c-desc">Funding for bridge, construction, fix-and-flip and investment properties. Tell us about your deal and we run a fast preliminary review, then match it to the right capital.</div>
+      <div class="c-ttl">Finance an investment deal</div>
+      <div class="c-desc">Bridge, construction, fix-and-flip, DSCR rental and investment-property loans. Tell us about the deal and we run a fast preliminary review, then match it to the right capital.</div>
       <span class="c-go">Get financing <span class="ar">&rarr;</span></span>
     </a>
-    <a class="choice" href="/businesses">
-      <span class="c-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M3 20c0-3 3-5 6-5s6 2 6 5"/><circle cx="17.5" cy="9.5" r="2.5"/><path d="M15 15.5c3 0 6 1.5 6 4.5"/></svg></span>
-      <div class="c-ttl">Explore the network</div>
-      <div class="c-desc">Browse lenders, mortgage brokers, financial institutions, developers and capital partners already in Pegasus. Claim your business and make the connections your next deal needs.</div>
-      <span class="c-go">Open the directory <span class="ar">&rarr;</span></span>
+    <a class="choice" href="/lending-programs.html">
+      <span class="badge">New</span>
+      <span class="c-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/><path d="M8 13h8"/><path d="M8 16h5"/></svg></span>
+      <div class="c-ttl">See who lends what</div>
+      <div class="c-desc">Browse lending programs published by private lenders and capital providers: loan types, states, size, LTV. Lenders publish their own program and receive deals that fit their box.</div>
+      <span class="c-go">Lending programs <span class="ar">&rarr;</span></span>
     </a>
   </div>
 
   <div class="subnav">
-    <a href="/pegasus-direct-lending.html">Private Investors</a>
-    <a href="/get-financing.html">Borrowers / Get Financing</a>
+    <a href="/find-a-lender">Find a Lender</a>
+    <a href="/lending-programs.html">Lending Programs</a>
     <a href="/pegasus-direct-lending.html#deals">Direct Lending Opportunities</a>
-    <a href="/businesses">Lenders &amp; Business Directory</a>
-    <a href="/pegasus-direct-lending.html#invest">Investor Relations</a>
+    <a href="/lenders">Lenders Directory</a>
+    <a href="/businesses">Business Directory</a>
+    <a href="/realtors.html">Realtors</a>
   </div>
 
   <p class="disc">Pegasus Capital Network facilitates professional connections and, through the licensed brokerage West Coast Capital Mortgage Inc. (NMLS #2817729, DRE #01385024), arranges real estate-secured loans. This page is informational and is not an offer to sell or a solicitation to buy any security or investment. Real estate lending involves risk, including possible loss of principal. Returns are not guaranteed and are not insured. Pegasus AI and Pegasus Private Network (tokenized assets) are separate directions.</p>

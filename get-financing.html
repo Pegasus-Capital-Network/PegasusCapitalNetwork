@@ -39,7 +39,9 @@ header.top{border-bottom:1px solid var(--line)}
 h1{font-weight:800;font-size:clamp(28px,4.4vw,44px);line-height:1.06;letter-spacing:-.03em;color:var(--ink)}
 .sub{margin:16px 0 0;font-size:16px;color:var(--muted);max-width:56ch}
 .pts{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 0}
-.pts span{font-size:12px;color:var(--text);background:var(--bg2);border:1px solid var(--line);border-radius:999px;padding:5px 12px}
+.pts button{font-family:inherit;font-size:12.5px;color:var(--text);background:var(--bg2);border:1px solid var(--line);border-radius:999px;padding:6px 13px;cursor:pointer;transition:border-color .15s,color .15s,background .15s}
+.pts button:hover{border-color:var(--navy);color:var(--navy)}
+.pts button.on{background:var(--navy);border-color:var(--navy);color:#fff}
 .card{position:relative;z-index:2;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:26px 24px;margin:26px 0 20px;box-shadow:var(--shadow)}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 @media(max-width:560px){.grid2{grid-template-columns:1fr}}
@@ -76,7 +78,7 @@ textarea{min-height:70px;resize:vertical}
   <div class="kick">Pegasus Capital Network · Get Financing</div>
   <h1>Funding for your next real estate deal.</h1>
   <p class="sub">Bridge, construction, fix-and-flip and investment-property loans. Tell us about your deal and we run a fast preliminary review, then match it to the right capital. Business-purpose loans secured by non-owner-occupied property.</p>
-  <div class="pts"><span>Bridge</span><span>Construction</span><span>Fix &amp; flip</span><span>Investment property</span><span>Cash-out</span></div>
+  <div class="pts"><button type="button" data-p="Bridge">Bridge</button><button type="button" data-p="Construction">Construction</button><button type="button" data-p="Fix &amp; flip / rehab">Fix &amp; flip</button><button type="button" data-p="Investment property purchase">Investment property</button><button type="button" data-p="Refinance">Refinance</button><button type="button" data-p="Cash-out">Cash-out</button></div><p class="sub" style="font-size:14px;margin-top:14px">Buying or refinancing your own home? <a href="/find-a-lender?type=residential_purchase" style="color:var(--navy);font-weight:600;text-decoration:underline">Find a home loan lender &rarr;</a></p>
 </div></section>
 
 <div class="wrap">
@@ -127,6 +129,12 @@ textarea{min-height:70px;resize:vertical}
   (function(){ try{ var raw=localStorage.getItem('peg.financing.draft'); if(!raw) return; session().then(function(s){ if(!(s&&s.user)) return; var d=JSON.parse(raw); function set(id,val){var e=document.getElementById(id); if(e&&val&&!e.value) e.value=val;} set('f-name',d.name); set('f-email',d.email||s.user.email); set('f-phone',d.phone); set('f-addr',d.property_address); set('f-city',d.city); set('f-amount',d.loan_amount); set('f-value',d.est_value); set('f-msg',d.message); set('f-ptype',d.property_type); set('f-purpose',d.purpose); set('f-timeline',d.timeline); }); }catch(_){} })();
   function num(x){ if(!x) return null; var n=parseFloat(String(x).replace(/[^0-9.]/g,'')); return isNaN(n)?null:n; }
   (function(){ function fmt(e){ var d=(e.value||'').replace(/[^0-9]/g,''); e.value=d?('$'+Number(d).toLocaleString('en-US')):''; } ['f-amount','f-value'].forEach(function(id){ var el=document.getElementById(id); if(el) el.addEventListener('input',function(){ fmt(el); }); }); })();
+  (function(){ var sel=document.getElementById('f-purpose'); var bs=document.querySelectorAll('.pts button[data-p]');
+    function mark(){ bs.forEach(function(b){ b.classList.toggle('on', sel && b.getAttribute('data-p')===sel.value); }); }
+    bs.forEach(function(b){ b.addEventListener('click',function(){ if(!sel) return; sel.value=b.getAttribute('data-p'); mark(); var card=document.getElementById('formCard'); if(card) card.scrollIntoView({behavior:'smooth',block:'start'}); }); });
+    if(sel) sel.addEventListener('change',mark);
+    var qp=(new URLSearchParams(location.search).get('purpose')||'').toLowerCase(); if(qp&&sel){ for(var i=0;i<sel.options.length;i++){ if(sel.options[i].value.toLowerCase().indexOf(qp)===0){ sel.selectedIndex=i; break; } } mark(); }
+  })();
   window.submitReq=async function(){
     var err=document.getElementById('err'), btn=document.getElementById('submit');
     err.textContent='';
