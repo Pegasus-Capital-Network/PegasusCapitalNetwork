@@ -212,6 +212,8 @@ footer .fnote{font-size:11px;color:var(--muted);max-width:62ch;line-height:1.7}
   var URL = C.SUPABASE_URL || 'https://trdwsssouhpawhfdkfqf.supabase.co';
   var KEY = C.SUPABASE_ANON || 'sb_publishable_hrR8wI6hM921mnxk7bBE_A_YKxWsoBI';
   var sb = (window.supabase && window.supabase.createClient) ? window.supabase.createClient(URL, KEY) : null;
+  async function session(){ try{ var r=await sb.auth.getSession(); return (r&&r.data)?r.data.session:null; }catch(e){ return null; } }
+  async function ensureAuth(role,intent){ var s=await session(); if(s&&s.user) return s; location.href='/signup.html?role='+encodeURIComponent(role||'')+'&intent='+encodeURIComponent(intent||'')+'&next='+encodeURIComponent(location.pathname); return null; }
 
   var COPY = {
     company:{label:'AI Company',title:'Join as a company',sub:'Free. Show what you’re building to aligned capital and buyers.',org:'Company name',focus:'What you build',one:'What you do, in one line',onePh:'e.g. AI that reads radiology scans for rural clinics'},
@@ -246,6 +248,8 @@ footer .fnote{font-size:11px;color:var(--muted);max-width:62ch;line-height:1.7}
     if(!name){ err.textContent='Please add your name.'; return; }
     if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){ err.textContent='Please add a valid email.'; return; }
     if(!sb){ err.textContent='Connection unavailable. Please try again in a moment.'; return; }
+    var _role=(currentSide==='investor')?'investor':'ecosystem_member';
+    var sess=await ensureAuth(_role,'ai-network:'+currentSide); if(!sess) return;
     btn.disabled=true; btn.textContent='Submitting…';
     try{
       var res=await sb.from('ai_network_signups').insert({

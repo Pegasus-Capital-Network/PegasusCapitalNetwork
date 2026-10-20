@@ -204,6 +204,8 @@ textarea{min-height:64px;resize:vertical}
   var URL=C.SUPABASE_URL||'https://trdwsssouhpawhfdkfqf.supabase.co';
   var KEY=C.SUPABASE_ANON||'sb_publishable_hrR8wI6hM921mnxk7bBE_A_YKxWsoBI';
   var sb=(window.supabase&&window.supabase.createClient)?window.supabase.createClient(URL,KEY):null;
+  async function session(){ try{ var r=await sb.auth.getSession(); return (r&&r.data)?r.data.session:null; }catch(e){ return null; } }
+  async function ensureAuth(role,intent){ var s=await session(); if(s&&s.user) return s; location.href='/signup.html?role='+encodeURIComponent(role||'')+'&intent='+encodeURIComponent(intent||'')+'&next='+encodeURIComponent(location.pathname+location.hash); return null; }
   function esc(x){return (x==null?'':String(x)).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
   function v(id){var el=document.getElementById(id);return el?(el.value||'').trim():'';}
   window.qSubmit=async function(){
@@ -215,6 +217,7 @@ textarea{min-height:64px;resize:vertical}
     if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){ err.textContent='Please add a valid business email.'; return; }
     if(!document.getElementById('q-consent').checked){ err.textContent='Please confirm the consent box to continue.'; return; }
     if(!sb){ err.textContent='Connection unavailable, please try again shortly.'; return; }
+    var sess=await ensureAuth('investor','private-network'); if(!sess) return;
     btn.disabled=true; btn.textContent='Sending…';
     try{
       var r=await sb.from('pn_investor_qualification').insert({

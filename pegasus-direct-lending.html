@@ -64,7 +64,12 @@ section{position:relative;z-index:2}
 /* steps */
 .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:30px}
 @media(max-width:820px){.steps{grid-template-columns:1fr}}
-.step{background:#fff;border:1px solid var(--line);border-radius:12px;padding:22px 20px;box-shadow:var(--shadow-sm)}
+.step{display:block;background:#fff;border:1px solid var(--line);border-radius:12px;padding:22px 20px;box-shadow:var(--shadow-sm);color:inherit;text-decoration:none;transition:transform .18s,box-shadow .18s,border-color .18s}
+a.step{cursor:pointer}
+a.step:hover{transform:translateY(-4px);box-shadow:0 12px 30px rgba(14,24,36,.12);border-color:#d7dde4}
+a.step:hover .st{color:var(--navy)}
+a.step .sg{display:inline-flex;align-items:center;gap:6px;margin-top:12px;font-size:12.5px;font-weight:600;color:var(--navy);opacity:0;transition:opacity .18s}
+a.step:hover .sg{opacity:1}
 .step .sn{width:30px;height:30px;border-radius:8px;background:var(--navy);color:#fff;font-weight:700;font-size:14px;display:flex;align-items:center;justify-content:center;margin-bottom:13px}
 .step .st{font-size:15.5px;font-weight:700;color:var(--ink);margin-bottom:6px}
 .step .sd{font-size:13px;color:var(--text);line-height:1.55}
@@ -148,12 +153,12 @@ textarea{min-height:66px;resize:vertical}
   <div class="h2">How it works</div>
   <div class="h2-sub">A clear, step-by-step process. People make the decisions; our AI speeds up document review and checks. You stay in control of which loans you fund.</div>
   <div class="steps">
-    <div class="step"><div class="sn">1</div><div class="st">Join the investor list</div><div class="sd">Tell us your preferences and confirm you qualify. No cost, no obligation, no credit check on you.</div></div>
-    <div class="step"><div class="sn">2</div><div class="st">Review a deal</div><div class="sd">You receive the property, the appraisal, the borrower summary, the LTV and the terms, and decide if it fits.</div></div>
-    <div class="step"><div class="sn">3</div><div class="st">Choose how you hold title</div><div class="sd">Pick your vesting and sign the note, deed of trust and disclosures. Nothing moves until you say yes.</div></div>
-    <div class="step"><div class="sn">4</div><div class="st">Fund into escrow</div><div class="sd">Your capital goes to a neutral, independent escrow, never to us directly.</div></div>
-    <div class="step"><div class="sn">5</div><div class="st">The deed records</div><div class="sd">You receive the recorded deed of trust in your name, the title policy, insurance evidence and the signed note.</div></div>
-    <div class="step"><div class="sn">6</div><div class="st">Collect monthly interest</div><div class="sd">Payments are serviced and remitted to you until the loan pays off. Then you can redeploy into the next deal.</div></div>
+    <a class="step" href="/signup.html?role=investor&amp;intent=invest"><div class="sn">1</div><div class="st">Create your investor account</div><div class="sd">Register free, tell us your preferences and confirm you qualify. No cost, no obligation, no credit check on you.</div><span class="sg">Start here &rarr;</span></a>
+    <a class="step" href="/signup.html?role=investor&amp;intent=invest"><div class="sn">2</div><div class="st">Review a deal</div><div class="sd">You receive the property, the appraisal, the borrower summary, the LTV and the terms, and decide if it fits.</div><span class="sg">See opportunities &rarr;</span></a>
+    <a class="step" href="/signup.html?role=investor&amp;intent=invest"><div class="sn">3</div><div class="st">Choose how you hold title</div><div class="sd">Pick your vesting and sign the note, deed of trust and disclosures. Nothing moves until you say yes.</div><span class="sg">Learn more &rarr;</span></a>
+    <a class="step" href="/signup.html?role=investor&amp;intent=invest"><div class="sn">4</div><div class="st">Fund into escrow</div><div class="sd">Your capital goes to a neutral, independent escrow, never to us directly.</div><span class="sg">Learn more &rarr;</span></a>
+    <a class="step" href="/signup.html?role=investor&amp;intent=invest"><div class="sn">5</div><div class="st">The deed records</div><div class="sd">You receive the recorded deed of trust in your name, the title policy, insurance evidence and the signed note.</div><span class="sg">Learn more &rarr;</span></a>
+    <a class="step" href="/signup.html?role=investor&amp;intent=invest"><div class="sn">6</div><div class="st">Collect monthly interest</div><div class="sd">Payments are serviced and remitted to you until the loan pays off. Then you can redeploy into the next deal.</div><span class="sg">Learn more &rarr;</span></a>
   </div>
 </div></section>
 
@@ -177,20 +182,11 @@ textarea{min-height:66px;resize:vertical}
 </div></section>
 
 <section class="sec alt" id="invest"><div class="wrap">
-  <div class="h2">Join the investor list</div>
-  <div class="h2-sub">Tell us what you are looking for and we will send opportunities that match. No fee to you, ever. This is an expression of interest, not a commitment.</div>
-  <div class="card" id="joinCard">
-    <div class="grid2">
-      <div class="fld"><label>Full name <span class="req">*</span></label><input id="j-name" placeholder="Your name"></div>
-      <div class="fld"><label>Email <span class="req">*</span></label><input id="j-email" type="email" placeholder="you@email.com"></div>
-      <div class="fld"><label>Phone</label><input id="j-phone" placeholder="Optional"></div>
-      <div class="fld"><label>Accredited investor?</label><select id="j-acc"><option value="">Select…</option><option>Yes</option><option>No</option><option>Not sure</option></select></div>
-      <div class="fld"><label>Amount you're considering</label><select id="j-amt"><option value="">Select…</option><option>Under $50K</option><option>$50K – $100K</option><option>$100K – $250K</option><option>$250K – $500K</option><option>$500K+</option></select></div>
-      <div class="fld"><label>Preferred term</label><select id="j-term"><option value="">Select…</option><option>Short (6–12 mo)</option><option>Medium (12–24 mo)</option><option>Longer (24–36 mo)</option><option>Flexible</option></select></div>
-      <div class="fld full"><label>Anything else</label><textarea id="j-msg" maxlength="400" placeholder="Property types, areas, or questions"></textarea></div>
-    </div>
-    <div id="j-err" class="err"></div>
-    <div style="margin-top:8px"><button class="btn" id="j-submit" onclick="joinSubmit()">Join the investor list &rarr;</button></div>
+  <div class="h2">Become a Pegasus investor</div>
+  <div class="h2-sub">Create your free investor account to see full deal packages, set your preferences, and get new first-deed opportunities before anyone else. No fee to you, ever.</div>
+  <div class="card" style="text-align:center;padding:34px 24px">
+    <a class="btn gold" href="/signup.html?role=investor&amp;intent=invest" style="display:inline-block;font-size:15px">Create your investor account &rarr;</a>
+    <div style="margin-top:14px;font-size:13px;color:var(--muted)">Already a member? <a href="/signin.html" style="color:var(--navy);font-weight:600">Sign in</a></div>
   </div>
 </div></section>
 
@@ -221,6 +217,8 @@ textarea{min-height:66px;resize:vertical}
   var URL=C.SUPABASE_URL||'https://trdwsssouhpawhfdkfqf.supabase.co';
   var KEY=C.SUPABASE_ANON||'sb_publishable_hrR8wI6hM921mnxk7bBE_A_YKxWsoBI';
   var sb=(window.supabase&&window.supabase.createClient)?window.supabase.createClient(URL,KEY):null;
+  async function session(){ try{ var r=await sb.auth.getSession(); return (r&&r.data)?r.data.session:null; }catch(e){ return null; } }
+  async function ensureAuth(role,intent){ var s=await session(); if(s&&s.user) return s; location.href='/signup.html?role='+encodeURIComponent(role||'')+'&intent='+encodeURIComponent(intent||'')+'&next='+encodeURIComponent(location.pathname+location.hash); return null; }
   function esc(x){return (x==null?'':String(x)).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
   function money(v){ if(v==null) return ''; return '$'+Number(v).toLocaleString('en-US'); }
   var grid=document.getElementById('dealGrid'), loading=document.getElementById('dealLoading');
@@ -249,7 +247,13 @@ textarea{min-height:66px;resize:vertical}
 
   // deal interest modal
   var ctx={};
-  window.askDeal=function(id,title){ ctx={id:id,title:title};
+  window.askDeal=async function(id,title){
+    var s=await ensureAuth('investor','deal:'+id); if(!s) return;
+    ctx={id:id,title:title};
+    try{ var u=s.user, md=(u&&u.user_metadata)||{};
+      var em=document.getElementById('r-email'); if(em&&!em.value) em.value=(u&&u.email)||'';
+      var nm=document.getElementById('r-name'); if(nm&&!nm.value) nm.value=md.full_name||'';
+    }catch(e){}
     document.getElementById('ovTitle').textContent='Request details — '+title;
     document.getElementById('r-err').textContent='';
     document.getElementById('ov').classList.add('open');

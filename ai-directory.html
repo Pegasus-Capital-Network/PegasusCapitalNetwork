@@ -111,6 +111,8 @@ h1{font-weight:800;font-size:clamp(32px,4.6vw,50px);line-height:1.05;letter-spac
   var URL=C.SUPABASE_URL||'https://trdwsssouhpawhfdkfqf.supabase.co';
   var KEY=C.SUPABASE_ANON||'sb_publishable_hrR8wI6hM921mnxk7bBE_A_YKxWsoBI';
   var sb=(window.supabase&&window.supabase.createClient)?window.supabase.createClient(URL,KEY):null;
+  async function session(){ try{ var r=await sb.auth.getSession(); return (r&&r.data)?r.data.session:null; }catch(e){ return null; } }
+  async function ensureAuth(role,intent){ var s=await session(); if(s&&s.user) return s; location.href='/signup.html?role='+encodeURIComponent(role||'')+'&intent='+encodeURIComponent(intent||'')+'&next='+encodeURIComponent(location.pathname); return null; }
   function esc(x){return (x==null?'':String(x)).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
   var grid=document.getElementById('grid'),loading=document.getElementById('loading'),count=document.getElementById('count');
   var data={startups:null,investors:null}, cur='startups';
@@ -167,7 +169,13 @@ h1{font-weight:800;font-size:clamp(32px,4.6vw,50px);line-height:1.05;letter-spac
 
   // intro modal
   var ctx={};
-  window.askIntro=function(type,id,name){ ctx={type:type,id:id,name:name};
+  window.askIntro=async function(type,id,name){
+    var s=await ensureAuth('ecosystem_member','ai-intro:'+type); if(!s) return;
+    ctx={type:type,id:id,name:name};
+    try{ var u=s.user, md=(u&&u.user_metadata)||{};
+      var em=document.getElementById('rEmail'); if(em&&!em.value) em.value=(u&&u.email)||'';
+      var nm=document.getElementById('rName'); if(nm&&!nm.value) nm.value=md.full_name||'';
+    }catch(e){}
     document.getElementById('ovTitle').textContent='Request an intro to '+name;
     document.getElementById('ovNote').textContent=(type==='investor'?'We will pass your details to our team and broker the introduction if it is a fit.':'We will connect you with this company through our team.');
     document.getElementById('rErr').textContent='';

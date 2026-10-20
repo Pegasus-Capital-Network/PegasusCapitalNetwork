@@ -95,7 +95,8 @@ textarea{min-height:70px;resize:vertical}
       <div class="fld full"><label>Tell us about the deal</label><textarea id="f-msg" maxlength="600" placeholder="Exit strategy, timeline, experience, anything that helps us move fast"></textarea></div>
     </div>
     <div id="err" class="err"></div>
-    <div style="margin-top:8px"><button id="submit" class="btn" onclick="submitReq()">Request a review &rarr;</button></div>
+    <div style="margin-top:8px"><button id="submit" class="btn" onclick="submitReq()">Create account &amp; request review &rarr;</button></div>
+    <div style="margin-top:10px;font-size:12.5px;color:var(--muted)">Already a member? <a href="/signin.html" style="color:var(--navy);font-weight:600">Sign in</a> to submit faster.</div>
     <div class="hint">We review every request and reach out if it is a fit. Loans are arranged through West Coast Capital Mortgage Inc. (NMLS #2817729, DRE #01385024). Submitting is not a loan application or commitment and does not pull your credit.</div>
   </div>
 
@@ -118,7 +119,11 @@ textarea{min-height:70px;resize:vertical}
   var URL=C.SUPABASE_URL||'https://trdwsssouhpawhfdkfqf.supabase.co';
   var KEY=C.SUPABASE_ANON||'sb_publishable_hrR8wI6hM921mnxk7bBE_A_YKxWsoBI';
   var sb=(window.supabase&&window.supabase.createClient)?window.supabase.createClient(URL,KEY):null;
+  async function session(){ try{ var r=await sb.auth.getSession(); return (r&&r.data)?r.data.session:null; }catch(e){ return null; } }
+  async function ensureAuth(role,intent){ var s=await session(); if(s&&s.user) return s; location.href='/signup.html?role='+encodeURIComponent(role||'')+'&intent='+encodeURIComponent(intent||'')+'&next='+encodeURIComponent(location.pathname); return null; }
   function v(id){var el=document.getElementById(id);return el?(el.value||'').trim():'';}
+  // Restore a saved financing draft once the member returns signed in.
+  (function(){ try{ var raw=localStorage.getItem('peg.financing.draft'); if(!raw) return; session().then(function(s){ if(!(s&&s.user)) return; var d=JSON.parse(raw); function set(id,val){var e=document.getElementById(id); if(e&&val&&!e.value) e.value=val;} set('f-name',d.name); set('f-email',d.email||s.user.email); set('f-phone',d.phone); set('f-addr',d.property_address); set('f-city',d.city); set('f-amount',d.loan_amount); set('f-value',d.est_value); set('f-msg',d.message); set('f-ptype',d.property_type); set('f-purpose',d.purpose); set('f-timeline',d.timeline); }); }catch(_){} })();
   function num(x){ if(!x) return null; var n=parseFloat(String(x).replace(/[^0-9.]/g,'')); return isNaN(n)?null:n; }
   window.submitReq=async function(){
     var err=document.getElementById('err'), btn=document.getElementById('submit');
@@ -127,6 +132,10 @@ textarea{min-height:70px;resize:vertical}
     if(name.length<2){ err.textContent='Please add your name.'; return; }
     if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){ err.textContent='Please add a valid email.'; return; }
     if(!sb){ err.textContent='Connection unavailable, please try again in a moment.'; return; }
+    // Registration-first: capture the deal, then route through account creation.
+    var draft={ name:name, email:email, phone:v('f-phone'), property_address:v('f-addr'), property_type:v('f-ptype'), city:v('f-city'), loan_amount:v('f-amount'), est_value:v('f-value'), purpose:v('f-purpose'), timeline:v('f-timeline'), message:v('f-msg') };
+    try{ localStorage.setItem('peg.financing.draft', JSON.stringify(draft)); }catch(_){}
+    var sess=await ensureAuth('borrower','financing'); if(!sess) return;
     btn.disabled=true; btn.textContent='Submitting…';
     try{
       var r=await sb.from('dl_borrower_requests').insert({
@@ -136,6 +145,7 @@ textarea{min-height:70px;resize:vertical}
         purpose:v('f-purpose')||null, timeline:v('f-timeline')||null, message:v('f-msg')||null
       });
       if(r.error) throw r.error;
+      try{ localStorage.removeItem('peg.financing.draft'); }catch(_){}
       document.getElementById('formCard').style.display='none';
       document.getElementById('done').style.display='block';
       window.scrollTo({top:0,behavior:'smooth'});

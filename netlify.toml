@@ -83,24 +83,25 @@
   status = 200
   force = true
 
+# People surface retired — the network is lenders, borrowers and financial
+# institutions, not a public "people" roster. All /people URLs 301 to the
+# business/institution directory so old links and bookmarks never 404.
 [[redirects]]
   from = "/people"
-  to = "/.netlify/functions/public-directory?kind=people"
-  status = 200
+  to = "/businesses"
+  status = 301
   force = true
 
-# People role section + role landing pages (SEO). :section/:role resolved to the
-# people taxonomy server-side.
 [[redirects]]
   from = "/people/:section"
-  to = "/.netlify/functions/public-directory?kind=people&section=:section"
-  status = 200
+  to = "/businesses"
+  status = 301
   force = true
 
 [[redirects]]
   from = "/people/:section/:role"
-  to = "/.netlify/functions/public-directory?kind=people&section=:section&role=:role"
-  status = 200
+  to = "/businesses"
+  status = 301
   force = true
 
 # Business type-ahead (JSON) for the directory search box.
@@ -159,10 +160,12 @@
   status = 200
   force = true
 
+# Events surface retired — not relevant to a lender/borrower/institution
+# network. /events 301s to the directory.
 [[redirects]]
   from = "/events"
-  to = "/.netlify/functions/public-directory?kind=events"
-  status = 200
+  to = "/businesses"
+  status = 301
   force = true
 
 # HMDA 2025 lender rankings (SEO) + embeddable ranked-lender badge. The function

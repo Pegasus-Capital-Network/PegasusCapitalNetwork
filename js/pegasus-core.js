@@ -90,11 +90,11 @@
   // --- public nav (full-site mega menu) ---
   function publicNav(active){
     const G=(label,items)=>`<div class="nav-group"><span tabindex="0" role="button" aria-haspopup="true">${label} \u25BE</span><div class="nav-drop">${items.map(i=>`<a href="${i[1]}"><span>${i[0]}</span>${i[2]?`<small>${i[2]}</small>`:''}</a>`).join('')}</div></div>`;
-    const who=G('Who It’s For',[['Capital Providers','/category-capital-providers.html','Lenders, funds & investors'],['Capital Seekers','/category-capital-seekers.html','Developers & borrowers'],['Real Estate Agents','/category-real-estate-agents.html','Agents & brokers'],['RWA Partners','/category-rwa.html','Real-world asset partners'],['People','/people','Public professional profiles'],['Businesses','/businesses','Companies across the network'],['Events','/events','Capital & industry events']]);
+    const who=G('Who It’s For',[['Investors & Lenders','/pegasus-direct-lending.html','Fund real estate-backed loans'],['Borrowers','/get-financing.html','Developers & borrowers seeking capital'],['Real Estate Agents','/realtors.html','Agents & brokers'],['RWA Partners','/category-rwa.html','Real-world asset partners'],['Businesses','/businesses','Companies across the network']]);
     const learn=G('Learn',[['How Pegasus Works','/how-it-works.html','The system explained'],['Growth Capital','/growth-capital.html','Financing & programs'],['Capital Sessions','/capital-sessions.html','Live institutional briefings'],['Capital Academy','/capital-academy.html','Finance fundamentals'],['Network Badge','/network-badge.html','Show your Pegasus connection'],['FAQ','/faq.html','Common questions']]);
     return `<a href="#maincontent" class="skip-link" onclick="var m=document.getElementById('maincontent')||document.querySelector('main,section,.section,.auth-wrap,.ar-wrap,.view');if(m){m.setAttribute('tabindex','-1');m.focus();}">Skip to content</a><nav class="pub-nav">
       <a class="brand" href="/"><img class="brand-mark" src="/assets/brand/pegasus-mark.png" alt="Pegasus"><span>Pegasus</span></a>
-      <div class="pub-links"><a href="/people" class="${active==='People'||active==='Capital'?'on':''}">Capital &amp; Real Estate</a><a href="/lenders">Lenders</a><a href="/ai-network.html" class="${active==='AI'?'on':''}">Pegasus AI</a><a href="/private-network.html" class="${active==='Private'?'on':''}">Private Network</a><a href="/how-it-works.html" class="${active==='How'?'on':''}">How it works</a></div>
+      <div class="pub-links"><a href="/capital.html" class="${active==='People'||active==='Capital'?'on':''}">Capital &amp; Real Estate</a><a href="/lenders">Lenders</a><a href="/ai-network.html" class="${active==='AI'?'on':''}">Pegasus AI</a><a href="/private-network.html" class="${active==='Private'?'on':''}">Private Network</a><a href="/how-it-works.html" class="${active==='How'?'on':''}">How it works</a></div>
       <div class="nav-cta" id="pub-nav-cta"><a class="btn btn-ghost" id="nav-signin-btn" href="/signin.html">Sign In</a><a class="btn btn-pri nav-create" id="nav-create-btn" href="/signup.html">Create Free Profile</a></div>
       <button class="mob-menu-btn" id="mobMenuBtn" aria-label="Menu"><span></span><span></span><span></span></button>
     </nav>
@@ -102,7 +102,7 @@
     <div class="mob-drawer" id="mobDrawer">
       <div class="mob-drawer-head"><img src="/assets/brand/pegasus-wordmark.png" style="height:24px"><button class="mob-drawer-close" id="mobClose" aria-label="Close menu">✕</button></div>
       <div class="mob-drawer-nav" id="mobDrawerNav">
-        <a href="/people">Capital &amp; Real Estate</a><a href="/ai-network.html">Pegasus AI</a><a href="/private-network.html">Private Network</a><a href="/how-it-works.html">How it works</a>
+        <a href="/capital.html">Capital &amp; Real Estate</a><a href="/ai-network.html">Pegasus AI</a><a href="/private-network.html">Private Network</a><a href="/how-it-works.html">How it works</a>
         <div class="mob-sec">Capital &amp; Real Estate</div>
         <a href="/realtors.html">Realtors</a><a href="/lenders">Lender Directory</a><a href="/find-a-lender">Find a Lender</a><a href="/showcase.html">Opportunities</a>
         <div class="mob-sec">More</div>
@@ -901,10 +901,8 @@
       links.setAttribute('data-member', '1');
       var on = function(p){ return location.pathname.indexOf(p) === 0 ? ' on' : ''; };
       links.innerHTML =
-        '<a class="member'+on('/people')+'" href="/people">People</a>'+
-        '<a class="member'+on('/businesses')+'" href="/businesses">Businesses</a>'+
+        '<a class="member'+on('/businesses')+'" href="/businesses">Directory</a>'+
         '<a class="member'+on('/showcase')+'" href="/showcase.html">Opportunities</a>'+
-        '<a class="member'+on('/events')+'" href="/events">Events</a>'+
         '<a class="member'+on('/dashboard')+'" href="/dashboard.html">My Workspace</a>'+
         '<a class="member'+(slug?on('/u/'):'')+'" href="'+(slug?'/u/'+slug:'/profile.html')+'">My Profile</a>';
     }
@@ -913,10 +911,8 @@
     if (mdn && mdn.getAttribute('data-member') !== '1') {
       mdn.setAttribute('data-member', '1');
       mdn.innerHTML =
-        '<a href="/people">People</a>'+
-        '<a href="/businesses">Businesses</a>'+
+        '<a href="/businesses">Directory</a>'+
         '<a href="/showcase.html">Opportunities</a>'+
-        '<a href="/events">Events</a>'+
         '<a href="/dashboard.html">My Workspace</a>'+
         '<a href="'+(slug?'/u/'+slug:'/profile.html')+'">My Profile</a>'+
         '<div class="mob-sec">Account</div>'+

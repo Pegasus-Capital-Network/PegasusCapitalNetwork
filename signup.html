@@ -72,6 +72,21 @@ Pegasus.mountPublic();
     }
   }catch(_){}
 })();
+/* Registration-first routing: action pages send ?role=, ?intent= and ?next= so
+   the signup preselects the right role, explains why, and returns the new member
+   to where they started. */
+(function(){
+  try{
+    var qs=new URLSearchParams(location.search);
+    var role=(qs.get('role')||'').trim().toLowerCase();
+    if(role){ var rs=document.getElementById('role'); if(rs){ for(var i=0;i<rs.options.length;i++){ if(rs.options[i].value===role){ rs.selectedIndex=i; break; } } try{ onRoleChange(); }catch(_){} } }
+    var nx=(qs.get('next')||'').trim(); if(nx && nx.charAt(0)==='/' && nx.indexOf('//')!==0){ try{ localStorage.setItem('pegasus.redirectAfterAuth', nx); }catch(_){} }
+    var intent=(qs.get('intent')||'').trim().toLowerCase();
+    var MAP={ 'invest':'Create your free investor account to review live deals and invest.', 'private-network':'Create your free account to join the private capital network.', 'financing':'Create your free account to submit your deal and get matched with capital.', 'find-a-lender':'Create your free account to send your deal to lenders.', 'ai-network':'Create your free account to join the Pegasus AI network.', 'ai-intro':'Create your free account to request introductions in the Pegasus AI network.', 'deal':'Create your free investor account to see the full deal package.' };
+    var msg=null; for(var k in MAP){ if(intent.indexOf(k)===0){ msg=MAP[k]; break; } }
+    if(msg){ var sub=document.querySelector('.auth-sub'); if(sub){ sub.textContent=msg; sub.style.textTransform='none'; sub.style.letterSpacing='0'; sub.style.fontSize='13px'; } }
+  }catch(_){}
+})();
 /* Don't lose a half-filled signup to a stray Back / reload / tab-close. The
    browser's native "Leave site?" prompt fires only once you've started filling
    the form, and is released on submit or when you continue with Google. */

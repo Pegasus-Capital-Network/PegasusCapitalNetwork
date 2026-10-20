@@ -342,8 +342,9 @@ Pegasus.boot(async function(){
   /* ── Send ───────────────────────────────────────────────────────────────── */
   async function send(){
     var err=$('flSendErr'); if(err) err.textContent='';
+    if(!MY_UID){ location.href='/signup.html?role=borrower&intent=find-a-lender&next='+encodeURIComponent(location.pathname); return; }
     var slugs=pickedSlugs();
-    if(!MY_UID||!sb||!lastDeal||!slugs.length||sending) return;
+    if(!sb||!lastDeal||!slugs.length||sending) return;
     // The deal that was matched, plus the optional details as they are now.
     var deal=Object.assign({type:lastDeal.type,amount:lastDeal.amount,state:lastDeal.state},extras());
     sending=true; renderSend();
