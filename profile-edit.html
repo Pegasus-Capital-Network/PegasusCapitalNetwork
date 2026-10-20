@@ -79,6 +79,7 @@
 <script src="/js/pegasus-pages.js"></script>
 <script src="/js/profile/profile-system.js?v=20261020-memberdir"></script>
 <script src="/js/profile/profile-media.js"></script>
+<script src="/js/ai-profile-fill.js?v=20261020a"></script>
 <script>
 Pegasus.boot(async function(st){
   'use strict';
@@ -230,6 +231,16 @@ Pegasus.boot(async function(st){
   var ROLE_SUGGEST=ROLE_OPTS.map(function(o){return o[1];});
   var SPEC_SUGGEST=['Mortgage Lending','Residential Development','Investor Financing','Private Capital','Real Estate Strategy','Construction','Luxury Residential Projects','DSCR','Non-QM','Jumbo','Hard Money','Bridge Loans','Ground-Up Development','Redevelopment','Capital Structuring','Acquisitions','Refinance','Purchase Financing','Commercial Real Estate','RWA','Tokenization','Business Funding','Insurance','Escrow','Title','Legal','Advisory'];
 
+  window.__epAiFill=function(){
+    if(!window.PegAIFill) return;
+    PegAIFill.open({mode:'form', apply:function(d){
+      var map={full_name:'f_name',professional_title:'f_title',company_name:'f_company',location:'f_loc',headline:'f_head',current_focus:'f_focus',bio:'f_bio',specialties:'f_spec',markets:'f_mkt',website:'f_web',linkedin_url:'f_linkedin'};
+      Object.keys(map).forEach(function(k){ var e=el(map[k]); if(!e||d[k]==null) return; var v=Array.isArray(d[k])?d[k].join(', '):d[k]; if(v){ e.value=v; try{ e.dispatchEvent(new Event('input',{bubbles:true})); }catch(_){} } });
+      try{ window.onChg(); }catch(_){}
+      var bar=document.querySelector('.ep-save-bar'); if(bar) bar.scrollIntoView({behavior:'smooth',block:'center'});
+      try{ Pegasus.toast('✦','var(--blue-dim)','Filled in by your AI','Check the fields, then press Save.'); }catch(_){}
+    }});
+  };
   view.innerHTML=
     '<div class="ep-wrap">'+
     /* Completion */
@@ -237,6 +248,7 @@ Pegasus.boot(async function(st){
       '<div class="ep-comp-row"><span class="ep-comp-label">Profile completion</span><span class="ep-comp-pct" id="ep-comp-pct" style="color:'+(comp===100?'var(--green)':comp>=70?'var(--blue)':'var(--amber)')+'">'+comp+'%</span></div>'+
       '<div class="ep-comp-track"><div class="ep-comp-fill" id="ep-comp-fill" style="width:'+comp+'%"></div></div>'+
     '</div>'+
+    (ADMIN_EDIT?'':'<button type="button" onclick="window.__epAiFill()" style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin:0 0 16px;border:0;border-radius:12px;padding:14px;font:inherit;font-size:14px;font-weight:700;color:#fff;cursor:pointer;background:linear-gradient(135deg,#0e1e36,#1b3a5b 60%,#9a7b3f);box-shadow:0 6px 18px rgba(14,30,54,.22)">✦ Fill my profile with my AI</button>')+
 
     /* Media — personal profile photo only. Personal cover banners are deprecated
        and no longer rendered on public profiles. */

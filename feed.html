@@ -162,6 +162,10 @@
 .fd-me-head{font-size:12.5px;color:var(--text2);line-height:1.5;margin-top:11px}
 .fd-me-act{display:flex;gap:8px;margin-top:13px}
 .fd-me-act .btn{flex:1;justify-content:center}
+.fd-ai-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin-top:13px;border:0;border-radius:11px;padding:12px 14px;font:inherit;font-size:13.5px;font-weight:700;color:#fff;cursor:pointer;background:linear-gradient(135deg,#0e1e36,#1b3a5b 60%,#9a7b3f);box-shadow:0 6px 18px rgba(14,30,54,.22);transition:transform .15s}
+.fd-ai-btn:hover{transform:translateY(-1px)}
+.fd-ai-sub{font-size:11.5px;color:var(--text3);text-align:center;margin-top:6px}
+.fd-ai-link{background:none;border:0;padding:0;margin-top:10px;font:inherit;font-size:13px;font-weight:600;color:var(--navy,#1b3a5b);cursor:pointer;text-decoration:underline}
 .fd-back{font-size:12px;color:var(--blue);text-decoration:none}
 </style>
 </head>
@@ -209,6 +213,7 @@
 <script src="/js/pegasus-billing.js"></script>
 <script src="/js/pegasus-pages.js"></script>
 <script src="/js/pegasus-invite.js"></script>
+<script src="/js/ai-profile-fill.js?v=20261020a"></script>
 <script>
 Pegasus.boot(async function(){
   Pegasus.mountPublic('Feed');
@@ -319,7 +324,9 @@ Pegasus.boot(async function(){
       host.innerHTML='<div class="fd-card" style="border-color:rgba(29,90,158,.35);background:var(--blue-dim)"><div class="fd-card-b">'+
         '<div class="fd-guest-t">You\u2019re in. What\u2019s your name?</div>'+
         '<div class="fd-namerow"><input class="fd-in" id="fdMyName" maxlength="80" autocomplete="name" placeholder="Full name"><button class="btn btn-pri btn-sm" type="button" id="fdSaveName">Save</button></div>'+
-        '<div class="fd-err" id="fdNameErr"></div></div></div>';
+        '<div class="fd-err" id="fdNameErr"></div>'+
+        '<button class="fd-ai-link" type="button" data-aifill>✦ Or let your AI fill your whole profile</button></div></div>';
+      wireAiFill(host);
       var sv=document.getElementById('fdSaveName');
       if(sv) sv.onclick=async function(){
         var nm=(document.getElementById('fdMyName').value||'').trim(), er=document.getElementById('fdNameErr');
@@ -604,9 +611,17 @@ Pegasus.boot(async function(){
   /* ── Go ─────────────────────────────────────────────────────────────────── */
   function renderMe(){
     var host=document.getElementById('fdMe'); if(!host) return;
-    if(!MY_UID||!ME||!ME.full_name){ host.style.display='none'; return; }
+    if(!MY_UID||!ME){ host.style.display='none'; return; }
     host.style.display='';
     var slug=ME.profile_slug, href=slug?'/u/'+encodeURIComponent(slug):'/profile.html';
+    var nm=(ME.full_name||'').trim(), thin=!nm||!(ME.headline||'').trim()||!(ME.bio||'').trim();
+    if(!nm){
+      host.innerHTML='<div class="fd-card-b fd-me"><div class="fd-me-top">'+avHTML('', (session&&session.user&&session.user.email)||'Me','','')+
+        '<div class="fd-me-id"><div class="fd-me-name">Your profile</div><div class="fd-me-sub">Not filled in yet</div></div></div>'+
+        '<button class="fd-ai-btn" type="button" data-aifill>✦ Fill my profile with my AI</button><div class="fd-ai-sub">About a minute. You confirm everything.</div>'+
+        '<div class="fd-me-act"><a class="btn btn-ghost btn-sm" href="/profile-edit.html">Fill in myself</a></div></div>';
+      wireAiFill(host); return;
+    }
     var sub=[ME.professional_title||ME.headline||'', ME.company_name||''].filter(Boolean).join(' · ');
     host.innerHTML='<div class="fd-card-b fd-me">'+
       '<a class="fd-me-top" href="'+href+'">'+avHTML(ME.avatar_url,ME.full_name,ME.avatar_color,'')+
@@ -614,8 +629,21 @@ Pegasus.boot(async function(){
       (sub?'<div class="fd-me-sub">'+esc(sub)+'</div>':'')+
       (ME.location?'<div class="fd-me-loc">'+esc(ME.location)+'</div>':'')+'</div></a>'+
       ((ME.headline&&ME.headline!==(ME.professional_title||''))?'<div class="fd-me-head">'+esc(ME.headline)+'</div>':'')+
+      (thin?'<button class="fd-ai-btn" type="button" data-aifill>✦ Finish my profile with my AI</button>':'')+
       '<div class="fd-me-act"><a class="btn btn-ghost btn-sm" href="'+href+'">View profile</a><a class="btn btn-ghost btn-sm" href="/profile-edit.html">Edit</a></div>'+
       '</div>';
+    wireAiFill(host);
+  }
+  function wireAiFill(root){
+    (root||document).querySelectorAll('[data-aifill]').forEach(function(b){ b.onclick=function(){
+      if(!window.PegAIFill){ location.href='/profile-edit.html'; return; }
+      PegAIFill.open({mode:'save', onSaved:function(upd){
+        Object.keys(upd||{}).forEach(function(k){ ME[k]=upd[k]; });
+        if(ME.profile_slug){ try{ localStorage.setItem('peg_slug',ME.profile_slug); }catch(_){} }
+        try{ if(window.Pegasus&&Pegasus.store&&Pegasus.store.hydrate) Pegasus.store.hydrate(); }catch(_){}
+        renderMe(); renderComposer(); renderNudge(); before=null; exhausted=false; loadFeed(true);
+      }});
+    }; });
   }
   if(MY_UID&&sb){
     try{
