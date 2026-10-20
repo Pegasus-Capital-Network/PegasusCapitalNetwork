@@ -67,6 +67,17 @@
     });
     if(error) throw error; return data;
   }
+  async function signInWithApple(){
+    const sb = await client(); if(!sb) throw new Error('Auth unavailable');
+    const redirectTo = (typeof window!=='undefined' && window.location && window.location.origin)
+      ? window.location.origin + '/auth-callback.html'
+      : 'https://pegasuscapitalnetwork.com/auth-callback.html';
+    const { data, error } = await sb.auth.signInWithOAuth({
+      provider: 'apple',
+      options: { redirectTo: redirectTo }
+    });
+    if(error) throw error; return data;
+  }
   async function getSession(){
     const sb = await client(); if(!sb) return null;
     const { data } = await sb.auth.getSession(); return data ? data.session : null;
@@ -79,5 +90,5 @@
     if(!s){ if(C.ALLOW_DEMO_FALLBACK) return null; location.href='/'; }
     return s;
   }
-  window.PegAuth = { signUp, signIn, signOut, signInWithGoogle, getSession, onChange, requireAuth };
+  window.PegAuth = { signUp, signIn, signOut, signInWithGoogle, signInWithApple, getSession, onChange, requireAuth };
 })();
