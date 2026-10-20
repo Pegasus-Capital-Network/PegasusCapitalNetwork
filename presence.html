@@ -222,6 +222,7 @@ Pegasus.boot(async function(){
   var heroBtns;
   if (canManage) {
     heroBtns =
+      ((p.presence_type==='company'&&(data.can_publish_as||data.role==='owner'))?'<a class="btn btn-pri" href="/feed?as='+encodeURIComponent(p.id)+'">Post to Feed</a>':'')+
       '<a class="btn btn-ghost" href="/my-presences.html" style="color:rgba(255,255,255,.82);border-color:rgba(255,255,255,.2)">Edit Page</a>'+
       '<button class="btn btn-ghost" onclick="oppCreate()" style="color:rgba(255,255,255,.82);border-color:rgba(255,255,255,.2)">+ Present Something</button>'+
       '<button class="btn btn-ghost" onclick="presenceCopyLink()" style="color:rgba(255,255,255,.82);border-color:rgba(255,255,255,.2)">Copy Link</button>';
@@ -305,7 +306,7 @@ Pegasus.boot(async function(){
     '</div></div>';
   }
   // Featured Opportunities — real deal/listing/project cards, loaded async below.
-  var oppsSec = '<div id="ps-opps"></div>';
+  var oppsSec = '<div id="ps-posts"></div><div id="ps-opps"></div>';
 
   var mainCol = focus +
     bizSec('What we offer', p.offers, 'List the products, services, capital, or deals you offer.')+
@@ -458,6 +459,21 @@ Pegasus.boot(async function(){
     }
     host.innerHTML = '<div class="pp-card"><div class="pp-card-head" style="display:flex;align-items:center"><span class="pp-card-label-serif">Opportunities &amp; Showcases</span>'+addBtn+'</div><div class="pp-card-body">'+body+'</div></div>';
   }
+
+  (async function loadPosts(){
+    var host=document.getElementById('ps-posts'); if(!host||p.presence_type!=='company') return;
+    try{
+      var rr=await c.rpc('get_network_feed_v2',{p_limit:3,p_presence:p.id});
+      var rows=(rr&&!rr.error&&Array.isArray(rr.data))?rr.data:[];
+      if(!rows.length) return;
+      var items=rows.map(function(r){
+        var t=(r.title||r.content||'').replace(/\s+/g,' ').trim(); if(t.length>140) t=t.slice(0,137)+'…';
+        var media=r.image_url?'<img src="'+esc(r.image_url)+'" alt="" loading="lazy" style="width:64px;height:64px;object-fit:cover;border-radius:8px;flex:none">':(r.link_url?'<span style="width:64px;height:64px;border-radius:8px;flex:none;background:#0e1824;color:#fff;display:flex;align-items:center;justify-content:center;font-size:20px">▶</span>':'');
+        return '<a href="/feed/post/'+esc(r.id)+'" style="display:flex;gap:12px;align-items:center;padding:12px 0;border-top:1px solid var(--border,#e3e8ee);color:inherit;text-decoration:none">'+media+'<span style="font-size:13.5px;line-height:1.45">'+esc(t)+'</span></a>';
+      }).join('');
+      host.innerHTML='<div class="pp-card"><div class="pp-card-head" style="display:flex;align-items:center"><span class="pp-card-label-serif">Latest posts</span><a href="/feed?page='+encodeURIComponent(p.id)+'" style="margin-left:auto;font-size:12.5px;color:var(--blue)">See all →</a></div><div class="pp-card-body" style="padding-top:0">'+items+'</div></div>';
+    }catch(e){}
+  })();
 
   var _opps = [];
   (async function loadOpps(){

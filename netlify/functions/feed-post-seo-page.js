@@ -20,14 +20,16 @@ const LBL={update:"Update",event:"Event",deal:"Deal / Offer",offering:"Offer",ma
 
 async function getPost(id){
   const {url,key}=cfg();
-  const res=await fetch(url+"/rest/v1/rpc/get_network_feed",{
+  const res=await fetch(url+"/rest/v1/rpc/get_network_feed_v2",{
     method:"POST",
     headers:{apikey:key,Authorization:"Bearer "+key,"Content-Type":"application/json",Accept:"application/json"},
     body:JSON.stringify({p_limit:1,p_id:id})
   });
   if(!res.ok){const body=await res.text().catch(()=> "");throw new Error("feed post query failed: "+res.status+" "+body.slice(0,200));}
   const rows=await res.json();
-  return Array.isArray(rows)&&rows[0]?rows[0]:null;
+  const p=Array.isArray(rows)&&rows[0]?rows[0]:null;
+  if(p&&p.presence_name){p.author_name=p.presence_name;p.author_company=null;}
+  return p;
 }
 async function getTemplate(request){
   const u=new URL(request.url);
@@ -35,7 +37,7 @@ async function getTemplate(request){
   if(!res.ok) throw new Error("feed template fetch failed: "+res.status);
   return await res.text();
 }
-function authorHref(p){return p.author_slug?ORIGIN+"/u/"+encodeURIComponent(p.author_slug):ORIGIN+"/public-profile.html?id="+encodeURIComponent(p.user_id||"");}
+function authorHref(p){if(p.presence_slug)return ORIGIN+"/business/"+encodeURIComponent(p.presence_slug);return p.author_slug?ORIGIN+"/u/"+encodeURIComponent(p.author_slug):ORIGIN+"/public-profile.html?id="+encodeURIComponent(p.user_id||"");}
 function snapshot(p,canonical){
   const label=LBL[p.signal_type]||"Update";
   const when=p.created_at?new Date(p.created_at).toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"}):"";
@@ -80,7 +82,7 @@ function render(html,p){
     '<meta name="twitter:image" content="'+esc(image)+'">'
   ].filter(Boolean).join("\n");
   const schema={"@context":"https://schema.org","@type":"SocialMediaPosting",url:canonical,headline:headline,articleBody:txt(p.content),datePublished:p.created_at||undefined,
-    author:{"@type":"Person",name:txt(p.author_name),url:authorHref(p)},
+    author:{"@type":p.presence_slug?"Organization":"Person",name:txt(p.author_name),url:authorHref(p)},
     publisher:{"@type":"Organization",name:"Pegasus Capital Network",url:ORIGIN},
     isPartOf:{"@type":"WebPage",url:ORIGIN+"/feed",name:"Network Feed — Pegasus Capital Network"},
     about:label};

@@ -46,6 +46,14 @@
 
 /* composer */
 .fd-comp-top{display:flex;gap:12px;align-items:flex-start}
+.fd-av.co{border-radius:10px;background:#fff;border:1px solid var(--border,#e3e8ee)}.fd-av.co img{object-fit:contain}
+.fd-as{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0 2px;align-items:center}
+.fd-as-l{font-size:12px;color:var(--text-3,#6b7685);margin-right:2px}
+.fd-as button{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--border,#e3e8ee);background:#fff;border-radius:999px;padding:3px 10px 3px 3px;font-size:12.5px;cursor:pointer;color:inherit;max-width:100%}
+.fd-as button .fd-av{width:22px;height:22px;font-size:9px}
+.fd-as button.on{border-color:var(--navy,#1b3a5b);background:#eef3f8;font-weight:600}
+.fd-as button span.n{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:180px}
+.fd-post-by{font-size:11.5px;color:var(--text-3,#6b7685)}.fd-post-by a{color:inherit;text-decoration:underline}
 .fd-comp-t{font-family:var(--serif);font-size:17px;color:var(--text);margin:0 0 2px}
 .fd-comp-sub{font-size:11.5px;color:var(--text3);line-height:1.5}
 .fd-chips{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0 10px}
@@ -261,6 +269,7 @@ Pegasus.boot(async function(){
   var pathPost=(location.pathname.match(/^\/feed\/post\/([0-9a-f-]{36})/i)||[])[1]||'';
   var permalink=(pathPost||qs.get('post')||'').replace(/[^0-9a-f-]/gi,'');
   var snap=document.getElementById('peg-seo-snapshot'); if(snap) snap.remove();
+  var postAs=(qs.get('as')||'').replace(/[^0-9a-f-]/gi,''), pageFilter=(qs.get('page')||'').replace(/[^0-9a-f-]/gi,''), MY_PAGES=[];
   var postType='update', mediaOpen=false, before=null, exhausted=false, loading=false;
   var upImg='', upLink='';
   function uploadPreviewHTML(){
@@ -364,9 +373,9 @@ Pegasus.boot(async function(){
     var evFields=isEv?'<div class="fd-row"><input class="fd-in" id="fdEvAt" type="datetime-local" aria-label="Event date and time"><input class="fd-in" id="fdEvLoc" type="text" maxlength="160" placeholder="Location or “Online”"></div><div class="fd-ev-note">Events appear in the feed and in the Upcoming Events calendar. Add a registration link below.</div>':'';
     var media=(mediaOpen||isEv)?'<div class="fd-row"><input class="fd-in" id="fdImg" type="url" placeholder="Image URL (optional)"><input class="fd-in" id="fdLink" type="url" placeholder="'+(isEv?'Registration / details link':'Link or video URL (optional)')+'"></div>':'';
     host.innerHTML='<div class="fd-card"><div class="fd-card-b">'+
-      '<div class="fd-comp-top">'+avHTML(ME.avatar_url,ME.full_name||'Me',ME.avatar_color,'')+
+      '<div class="fd-comp-top">'+(curPage()?avHTML(curPage().logo_url,curPage().name,'','co'):avHTML(ME.avatar_url,ME.full_name||'Me',ME.avatar_color,''))+
       '<div><div class="fd-comp-t">Share with the network</div><div class="fd-comp-sub">Posts are public: shown here, on your profile, and to search engines. Keep it professional — this is your advertising.</div></div></div>'+
-      '<div class="fd-chips">'+chips+'</div>'+
+      asHTML()+'<div class="fd-chips">'+chips+'</div>'+
       '<input class="fd-in title" id="fdTitle" type="text" maxlength="140" placeholder="'+(isEv?'Event title':'Headline (optional)')+'">'+
       '<textarea class="fd-in fd-ta" id="fdTa" maxlength="1000" placeholder="'+esc(PLACEHOLDER[postType]||PLACEHOLDER.update)+'"></textarea>'+
       evFields+media+
@@ -379,6 +388,7 @@ Pegasus.boot(async function(){
     var ta=document.getElementById('fdTa'); if(ta) ta.addEventListener('input',upd);
     var at=document.getElementById('fdAttach'); if(at) at.onclick=function(){ var keep=val('fdTa'), kt=val('fdTitle'); mediaOpen=!mediaOpen; renderComposer(); setVal('fdTa',keep); setVal('fdTitle',kt); upd(); var t2=document.getElementById('fdTa'); if(t2) t2.focus(); };
     var btn=document.getElementById('fdPost'); if(btn) btn.onclick=submit;
+    host.querySelectorAll('.fd-as button').forEach(function(b){ b.onclick=function(){ var keep=val('fdTa'), kt=val('fdTitle'); postAs=b.getAttribute('data-as')||''; renderComposer(); setVal('fdTa',keep); setVal('fdTitle',kt); upd(); }; });
     var upBtn=document.getElementById('fdUpload'), upFile=document.getElementById('fdFile');
     if(upBtn&&upFile){ upBtn.onclick=function(){ upFile.click(); }; upFile.onchange=function(){ handleUpload(upFile); }; }
     var rmBtn=document.getElementById('fdUpRm'); if(rmBtn) rmBtn.onclick=function(){ upImg=''; upLink=''; var keep=val('fdTa'), kt=val('fdTitle'); renderComposer(); setVal('fdTa',keep); setVal('fdTitle',kt); upd(); };
@@ -387,6 +397,13 @@ Pegasus.boot(async function(){
   function setVal(id,v){ var e=document.getElementById(id); if(e) e.value=v||''; }
   function upd(){ var c=document.getElementById('fdCount'); if(c) c.textContent=val('fdTa').length+' / 1000'; }
 
+  function curPage(){ if(!postAs) return null; for(var i=0;i<MY_PAGES.length;i++){ if(MY_PAGES[i].id===postAs) return MY_PAGES[i]; } return null; }
+  function asHTML(){
+    if(!MY_PAGES.length) return '';
+    var b='<button type="button" data-as=""'+(curPage()?'':' class="on"')+'>'+avHTML(ME.avatar_url,ME.full_name||'Me',ME.avatar_color,'')+'<span class="n">'+esc(ME.full_name||'Me')+'</span></button>';
+    MY_PAGES.forEach(function(p){ b+='<button type="button" data-as="'+esc(p.id)+'"'+(p.id===postAs?' class="on"':'')+'>'+avHTML(p.logo_url,p.name,'','co')+'<span class="n">'+esc(p.name)+'</span></button>'; });
+    return '<div class="fd-as"><span class="fd-as-l">Post as</span>'+b+'</div>';
+  }
   async function submit(){
     var btn=document.getElementById('fdPost'), err=document.getElementById('fdErr');
     var txt=val('fdTa').trim(), title=val('fdTitle').trim(), img=(val('fdImg')||upImg||'').trim(), lnk=(val('fdLink')||upLink||'').trim();
@@ -400,11 +417,13 @@ Pegasus.boot(async function(){
     }
     btn.disabled=true; btn.textContent='Posting…'; err.textContent='';
     try{
-      var rr=await sb.rpc('post_feed_item',{p_type:postType,p_content:txt,p_image:img||null,p_link:lnk||null,p_title:title||null,p_event_at:evAt,p_event_location:evLoc});
+      var pg=curPage();
+      var rr=pg?await sb.rpc('post_feed_item_as',{p_presence:pg.id,p_type:postType,p_content:txt,p_image:img||null,p_link:lnk||null,p_title:title||null,p_event_at:evAt,p_event_location:evLoc})
+               :await sb.rpc('post_feed_item',{p_type:postType,p_content:txt,p_image:img||null,p_link:lnk||null,p_title:title||null,p_event_at:evAt,p_event_location:evLoc});
       if(rr.error) throw rr.error;
       var resp=rr.data||{};
       if(!resp.ok){ err.textContent=resp.message||'Could not post right now.'; btn.disabled=false; btn.textContent='Post to Feed'; return; }
-      Pegasus.toast('✓','var(--green-dim)','Posted to the network','It’s live in the feed and on your profile.');
+      Pegasus.toast('✓','var(--green-dim)','Posted to the network',pg?('It’s live in the feed as '+pg.name+'.'):'It’s live in the feed and on your profile.');
       mediaOpen=false; postType='update'; upImg=''; upLink=''; renderComposer();
       var nd=document.getElementById('fdNudge'); if(nd) nd.innerHTML='';
       before=null; exhausted=false; await loadFeed(true); loadEvents();
@@ -421,8 +440,10 @@ Pegasus.boot(async function(){
 
   /* ── Posts ──────────────────────────────────────────────────────────────── */
   function postHTML(p){
-    var href=profileHref(p);
-    var role=[p.author_title,p.author_company].filter(Boolean).join(' · ');
+    var isCo=!!(p.presence_id&&p.presence_name);
+    var href=isCo?'/business/'+encodeURIComponent(p.presence_slug||''):profileHref(p);
+    var role=isCo?(p.presence_category||'Company'):[p.author_title,p.author_company].filter(Boolean).join(' · ');
+    var nm=isCo?p.presence_name:p.author_name;
     var type=p.signal_type||'update';
     var img=p.image_url?'<a class="fd-img" href="'+safeUrl(p.image_url)+'" target="_blank" rel="noopener noreferrer"><img src="'+safeUrl(p.image_url)+'" alt="" loading="lazy"></a>':'';
     var vid=(type!=='event')?videoEmbed(p.link_url):'';
@@ -437,8 +458,9 @@ Pegasus.boot(async function(){
     var long=(p.content||'').length>420||((p.content||'').split('\n').length>7);
     var canDel=MY_UID&&(p.user_id===MY_UID||IS_ADMIN);
     return '<article class="fd-card" id="post-'+esc(p.id)+'" data-owner="'+esc(p.user_id)+'"><div class="fd-card-b">'+
-      '<div class="fd-post-h"><a href="'+href+'" aria-label="'+esc(p.author_name)+'">'+avHTML(p.author_avatar,p.author_name,p.author_color,'')+'</a>'+
-      '<div class="fd-post-who"><a class="fd-post-name" href="'+href+'">'+esc(p.author_name)+'</a>'+(role?'<div class="fd-post-role">'+esc(role)+'</div>':'')+
+      '<div class="fd-post-h"><a href="'+href+'" aria-label="'+esc(nm)+'">'+(isCo?avHTML(p.presence_logo,nm,'','co'):avHTML(p.author_avatar,nm,p.author_color,''))+'</a>'+
+      '<div class="fd-post-who"><a class="fd-post-name" href="'+href+'">'+esc(nm)+'</a>'+(role?'<div class="fd-post-role">'+esc(role)+'</div>':'')+
+      (isCo?'<div class="fd-post-by">Posted by <a href="'+profileHref(p)+'">'+esc(p.author_name)+'</a></div>':'')+
       '<div class="fd-post-meta"><span class="fd-type '+esc(type)+'">'+esc(LBL[type]||'Update')+'</span><span>'+esc(ago(p.created_at))+'</span>'+(p.author_location?'<span>· '+esc(p.author_location)+'</span>':'')+'</div></div></div>'+
       (p.title?'<h3 class="fd-post-title">'+esc(p.title)+'</h3>':'')+
       '<div class="fd-post-txt'+(long?' clamp':'')+'">'+linkify(p.content||'')+'</div>'+(long?'<button class="fd-more" type="button">Show more</button>':'')+
@@ -533,7 +555,9 @@ Pegasus.boot(async function(){
     var rows=[];
     try{
       var args=permalink?{p_limit:1,p_id:permalink}:{p_limit:PAGE,p_before:before,p_type:filter||null};
-      var r=sb?await sb.rpc('get_network_feed',args):null;
+      var a2=Object.assign({},args); if(pageFilter&&!permalink) a2.p_presence=pageFilter;
+      var r=sb?await sb.rpc('get_network_feed_v2',a2):null;
+      if(r&&r.error&&rpcMissing(r.error)) r=await sb.rpc('get_network_feed',args);
       if(r&&r.error) throw r.error;
       rows=(r&&Array.isArray(r.data))?r.data:[];
     }catch(e){
@@ -593,6 +617,14 @@ Pegasus.boot(async function(){
       '<div class="fd-me-act"><a class="btn btn-ghost btn-sm" href="'+href+'">View profile</a><a class="btn btn-ghost btn-sm" href="/profile-edit.html">Edit</a></div>'+
       '</div>';
   }
+  if(MY_UID&&sb){
+    try{
+      var pm=await sb.from('presence_members').select('can_publish_as,presences!inner(id,name,slug,logo_url,presence_type,status)').eq('user_id',MY_UID).eq('can_publish_as',true);
+      (pm.data||[]).forEach(function(r){ var p=r.presences; if(p&&p.presence_type==='company'&&p.status==='active'&&!MY_PAGES.some(function(x){return x.id===p.id;})) MY_PAGES.push(p); });
+      MY_PAGES.sort(function(a,b){ return (a.name||'').localeCompare(b.name||''); });
+    }catch(e){}
+  }
+  if(postAs&&!curPage()) postAs='';
   renderMe();
   renderComposer();
   renderNudge();
