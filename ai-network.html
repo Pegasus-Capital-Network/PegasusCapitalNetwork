@@ -107,6 +107,21 @@ footer .fnote{font-size:11px;color:var(--muted);max-width:62ch;line-height:1.7}
 .done .chk{width:52px;height:52px;border:1.5px solid var(--navy);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--navy);font-size:24px;margin:0 auto 16px}
 .done h3{font-weight:800;font-size:24px;margin-bottom:8px;color:var(--ink);letter-spacing:-.02em}
 .done p{font-size:14px;color:var(--text);max-width:34ch;margin:0 auto}
+
+.live-strip{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.live-strip:empty{display:none}
+.live-strip a{display:flex;flex-direction:column;background:#fff;border:1px solid #e3e8ee;border-radius:12px;padding:10px 14px;min-width:120px}
+.live-strip b{font-size:22px;color:var(--ink);letter-spacing:-.02em}
+.live-strip span{font-size:12px;color:var(--muted)}
+@media(max-width:640px){
+ header.top .back{font-size:12.5px}
+ header.top>span{gap:12px!important}
+ header.top .back[href="/intel.html"]{display:none}
+ .hero{padding:22px 0 18px}
+ .hero .eyebrow,.hero .lede,.status-line{display:none}
+ h1{font-size:28px}
+ .paths-head p,.grid3 .card p,.why{display:none}
+}
 </style>
 </head>
 <body>
@@ -121,6 +136,7 @@ footer .fnote{font-size:11px;color:var(--muted);max-width:62ch;line-height:1.7}
   <div class="eyebrow">Pegasus AI Network</div>
   <h1>Where AI companies, <em>capital</em>, and buyers meet.</h1>
   <p class="lede">Most AI founders don't need another cold investor list. They need the right capital and their first serious buyer, through people who actually move. Pegasus connects all three sides in one private network.</p>
+  <div class="live-strip" id="liveStrip"></div>
   <div class="status-line"><span class="dot"></span> Early network forming · founding members joining now</div>
   <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:22px">
     <a href="/apply-for-funding.html" style="display:inline-flex;align-items:center;gap:7px;font-size:14px;font-weight:600;color:#fff;background:#1b3a5b;border-radius:9px;padding:12px 22px;transition:transform .15s,opacity .2s">Raising? Apply for funding &rarr;</a>
@@ -269,5 +285,21 @@ footer .fnote{font-size:11px;color:var(--muted);max-width:62ch;line-height:1.7}
     }
   };
 })();
+</script>
+
+<script>
+(function(){
+  var C=window.PEG_CONFIG||{};var U=C.SUPABASE_URL||'https://trdwsssouhpawhfdkfqf.supabase.co',K=C.SUPABASE_ANON||'sb_publishable_hrR8wI6hM921mnxk7bBE_A_YKxWsoBI';
+  function cnt(t){return fetch(U+'/rest/v1/'+t+'?select=*',{method:'HEAD',headers:{apikey:K,Authorization:'Bearer '+K,Prefer:'count=exact',Range:'0-0'}}).then(function(r){var m=(r.headers.get('content-range')||'').split('/')[1];return parseInt(m,10)||0}).catch(function(){return 0})}
+  window.__pegCounts=Promise.all(['public_lender_programs','public_business_directory','public_ai_startups','public_ai_investors'].map(cnt)).then(function(a){return{programs:a[0],biz:a[1],ai:a[2],inv:a[3]}});
+})();
+</script>
+<script>
+window.__pegCounts.then(function(c){
+  var el=document.getElementById('liveStrip');if(!el)return;var h='';
+  if(c.ai)h+='<a href="/ai-directory.html#companies"><b>'+c.ai+'</b><span>AI companies</span></a>';
+  if(c.inv)h+='<a href="/ai-directory.html#investors"><b>'+c.inv+'</b><span>AI investors</span></a>';
+  el.innerHTML=h;
+});
 </script>
 </body></html>

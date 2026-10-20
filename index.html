@@ -80,6 +80,20 @@ h1{font-weight:800;font-size:clamp(40px,7vw,74px);line-height:1.02;letter-spacin
 
 .foot{position:relative;z-index:2;text-align:center;color:var(--muted);font-size:13.5px;padding:38px 0 64px}
 .foot a{color:var(--navy);font-weight:600}
+
+.w-live{display:flex;align-items:center;gap:7px;font-size:12.5px;font-weight:600;color:var(--navy);margin-top:12px;min-height:18px}
+.w-live:empty{display:none}
+.w-live .dot{width:7px;height:7px;border-radius:50%;background:#1f9d55;box-shadow:0 0 0 3px rgba(31,157,85,.15)}
+@media(max-width:640px){
+ .hero{padding:26px 0 4px}.hero-peg,.hero .eyebrow,.hero .sub{display:none!important}
+ h1{font-size:30px}
+ .worlds{gap:12px;padding:16px 0 6px}
+ .world{min-height:0;padding:18px 18px 16px}
+ .w-ico,.w-desc{display:none}
+ .w-ttl{font-size:20px;margin-bottom:0}
+ .w-tags{margin:10px 0 12px}
+ .w-live{margin:0 0 10px}
+}
 </style></head>
 <body>
 <div class="bg"></div>
@@ -108,6 +122,7 @@ h1{font-weight:800;font-size:clamp(40px,7vw,74px);line-height:1.02;letter-spacin
       <div class="w-label">Pegasus Capital Network</div>
       <div class="w-ttl">Capital &amp; Real Estate</div>
       <div class="w-desc">Buy or refinance a home, finance an investment deal, or invest in loans secured by real estate. See who lends what, and lenders publish their programs to meet borrowers.</div>
+      <div class="w-live" data-live="capital"></div>
       <div class="w-tags"><span>Private Investors</span><span>Get Financing</span><span>Lenders</span><span>Developers</span></div>
       <span class="w-enter">Enter <span class="ar">&rarr;</span></span>
     </a>
@@ -116,6 +131,7 @@ h1{font-weight:800;font-size:clamp(40px,7vw,74px);line-height:1.02;letter-spacin
       <div class="w-label">Pegasus AI</div>
       <div class="w-ttl">AI &amp; Technology</div>
       <div class="w-desc">Where AI companies, capital, and clients meet. Startups, investors, enterprise clients, and a needs board where demand finds the builders.</div>
+      <div class="w-live" data-live="ai"></div>
       <div class="w-tags"><span>Startups</span><span>Investors</span><span>Clients</span><span>Intelligence</span></div>
       <span class="w-enter">Enter <span class="ar">&rarr;</span></span>
     </a>
@@ -138,4 +154,20 @@ h1{font-weight:800;font-size:clamp(40px,7vw,74px);line-height:1.02;letter-spacin
 <div class="foot">
   Not sure where to start? <a href="/ai-network.html">Pegasus AI</a> is where it's happening right now, or <a href="/how-it-works.html">see how it works</a>.
 </div>
+
+<script>
+(function(){
+  var C=window.PEG_CONFIG||{};var U=C.SUPABASE_URL||'https://trdwsssouhpawhfdkfqf.supabase.co',K=C.SUPABASE_ANON||'sb_publishable_hrR8wI6hM921mnxk7bBE_A_YKxWsoBI';
+  function cnt(t){return fetch(U+'/rest/v1/'+t+'?select=*',{method:'HEAD',headers:{apikey:K,Authorization:'Bearer '+K,Prefer:'count=exact',Range:'0-0'}}).then(function(r){var m=(r.headers.get('content-range')||'').split('/')[1];return parseInt(m,10)||0}).catch(function(){return 0})}
+  window.__pegCounts=Promise.all(['public_lender_programs','public_business_directory','public_ai_startups','public_ai_investors'].map(cnt)).then(function(a){return{programs:a[0],biz:a[1],ai:a[2],inv:a[3]}});
+})();
+</script>
+<script>
+window.__pegCounts.then(function(c){
+  function f(n){return n.toLocaleString('en-US')}
+  function put(k,parts){var el=document.querySelector('[data-live="'+k+'"]');parts=parts.filter(Boolean);if(el&&parts.length)el.innerHTML='<span class="dot"></span>'+parts.join(' · ')}
+  put('capital',[c.biz?f(c.biz)+' companies':'',c.programs?f(c.programs)+' lending programs':'']);
+  put('ai',[c.ai?f(c.ai)+' AI companies':'',c.inv?f(c.inv)+' investors':'']);
+});
+</script>
 </body></html>
