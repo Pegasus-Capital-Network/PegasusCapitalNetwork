@@ -61,7 +61,7 @@ Pegasus.mountPublic();
       var p = Pegasus.store.get().profile;
       /* Already authenticated — go to the signed-in home: their own profile */
       if (p && p.profile_slug) { try { localStorage.setItem('peg_slug', p.profile_slug); } catch(e){} }
-      location.replace(p && p.profile_slug ? '/u/' + encodeURIComponent(p.profile_slug) : '/profile-edit.html');
+      location.replace(p ? '/feed' : '/profile-edit.html');
     }
   } catch(_) {}
 })();

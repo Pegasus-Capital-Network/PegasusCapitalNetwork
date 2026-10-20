@@ -58,7 +58,7 @@ Pegasus.mountPublic();
       /* Signed-in home is the member's OWN profile page: a member lands on
          their page first and moves into the network from there. */
       if (p && p.profile_slug) { try { localStorage.setItem('peg_slug', p.profile_slug); } catch(e){} }
-      location.replace(p && p.profile_slug ? '/u/' + encodeURIComponent(p.profile_slug) : '/profile-edit.html');
+      location.replace(p ? '/feed' : '/profile-edit.html');
     }
   } catch(_) {}
 })();
@@ -85,7 +85,7 @@ async function doSignin(){
     if(_p.profile_slug){ try{ localStorage.setItem('peg_slug',_p.profile_slug); }catch(e){} }
     var _dl=''; try{ _dl=localStorage.getItem('pegasus.redirectAfterAuth')||''; if(_dl) localStorage.removeItem('pegasus.redirectAfterAuth'); }catch(_){}
     var _valid=_dl && _dl.charAt(0)==='/' && _dl!=='/' && _dl!=='/index.html' && !_dl.startsWith('/signin') && !_dl.startsWith('/signup') && !_dl.startsWith('/auth-callback');
-    var _home=_p.profile_slug ? '/u/'+encodeURIComponent(_p.profile_slug) : '/profile-edit.html';
+    var _home=(_p && _p.profile_slug) ? '/feed' : '/profile-edit.html';
     location.href = _valid ? _dl : _home;
   }catch(e){
     btn.disabled=false; btn.textContent='Access Workspace →';

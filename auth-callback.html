@@ -144,7 +144,7 @@ Pegasus.mountPublic('');
        Always do a direct Supabase query using the confirmed session user ID.
        This is more reliable than Store.get() which can race with auth init.
        If slug is missing, generate it now so the URL is always clean.       */
-    var hubDest = '/members.html'; /* signed-in home → Members Network */
+    var hubDest = '/feed'; /* signed-in home → Network Feed (live activity) */
     try {
       var sbHub = await window.PegSB.ready;
       var hubRes = await sbHub.from('profiles')
@@ -170,10 +170,10 @@ Pegasus.mountPublic('');
         /* Cache slug so member nav / My Profile links resolve instantly */
         if (slug) { try { localStorage.setItem('peg_slug', slug); } catch(_) {} }
 
-        /* Signed-in home is the member's OWN profile page — they land on
-           their page first, then move into the network from there. */
-        hubDest = slug ? '/u/' + encodeURIComponent(slug) : '/profile-edit.html';
-        welcomeBody = 'Opening your profile…';
+        /* Signed-in home is the live Network Feed — members land in the
+           activity, then reach their profile or the directory from the nav. */
+        hubDest = '/feed';
+        welcomeBody = 'Opening your network feed…';
       } else {
         /* No profile row — brand new user sets up their profile first */
         hubDest = '/profile-edit.html';
@@ -182,7 +182,7 @@ Pegasus.mountPublic('');
       }
     } catch (e) {
       console.warn('[auth-callback] hub detection error:', e && e.message);
-      hubDest = '/members.html';
+      hubDest = '/feed';
     }
 
     /* ── Check for deep link (user was heading somewhere before login) ── */
