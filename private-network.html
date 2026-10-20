@@ -118,10 +118,10 @@ textarea{min-height:64px;resize:vertical}
   <div class="h2">Four areas of investment &amp; partnership</div>
   <div class="h2-sub">Different participants, different conversations. Tell us which one fits, and we explore alignment from there.</div>
   <div class="areas">
-    <a class="area" id="development"><div class="al">Direct Real Estate Investment</div><div class="at">Equity &amp; joint ventures</div><div class="aa">Family offices, private investment firms</div><div class="ad">Relationships with experienced U.S. developers and potential joint-venture partners on residential and development opportunities.</div></a>
-    <a class="area" id="private-credit"><div class="al">Private Credit &amp; Structured Capital</div><div class="at">Secured real estate finance</div><div class="aa">Debt funds, private lenders</div><div class="ad">Exploring real estate-secured financing and structured-capital relationships, reviewed on their own merits.</div></a>
-    <a class="area" id="family-offices"><div class="al">International Capital Partnerships</div><div class="at">Cross-border relationships</div><div class="aa">GCC, Asia, Europe, Canada</div><div class="ad">International investment organizations building relationships with U.S. operators and markets.</div></a>
-    <a class="area" id="rwa-areas"><div class="al">RWA &amp; Digital Securities</div><div class="at">Compliant infrastructure</div><div class="aa">Tokenization platforms, broker-dealers, fintech</div><div class="ad">Studying regulated digital-securities infrastructure for real estate-related investment rights, within applicable law.</div></a>
+    <a class="area" id="development" href="#register" data-area="development"><div class="al">Direct Real Estate Investment</div><div class="at">Equity &amp; joint ventures</div><div class="aa">Family offices, private investment firms</div><div class="ad">Relationships with experienced U.S. developers and potential joint-venture partners on residential and development opportunities.</div></a>
+    <a class="area" id="private-credit" href="#register" data-area="private-credit"><div class="al">Private Credit &amp; Structured Capital</div><div class="at">Secured real estate finance</div><div class="aa">Debt funds, private lenders</div><div class="ad">Exploring real estate-secured financing and structured-capital relationships, reviewed on their own merits.</div></a>
+    <a class="area" id="family-offices" href="#register" data-area="family-offices"><div class="al">International Capital Partnerships</div><div class="at">Cross-border relationships</div><div class="aa">GCC, Asia, Europe, Canada</div><div class="ad">International investment organizations building relationships with U.S. operators and markets.</div></a>
+    <a class="area" id="rwa-areas" href="#register" data-area="rwa-areas"><div class="al">RWA &amp; Digital Securities</div><div class="at">Compliant infrastructure</div><div class="aa">Tokenization platforms, broker-dealers, fintech</div><div class="ad">Studying regulated digital-securities infrastructure for real estate-related investment rights, within applicable law.</div></a>
   </div>
 </div></section>
 
@@ -206,6 +206,7 @@ textarea{min-height:64px;resize:vertical}
   var sb=(window.supabase&&window.supabase.createClient)?window.supabase.createClient(URL,KEY):null;
   async function session(){ try{ var r=await sb.auth.getSession(); return (r&&r.data)?r.data.session:null; }catch(e){ return null; } }
   async function ensureAuth(role,intent){ var s=await session(); if(s&&s.user) return s; location.href='/signup.html?role='+encodeURIComponent(role||'')+'&intent='+encodeURIComponent(intent||'')+'&next='+encodeURIComponent(location.pathname+location.hash); return null; }
+  try{ document.querySelectorAll('a.area[data-area]').forEach(function(a){ a.addEventListener('click',function(){ window.__pegArea=a.getAttribute('data-area'); }); }); }catch(_){}
   function esc(x){return (x==null?'':String(x)).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
   function v(id){var el=document.getElementById(id);return el?(el.value||'').trim():'';}
   window.qSubmit=async function(){
@@ -225,7 +226,7 @@ textarea{min-height:64px;resize:vertical}
         preferred_markets:v('q-markets')||null, typical_allocation:v('q-alloc')||null,
         investment_structure:v('q-struct')||null, investment_timeline:v('q-time')||null,
         name:v('q-name'), company:v('q-company')||null, email:email, message:v('q-msg')||null,
-        consent:true, area:(location.hash||'').replace('#','')||null
+        consent:true, area:(window.__pegArea||(location.hash||'').replace('#',''))||null
       });
       if(r.error) throw r.error;
       document.getElementById('qCard').innerHTML='<div class="ok"><b>Thank you.</b><br>Your mandate is received. We will review alignment with the network and reach out at '+esc(email)+'. Nothing is shared without your agreement.</div>';
