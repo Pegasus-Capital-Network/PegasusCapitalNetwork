@@ -103,7 +103,8 @@ textarea{min-height:70px;resize:vertical}
   <div id="done" class="done" style="display:none">
     <div class="chk">&#10003;</div>
     <h2>Request received.</h2>
-    <p id="doneMsg">Thank you. We'll review your deal and reach out shortly with next steps.</p>
+    <p id="doneMsg">Your account is set and your request is in. We'll review your deal and reach out shortly with next steps.</p>
+    <div style="margin-top:22px"><a class="btn" href="/dashboard.html" style="display:inline-block">Go to your Workspace &rarr;</a></div>
   </div>
 </div>
 
@@ -123,7 +124,7 @@ textarea{min-height:70px;resize:vertical}
   async function ensureAuth(role,intent){ var s=await session(); if(s&&s.user) return s; location.href='/signup.html?role='+encodeURIComponent(role||'')+'&intent='+encodeURIComponent(intent||'')+'&next='+encodeURIComponent(location.pathname); return null; }
   function v(id){var el=document.getElementById(id);return el?(el.value||'').trim():'';}
   // Restore a saved financing draft once the member returns signed in.
-  (function(){ try{ var raw=localStorage.getItem('peg.financing.draft'); if(!raw) return; session().then(function(s){ if(!(s&&s.user)) return; var d=JSON.parse(raw); function set(id,val){var e=document.getElementById(id); if(e&&val&&!e.value) e.value=val;} set('f-name',d.name); set('f-email',d.email||s.user.email); set('f-phone',d.phone); set('f-addr',d.property_address); set('f-city',d.city); set('f-amount',d.loan_amount); set('f-value',d.est_value); set('f-msg',d.message); set('f-ptype',d.property_type); set('f-purpose',d.purpose); set('f-timeline',d.timeline); }); }catch(_){} })();
+  (function(){ try{ var raw=localStorage.getItem('peg.financing.draft'); if(!raw) return; session().then(function(s){ if(!(s&&s.user)) return; var d=JSON.parse(raw); function set(id,val){var e=document.getElementById(id); if(e&&val&&!e.value) e.value=val;} set('f-name',d.name); set('f-email',d.email||s.user.email); set('f-phone',d.phone); set('f-addr',d.property_address); set('f-city',d.city); set('f-amount',d.loan_amount); set('f-value',d.est_value); set('f-msg',d.message); set('f-ptype',d.property_type); set('f-purpose',d.purpose); set('f-timeline',d.timeline); if(localStorage.getItem('peg.financing.autosubmit')==='1'){ localStorage.removeItem('peg.financing.autosubmit'); setTimeout(function(){ if(window.submitReq) window.submitReq(); }, 400); } }); }catch(_){} })();
   function num(x){ if(!x) return null; var n=parseFloat(String(x).replace(/[^0-9.]/g,'')); return isNaN(n)?null:n; }
   window.submitReq=async function(){
     var err=document.getElementById('err'), btn=document.getElementById('submit');
@@ -134,7 +135,7 @@ textarea{min-height:70px;resize:vertical}
     if(!sb){ err.textContent='Connection unavailable, please try again in a moment.'; return; }
     // Registration-first: capture the deal, then route through account creation.
     var draft={ name:name, email:email, phone:v('f-phone'), property_address:v('f-addr'), property_type:v('f-ptype'), city:v('f-city'), loan_amount:v('f-amount'), est_value:v('f-value'), purpose:v('f-purpose'), timeline:v('f-timeline'), message:v('f-msg') };
-    try{ localStorage.setItem('peg.financing.draft', JSON.stringify(draft)); }catch(_){}
+    try{ localStorage.setItem('peg.financing.draft', JSON.stringify(draft)); localStorage.setItem('peg.financing.autosubmit','1'); }catch(_){}
     var sess=await ensureAuth('borrower','financing'); if(!sess) return;
     btn.disabled=true; btn.textContent='Submitting…';
     try{
@@ -145,7 +146,7 @@ textarea{min-height:70px;resize:vertical}
         purpose:v('f-purpose')||null, timeline:v('f-timeline')||null, message:v('f-msg')||null
       });
       if(r.error) throw r.error;
-      try{ localStorage.removeItem('peg.financing.draft'); }catch(_){}
+      try{ localStorage.removeItem('peg.financing.draft'); localStorage.removeItem('peg.financing.autosubmit'); }catch(_){}
       document.getElementById('formCard').style.display='none';
       document.getElementById('done').style.display='block';
       window.scrollTo({top:0,behavior:'smooth'});
