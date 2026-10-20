@@ -22,7 +22,11 @@
 .fd-head h1{font-family:var(--serif);font-weight:400;font-size:clamp(24px,2.6vw,32px);color:var(--text);margin:0;letter-spacing:-.015em}
 .fd-head p{font-size:13px;color:var(--text3);margin:4px 0 0;max-width:640px;line-height:1.6}
 .fd-grid{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:var(--sp-lg);align-items:start}
-@media(max-width:980px){.fd-grid{grid-template-columns:1fr}.fd-rail{order:1}}
+@media(max-width:980px){.fd-grid{grid-template-columns:minmax(0,1fr)}.fd-rail{order:1;min-width:0}}
+.fd-rail>*{min-width:0;max-width:100%}
+.fd-namerow{display:flex;gap:8px;margin-top:10px}
+.fd-namerow .fd-in{flex:1;min-width:0}
+@media(max-width:640px){.fd-head p,.fd-comp-sub,.fd-guest-s{display:none}.fd-guest-a{margin-left:0}}
 .fd-main{display:flex;flex-direction:column;gap:var(--sp-md);min-width:0}
 .fd-rail{display:flex;flex-direction:column;gap:var(--sp-md);position:sticky;top:84px}
 @media(max-width:980px){.fd-rail{position:static}}
@@ -302,13 +306,38 @@ Pegasus.boot(async function(){
   async function renderNudge(){
     if(!MY_UID||!sb) return;
     var host=document.getElementById('fdNudge'); if(!host) return;
+    if(!(ME.full_name||'').trim()){
+      host.innerHTML='<div class="fd-card" style="border-color:rgba(29,90,158,.35);background:var(--blue-dim)"><div class="fd-card-b">'+
+        '<div class="fd-guest-t">You\u2019re in. What\u2019s your name?</div>'+
+        '<div class="fd-namerow"><input class="fd-in" id="fdMyName" maxlength="80" autocomplete="name" placeholder="Full name"><button class="btn btn-pri btn-sm" type="button" id="fdSaveName">Save</button></div>'+
+        '<div class="fd-err" id="fdNameErr"></div></div></div>';
+      var sv=document.getElementById('fdSaveName');
+      if(sv) sv.onclick=async function(){
+        var nm=(document.getElementById('fdMyName').value||'').trim(), er=document.getElementById('fdNameErr');
+        if(nm.length<2){ er.textContent='Please enter your name.'; return; }
+        sv.disabled=true;
+        var patch={full_name:nm, updated_at:new Date().toISOString()};
+        if(!ME.profile_slug){
+          var base=nm.toLowerCase().normalize('NFKD').replace(/[^a-z0-9\s-]/g,'').trim().replace(/\s+/g,'-').replace(/-+/g,'-')||'member';
+          patch.profile_slug=base+'-'+String(MY_UID).slice(0,4);
+        }
+        try{
+          var r=await sb.from('profiles').update(patch).eq('id',MY_UID).select('full_name,profile_slug').single();
+          if(r.error) throw r.error;
+          ME.full_name=r.data.full_name; if(r.data.profile_slug){ ME.profile_slug=r.data.profile_slug; try{ localStorage.setItem('peg_slug',ME.profile_slug); }catch(_){} }
+          try{ if(window.Pegasus&&Pegasus.store&&Pegasus.store.hydrate) Pegasus.store.hydrate(); }catch(_){}
+          renderMe(); renderComposer(); renderNudge(); before=null; exhausted=false; loadFeed(true);
+        }catch(e){ er.textContent=(e&&e.message)||'Could not save. Try again.'; sv.disabled=false; }
+      };
+      return;
+    }
     try{
       var r=await sb.rpc('get_my_recent_signals',{p_limit:1});
       if(!r||r.error||(Array.isArray(r.data)&&r.data.length)) return;
     }catch(e){ return; }
-    var first=(ME.full_name||'').split(/\s+/)[0]||'there';
+    var first=(ME.full_name||'').split(/\s+/)[0]||'';
     host.innerHTML='<div class="fd-card" style="border-color:rgba(29,90,158,.35);background:var(--blue-dim)"><div class="fd-card-b fd-guest">'+
-      '<div><div class="fd-guest-t">Welcome, '+esc(first)+' — introduce yourself</div><div class="fd-guest-s">Tell the network what you do and which markets you cover. Members who post an intro get found first.</div></div>'+
+      '<div><div class="fd-guest-t">Welcome'+(first?', '+esc(first):'')+'. Say hello to the network</div><div class="fd-guest-s">Members who post an intro get found first.</div></div>'+
       '<div class="fd-guest-a"><button class="btn btn-pri btn-sm" type="button" id="fdIntro">Write my intro</button></div></div></div>';
     var b=document.getElementById('fdIntro'); if(b) b.onclick=function(){
       postType='update'; renderComposer();
