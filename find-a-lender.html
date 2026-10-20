@@ -168,7 +168,7 @@ Pegasus.boot(async function(){
 
   var esc=Pegasus.esc;
   var SAVE_KEY='pegasus.lenderMatcher';
-  var MAX_SEND=10, PRECHECK=5;
+  var MAX_SEND=10, PRECHECK=0;
 
   /* ── Reference data ─────────────────────────────────────────────────────── */
   var TYPES={residential_purchase:'Home purchase (1–4 units)',residential_refi:'Refinance (1–4 units)',dscr_rental:'DSCR / rental property',fix_flip:'Fix & flip',bridge:'Bridge loan',construction:'Construction',multifamily:'Multifamily (5+ units)',commercial:'Commercial real estate',sba_business:'SBA / business loan'};
@@ -224,7 +224,7 @@ Pegasus.boot(async function(){
   var MY_UID=session&&session.user&&session.user.id||null;
 
   /* ── State ──────────────────────────────────────────────────────────────── */
-  var lastDeal=null, rows=[], picked={}, share=true, sending=false;
+  var lastDeal=null, rows=[], picked={}, share=false, sending=false;
 
   /* ── Results ────────────────────────────────────────────────────────────── */
   function lenderHTML(r,i){
@@ -310,7 +310,7 @@ Pegasus.boot(async function(){
       lastDeal={type:d.type,amount:parseAmount(d.amount),state:d.state};
       rows=s.rows.slice(0,10); picked={};
       (Array.isArray(s.picked)?s.picked:[]).slice(0,MAX_SEND).forEach(function(x){ picked[String(x)]=true; });
-      share=s.share!==false;
+      share=s.share===true;
       syncUrl(lastDeal);
       renderResults(MY_UID?'send':null);
     }

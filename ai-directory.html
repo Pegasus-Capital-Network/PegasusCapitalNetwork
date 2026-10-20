@@ -177,7 +177,7 @@ h1{font-weight:800;font-size:clamp(32px,4.6vw,50px);line-height:1.05;letter-spac
       var nm=document.getElementById('rName'); if(nm&&!nm.value) nm.value=md.full_name||'';
     }catch(e){}
     document.getElementById('ovTitle').textContent='Request an intro to '+name;
-    document.getElementById('ovNote').textContent=(type==='investor'?'We will pass your details to our team and broker the introduction if it is a fit.':'We will connect you with this company through our team.');
+    document.getElementById('ovNote').textContent=(type==='investor'?'Tell us why it is a fit. We review every request and, where it makes sense, try to facilitate an introduction. We can’t promise a response, and a request isn’t an endorsement or an existing relationship.':'Tell us what you have in mind. We review every request and, where it makes sense, try to help make the connection. We can’t promise a response.');
     document.getElementById('rErr').textContent='';
     document.getElementById('ov').classList.add('open');
   };
