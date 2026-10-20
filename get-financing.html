@@ -85,7 +85,7 @@ textarea{min-height:70px;resize:vertical}
       <div class="fld"><label>Your name <span class="req">*</span></label><input id="f-name" placeholder="Full name"></div>
       <div class="fld"><label>Email <span class="req">*</span></label><input id="f-email" type="email" placeholder="you@email.com"></div>
       <div class="fld"><label>Phone</label><input id="f-phone" placeholder="Best number"></div>
-      <div class="fld"><label>Loan purpose</label><select id="f-purpose"><option value="">Select…</option><option>Bridge</option><option>Construction</option><option>Fix &amp; flip / rehab</option><option>Investment property purchase</option><option>Refinance</option><option>Cash-out</option></select></div>
+      <div class="fld"><label>Loan purpose</label><select id="f-purpose"><option value="">Select…</option><option>Purchase</option><option>Bridge</option><option>Construction</option><option>Fix &amp; flip / rehab</option><option>Investment property purchase</option><option>Refinance</option><option>Cash-out</option></select></div>
       <div class="fld full"><label>Property address</label><input id="f-addr" placeholder="Street, city (kept private)"></div>
       <div class="fld"><label>Property type</label><select id="f-ptype"><option value="">Select…</option><option>SFR</option><option>Condo / townhome</option><option>Multifamily 2-4</option><option>Multifamily 5+</option><option>Mixed-use</option><option>Commercial</option><option>Land</option></select></div>
       <div class="fld"><label>City</label><input id="f-city" placeholder="City"></div>
@@ -126,6 +126,7 @@ textarea{min-height:70px;resize:vertical}
   // Restore a saved financing draft once the member returns signed in.
   (function(){ try{ var raw=localStorage.getItem('peg.financing.draft'); if(!raw) return; session().then(function(s){ if(!(s&&s.user)) return; var d=JSON.parse(raw); function set(id,val){var e=document.getElementById(id); if(e&&val&&!e.value) e.value=val;} set('f-name',d.name); set('f-email',d.email||s.user.email); set('f-phone',d.phone); set('f-addr',d.property_address); set('f-city',d.city); set('f-amount',d.loan_amount); set('f-value',d.est_value); set('f-msg',d.message); set('f-ptype',d.property_type); set('f-purpose',d.purpose); set('f-timeline',d.timeline); if(localStorage.getItem('peg.financing.autosubmit')==='1'){ localStorage.removeItem('peg.financing.autosubmit'); setTimeout(function(){ if(window.submitReq) window.submitReq(); }, 400); } }); }catch(_){} })();
   function num(x){ if(!x) return null; var n=parseFloat(String(x).replace(/[^0-9.]/g,'')); return isNaN(n)?null:n; }
+  (function(){ function fmt(e){ var d=(e.value||'').replace(/[^0-9]/g,''); e.value=d?('$'+Number(d).toLocaleString('en-US')):''; } ['f-amount','f-value'].forEach(function(id){ var el=document.getElementById(id); if(el) el.addEventListener('input',function(){ fmt(el); }); }); })();
   window.submitReq=async function(){
     var err=document.getElementById('err'), btn=document.getElementById('submit');
     err.textContent='';

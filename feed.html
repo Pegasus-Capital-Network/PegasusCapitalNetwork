@@ -142,6 +142,14 @@
 .fd-rail-cta{font-size:12.5px;color:var(--text2);line-height:1.6}
 .fd-rail-cta ul{margin:8px 0 12px;padding-left:18px}
 .fd-rail-cta li{margin:3px 0}
+.fd-me{padding:18px}
+.fd-me-top{display:flex;gap:12px;align-items:center;text-decoration:none;color:inherit}
+.fd-me-name{font-size:15px;font-weight:600;color:var(--text);line-height:1.25}
+.fd-me-sub{font-size:12px;color:var(--text2);margin-top:3px;line-height:1.35}
+.fd-me-loc{font-size:11.5px;color:var(--text3);margin-top:3px}
+.fd-me-head{font-size:12.5px;color:var(--text2);line-height:1.5;margin-top:11px}
+.fd-me-act{display:flex;gap:8px;margin-top:13px}
+.fd-me-act .btn{flex:1;justify-content:center}
 .fd-back{font-size:12px;color:var(--blue);text-decoration:none}
 </style>
 </head>
@@ -165,6 +173,7 @@
       <button class="btn btn-ghost btn-sm fd-loadmore" id="fdMore" style="display:none">Load more</button>
     </div>
     <aside class="fd-rail">
+      <div class="fd-card" id="fdMe" style="display:none"></div>
       <div class="fd-card"><div class="fd-card-b" id="fdEvents"><div class="fd-rail-t">Upcoming events</div><div class="fd-empty" style="padding:8px 0">Loading…</div></div></div>
       <div class="fd-card"><div class="fd-card-b fd-rail-cta" id="fdCta"></div></div>
       <div id="fdInvite"></div>
@@ -540,6 +549,22 @@ Pegasus.boot(async function(){
     : '<div class="fd-rail-t">Why post here</div><ul><li>Your posts show up on your public profile and in search.</li><li>Reach lenders, brokers, advisors, and agents in one place.</li><li>Post deals, market views, projects, and events — free.</li></ul><a class="btn btn-pri btn-sm" href="/signup.html">Create Free Profile</a>';
 
   /* ── Go ─────────────────────────────────────────────────────────────────── */
+  function renderMe(){
+    var host=document.getElementById('fdMe'); if(!host) return;
+    if(!MY_UID||!ME||!ME.full_name){ host.style.display='none'; return; }
+    host.style.display='';
+    var slug=ME.profile_slug, href=slug?'/u/'+encodeURIComponent(slug):'/profile.html';
+    var sub=[ME.professional_title||ME.headline||'', ME.company_name||''].filter(Boolean).join(' · ');
+    host.innerHTML='<div class="fd-card-b fd-me">'+
+      '<a class="fd-me-top" href="'+href+'">'+avHTML(ME.avatar_url,ME.full_name,ME.avatar_color,'')+
+      '<div class="fd-me-id"><div class="fd-me-name">'+esc(ME.full_name)+'</div>'+
+      (sub?'<div class="fd-me-sub">'+esc(sub)+'</div>':'')+
+      (ME.location?'<div class="fd-me-loc">'+esc(ME.location)+'</div>':'')+'</div></a>'+
+      ((ME.headline&&ME.headline!==(ME.professional_title||''))?'<div class="fd-me-head">'+esc(ME.headline)+'</div>':'')+
+      '<div class="fd-me-act"><a class="btn btn-ghost btn-sm" href="'+href+'">View profile</a><a class="btn btn-ghost btn-sm" href="/profile-edit.html">Edit</a></div>'+
+      '</div>';
+  }
+  renderMe();
   renderComposer();
   renderNudge();
   renderFilters();

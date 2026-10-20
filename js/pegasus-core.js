@@ -127,7 +127,7 @@
     };
     const isAdm = (typeof Store!=='undefined'&&Store.isAdmin&&Store.isAdmin());
     const sidebar=`<aside class="sidebar">
-      <div class="sb-head"><img class="brand-mark" src="/assets/brand/pegasus-mark.png" alt="Pegasus"><div><div class="sb-logo">Pegasus</div><div class="sb-ws">Workspace</div></div></div>
+      <a class="sb-head" href="/" title="Back to Pegasus home" style="text-decoration:none;color:inherit"><img class="brand-mark" src="/assets/brand/pegasus-mark.png" alt="Pegasus"><div><div class="sb-logo">Pegasus</div><div class="sb-ws">Workspace</div></div></a>
       <div class="sb-nav">
         <div class="sb-sec">Network</div>
         ${item('◎','Network Feed','/feed',{act:'Feed'})}
