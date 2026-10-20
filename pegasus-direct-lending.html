@@ -216,7 +216,7 @@ textarea{min-height:66px;resize:vertical}
   var C=window.PEG_CONFIG||window.PEGASUS_CONFIG||{};
   var URL=C.SUPABASE_URL||'https://trdwsssouhpawhfdkfqf.supabase.co';
   var KEY=C.SUPABASE_ANON||'sb_publishable_hrR8wI6hM921mnxk7bBE_A_YKxWsoBI';
-  var sb=(window.supabase&&window.supabase.createClient)?window.supabase.createClient(URL,KEY):null;
+  var sb=(window.supabase&&window.supabase.createClient)?window.supabase.createClient(URL,KEY,{auth:{persistSession:true,autoRefreshToken:true,storageKey:'pegasus.auth'}}):null;
   async function session(){ try{ var r=await sb.auth.getSession(); return (r&&r.data)?r.data.session:null; }catch(e){ return null; } }
   async function ensureAuth(role,intent){ var s=await session(); if(s&&s.user) return s; location.href='/signup.html?role='+encodeURIComponent(role||'')+'&intent='+encodeURIComponent(intent||'')+'&next='+encodeURIComponent(location.pathname+location.hash); return null; }
   function esc(x){return (x==null?'':String(x)).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
