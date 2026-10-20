@@ -158,7 +158,7 @@ h1{font-weight:800;font-size:clamp(40px,7vw,74px);line-height:1.02;letter-spacin
 <script>
 (function(){
   var C=window.PEG_CONFIG||{};var U=C.SUPABASE_URL||'https://trdwsssouhpawhfdkfqf.supabase.co',K=C.SUPABASE_ANON||'sb_publishable_hrR8wI6hM921mnxk7bBE_A_YKxWsoBI';
-  function cnt(t){return fetch(U+'/rest/v1/'+t+'?select=*',{method:'HEAD',headers:{apikey:K,Authorization:'Bearer '+K,Prefer:'count=exact',Range:'0-0'}}).then(function(r){var m=(r.headers.get('content-range')||'').split('/')[1];return parseInt(m,10)||0}).catch(function(){return 0})}
+  function cnt(t){return fetch(U+'/rest/v1/'+t+'?select=*',{method:'HEAD',headers:{apikey:K,Prefer:'count=exact',Range:'0-0'}}).then(function(r){var m=(r.headers.get('content-range')||'').split('/')[1];return parseInt(m,10)||0}).catch(function(){return 0})}
   window.__pegCounts=Promise.all(['public_lender_programs','public_business_directory','public_ai_startups','public_ai_investors'].map(cnt)).then(function(a){return{programs:a[0],biz:a[1],ai:a[2],inv:a[3]}});
 })();
 </script>

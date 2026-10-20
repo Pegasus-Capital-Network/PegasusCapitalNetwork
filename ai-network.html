@@ -116,7 +116,7 @@ footer .fnote{font-size:11px;color:var(--muted);max-width:62ch;line-height:1.7}
 @media(max-width:640px){
  header.top .back{font-size:12.5px}
  header.top>span{gap:12px!important}
- header.top .back[href="/intel.html"]{display:none}
+ header.top .back[href^="/intel"]{display:none}
  .hero{padding:22px 0 18px}
  .hero .eyebrow,.hero .lede,.status-line{display:none}
  h1{font-size:28px}
@@ -290,7 +290,7 @@ footer .fnote{font-size:11px;color:var(--muted);max-width:62ch;line-height:1.7}
 <script>
 (function(){
   var C=window.PEG_CONFIG||{};var U=C.SUPABASE_URL||'https://trdwsssouhpawhfdkfqf.supabase.co',K=C.SUPABASE_ANON||'sb_publishable_hrR8wI6hM921mnxk7bBE_A_YKxWsoBI';
-  function cnt(t){return fetch(U+'/rest/v1/'+t+'?select=*',{method:'HEAD',headers:{apikey:K,Authorization:'Bearer '+K,Prefer:'count=exact',Range:'0-0'}}).then(function(r){var m=(r.headers.get('content-range')||'').split('/')[1];return parseInt(m,10)||0}).catch(function(){return 0})}
+  function cnt(t){return fetch(U+'/rest/v1/'+t+'?select=*',{method:'HEAD',headers:{apikey:K,Prefer:'count=exact',Range:'0-0'}}).then(function(r){var m=(r.headers.get('content-range')||'').split('/')[1];return parseInt(m,10)||0}).catch(function(){return 0})}
   window.__pegCounts=Promise.all(['public_lender_programs','public_business_directory','public_ai_startups','public_ai_investors'].map(cnt)).then(function(a){return{programs:a[0],biz:a[1],ai:a[2],inv:a[3]}});
 })();
 </script>
