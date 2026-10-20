@@ -21,19 +21,22 @@
 <script src="/js/pegasus-pages.js"></script>
 <script src="/js/access/access-validate.js"></script>
 <div class="auth-wrap"><div class="auth-card">
-  <div class="auth-head"><div class="auth-mark"><img src="/assets/brand/pegasus-symbol.svg" alt="Pegasus" style="width:32px;height:32px;object-fit:contain"></div><div class="auth-title">Build your presence</div><div class="auth-sub">STEP INTO PEGASUS</div></div>
+  <div class="auth-head"><div class="auth-mark"><img src="/assets/brand/pegasus-symbol.svg" alt="Pegasus" style="width:32px;height:32px;object-fit:contain"></div><div class="auth-title">Create your free account</div><div class="auth-sub">Join Pegasus in under a minute</div></div>
   <div class="auth-body" id="signup-form">
     <button class="btn btn-ghost" id="goGoogle" style="width:100%;justify-content:center;gap:10px;margin-bottom:14px" onclick="doGoogleSignup()"><svg width="18" height="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg"><path fill="#4285F4" d="M17.64 9.205c0-.639-.057-1.252-.164-1.841H9v3.481h4.844a4.14 4.14 0 0 1-1.796 2.716v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.614z"/><path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z"/><path fill="#FBBC05" d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z"/><path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"/></svg><span>Continue with Google</span></button>    <div class="divider" style="margin:14px 0 16px">OR USE EMAIL</div>
-    <div class="field"><label class="label" for="nm">What should the ecosystem call you?</label><input class="input" id="nm" maxlength="80" placeholder="Jordan Maxwell"></div>
-    <div class="row2"><div class="field"><label class="label" for="em">Where should Pegasus reach you?</label><input class="input" id="em" maxlength="120" placeholder="you@firm.com"></div>
-    <div class="field"><label class="label" for="role">How would you like to participate?</label><select class="input" id="role" onchange="onRoleChange()"><option value="borrower">Growth Partner</option><option value="lender">Lender</option><option value="broker">Broker</option><option value="agent">Real Estate Professional</option><option value="investor">Capital Partner</option><option value="developer">Developer</option><option value="rwa_partner">RWA Partner</option><option value="business_funding_provider">Business Funding Provider</option><option value="ecosystem_member">Ecosystem Member</option></select></div></div>
+    <div class="field"><label class="label" for="nm">Your name</label><input class="input" id="nm" maxlength="80" placeholder="Jordan Maxwell"></div>
+    <div class="field"><label class="label" for="em">Email</label><input class="input" id="em" maxlength="120" placeholder="you@email.com"></div>
+    <div class="field"><label class="label" for="pw">Create a password</label><div class="pw-wrap"><input class="input" type="password" id="pw" placeholder="At least 8 characters"><button class="pw-toggle" type="button" aria-label="Show password" title="Show password">👁</button></div></div>
+    <details id="moreFields" style="margin:0 0 12px"><summary style="cursor:pointer;font-size:12.5px;color:var(--blue);list-style:none;user-select:none">+ Add your role &amp; focus <span style="color:var(--text3)">· optional, you can do this later</span></summary>
+    <div style="margin-top:12px">
+    <div class="field"><label class="label" for="role">How would you like to participate?</label><select class="input" id="role" onchange="onRoleChange()"><option value="ecosystem_member">Ecosystem Member</option><option value="borrower">Growth Partner</option><option value="lender">Lender</option><option value="broker">Broker</option><option value="agent">Real Estate Professional</option><option value="investor">Capital Partner</option><option value="developer">Developer</option><option value="rwa_partner">RWA Partner</option><option value="business_funding_provider">Business Funding Provider</option></select></div>
     <div id="role-hint" style="display:none;font-size:11px;color:var(--text3);line-height:1.5;margin:-4px 0 10px">Choose Ecosystem Member if you're part of the Pegasus network but don't fit a traditional capital, lending, real estate, or founder role — advisors, creatives, marketers, educators, strategists, wellness professionals, technology partners, and other contributors.</div>
-    <div class="field"><label class="label" for="focus">Your one-line focus <span style="color:var(--text3);font-weight:400">· so the right people understand you</span></label><input class="input" id="focus" maxlength="160" placeholder="e.g. Bridge lending for value-add multifamily in the Southeast"></div>
-    <div class="field"><label class="label" for="loc">Primary market / location <span style="color:var(--text3);font-weight:400">· optional</span></label><input class="input" id="loc" maxlength="120" placeholder="e.g. Miami, FL · Southeast US"></div>
-    <div class="field"><label class="label" for="pw">Secure your access</label><div class="pw-wrap"><input class="input" type="password" id="pw" placeholder="Choose something secure"><button class="pw-toggle" type="button" aria-label="Show password" title="Show password">👁</button></div></div>
-    <div class="field"><label class="label" for="ac">Invitation / Access Code <span style="color:var(--text3);font-weight:400">· optional</span></label><input class="input" id="ac" maxlength="40" placeholder="Enter your Pegasus invitation" style="text-transform:uppercase" autocomplete="off"><div id="ac-preview" style="font-size:11px;font-family:var(--mono);min-height:14px;margin-top:6px"></div></div>
+    <div class="field"><label class="label" for="focus">Your one-line focus</label><input class="input" id="focus" maxlength="160" placeholder="e.g. Bridge lending for value-add multifamily in the Southeast"></div>
+    <div class="field"><label class="label" for="loc">Primary market / location</label><input class="input" id="loc" maxlength="120" placeholder="e.g. Miami, FL · Southeast US"></div>
+    <div class="field"><label class="label" for="ac">Invitation / Access Code</label><input class="input" id="ac" maxlength="40" placeholder="Enter your Pegasus invitation" style="text-transform:uppercase" autocomplete="off"><div id="ac-preview" style="font-size:11px;font-family:var(--mono);min-height:14px;margin-top:6px"></div></div>
+    </div></details>
     <div id="err" style="color:var(--red);font-size:11px;font-family:var(--mono);min-height:14px;margin-bottom:10px"></div>
-    <button class="btn btn-pri" id="go" style="width:100%;justify-content:center" onclick="doSignup()">Enter the Ecosystem →</button>
+    <button class="btn btn-pri" id="go" style="width:100%;justify-content:center" onclick="doSignup()">Create account →</button>
     <div class="auth-alt">By continuing you agree to the <a href="/terms.html">Terms</a> &amp; <a href="/privacy.html">Privacy</a>.</div>
     <div class="auth-alt">Already a member? <a href="/signin.html">Sign in</a></div>
   </div>
@@ -143,7 +146,7 @@ async function doSignup(){
     var sf=document.getElementById('signup-form'); if(sf) sf.style.display='none';
     var ce=document.getElementById('check-email'); if(ce) ce.style.display='block';
   }catch(e){
-    btn.disabled=false; btn.textContent='Enter the Ecosystem →';
+    btn.disabled=false; btn.textContent='Create account →';
     err.textContent=(e&&e.message)||'Signup failed. Check your connection and try again.';
   }
 }
