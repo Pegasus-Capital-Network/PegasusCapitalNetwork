@@ -23,36 +23,36 @@ function serviceKey(): string {
 function system(langName: string) {
   return `You translate the user interface of Pegasus Capital Network, a professional marketplace for real estate lending, private credit, investors, mortgage and AI companies, from English into ${langName}.
 Rules:
-- Return ONLY a JSON array of strings, same length and order as the input array. No commentary.
+- Return ONLY a JSON object with exactly the same keys as the input object; each value is the translation of the input value. No commentary.
 - Keep tokens like {1}, {2} exactly as they are, in a natural position.
 - Never translate brand names: Pegasus, Pegasus Capital Network, Pegasus AI, Pegasus Private Network, Pegasus Direct Lending, Pegasus Lenders Group LLC, West Coast Capital Mortgage.
 - Keep company names, person names, product names, URLs, email addresses and US state codes unchanged.
 - Keep standard finance acronyms in Latin letters: DSCR, LTV, LTC, ARV, FICO, NMLS, DRE, HMDA, SBA, REIT, IO, ARM.
 - Use the professional register a bank or capital-markets firm would use. Short UI labels stay short (button text, menu items).
-- If a string is already not English, or is only a name or code, return it unchanged.`;
+- If a value is already not English, or is only a name or code, return it unchanged.`;
 }
 
-async function translate(key: string, model: string, langName: string, items: string[]): Promise<string[] | null> {
+async function translate(key: string, model: string, langName: string, items: string[]): Promise<(string | null)[] | null> {
+  const input: Record<string, string> = {};
+  items.forEach((s, i) => { input[String(i + 1)] = s; });
   const r = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
     headers: { "x-api-key": key, "anthropic-version": "2023-06-01", "content-type": "application/json" },
-    body: JSON.stringify({ model, max_tokens: 8000, system: system(langName), messages: [{ role: "user", content: JSON.stringify(items) }] }),
+    body: JSON.stringify({ model, max_tokens: 16000, system: system(langName), messages: [{ role: "user", content: "Translate each value. Reply with a JSON object with the same keys.\n" + JSON.stringify(input) }] }),
   });
   if (!r.ok) { console.error("anthropic", r.status, (await r.text()).slice(0, 300)); return null; }
   const d = await r.json();
   const text = (d.content || []).filter((c: { type: string }) => c.type === "text").map((c: { text: string }) => c.text).join("");
-  const a = text.indexOf("["), b = text.lastIndexOf("]");
-  if (a < 0 || b <= a) return null;
-  try {
-    const arr = JSON.parse(text.slice(a, b + 1));
-    if (!Array.isArray(arr) || arr.length !== items.length) return null;
-    return arr.map((x: unknown, i: number) => {
-      const s = typeof x === "string" && x.trim() ? x : items[i];
-      // placeholders must survive
-      const need = items[i].match(/\{\d+\}/g) || [];
-      return need.every((t) => s.includes(t)) ? s : items[i];
-    });
-  } catch { return null; }
+  const a = text.indexOf("{"), b = text.lastIndexOf("}");
+  if (a < 0 || b <= a) { console.error("i18n parse: no object", langName, d.stop_reason); return null; }
+  let obj: Record<string, unknown>;
+  try { obj = JSON.parse(text.slice(a, b + 1)); } catch { console.error("i18n parse: bad json", langName, d.stop_reason); return null; }
+  return items.map((src, i) => {
+    const v = obj[String(i + 1)];
+    if (typeof v !== "string" || !v.trim()) return null;
+    const need = src.match(/\{\d+\}/g) || [];
+    return need.every((t) => v.includes(t)) ? v : null;
+  });
 }
 
 Deno.serve(async (req: Request) => {
@@ -81,12 +81,13 @@ Deno.serve(async (req: Request) => {
             const { data: have } = await sb.from("i18n_strings").select("src").eq("lang", lang).in("src", srcs);
             const done = new Set((have || []).map((r) => r.src));
             const todo = srcs.filter((s) => !done.has(s));
-            for (let i = 0; i < todo.length; i += 60) {
-              const chunk = todo.slice(i, i + 60);
+            for (let i = 0; i < todo.length; i += 30) {
+              const chunk = todo.slice(i, i + 30);
               let out = await translate(key, model, langName, chunk);
               if (!out) out = await translate(key, model, langName, chunk);
               if (!out) continue;
-              const rows = chunk.map((s, k) => ({ lang, src: s, tr: out![k] }));
+              const rows = chunk.map((s, k) => ({ lang, src: s, tr: out![k] })).filter((r) => r.tr) as { lang: string; src: string; tr: string }[];
+              if (!rows.length) continue;
               const { error } = await sb.from("i18n_strings").upsert(rows, { onConflict: "lang,src" });
               if (error) console.error("upsert", lang, error.message); else translated += rows.length;
             }
