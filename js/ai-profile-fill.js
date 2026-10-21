@@ -61,6 +61,11 @@
     '.paf-btn.gold{background:#9a7b3f}.paf-btn.ghost{background:#fff;color:#1b3a5b;border:1px solid #d7dde4;flex:0 0 auto}' +
     '.paf-btn[disabled]{opacity:.55;cursor:default}' +
     '.paf-err{color:#b42318;font-size:12.5px;margin-top:8px;min-height:1em}' +
+    '.paf-go{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;border:0;border-radius:14px;padding:16px;font:inherit;font-size:16px;font-weight:700;color:#fff;cursor:pointer;background:linear-gradient(135deg,#0e1e36,#1b3a5b 60%,#9a7b3f);box-shadow:0 8px 22px rgba(14,30,54,.25)}' +
+    '.paf-go[disabled]{opacity:.7;cursor:default}' +
+    '.paf-load{text-align:center;padding:26px 6px 10px}.paf-load b{display:block;font-size:16px;margin-top:14px}.paf-load span{display:block;font-size:13px;color:#5b6573;margin-top:6px;min-height:1.3em}' +
+    '.paf-spin{width:44px;height:44px;margin:0 auto;border-radius:50%;border:3px solid #e3e8ee;border-top-color:#9a7b3f;animation:pafSpin 1s linear infinite}@keyframes pafSpin{to{transform:rotate(360deg)}}' +
+    '.paf-alt{display:block;margin:16px auto 0;background:none;border:0;color:#5b6573;font:inherit;font-size:12.5px;text-decoration:underline;cursor:pointer}' +
     '@media(max-width:640px){.paf-scrim{padding:0;align-items:flex-end}.paf{max-width:none;border-radius:18px 18px 0 0;max-height:92vh}}';
 
   function ensureCss(){
@@ -110,7 +115,7 @@
     var old = document.getElementById('pafScrim'); if (old) old.remove();
     var scrim = document.createElement('div'); scrim.className = 'paf-scrim'; scrim.id = 'pafScrim';
     scrim.innerHTML = '<div class="paf" role="dialog" aria-modal="true" aria-label="Fill my profile with my AI">' +
-      '<div class="paf-h"><b>✦ Let your AI fill your profile</b><span>Your assistant already knows you. You check everything before it’s saved.</span>' +
+      '<div class="paf-h"><b>✦ Let AI fill your profile</b><span>It finds you online and writes it. You check everything before it’s saved.</span>' +
       '<button class="paf-x" type="button" aria-label="Close">×</button></div><div class="paf-b" id="pafBody"></div></div>';
     document.body.appendChild(scrim);
     function close(){ scrim.remove(); document.removeEventListener('keydown', onKey); }
@@ -123,8 +128,50 @@
 
     function steps(n){ return '<div class="paf-steps">' + [1,2,3].map(function(i){ return '<i' + (i<=n?' class="on"':'') + '></i>'; }).join('') + '</div>'; }
 
-    function step1(){
+    async function draftNow(hint){
+      body.innerHTML = '<div class="paf-load"><div class="paf-spin"></div><b>Writing your profile…</b><span id="pafMsg">Looking you up</span></div>';
+      var msgs = ['Looking you up','Checking your company','Reading your website','Writing your headline','Writing your bio','Almost done'], mi = 0;
+      var tick = setInterval(function(){ mi = Math.min(mi+1, msgs.length-1); var m = body.querySelector('#pafMsg'); if (m) m.textContent = msgs[mi]; }, 6000);
+      var res = null;
+      try {
+        var sb = window.PegSB && (await window.PegSB.ready);
+        var ses = sb && (await sb.auth.getSession());
+        var tok = ses && ses.data && ses.data.session && ses.data.session.access_token;
+        var C = window.PEG_CONFIG || {};
+        if (!tok) throw new Error('auth');
+        var ctl = window.AbortController ? new AbortController() : null;
+        var to = setTimeout(function(){ try{ ctl && ctl.abort(); }catch(e){} }, 140000);
+        var r = await fetch((C.SUPABASE_URL||'') + '/functions/v1/profile-ai-draft', {
+          method: 'POST', signal: ctl ? ctl.signal : undefined,
+          headers: { 'Content-Type':'application/json', 'Authorization':'Bearer ' + tok, 'apikey': C.SUPABASE_ANON || '' },
+          body: JSON.stringify({ hint: hint || '' })
+        });
+        clearTimeout(to);
+        res = await r.json();
+      } catch(e){ res = { ok:false, code:'error' }; }
+      clearInterval(tick);
+      if (!document.body.contains(scrim)) return;
+      if (res && res.ok && res.draft){ step3(res.draft); return; }
+      if (res && res.code === 'need_hint'){ step1('Tell us your name and company, or paste your LinkedIn or website, so the AI can find you.'); return; }
+      if (res && res.code === 'no_key'){ own1('Our AI isn’t switched on yet. Use your own assistant for now, it takes a minute.'); return; }
+      step1((res && res.message) || 'Couldn’t write it this time. Try again, or add your LinkedIn or website below.');
+    }
+
+    function step1(note){
+      body.innerHTML =
+        '<button class="paf-go" id="pafGo" type="button">✦ Write my profile</button>' +
+        '<div class="paf-row" style="margin-top:14px"><label>Help it find you (optional)</label>' +
+        '<input class="paf-in" id="pafHint" maxlength="600" placeholder="LinkedIn, website, or one line about you"></div>' +
+        '<div class="paf-err" id="pafErr">' + esc(note||'') + '</div>' +
+        '<button class="paf-alt" id="pafOwn" type="button">Prefer your own ChatGPT or Claude?</button>';
+      body.querySelector('#pafGo').onclick = function(){ draftNow((body.querySelector('#pafHint').value||'').trim()); };
+      body.querySelector('#pafOwn').onclick = function(){ own1(); };
+      if (note) setTimeout(function(){ try{ body.querySelector('#pafHint').focus(); }catch(e){} }, 50);
+    }
+
+    function own1(note){
       body.innerHTML = steps(1) +
+        (note ? '<div class="paf-err" style="margin:0 0 10px">' + esc(note) + '</div>' : '') +
         '<div style="font-size:15px;font-weight:700;margin-bottom:10px">1. Open your AI</div>' +
         '<div class="paf-ais">' +
           '<a class="paf-ai" data-ai href="https://chatgpt.com/?q=' + enc + '" target="_blank" rel="noopener"><em>◎</em>ChatGPT</a>' +
@@ -146,7 +193,7 @@
         '<div class="paf-err" id="pafErr"></div>' +
         '<div class="paf-act"><button class="paf-btn ghost" id="pafBack" type="button">← Back</button><button class="paf-btn" id="pafRead" type="button">Show my profile →</button></div>';
       var ta = body.querySelector('#pafTa');
-      body.querySelector('#pafBack').onclick = step1;
+      body.querySelector('#pafBack').onclick = function(){ own1(); };
       function go(){
         var d = parse(ta.value);
         if (!d){ body.querySelector('#pafErr').textContent = 'That doesn’t look like the answer yet. Copy the whole reply from your AI, including the { } part.'; return; }
@@ -171,12 +218,12 @@
           : '<input class="'+cls+'" data-k="'+f[0]+'" maxlength="'+f[2]+'" value="'+esc(v)+'">';
         return '<div class="paf-row"><label>'+esc(f[1])+'</label>'+input+'</div>';
       }).join('');
-      body.innerHTML = steps(3) +
-        '<div style="font-size:15px;font-weight:700;margin-bottom:4px">3. Check it and confirm</div>' +
+      body.innerHTML =
+        '<div style="font-size:15px;font-weight:700;margin-bottom:4px">Check it and confirm</div>' +
         '<p class="paf-note" style="margin:0 0 12px">Change anything that isn’t right. Empty fields stay as they are.</p>' + rows +
         '<div class="paf-err" id="pafErr"></div>' +
         '<div class="paf-act"><button class="paf-btn ghost" id="pafBack" type="button">← Back</button><button class="paf-btn gold" id="pafSave" type="button">' + (opts.mode==='form'?'Use this in my profile':'Yes, save my profile') + '</button></div>';
-      body.querySelector('#pafBack').onclick = step2;
+      body.querySelector('#pafBack').onclick = function(){ step1(); };
       body.querySelector('#pafSave').onclick = async function(){
         var btn = this, err = body.querySelector('#pafErr');
         var out = {};

@@ -213,7 +213,7 @@
 <script src="/js/pegasus-billing.js"></script>
 <script src="/js/pegasus-pages.js"></script>
 <script src="/js/pegasus-invite.js"></script>
-<script src="/js/ai-profile-fill.js?v=20261020b"></script>
+<script src="/js/ai-profile-fill.js?v=20261020c"></script>
 <script>
 Pegasus.boot(async function(){
   Pegasus.mountPublic('Feed');
@@ -644,6 +644,9 @@ Pegasus.boot(async function(){
         renderMe(); renderComposer(); renderNudge(); before=null; exhausted=false; loadFeed(true);
       }});
     }; });
+  }
+  if(MY_UID&&sb&&(!ME||ME.id!==MY_UID||!ME.full_name)){
+    try{ var mr=await sb.from('profiles').select('*').eq('id',MY_UID).maybeSingle(); if(mr&&mr.data){ ME=Object.assign(ME||{},mr.data); } }catch(e){}
   }
   if(MY_UID&&sb){
     try{
