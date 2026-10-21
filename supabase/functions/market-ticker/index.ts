@@ -3,7 +3,7 @@
 // Called every 15 minutes by pg_cron / pg_net with header x-job-token (app_job_tokens name='ticker').
 // Sources (all public): CoinGecko (crypto, gold via PAXG), open.er-api.com (FX),
 // U.S. Treasury daily yield curve (2Y/10Y), New York Fed (SOFR, EFFR, target range → Prime),
-// FRED when FRED_API_KEY is set (30Y/15Y mortgage, S&P 500, WTI oil), and Pegasus's own counts.
+// Freddie Mac PMMS (30Y/15Y mortgage), FRED when FRED_API_KEY is set (S&P 500, WTI oil), and Pegasus's own counts.
 // A failed source leaves its previous rows untouched; the browser hides rows that are too old.
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
@@ -83,10 +83,27 @@ async function nyfed() {
   }
 }
 
+async function freddie() {
+  // Freddie Mac Primary Mortgage Market Survey, weekly (Thursdays), public CSV
+  const r = await fetch("https://www.freddiemac.com/pmms/docs/PMMS_history.csv", { signal: AbortSignal.timeout(20000), headers: { "user-agent": "PegasusCapitalNetwork/1.0" } });
+  if (!r.ok) throw new Error("freddie " + r.status);
+  const lines = (await r.text()).trim().split(/\r?\n/).slice(1).map((l) => l.split(","));
+  const ok = lines.filter((c) => num(c[1]) != null);
+  const cur = ok[ok.length - 1], prev = ok[ok.length - 2];
+  if (!cur) throw new Error("freddie: empty");
+  const [m, d, y] = cur[0].split("/");
+  const asOf = `${y}-${m.padStart(2, "0")}-${d.padStart(2, "0")}T16:00:00Z`;
+  const add = (symbol: string, label: string, col: number, sort: number) => {
+    const v = num(cur[col]); if (v == null) return;
+    const p = prev ? num(prev[col]) : null;
+    rows.push({ symbol, label, value: v, change: p != null ? +(v - p).toFixed(3) : null, fmt: "pct", grp: "mortgage", sort, as_of: asOf, source: "Freddie Mac PMMS (weekly)" });
+  };
+  add("MTG30", "30Y Mortgage", 1, 20);
+  add("MTG15", "15Y Mortgage", 3, 21);
+}
+
 async function fred(key: string) {
   const series: [string, string, string, string, number][] = [
-    ["MORTGAGE30US", "MTG30", "30Y Mortgage", "mortgage", 20],
-    ["MORTGAGE15US", "MTG15", "15Y Mortgage", "mortgage", 21],
     ["SP500", "SPX", "S&P 500", "market", 70],
     ["DCOILWTICO", "WTI", "WTI Oil", "market", 71],
   ];
@@ -130,6 +147,7 @@ Deno.serve(async (req: Request) => {
       step("fx", fx),
       step("treasury", treasury),
       step("nyfed", nyfed),
+      step("freddie", freddie),
       step("pegasus", () => pegasus(sb)),
       (async () => { const k = Deno.env.get("FRED_API_KEY"); if (k) await fred(k.trim()); })(),
     ]);
