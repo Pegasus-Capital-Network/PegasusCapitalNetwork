@@ -37,15 +37,17 @@
   var html = document.documentElement;
 
   /* ── switcher ── */
-  var CSS = '.peg-lang{position:fixed;left:14px;bottom:14px;z-index:1150;font-family:Inter,-apple-system,Segoe UI,Roboto,Arial,sans-serif}' +
-    '.peg-lang>button{display:inline-flex;align-items:center;gap:6px;border:1px solid rgba(14,24,36,.14);background:rgba(255,255,255,.96);backdrop-filter:blur(6px);border-radius:999px;padding:7px 11px;font:600 12.5px/1 inherit;color:#1b3a5b;cursor:pointer;box-shadow:0 4px 14px rgba(14,24,36,.12)}' +
-    '.peg-lang>button svg{width:15px;height:15px}' +
-    '.peg-lang-m{position:absolute;left:0;bottom:calc(100% + 8px);background:#fff;border:1px solid #e6e9ed;border-radius:12px;box-shadow:0 16px 40px rgba(14,24,36,.18);padding:6px;min-width:190px;display:none}' +
+  var CSS = '.peg-lang{position:relative;flex:0 0 auto;margin-left:auto;margin-right:10px;z-index:260;font-family:Inter,-apple-system,Segoe UI,Roboto,Arial,sans-serif}' +
+    '.peg-lang.fx{position:fixed;right:14px;top:12px;margin:0;z-index:1150}' +
+    '.pub-nav .pub-links{margin-left:auto}.tb-right .peg-lang{margin:0}' +
+    '.peg-lang>button{display:inline-flex;align-items:center;gap:5px;height:34px;border:1px solid rgba(14,24,36,.16);background:rgba(255,255,255,.96);border-radius:999px;padding:0 11px;font:600 12.5px/1 Inter,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:#1b3a5b;cursor:pointer;white-space:nowrap}' +
+    '.peg-lang>button:hover{border-color:#1b3a5b}.peg-lang>button svg{width:15px;height:15px}.peg-lang>button i{font-style:normal;font-size:9px;opacity:.6}' +
+    '.peg-lang-m{position:absolute;right:0;top:calc(100% + 8px);background:#fff;border:1px solid #e6e9ed;border-radius:12px;box-shadow:0 16px 40px rgba(14,24,36,.18);padding:6px;min-width:190px;display:none;text-align:left}' +
     '.peg-lang.open .peg-lang-m{display:block}' +
     '.peg-lang-m a{display:flex;justify-content:space-between;gap:12px;padding:9px 11px;border-radius:8px;color:#0e1824;text-decoration:none;font-size:14px}' +
     '.peg-lang-m a:hover{background:#f3f5f8}.peg-lang-m a.on{font-weight:700;color:#1b3a5b}.peg-lang-m a small{color:#8a94a1;font-size:11px;text-transform:uppercase}' +
     '.peg-lang-m p{font-size:11px;color:#8a94a1;padding:6px 11px 4px;line-height:1.4;max-width:220px}' +
-    'html[dir=rtl] .peg-lang{left:auto;right:14px}html[dir=rtl] .peg-lang-m{left:auto;right:0}' +
+    'html[dir=rtl] .peg-lang{margin-left:10px;margin-right:auto}html[dir=rtl] .pub-nav .pub-links{margin-left:0;margin-right:auto}html[dir=rtl] .peg-lang.fx{right:auto;left:14px}html[dir=rtl] .peg-lang-m{right:auto;left:0;text-align:right}' +
     'html[dir=rtl] body{text-align:right}' +
     'html.peg-i18n-wait body{opacity:0}html body{transition:opacity .15s}';
   var st = document.createElement('style'); st.textContent = CSS; (document.head || html).appendChild(st);
@@ -64,12 +66,31 @@
       var u = (l[0] === 'en' ? REST : '/' + l[0] + (REST === '/' ? '' : REST)) + (sp ? '?' + sp : '') + location.hash;
       return '<a href="' + u + '" data-l="' + l[0] + '"' + (l[0] === lang ? ' class="on"' : '') + '><span>' + l[1] + '</span><small>' + l[0] + '</small></a>';
     }).join('');
-    w.innerHTML = '<button type="button" aria-haspopup="true" aria-label="Language"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.7 3.8 5.7 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-5.7-3.8-9S9.5 5.7 12 3z"/></svg>' + cur[0].toUpperCase() + '</button>' +
+    w.innerHTML = '<button type="button" aria-haspopup="true" aria-label="Language" title="Language"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.7 3.8 5.7 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-5.7-3.8-9S9.5 5.7 12 3z"/></svg>' + cur[0].toUpperCase() + '<i>\u25BE</i></button>' +
       '<div class="peg-lang-m">' + items + (lang !== 'en' ? '<p>Automatic translation. The English version governs.</p>' : '') + '</div>';
     w.querySelector('button').onclick = function(e){ e.stopPropagation(); w.classList.toggle('open'); };
     w.querySelectorAll('a').forEach(function(a){ a.addEventListener('click', function(){ store('peg_lang', a.getAttribute('data-l')); }); });
     document.addEventListener('click', function(e){ if (!w.contains(e.target)) w.classList.remove('open'); });
-    document.body.appendChild(w);
+    place(w);
+    var tries = 0, iv = setInterval(function(){ if (++tries > 40) clearInterval(iv); if (!document.contains(w) || w.classList.contains('fx')) place(w); }, 500);
+  }
+  // Put the switcher in the page header, next to Sign in / the account menu.
+  function place(w){
+    var t = document.querySelector('.tb-right');
+    if (t) { if (w.parentNode !== t) t.insertBefore(w, t.firstChild); w.classList.remove('fx'); return; }
+    var nav = document.querySelector('.pub-nav');
+    if (nav) {
+      var ref = nav.querySelector(':scope > .nav-cta') || nav.querySelector(':scope > .mob-menu-btn');
+      if (w.parentNode !== nav) nav.insertBefore(w, ref || null); w.classList.remove('fx'); return;
+    }
+    var row = null, sels = ['header.top .top-in', 'body > header .wrap', '.hero .top', 'header.top', 'body > header'];
+    for (var i = 0; i < sels.length && !row; i++) row = document.querySelector(sels[i]);
+    if (row && row.lastElementChild && row.lastElementChild !== w) {
+      var last = row.lastElementChild; if (last === w) return;
+      row.insertBefore(w, last); w.classList.remove('fx'); return;
+    }
+    if (row && w.parentNode === row) return;
+    if (!document.contains(w)) { w.classList.add('fx'); document.body.appendChild(w); }
   }
 
   function ready(fn){ if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fn); else fn(); }
