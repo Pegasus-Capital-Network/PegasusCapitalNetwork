@@ -197,9 +197,9 @@
     });
   }
 
-  var ck = 'peg_i18n_' + lang, cached = null;
+  var ck = 'peg_i18n2_' + lang, cached = null;
   try{ cached = JSON.parse(store(ck) || 'null'); }catch(e){ cached = null; }
-  var fresh = cached && cached.t && (Date.now() - cached.t < 30 * 60 * 1000);
+  var fresh = cached && cached.t && (Date.now() - cached.t < 10 * 60 * 1000);
   if (cached && cached.d) start(cached.d);
   if (!fresh) {
     var bucket = Math.floor(Date.now() / (10 * 60 * 1000));

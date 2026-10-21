@@ -108,7 +108,7 @@ Deno.serve(async (req: Request) => {
       const dict: Record<string, string> = {};
       let from = 0;
       for (;;) {
-        const { data } = await sb.from("i18n_strings").select("src,tr").eq("lang", lang).range(from, from + 999);
+        const { data } = await sb.from("i18n_strings").select("src,tr").eq("lang", lang).order("src", { ascending: true }).range(from, from + 999);
         if (!data || !data.length) break;
         data.forEach((r) => { if (r.tr && r.tr !== r.src) dict[r.src] = r.tr; });
         if (data.length < 1000) break;
