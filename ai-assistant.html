@@ -55,78 +55,16 @@ Pegasus.boot(async (st) => {
       '<div class="ca-ctx" id="ca-ctx">Loading network data…</div>' +
     '</div>';
 
-  /* ── Fetch real context from Supabase ─────────────────────────── */
-  var networkContext = { profiles:[], lenders:[], sessions:[] };
-  try {
-    var sb = await window.PegSB.ready;
-
-    /* Public member profiles */
-    var pr = await sb.from('member_directory')
-      .select('full_name, role, profile_slug, id, location, headline')
-      .not('full_name','is',null)
-      .limit(100);
-    networkContext.profiles = pr.data || [];
-
-    /* Public lender profiles */
-    var lr = await sb.from('lender_profiles')
-      .select('loan_types, min_loan_amount, max_loan_amount, states_served, profiles(full_name, id)')
-      .eq('is_public', true)
-      .limit(30);
-    networkContext.lenders = lr.data || [];
-
-    /* Upcoming sessions */
-    var sr = await sb.from('webinar_library')
-      .select('title, webinar_date, topic, speaker_name, description')
-      .eq('status','published')
-      .order('webinar_date',{ascending:true})
-      .limit(8);
-    networkContext.sessions = sr.data || [];
-
-    var totalCtx = networkContext.profiles.length + networkContext.lenders.length;
-    document.getElementById('ca-ctx').textContent =
-      totalCtx + ' network members loaded · ' + networkContext.sessions.length + ' upcoming sessions · Informational only — not financial advice';
-  } catch(e) {
-    document.getElementById('ca-ctx').textContent = 'Network data unavailable — answering from general knowledge';
-  }
-
-  /* ── Conversation history ─────────────────────────────────────── */
+  /* Network context is built on the server (ask-pegasus edge function). */
   var history = [];
-
-  /* ── Build system prompt with real data ───────────────────────── */
-  function buildSystem() {
-    var members = (networkContext.profiles || []).map(function(p){
-      var link = p.profile_slug ? '/u/'+p.profile_slug : '/public-profile.html?id='+p.id;
-      return '- '+p.full_name+' | '+(p.role||'member')+' | '+(p.location||'')+' | '+(p.headline||'')+' | '+link;
-    }).join('\n') || 'No profiles yet.';
-
-    var lenders = (networkContext.lenders || []).map(function(l){
-      var name = (l.profiles && l.profiles.full_name) || 'Lender';
-      var types = (l.loan_types||[]).join(', ') || 'various';
-      var range = l.min_loan_amount&&l.max_loan_amount ? '$'+l.min_loan_amount.toLocaleString()+'-$'+l.max_loan_amount.toLocaleString() : '';
-      var states = (l.states_served||[]).slice(0,5).join(', ');
-      return '- '+name+' | '+types+' | '+range+' | '+states;
-    }).join('\n') || 'No lender profiles yet.';
-
-    var sessions = (networkContext.sessions || []).map(function(s){
-      var d = s.webinar_date ? new Date(s.webinar_date).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : 'TBD';
-      return '- "'+s.title+'" | '+d+' | '+(s.speaker_name||'TBD');
-    }).join('\n') || 'No upcoming sessions.';
-
-    return 'You are the Pegasus Capital Network AI Assistant — helping capital markets professionals find the right people, deals, and opportunities.\n\n' +
-      'LIVE NETWORK DATA ('+new Date().toLocaleDateString()+'):\n\n' +
-      'MEMBERS ('+networkContext.profiles.length+'):\n'+members+'\n\n' +
-      'LENDER PROFILES ('+networkContext.lenders.length+'):\n'+lenders+'\n\n' +
-      'UPCOMING SESSIONS ('+networkContext.sessions.length+'):\n'+sessions+'\n\n' +
-      'YOUR ROLE:\n' +
-      '- Find and recommend real members by name when they match the request\n' +
-      '- Include the profile link when recommending someone (e.g. "Profile: /u/john-smith")\n' +
-      '- Be specific and actionable — name 2-4 matches, not generic advice\n' +
-      '- If no exact match exists, recommend posting at /network-requests.html\n' +
-      '- For sessions, mention the title and date\n\n' +
-      'FORMAT: concise (under 180 words), bullet points for multiple people, end with one clear next step.\n\n' +
-      'PLATFORM LINKS: Deal Rooms → /deal-rooms.html | Match Engine → /match-engine.html | Members → /members.html | Network Requests → /network-requests.html\n\n' +
-      'COMPLIANCE: Pegasus is not a lender, broker, or investment advisor. All recommendations are informational only.';
-  }
+  (async function(){
+    try{
+      var sb = await window.PegSB.ready;
+      var r = await sb.from('member_directory').select('id',{count:'exact',head:true});
+      var g = await sb.from('public_lender_programs').select('id',{count:'exact',head:true});
+      document.getElementById('ca-ctx').textContent = (r.count||0)+' members · '+(g.count||0)+' lending programs · Informational only, not financial advice';
+    }catch(e){ document.getElementById('ca-ctx').textContent = 'Informational only, not financial advice'; }
+  })();
 
   /* ── Render a chat bubble ─────────────────────────────────────── */
   function bubble(role, text) {
@@ -163,32 +101,32 @@ Pegasus.boot(async (st) => {
     var thinking = bubble('thinking', 'Searching the network…');
 
     try {
-      var resp = await fetch('https://broken-bar-9fe5.crdpartners2020.workers.dev', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          model: 'claude-sonnet-4-5',
-          max_tokens: 1024,
-          system: buildSystem(),
-          messages: history,
-          site: 'pegasus'
-        })
-      });
-
-      var raw = await resp.text();
-      var parsed = JSON.parse(raw);
-      var reply = (parsed.content && parsed.content[0] && parsed.content[0].text) || 'No response received.';
-
-      thinking.remove();
-      bubble('ai', reply);
-      history.push({ role:'assistant', content:reply });
-
-      /* Keep history to last 10 messages to avoid token overflow */
-      if (history.length > 10) history = history.slice(-10);
-
+      var sb = await window.PegSB.ready;
+      var ses = await sb.auth.getSession();
+      var tok = ses && ses.data && ses.data.session && ses.data.session.access_token;
+      if (!tok) {
+        thinking.remove();
+        bubble('ai', 'Sign in to use the assistant. It’s free: /signin.html');
+        history.pop();
+      } else {
+        var C = window.PEG_CONFIG || {};
+        var resp = await fetch((C.SUPABASE_URL||'') + '/functions/v1/ask-pegasus', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + tok, 'apikey': C.SUPABASE_ANON || '' },
+          body: JSON.stringify({ messages: history })
+        });
+        var parsed = await resp.json().catch(function(){ return {}; });
+        var reply = parsed.reply || 'No response received.';
+        thinking.remove();
+        bubble('ai', reply);
+        if (parsed.ok) { history.push({ role:'assistant', content:reply }); }
+        else { history.pop(); }
+        if (history.length > 10) history = history.slice(-10);
+      }
     } catch(e) {
       thinking.remove();
-      bubble('ai', 'Network error — please try again. If this persists, the assistant may be temporarily unavailable.');
+      history.pop();
+      bubble('ai', 'Network error. Please try again in a moment.');
     }
 
     inp.disabled = false; btn.disabled = false; btn.textContent = 'Ask →';
