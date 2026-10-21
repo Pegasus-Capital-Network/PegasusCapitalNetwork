@@ -6,7 +6,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <meta name="description" content="Browse capital, real estate, and growth professionals on Pegasus. Build a connection board and send connection requests.">
-<meta name="robots" content="noindex,follow">
+<meta name="robots" content="index,follow">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=IBM+Plex+Serif:ital,wght@0,300;0,400;0,600;1,300&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/pegasus.css">
@@ -118,6 +118,42 @@
 .cb-guest{max-width:760px;margin:var(--sp-3xl) auto;text-align:center;padding:var(--sp-xl)}
 .cb-guest h2{font-family:var(--serif);font-weight:400;font-size:32px;color:var(--text);margin:0 0 12px;letter-spacing:-.015em}
 .cb-guest p{color:var(--text2);font-size:14px;line-height:1.65;margin:0 auto 24px;max-width:540px}
+
+/* ─── Public Member Directory (anonymous / logged-out browse view) ───────── */
+.md-wrap{max-width:1180px;margin:0 auto}
+.md-hero{padding:var(--sp-lg) 0 var(--sp-md);text-align:center}
+.md-eyebrow{font-size:11px;font-family:var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:10px}
+.md-h1{font-family:var(--serif);font-weight:400;font-size:clamp(28px,4vw,40px);color:var(--text);margin:0;letter-spacing:-.02em}
+.md-sub{color:var(--text2);font-size:14.5px;line-height:1.6;max-width:600px;margin:12px auto 0}
+.md-sub a{color:var(--blue);font-weight:600}
+.md-controls{display:flex;flex-direction:column;gap:12px;align-items:center;margin:var(--sp-lg) 0 10px}
+#mdq{width:100%;max-width:520px;background:var(--bg1);border:1px solid var(--border);border-radius:var(--r2);padding:12px 15px;color:var(--text);font-family:inherit;font-size:14px;outline:none;transition:border-color var(--dur-fast)}
+#mdq:focus{border-color:var(--blue)}
+.md-pills{display:flex;flex-wrap:wrap;gap:7px;justify-content:center}
+.md-pill{background:var(--bg2);border:1px solid var(--border);color:var(--text2);font-size:11.5px;font-family:var(--mono);letter-spacing:.03em;padding:6px 13px;border-radius:20px;cursor:pointer;transition:all var(--dur-fast)}
+.md-pill:hover{border-color:var(--border2);color:var(--text)}
+.md-pill.on{background:var(--blue-dim);border-color:rgba(40,120,204,.3);color:var(--blue)}
+.md-count{text-align:center;font-size:11px;font-family:var(--mono);letter-spacing:.06em;color:var(--text3);margin:4px 0 16px}
+.md-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+@media(max-width:900px){.md-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.md-grid{grid-template-columns:1fr;max-width:440px;margin:0 auto}}
+.md-card{display:flex;flex-direction:column;background:var(--bg1);border:1px solid var(--border);border-radius:var(--r3);padding:18px;box-shadow:var(--sh-card);transition:transform var(--dur-fast),border-color var(--dur-fast),box-shadow var(--dur-fast);color:inherit}
+.md-card:hover{transform:translateY(-3px);border-color:var(--border2);box-shadow:var(--sh-pop,0 14px 38px rgba(0,0,0,.14))}
+.md-card-top{display:flex;align-items:center;gap:12px}
+.md-av{width:52px;height:52px;border-radius:var(--r2);flex:none;object-fit:cover;background:var(--bg3)}
+.md-av-fallback{display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#162E52,#1D5A9E);color:#fff;font-size:17px;font-family:var(--serif)}
+.md-id{min-width:0}
+.md-nm{font-size:16px;font-weight:600;color:var(--text);letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.md-role{font-size:12px;color:var(--blue);font-weight:600;margin-top:2px}
+.md-meta{font-size:12px;color:var(--text3);margin-top:10px}
+.md-focus{font-size:12.5px;color:var(--text2);line-height:1.55;margin-top:8px;flex:1}
+.md-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:11px}
+.md-tag{font-size:10px;font-family:var(--mono);letter-spacing:.03em;padding:3px 8px;border-radius:14px;background:var(--bg2);color:var(--text3);border:1px solid var(--border)}
+.md-badge{display:inline-block;margin-top:11px;font-size:10px;font-family:var(--mono);letter-spacing:.05em;text-transform:uppercase;color:var(--green);background:var(--green-dim);border:1px solid rgba(20,190,128,.2);padding:3px 9px;border-radius:14px;align-self:flex-start}
+.md-view{margin-top:13px;font-size:12.5px;color:var(--blue);font-weight:600}
+.md-note{text-align:center;color:var(--text3);font-size:13px;padding:40px 0}
+.md-cta{text-align:center;color:var(--text2);font-size:13px;margin:var(--sp-xl) 0 0;padding-top:var(--sp-lg);border-top:1px solid var(--border)}
+.md-cta a{color:var(--blue);font-weight:600}
 /* ─── Daily Signal composer ──────────────────────────────────────────────── */
 .cb-sig{background:var(--bg1);border:1px solid var(--border);border-radius:var(--r3);padding:16px 18px;box-shadow:var(--sh-card)}
 .cb-sig-h{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:4px}
@@ -232,16 +268,115 @@ Pegasus.boot(async function(){
   var session=null;
   try{ var sres = sb ? await sb.auth.getSession() : null; session = sres && sres.data && sres.data.session; }catch(e){}
   if(!session){
+    /* ── Logged-out visitors get a public, browsable Member Directory ──────
+       (The connection board below — send requests, signals, inbox — stays
+       members-only. Contact details are never exposed: member_directory
+       carries no email/phone.) */
     var shell=document.getElementById('cbShell');
-    if(shell){
-      shell.style.display='';
-      shell.innerHTML='<div class="cb-guest"><h2>Inside the Pegasus Members Network</h2>'+
-        '<p>A private connection board of capital, real estate, and growth professionals. Sign in to discover members, build your board, and send connection requests. Member names and contact details stay private until you join.</p>'+
-        '<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">'+
-          '<a class="btn btn-pri btn-lg" href="/signup.html">Create Free Profile</a>'+
-          '<a class="btn btn-ghost btn-lg" href="/signin.html">Sign In</a>'+
-        '</div></div>';
+    if(!shell){ return; }
+    shell.style.display='';
+    shell.innerHTML=
+      '<div class="md-wrap">'+
+        '<div class="md-hero">'+
+          '<div class="md-eyebrow">Pegasus Capital Network</div>'+
+          '<h1 class="md-h1">Member Directory</h1>'+
+          '<p class="md-sub">Browse the capital, real estate, and growth professionals in the Pegasus network. '+
+            '<a href="/signin.html">Sign in</a> or <a href="/signup.html">create a free profile</a> to connect and message members directly.</p>'+
+        '</div>'+
+        '<div class="md-controls">'+
+          '<input id="mdq" type="search" placeholder="Search by name, company, location, or specialty…" autocomplete="off" spellcheck="false">'+
+          '<div class="md-pills" id="mdpills"></div>'+
+        '</div>'+
+        '<div class="md-count" id="mdcount"></div>'+
+        '<div class="md-grid" id="mdgrid"></div>'+
+        '<div class="md-note" id="mdnote">Loading members…</div>'+
+        '<div class="md-cta">Are you a capital, real estate, or growth professional? <a href="/signup.html">Create your free profile →</a></div>'+
+      '</div>';
+
+    var gGrid=document.getElementById('mdgrid'),
+        gNote=document.getElementById('mdnote'),
+        gCount=document.getElementById('mdcount'),
+        gPills=document.getElementById('mdpills'),
+        gQ=document.getElementById('mdq');
+
+    function gProfilePath(p){ return p.profile_slug ? '/u/'+p.profile_slug : '/public-profile.html?id='+p.id; }
+
+    function gCard(p){
+      var av = p.avatar_url
+        ? '<img class="md-av" src="'+esc(p.avatar_url)+'" alt="'+esc(p.full_name)+'" loading="lazy">'
+        : '<div class="md-av md-av-fallback">'+esc(initials(p.full_name))+'</div>';
+      var role = esc(p.professional_title || roleLabel(p.role));
+      var loc  = esc((p.markets&&p.markets[0]) || p.location || '');
+      var meta = [p.company_name?esc(p.company_name):'', loc].filter(Boolean).join(' · ');
+      var focus = p.headline || (p.bio ? String(p.bio).slice(0,150) : '');
+      var tagsArr = (p.specialties&&p.specialties.length ? p.specialties : (p.markets||[])).slice(0,3);
+      var tags = tagsArr.length ? '<div class="md-tags">'+tagsArr.map(function(t){return '<span class="md-tag">'+esc(t)+'</span>';}).join('')+'</div>' : '';
+      var badge = p.reviewed_by_pegasus ? '<span class="md-badge">Reviewed by Pegasus</span>' : '';
+      return '<a class="md-card" href="'+gProfilePath(p)+'">'+
+          '<div class="md-card-top">'+av+'<div class="md-id">'+
+            '<div class="md-nm">'+esc(p.full_name)+'</div>'+
+            (role?'<div class="md-role">'+role+'</div>':'')+
+          '</div></div>'+
+          (meta?'<div class="md-meta">'+meta+'</div>':'')+
+          (focus?'<div class="md-focus">'+esc(focus)+'</div>':'')+
+          tags+badge+
+          '<div class="md-view">View profile →</div>'+
+        '</a>';
     }
+
+    var gAll=[], gRole='all';
+    function gRender(){
+      var q=((gQ&&gQ.value)||'').trim().toLowerCase();
+      var rows=gAll.filter(function(p){
+        if(gRole!=='all' && (p.role||'').toLowerCase()!==gRole) return false;
+        if(!q) return true;
+        var hay=[p.full_name,p.company_name,p.location,p.professional_title,roleLabel(p.role),
+                 (p.markets||[]).join(' '),(p.specialties||[]).join(' '),p.headline].join(' ').toLowerCase();
+        return hay.indexOf(q)>=0;
+      });
+      if(!rows.length){
+        gGrid.innerHTML=''; gNote.style.display='block';
+        gNote.textContent=(q||gRole!=='all')?'No members match your filters.':'No members listed yet.';
+        gCount.textContent=''; return;
+      }
+      gNote.style.display='none';
+      gCount.textContent=rows.length+' member'+(rows.length===1?'':'s');
+      gGrid.innerHTML=rows.map(gCard).join('');
+    }
+
+    function gBuildPills(){
+      var counts={}; gAll.forEach(function(p){ var r=(p.role||'').toLowerCase(); if(r) counts[r]=(counts[r]||0)+1; });
+      var roles=Object.keys(counts).sort(function(a,b){ return counts[b]-counts[a]; });
+      var html='<button class="md-pill on" data-role="all">All</button>';
+      roles.forEach(function(r){ html+='<button class="md-pill" data-role="'+esc(r)+'">'+esc(roleLabel(r))+'</button>'; });
+      gPills.innerHTML=html;
+      Array.prototype.forEach.call(gPills.querySelectorAll('.md-pill'),function(b){
+        b.addEventListener('click',function(){
+          gRole=b.getAttribute('data-role');
+          Array.prototype.forEach.call(gPills.querySelectorAll('.md-pill'),function(x){ x.classList.toggle('on',x===b); });
+          gRender();
+        });
+      });
+    }
+
+    try{
+      var gres = await sb.from('member_directory')
+        .select('id,full_name,role,headline,bio,professional_title,company_name,markets,specialties,avatar_url,profile_slug,profile_completion,reviewed_by_pegasus,location,updated_at')
+        .not('full_name','is',null)
+        .eq('status','active')
+        .order('reviewed_by_pegasus',{ascending:false,nullsFirst:false})
+        .order('profile_completion',{ascending:false,nullsFirst:false})
+        .order('updated_at',{ascending:false,nullsFirst:false})
+        .limit(400);
+      if(gres && gres.error) throw gres.error;
+      gAll=(gres.data||[]).filter(function(p){ return p.full_name && p.full_name.trim(); });
+    }catch(e){
+      gNote.textContent='Could not load the directory right now. Please refresh in a moment.';
+      return;
+    }
+    gBuildPills();
+    gRender();
+    if(gQ){ var gt; gQ.addEventListener('input',function(){ clearTimeout(gt); gt=setTimeout(gRender,180); }); }
     return;
   }
   var MY_UID = session.user.id;
