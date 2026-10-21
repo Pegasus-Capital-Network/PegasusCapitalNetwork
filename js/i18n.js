@@ -12,7 +12,7 @@
   var LANGS = [['en','English'],['ar','العربية'],['zh','中文'],['ru','Русский'],['es','Español'],['fr','Français']];
   var CODES = LANGS.map(function(l){ return l[0]; });
   var C = window.PEG_CONFIG || {};
-  var SB_URL = C.SUPABASE_URL || 'https://trdwsssouhpawhfdkfqf.supabase.co';
+  var SB_URL = C.SUPABASE_URL || 'https://auth.pegasuscapitalnetwork.com';
   var SB_KEY = C.SUPABASE_ANON || 'sb_publishable_hrR8wI6hM921mnxk7bBE_A_YKxWsoBI';
   var PRIVATE = /^\/(dashboard|crm|admin|my-|deal-requests|messages|profile-edit|settings|ai-assistant|workspace|inbox|billing|notifications)/i;
 

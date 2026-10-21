@@ -94,7 +94,7 @@ h1{font-weight:800;font-size:clamp(40px,7vw,74px);line-height:1.02;letter-spacin
  .w-tags{margin:10px 0 12px}
  .w-live{margin:0 0 10px}
 }
-</style><script src="/js/i18n.js?v=20261021c"></script>
+</style><script src="/js/i18n.js?v=20261021d"></script>
   <link rel="alternate" hreflang="en" href="https://pegasuscapitalnetwork.com/"><link rel="alternate" hreflang="ar" href="https://pegasuscapitalnetwork.com/ar"><link rel="alternate" hreflang="zh-Hans" href="https://pegasuscapitalnetwork.com/zh"><link rel="alternate" hreflang="ru" href="https://pegasuscapitalnetwork.com/ru"><link rel="alternate" hreflang="es" href="https://pegasuscapitalnetwork.com/es"><link rel="alternate" hreflang="fr" href="https://pegasuscapitalnetwork.com/fr"><link rel="alternate" hreflang="x-default" href="https://pegasuscapitalnetwork.com/">
 </head>
 <body>
@@ -159,7 +159,7 @@ h1{font-weight:800;font-size:clamp(40px,7vw,74px);line-height:1.02;letter-spacin
 
 <script>
 (function(){
-  var C=window.PEG_CONFIG||{};var U=C.SUPABASE_URL||'https://trdwsssouhpawhfdkfqf.supabase.co',K=C.SUPABASE_ANON||'sb_publishable_hrR8wI6hM921mnxk7bBE_A_YKxWsoBI';
+  var C=window.PEG_CONFIG||{};var U=C.SUPABASE_URL||'https://auth.pegasuscapitalnetwork.com',K=C.SUPABASE_ANON||'sb_publishable_hrR8wI6hM921mnxk7bBE_A_YKxWsoBI';
   function cnt(t){return fetch(U+'/rest/v1/'+t+'?select=*',{method:'HEAD',headers:{apikey:K,Prefer:'count=exact',Range:'0-0'}}).then(function(r){var m=(r.headers.get('content-range')||'').split('/')[1];return parseInt(m,10)||0}).catch(function(){return 0})}
   window.__pegCounts=Promise.all(['public_lender_programs','public_business_directory','public_ai_startups','public_ai_investors'].map(cnt)).then(function(a){return{programs:a[0],biz:a[1],ai:a[2],inv:a[3]}});
 })();
