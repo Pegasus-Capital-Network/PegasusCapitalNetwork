@@ -26,13 +26,15 @@ async function getJSON(url: string, headers: Record<string, string> = {}) {
 async function step(name: string, fn: () => Promise<void>) { try { await fn(); } catch (e) { errors.push(name + ": " + String(e).slice(0, 160)); } }
 
 async function crypto() {
-  const d = await getJSON("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,pax-gold&vs_currencies=usd&include_24hr_change=true&include_last_updated_at=true");
+  const d = await getJSON("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana,ripple,pax-gold&vs_currencies=usd&include_24hr_change=true&include_last_updated_at=true");
   const add = (id: string, symbol: string, label: string, grp: string, sort: number, source: string) => {
     const x = d[id]; if (!x || num(x.usd) == null) return;
     rows.push({ symbol, label, value: num(x.usd), change_pct: num(x.usd_24h_change), fmt: "usd", grp, sort, as_of: x.last_updated_at ? new Date(x.last_updated_at * 1000).toISOString() : new Date().toISOString(), source });
   };
   add("bitcoin", "BTC", "Bitcoin", "crypto", 80, "CoinGecko");
   add("ethereum", "ETH", "Ethereum", "crypto", 81, "CoinGecko");
+  add("solana", "SOL", "Solana", "crypto", 82, "CoinGecko");
+  add("ripple", "XRP", "XRP", "crypto", 83, "CoinGecko");
   add("pax-gold", "GOLD", "Gold oz", "market", 72, "CoinGecko (PAXG, 1 oz gold token)");
 }
 
@@ -40,13 +42,13 @@ async function fx() {
   const d = await getJSON("https://open.er-api.com/v6/latest/USD");
   const t = d.time_last_update_unix ? new Date(d.time_last_update_unix * 1000).toISOString() : new Date().toISOString();
   const add = (cur: string, sort: number) => { const v = num(d.rates?.[cur]); if (v != null) rows.push({ symbol: "USD" + cur, label: "USD/" + cur, value: v, fmt: "fx", grp: "fx", sort, as_of: t, source: "ExchangeRate-API" }); };
-  add("AED", 90); add("CNY", 91); add("EUR", 92);
+  add("AED", 90); add("CNY", 91); add("EUR", 92); add("GBP", 93); add("JPY", 94); add("SAR", 95);
 }
 
 async function treasury() {
   const now = new Date();
   const months = [0, 1].map((k) => { const d = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - k, 1)); return d.getUTCFullYear() + String(d.getUTCMonth() + 1).padStart(2, "0"); });
-  const entries: { date: string; y2: number | null; y10: number | null }[] = [];
+  const entries: { date: string; m3: number | null; y2: number | null; y5: number | null; y10: number | null; y30: number | null }[] = [];
   for (const m of months) {
     const r = await fetch(`https://home.treasury.gov/resource-center/data-chart-center/interest-rates/pages/xml?data=daily_treasury_yield_curve&field_tdr_date_value_month=${m}`, { signal: AbortSignal.timeout(15000), headers: { "user-agent": "PegasusCapitalNetwork/1.0" } });
     if (!r.ok) throw new Error("treasury " + r.status);
@@ -54,7 +56,7 @@ async function treasury() {
     for (const e of x.split(/<entry>/).slice(1)) {
       const g = (tag: string) => { const mm = e.match(new RegExp(`<d:${tag}[^>]*>([^<]*)</d:${tag}>`)); return mm ? mm[1] : null; };
       const date = g("NEW_DATE"); if (!date) continue;
-      entries.push({ date: date.slice(0, 10), y2: num(g("BC_2YEAR")), y10: num(g("BC_10YEAR")) });
+      entries.push({ date: date.slice(0, 10), m3: num(g("BC_3MONTH")), y2: num(g("BC_2YEAR")), y5: num(g("BC_5YEAR")), y10: num(g("BC_10YEAR")), y30: num(g("BC_30YEAR")) });
     }
     if (entries.length >= 2) break;
   }
@@ -67,12 +69,24 @@ async function treasury() {
   };
   add("UST10Y", "10Y Treasury", cur.y10, prev?.y10 ?? null, 10);
   add("UST2Y", "2Y Treasury", cur.y2, prev?.y2 ?? null, 11);
+  add("UST3M", "3M T-Bill", cur.m3, prev?.m3 ?? null, 9);
+  add("UST5Y", "5Y Treasury", cur.y5, prev?.y5 ?? null, 15);
+  add("UST30Y", "30Y Treasury", cur.y30, prev?.y30 ?? null, 16);
+  if (cur.y10 != null && cur.y2 != null) {
+    const sp = +(cur.y10 - cur.y2).toFixed(3), psp = prev && prev.y10 != null && prev.y2 != null ? prev.y10 - prev.y2 : null;
+    rows.push({ symbol: "SPRD210", label: "10Y–2Y spread", value: sp, change: psp != null ? +(sp - psp).toFixed(3) : null, fmt: "pct", grp: "rates", sort: 17, as_of: cur.date + "T21:00:00Z", source: "U.S. Treasury (10Y minus 2Y)" });
+  }
 }
 
 async function nyfed() {
   const s = await getJSON("https://markets.newyorkfed.org/api/rates/secured/sofr/last/2.json");
   const sr = s.refRates || [];
   if (sr[0]) rows.push({ symbol: "SOFR", label: "SOFR", value: num(sr[0].percentRate), change: sr[1] ? +(num(sr[0].percentRate)! - num(sr[1].percentRate)!).toFixed(3) : null, fmt: "pct", grp: "rates", sort: 12, as_of: sr[0].effectiveDate + "T13:00:00Z", source: "Federal Reserve Bank of New York" });
+  await step("sofr30", async () => {
+    const a = await getJSON("https://markets.newyorkfed.org/api/rates/secured/sofrai/last/1.json");
+    const x = (a.refRates || [])[0];
+    if (x && num(x.average30day) != null) rows.push({ symbol: "SOFR30", label: "30-day avg SOFR", value: +num(x.average30day)!.toFixed(3), fmt: "pct", grp: "rates", sort: 18, as_of: x.effectiveDate + "T13:00:00Z", source: "Federal Reserve Bank of New York" });
+  });
   const f = await getJSON("https://markets.newyorkfed.org/api/rates/unsecured/effr/last/2.json");
   const fr = f.refRates || [];
   if (fr[0]) {

@@ -10,7 +10,8 @@
   var C = window.PEG_CONFIG || {};
   var URL_ = C.SUPABASE_URL || 'https://auth.pegasuscapitalnetwork.com';
   var KEY = C.SUPABASE_ANON || 'sb_publishable_hrR8wI6hM921mnxk7bBE_A_YKxWsoBI';
-  var CK = 'peg_ticker_v1';
+  var CK = 'peg_ticker_v2';
+  var INV = { USDEUR: 'EUR/USD', USDGBP: 'GBP/USD' }; // quoted the market way
   // hide a figure once it is older than this many hours
   var MAX_AGE = { crypto: 3, market: 100, rates: 130, mortgage: 240, fx: 80, pegasus: 72 };
 
@@ -38,7 +39,7 @@
   function n(v) { var x = parseFloat(v); return isFinite(x) ? x : null; }
   function fmtVal(r) {
     var v = n(r.value); if (v == null) return '';
-    if (r.symbol === 'USDEUR' && v) return (1 / v).toFixed(4);
+    if (INV[r.symbol] && v) return (1 / v).toFixed(4);
     switch (r.fmt) {
       case 'pct': return v.toFixed(2) + '%';
       case 'usd': return '$' + v.toLocaleString('en-US', { maximumFractionDigits: v >= 1000 ? 0 : 2, minimumFractionDigits: v >= 1000 ? 0 : 2 });
@@ -49,13 +50,13 @@
   }
   function fmtChg(r) {
     var c = n(r.change), p = n(r.change_pct), t, cls;
-    if (r.symbol === 'USDEUR') return '';
+    if (INV[r.symbol]) return '';
     if (c != null) { if (Math.abs(c) < 0.005) return '<em class="fl">0.00</em>'; t = (c > 0 ? '▲' : '▼') + Math.abs(c).toFixed(2); cls = c > 0 ? 'up' : 'dn'; }
     else if (p != null) { if (Math.abs(p) < 0.005) return '<em class="fl">0.00%</em>'; t = (p > 0 ? '▲' : '▼') + Math.abs(p).toFixed(2) + '%'; cls = p > 0 ? 'up' : 'dn'; }
     else return '';
     return '<em class="' + cls + '">' + t + '</em>';
   }
-  function label(r) { return r.symbol === 'USDEUR' ? 'EUR/USD' : r.label; }
+  function label(r) { return INV[r.symbol] || r.label; }
   function fresh(r) {
     var h = MAX_AGE[r.grp] || 100; var t = Date.parse(r.as_of || r.updated_at || 0);
     return t && (Date.now() - t) < h * 3600 * 1000;
