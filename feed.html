@@ -760,6 +760,13 @@ Pegasus.boot(async function(){
   if(MY_UID&&sb&&(!ME||ME.id!==MY_UID||!ME.full_name)){
     try{ var mr=await sb.from('profiles').select('*').eq('id',MY_UID).maybeSingle(); if(mr&&mr.data){ ME=Object.assign(ME||{},mr.data); } }catch(e){}
   }
+  /* Tag where a new member came from (e.g. the AAPL page), once, for fresh accounts only. */
+  try{
+    var src=localStorage.getItem('peg_signup_source');
+    if(src&&MY_UID&&sb&&ME&&!ME.signup_source&&ME.created_at&&(Date.now()-new Date(ME.created_at).getTime())<3*86400000){
+      await sb.from('profiles').update({signup_source:src}).eq('id',MY_UID); ME.signup_source=src; localStorage.removeItem('peg_signup_source');
+    }
+  }catch(e){}
   if(MY_UID&&sb){
     try{
       var pm=await sb.from('presence_members').select('can_publish_as,presences!inner(id,name,slug,logo_url,presence_type,status)').eq('user_id',MY_UID).eq('can_publish_as',true);
