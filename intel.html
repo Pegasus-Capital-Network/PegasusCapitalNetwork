@@ -62,7 +62,7 @@ h1 em{font-style:normal;color:var(--navy)}
 .btn.ghost{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.4);margin-left:8px}
 .loading,.empty{position:relative;z-index:2;text-align:center;color:var(--muted);font-size:13px;padding:40px 0}
 .disc{position:relative;z-index:2;font-size:11px;color:var(--muted);text-align:center;padding:0 0 50px;max-width:70ch;margin:0 auto;line-height:1.7}
-</style><script src="/js/i18n.js?v=20261021c"></script>
+</style><script src="/js/i18n.js?v=20261021e"></script>
 </head>
 <body>
 <div class="field"></div>
@@ -93,11 +93,11 @@ h1 em{font-style:normal;color:var(--navy)}
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-<script src="/js/pegasus-config.js"></script>
+<script src="/js/pegasus-config.js?v=20261021a"></script>
 <script>
 (function(){
   var C=window.PEG_CONFIG||window.PEGASUS_CONFIG||{};
-  var URL=C.SUPABASE_URL||'https://trdwsssouhpawhfdkfqf.supabase.co';
+  var URL=C.SUPABASE_URL||'https://auth.pegasuscapitalnetwork.com';
   var KEY=C.SUPABASE_ANON||'sb_publishable_hrR8wI6hM921mnxk7bBE_A_YKxWsoBI';
   var sb=(window.supabase&&window.supabase.createClient)?window.supabase.createClient(URL,KEY):null;
   function esc(x){return (x==null?'':String(x)).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}

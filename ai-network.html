@@ -123,7 +123,7 @@ footer .fnote{font-size:11px;color:var(--muted);max-width:62ch;line-height:1.7}
  .paths-head p,.grid3 .card p,.why{display:none}
 }
 </style>
-<script src="/js/i18n.js?v=20261021c"></script>
+<script src="/js/i18n.js?v=20261021e"></script>
   <link rel="alternate" hreflang="en" href="https://pegasuscapitalnetwork.com/ai-network.html"><link rel="alternate" hreflang="ar" href="https://pegasuscapitalnetwork.com/ar/ai-network.html"><link rel="alternate" hreflang="zh-Hans" href="https://pegasuscapitalnetwork.com/zh/ai-network.html"><link rel="alternate" hreflang="ru" href="https://pegasuscapitalnetwork.com/ru/ai-network.html"><link rel="alternate" hreflang="es" href="https://pegasuscapitalnetwork.com/es/ai-network.html"><link rel="alternate" hreflang="fr" href="https://pegasuscapitalnetwork.com/fr/ai-network.html"><link rel="alternate" hreflang="x-default" href="https://pegasuscapitalnetwork.com/ai-network.html">
 </head>
 <body>
@@ -223,11 +223,11 @@ footer .fnote{font-size:11px;color:var(--muted);max-width:62ch;line-height:1.7}
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-<script src="/js/pegasus-config.js"></script>
+<script src="/js/pegasus-config.js?v=20261021a"></script>
 <script>
 (function(){
   var C = window.PEGASUS_CONFIG || window.PEG_CONFIG || {};
-  var URL = C.SUPABASE_URL || 'https://trdwsssouhpawhfdkfqf.supabase.co';
+  var URL = C.SUPABASE_URL || 'https://auth.pegasuscapitalnetwork.com';
   var KEY = C.SUPABASE_ANON || 'sb_publishable_hrR8wI6hM921mnxk7bBE_A_YKxWsoBI';
   var sb = (window.supabase && window.supabase.createClient) ? window.supabase.createClient(URL, KEY, {auth:{persistSession:true,autoRefreshToken:true,storageKey:'pegasus.auth'}}) : null;
   async function session(){ try{ var r=await sb.auth.getSession(); return (r&&r.data)?r.data.session:null; }catch(e){ return null; } }
@@ -291,7 +291,7 @@ footer .fnote{font-size:11px;color:var(--muted);max-width:62ch;line-height:1.7}
 
 <script>
 (function(){
-  var C=window.PEG_CONFIG||{};var U=C.SUPABASE_URL||'https://trdwsssouhpawhfdkfqf.supabase.co',K=C.SUPABASE_ANON||'sb_publishable_hrR8wI6hM921mnxk7bBE_A_YKxWsoBI';
+  var C=window.PEG_CONFIG||{};var U=C.SUPABASE_URL||'https://auth.pegasuscapitalnetwork.com',K=C.SUPABASE_ANON||'sb_publishable_hrR8wI6hM921mnxk7bBE_A_YKxWsoBI';
   function cnt(t){return fetch(U+'/rest/v1/'+t+'?select=*',{method:'HEAD',headers:{apikey:K,Prefer:'count=exact',Range:'0-0'}}).then(function(r){var m=(r.headers.get('content-range')||'').split('/')[1];return parseInt(m,10)||0}).catch(function(){return 0})}
   window.__pegCounts=Promise.all(['public_lender_programs','public_business_directory','public_ai_startups','public_ai_investors'].map(cnt)).then(function(a){return{programs:a[0],biz:a[1],ai:a[2],inv:a[3]}});
 })();
