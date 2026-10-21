@@ -12,7 +12,11 @@ const HL: Record<string, string> = { en: "en", ar: "ar", zh: "zh-Hans", ru: "ru"
 const OG: Record<string, string> = { ar: "ar_AE", zh: "zh_CN", ru: "ru_RU", es: "es_ES", fr: "fr_FR" };
 const ORIGIN = "https://pegasuscapitalnetwork.com";
 const DICT_URL = "https://trdwsssouhpawhfdkfqf.supabase.co/storage/v1/object/public/i18n/";
+const SB_KEY = "sb_publishable_hrR8wI6hM921mnxk7bBE_A_YKxWsoBI"; // public anon key, same as in the site's JS
 const cache: Record<string, { t: number; d: Record<string, string> }> = {};
+const reportedAt: Record<string, number> = {};
+// Pages whose untranslated text is sent to the translation queue (public, list-type pages only).
+const REPORTABLE = /^\/(?:[a-z0-9-]+(?:\.html)?)?$|^\/(?:businesses\/(?:capital|ai|[a-z-]+|in\/[a-z]{2})|rankings\/[a-z0-9-]+|awards\/[a-z0-9-]+)$/i;
 
 async function dict(lang: string): Promise<Record<string, string>> {
   const c = cache[lang];
@@ -36,6 +40,7 @@ const escText = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").re
 const escAttr = (s: string) => escText(s).replace(/"/g, "&quot;");
 
 const NUM = /\$?\d[\d,]*(?:\.\d+)?%?[KMB+]?/g;
+let MISSING: Set<string> | null = null;
 function lookup(d: Record<string, string>, raw: string): string | null {
   const t = raw.replace(/\s+/g, " ").trim();
   if (t.length < 2 || !/[A-Za-z]/.test(t)) return null;
@@ -43,6 +48,7 @@ function lookup(d: Record<string, string>, raw: string): string | null {
   const nums: string[] = [];
   const k = t.replace(NUM, (m) => { nums.push(m); return "{" + nums.length + "}"; });
   if (nums.length && d[k]) return d[k].replace(/\{(\d+)\}/g, (m, n) => nums[+n - 1] ?? m);
+  if (MISSING && t.length <= 300 && !/@|https?:|www\./i.test(t)) MISSING.add(nums.length ? k : t);
   return null;
 }
 
@@ -125,7 +131,20 @@ export default async (req: Request, _ctx: Context) => {
   }
   const ct = src.headers.get("content-type") || "";
   if (!ct.includes("text/html")) return new Response(src.body, { status: src.status, headers: src.headers });
-  const html = translateHtml(await src.text(), await dict(lang), lang, rest);
+  const body = await src.text();
+  const report = src.status === 200 && REPORTABLE.test(rest) && !/name="robots"[^>]*noindex/i.test(body) && Date.now() - (reportedAt[rest] || 0) > 3600000;
+  const d = await dict(lang);
+  MISSING = report ? new Set() : null; // set and cleared synchronously around translateHtml
+  const html = translateHtml(body, d, lang, rest);
+  const miss = MISSING ? [...MISSING].slice(0, 60) : [];
+  MISSING = null;
+  if (miss.length) {
+    reportedAt[rest] = Date.now();
+    _ctx.waitUntil(fetch("https://trdwsssouhpawhfdkfqf.supabase.co/rest/v1/rpc/i18n_report", {
+      method: "POST", headers: { "content-type": "application/json", apikey: SB_KEY },
+      body: JSON.stringify({ p_strings: miss, p_page: rest }),
+    }).catch(() => {}));
+  }
   const h = new Headers();
   h.set("content-type", "text/html; charset=utf-8");
   h.set("content-language", HL[lang]);
