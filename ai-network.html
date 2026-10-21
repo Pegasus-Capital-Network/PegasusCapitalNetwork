@@ -1,11 +1,11 @@
 <!DOCTYPE html><html lang="en"><head>
-<title>Pegasus AI Network — Where AI companies, capital, and buyers meet</title>
+<title>Pegasus AI Network — Where AI companies, capital, and clients meet</title>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <meta name="description" content="A private network connecting AI companies with the investors who fund them and the enterprises that buy them. Early network forming — join free.">
 <link rel="canonical" href="https://pegasuscapitalnetwork.com/ai-network.html">
 <meta property="og:title" content="Pegasus AI Network">
-<meta property="og:description" content="Where AI companies, capital, and buyers meet. Early network forming — join free.">
+<meta property="og:description" content="Where AI companies, capital, and clients meet. Early network forming — join free.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://pegasuscapitalnetwork.com/ai-network.html">
 <link rel="icon" href="/assets/brand/favicon.ico" sizes="any">
@@ -134,8 +134,8 @@ footer .fnote{font-size:11px;color:var(--muted);max-width:62ch;line-height:1.7}
 
 <section class="hero"><div class="wrap">
   <div class="eyebrow">Pegasus AI Network</div>
-  <h1>Where AI companies, <em>capital</em>, and buyers meet.</h1>
-  <p class="lede">Most AI founders don't need another cold investor list. They need the right capital and their first serious buyer, through people who actually move. Pegasus connects all three sides in one private network.</p>
+  <h1>Where AI companies, <em>capital</em>, and clients meet.</h1>
+  <p class="lede">Most AI founders don't need another cold investor list. They need the right capital and their first serious client, through people who actually move. Pegasus connects all three sides in one private network.</p>
   <div class="live-strip" id="liveStrip"></div>
   <div class="status-line"><span class="dot"></span> Early network forming · founding members joining now</div>
   <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:22px">
@@ -150,7 +150,7 @@ footer .fnote{font-size:11px;color:var(--muted);max-width:62ch;line-height:1.7}
     <div class="link">↔</div>
     <a class="node" href="/ai-directory.html#investors">Investors<span>fund it</span><span class="go">See the investors →</span></a>
     <div class="link">↔</div>
-    <a class="node" href="/ai-directory.html#companies">Buyers<span>deploy it</span><span class="go">Browse the companies →</span></a>
+    <a class="node" href="/ai-directory.html#companies">Clients<span>deploy it</span><span class="go">Browse the companies →</span></a>
   </div>
 </div>
 
@@ -163,7 +163,7 @@ footer .fnote{font-size:11px;color:var(--muted);max-width:62ch;line-height:1.7}
     <div class="card" onclick="openJoin('company')">
       <div class="num">01</div>
       <h3>I'm building an AI company</h3>
-      <p>Get in front of aligned capital and real buyers. Show what you've built, what you need, and who you're looking for, to people positioned to help you move.</p>
+      <p>Get in front of aligned capital and real clients. Show what you've built, what you need, and who you're looking for, to people positioned to help you move.</p>
       <div class="go">Join as a company <span class="ar">→</span></div>
     </div>
     <div class="card" onclick="openJoin('investor')">
@@ -176,14 +176,14 @@ footer .fnote{font-size:11px;color:var(--muted);max-width:62ch;line-height:1.7}
       <div class="num">03</div>
       <h3>I buy or deploy AI</h3>
       <p>Enterprises, health systems, manufacturers and operators: find AI vendors worth a pilot, vetted through the network rather than a cold vendor pitch.</p>
-      <div class="go">Join as a buyer <span class="ar">→</span></div>
+      <div class="go">Join as a client <span class="ar">→</span></div>
     </div>
   </div>
 </div></section>
 
 <section class="why"><div class="wrap"><div class="why-grid">
   <div><h4>Signal, not noise</h4><p>A curated network of serious participants. Introductions move through people, not broadcast into a feed.</p></div>
-  <div><h4>Three sides, one place</h4><p>Capital and commercial demand together. Often a first enterprise buyer matters more than another round.</p></div>
+  <div><h4>Three sides, one place</h4><p>Capital and commercial demand together. Often a first enterprise client matters more than another round.</p></div>
   <div><h4>Built on relationships</h4><p>Pegasus facilitates connections only. It is not a broker-dealer and does not raise capital or take a cut of any round.</p></div>
 </div></div></section>
 
@@ -232,9 +232,9 @@ footer .fnote{font-size:11px;color:var(--muted);max-width:62ch;line-height:1.7}
   async function ensureAuth(role,intent){ var s=await session(); if(s&&s.user) return s; location.href='/signup.html?role='+encodeURIComponent(role||'')+'&intent='+encodeURIComponent(intent||'')+'&next='+encodeURIComponent(location.pathname); return null; }
 
   var COPY = {
-    company:{label:'AI Company',title:'Join as a company',sub:'Free. Show what you’re building to aligned capital and buyers.',org:'Company name',focus:'What you build',one:'What you do, in one line',onePh:'e.g. AI that reads radiology scans for rural clinics'},
+    company:{label:'AI Company',title:'Join as a company',sub:'Free. Show what you’re building to aligned capital and clients.',org:'Company name',focus:'What you build',one:'What you do, in one line',onePh:'e.g. AI that reads radiology scans for rural clinics'},
     investor:{label:'Investor',title:'Join as an investor',sub:'Free. State your mandate once and meet companies that fit.',org:'Fund / firm',focus:'Thesis / sectors',one:'What you look for, in one line',onePh:'e.g. pre-seed applied AI in healthcare and logistics, $250k–$1M'},
-    buyer:{label:'Buyer',title:'Join as a buyer',sub:'Free. Find AI vendors worth a pilot, vetted through the network.',org:'Organization',focus:'What you’re looking to deploy',one:'What problem you want AI to solve',onePh:'e.g. automate claims intake across 12 clinics'}
+    buyer:{label:'Client',title:'Join as a client',sub:'Free. Find AI vendors worth a pilot, vetted through the network.',org:'Organization',focus:'What you’re looking to deploy',one:'What problem you want AI to solve',onePh:'e.g. automate claims intake across 12 clinics'}
   };
   var currentSide='company';
 
