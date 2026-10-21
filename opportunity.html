@@ -45,7 +45,7 @@
 .opp-embed{position:relative;padding-top:56.25%;border-radius:12px;overflow:hidden;border:1px solid var(--border)}
 .opp-embed iframe{position:absolute;inset:0;width:100%;height:100%}
 </style>
-<script src="/js/i18n.js?v=20261021a"></script>
+<script src="/js/i18n.js?v=20261021b"></script>
 </head><body>
 <!-- PEGASUS_BUILD_VERSION = dealroom-entitlements-20260524-1529 -->
 <script>window.PEGASUS_BUILD_VERSION="dealroom-entitlements-20260524-1529";</script>
@@ -59,7 +59,7 @@
 <script src="/js/pegasus-api.js?v=dealroom-entitlements-20260524-1529"></script>
 <script src="/js/pegasus-forms.js?v=dealroom-entitlements-20260524-1529"></script>
 <script src="/js/pegasus-auth.js?v=20261020b"></script>
-<script src="/js/pegasus-core.js?v=20261021a"></script>
+<script src="/js/pegasus-core.js?v=20261021b"></script>
 <script src="/js/pegasus-pages.js?v=dealroom-entitlements-20260524-1529"></script>
 <script>
 Pegasus.boot(async function(){
@@ -90,7 +90,7 @@ Pegasus.boot(async function(){
   // ── Resolve slug from ?slug= (set by the clean-URL rewrite) or a clean path ──
   var slug = (new URLSearchParams(location.search)).get('slug') || '';
   if(!slug){
-    var pm = location.pathname.match(/^\/(opportunity|deal|listing)\/([^\/?#]+)\/?$/i);
+    var pm = location.pathname.match(/^\/(?:(?:ar|zh|ru|es|fr)\/)?(opportunity|deal|listing)\/([^\/?#]+)\/?$/i);
     if(pm) slug = decodeURIComponent(pm[2]);
   }
   slug = slug.trim();

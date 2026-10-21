@@ -17,7 +17,7 @@
     var id = params.get('id');
     // /u/{slug} path support if the host serves it raw
     if (!slug && !id) {
-      var m = location.pathname.match(/^\/u\/([^\/?#]+)/);
+      var m = location.pathname.match(/^\/(?:(?:ar|zh|ru|es|fr)\/)?u\/([^\/?#]+)/);
       if (m) slug = decodeURIComponent(m[1]);
     }
     return { slug: slug, id: id };

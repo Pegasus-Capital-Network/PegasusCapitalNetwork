@@ -207,7 +207,8 @@
   .fd-w-menu{left:0;right:0;min-width:0}
 }
 </style>
-<script src="/js/i18n.js?v=20261021a"></script>
+<script src="/js/i18n.js?v=20261021b"></script>
+  <link rel="alternate" hreflang="en" href="https://pegasuscapitalnetwork.com/feed"><link rel="alternate" hreflang="ar" href="https://pegasuscapitalnetwork.com/ar/feed"><link rel="alternate" hreflang="zh-Hans" href="https://pegasuscapitalnetwork.com/zh/feed"><link rel="alternate" hreflang="ru" href="https://pegasuscapitalnetwork.com/ru/feed"><link rel="alternate" hreflang="es" href="https://pegasuscapitalnetwork.com/es/feed"><link rel="alternate" hreflang="fr" href="https://pegasuscapitalnetwork.com/fr/feed"><link rel="alternate" hreflang="x-default" href="https://pegasuscapitalnetwork.com/feed">
 </head>
 <body>
 <div id="nav"></div>
@@ -268,7 +269,7 @@
 <script src="/js/pegasus-api.js"></script>
 <script src="/js/pegasus-forms.js"></script>
 <script src="/js/pegasus-auth.js?v=20261020b"></script>
-<script src="/js/pegasus-core.js?v=20261021a"></script>
+<script src="/js/pegasus-core.js?v=20261021b"></script>
 <script src="/js/pegasus-billing.js"></script>
 <script src="/js/pegasus-pages.js"></script>
 <script src="/js/pegasus-invite.js"></script>
@@ -330,7 +331,7 @@ Pegasus.boot(async function(){
   var qs=new URLSearchParams(location.search);
   var filter=(qs.get('type')||'').replace(/[^a-z_]/g,'');
   /* Permalinks: /feed/post/<id> (server-rendered OG tags) or legacy /feed?post=<id>. */
-  var pathPost=(location.pathname.match(/^\/feed\/post\/([0-9a-f-]{36})/i)||[])[1]||'';
+  var pathPost=(location.pathname.match(/^\/(?:(?:ar|zh|ru|es|fr)\/)?feed\/post\/([0-9a-f-]{36})/i)||[])[1]||'';
   var permalink=(pathPost||qs.get('post')||'').replace(/[^0-9a-f-]/gi,'');
   var snap=document.getElementById('peg-seo-snapshot'); if(snap) snap.remove();
   var postAs=(qs.get('as')||'').replace(/[^0-9a-f-]/gi,''), pageFilter=(qs.get('page')||'').replace(/[^0-9a-f-]/gi,''), MY_PAGES=[];

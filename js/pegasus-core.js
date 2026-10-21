@@ -96,7 +96,7 @@
   window.PEG_WORLDS=PEG_WORLDS;
   function worldLinksHTML(){
     var G=function(k){ var w=PEG_WORLDS[k]; return '<div class="nav-group"><span tabindex="0" role="button" aria-haspopup="true">'+w.label+' \u25BE</span><div class="nav-drop">'+w.items.map(function(i){ return '<a href="'+i[1]+'"><span>'+i[0]+'</span>'+(i[2]?'<small>'+i[2]+'</small>':'')+'</a>'; }).join('')+'</div></div>'; };
-    var feedOn=(location.pathname.indexOf('/feed')===0)?' class="on"':'';
+    var feedOn=(/^\/(?:(?:ar|zh|ru|es|fr)\/)?feed/.test(location.pathname))?' class="on"':'';
     return '<a href="/feed"'+feedOn+'>Feed</a>'+G('capital')+G('ai')+G('private');
   }
   function worldDrawerHTML(){
@@ -875,7 +875,7 @@
 
     /* Logged in — replace CTA */
     if (ctaEl) {
-      var onProfile = window.location.pathname.indexOf('/u/') === 0 ||
+      var onProfile = /^\/(?:(?:ar|zh|ru|es|fr)\/)?u\//.test(window.location.pathname) ||
                       window.location.pathname.indexOf('/public-profile') >= 0;
       if (onProfile && window.__PEG_OWNER_NAV) {
         /* Owner viewing their own profile \u2014 a single Manage Profile dropdown
@@ -1081,7 +1081,7 @@
    Skipped on auth screens and the full assistant page to avoid duplication. */
 (function(){
   'use strict';
-  var path=(location.pathname||'').toLowerCase();
+  var path=(location.pathname||'').toLowerCase().replace(/^\/(ar|zh|ru|es|fr)(?=\/)/,'');
   var SKIP=['/signin','/signup','/auth-callback','/reset-password','/forgot-password','/ai-assistant'];
   for(var i=0;i<SKIP.length;i++){ if(path.indexOf(SKIP[i])===0) return; }
 

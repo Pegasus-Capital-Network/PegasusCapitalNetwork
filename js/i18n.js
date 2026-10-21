@@ -20,7 +20,11 @@
 
   /* ── which language ── */
   var qs = null; try{ qs = new URLSearchParams(location.search); }catch(e){}
-  var lang = (qs && qs.get('lang') || '').toLowerCase().slice(0,2);
+  var pm = location.pathname.match(/^\/(ar|zh|ru|es|fr)(\/.*)?$/);
+  var PATH_LANG = pm ? pm[1] : '';
+  var REST = pm ? (pm[2] || '/') : location.pathname;
+  var SERVER = document.documentElement.getAttribute('data-i18n-server') === PATH_LANG && !!PATH_LANG;
+  var lang = PATH_LANG || (qs && qs.get('lang') || '').toLowerCase().slice(0,2);
   if (CODES.indexOf(lang) >= 0) store('peg_lang', lang);
   else {
     lang = store('peg_lang') || '';
@@ -56,7 +60,8 @@
     var cur = LANGS.filter(function(l){ return l[0] === lang; })[0] || LANGS[0];
     var w = document.createElement('div'); w.className = 'peg-lang'; w.setAttribute('translate','no'); w.setAttribute('data-i18n-skip','1');
     var items = LANGS.map(function(l){
-      var u; try{ u = new URL(location.href); u.searchParams.set('lang', l[0]); u = u.pathname + u.search + u.hash; }catch(e){ u = '?lang=' + l[0]; }
+      var sp = ''; try{ var q2 = new URLSearchParams(location.search); q2.delete('lang'); sp = q2.toString(); }catch(e){}
+      var u = (l[0] === 'en' ? REST : '/' + l[0] + (REST === '/' ? '' : REST)) + (sp ? '?' + sp : '') + location.hash;
       return '<a href="' + u + '" data-l="' + l[0] + '"' + (l[0] === lang ? ' class="on"' : '') + '><span>' + l[1] + '</span><small>' + l[0] + '</small></a>';
     }).join('');
     w.innerHTML = '<button type="button" aria-haspopup="true" aria-label="Language"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.7 3.8 5.7 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-5.7-3.8-9S9.5 5.7 12 3z"/></svg>' + cur[0].toUpperCase() + '</button>' +
@@ -77,7 +82,8 @@
   var DICT = null, missing = {}, done = new WeakMap(), tx = new WeakMap();
   var NUM = /\$?\d[\d,]*(?:\.\d+)?%?[KMB+]?/g;
   var SKIP_TAGS = { SCRIPT:1, STYLE:1, NOSCRIPT:1, TEXTAREA:1, CODE:1, PRE:1, SVG:1, IFRAME:1, CANVAS:1 };
-  var canReport = !PRIVATE.test(location.pathname);
+  var canReport = !PRIVATE.test(REST);
+  var initial = true;
 
   function keyOf(t){ var nums = []; var k = t.replace(NUM, function(m){ nums.push(m); return '{' + nums.length + '}'; }); return { k: k, nums: nums }; }
   function lookup(t){
@@ -85,7 +91,7 @@
     if (DICT[t]) return DICT[t];
     var o = keyOf(t);
     if (o.nums.length && DICT[o.k]) return DICT[o.k].replace(/\{(\d+)\}/g, function(m, n){ return o.nums[n-1] != null ? o.nums[n-1] : m; });
-    if (canReport && t.length <= 300 && !/@|https?:|www\./i.test(t)) missing[o.nums.length ? o.k : t] = 1;
+    if (canReport && !(SERVER && initial) && t.length <= 300 && !/@|https?:|www\./i.test(t)) missing[o.nums.length ? o.k : t] = 1;
     return null;
   }
   function skipEl(el){
@@ -110,6 +116,10 @@
       var mark = 'data-i18n-' + a; if (el.getAttribute(mark) === v) return;
       var tr = lookup(v.trim()); if (tr) { el.setAttribute(a, tr); el.setAttribute(mark, tr); } else el.setAttribute(mark, v);
     });
+    if (PATH_LANG && el.tagName === 'A') {
+      var h = el.getAttribute('href') || '';
+      if (h.charAt(0) === '/' && h.charAt(1) !== '/' && !/^\/(js|css|assets|data|\.netlify|api|storage|ar|zh|ru|es|fr)(\/|$)/i.test(h) && !/\.(?!html)[a-z0-9]{2,5}([?#]|$)/i.test(h)) el.setAttribute('href', '/' + PATH_LANG + (h === '/' ? '' : h));
+    }
     if (el.tagName === 'INPUT' && /^(button|submit)$/i.test(el.type) && el.value) {
       var tv = lookup(el.value.trim()); if (tv) el.value = tv;
     }
@@ -120,7 +130,7 @@
     if (root.nodeType !== 1 || SKIP_TAGS[root.tagName]) return;
     var tw = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null), n;
     while ((n = tw.nextNode())) doText(n);
-    if (root.querySelectorAll) { doAttrs(root); root.querySelectorAll('[placeholder],[title],[aria-label],input[type=button],input[type=submit]').forEach(doAttrs); }
+    if (root.querySelectorAll) { doAttrs(root); root.querySelectorAll('[placeholder],[title],[aria-label],input[type=button],input[type=submit]' + (PATH_LANG ? ',a[href^="/"]' : '')).forEach(doAttrs); }
   }
   function translateTitle(){ var t = document.title; if (t && document.__pegT !== t) { var tr = lookup(t.trim()); if (tr) document.title = tr; document.__pegT = document.title; } }
 
@@ -160,6 +170,7 @@
     DICT = dict || {};
     ready(function(){
       walk(document.body); translateTitle(); switcher(); observe();
+      initial = false;
       html.classList.remove('peg-i18n-wait');
       scheduleReport();
     });
