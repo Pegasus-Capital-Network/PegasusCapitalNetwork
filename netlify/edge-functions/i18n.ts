@@ -16,7 +16,7 @@ const SB_KEY = "sb_publishable_hrR8wI6hM921mnxk7bBE_A_YKxWsoBI"; // public anon 
 const cache: Record<string, { t: number; d: Record<string, string> }> = {};
 const reportedAt: Record<string, number> = {};
 // Pages whose untranslated text is sent to the translation queue (public, list-type pages only).
-const REPORTABLE = /^\/(?:[a-z0-9-]+(?:\.html)?)?$|^\/(?:businesses\/(?:capital|ai|[a-z-]+|in\/[a-z]{2})|rankings\/[a-z0-9-]+|awards\/[a-z0-9-]+)$/i;
+const REPORTABLE = /^\/(?:[a-z0-9-]+(?:\.html)?)?$|^\/(?:businesses\/(?:capital|ai|in\/[a-z]{2})|rankings\/[a-z0-9-]+|awards\/[a-z0-9-]+)$/i;
 
 async function dict(lang: string): Promise<Record<string, string>> {
   const c = cache[lang];
