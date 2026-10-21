@@ -206,7 +206,7 @@ h1{font-weight:800;font-size:clamp(30px,4.6vw,48px);line-height:1.05;letter-spac
   function $(id){ return document.getElementById(id); }
   function esc(x){ return (x==null?'':String(x)).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];}); }
   function digits(x){ var d=String(x==null?'':x).replace(/[^0-9]/g,''); return d?Number(d):null; }
-  function money(n){ if(n==null||n==='') return null; n=Number(n); if(!isFinite(n)) return null; if(n>=1e6) return '$'+(Math.round(n/1e5)/10).toString().replace(/\.0$/,'')+'M'; if(n>=1e3) return '$'+Math.round(n/1e3)+'K'; return '$'+n; }
+  function money(n){ if(n==null||n==='') return null; n=Number(n); if(!isFinite(n)||n<=0) return null; if(n>=1e6) return '$'+(Math.round(n/1e5)/10).toString().replace(/\.0$/,'')+'M'; if(n>=1e3) return '$'+Math.round(n/1e3)+'K'; return '$'+n; }
   function fmtInput(el){ el.addEventListener('input',function(){ var d=digits(el.value); el.value=d!=null?('$'+d.toLocaleString('en-US')):''; }); }
   async function session(){ try{ var r=await sb.auth.getSession(); return (r&&r.data)?r.data.session:null; }catch(e){ return null; } }
 
@@ -225,8 +225,9 @@ h1{font-weight:800;font-size:clamp(30px,4.6vw,48px);line-height:1.05;letter-spac
     var initials=name.split(/\s+/).map(function(w){return w.charAt(0);}).join('').slice(0,2).toUpperCase();
     var logo=p.logo_url?('<img src="'+esc(p.logo_url)+'" alt="">'):(p.avatar_url?('<img src="'+esc(p.avatar_url)+'" alt="">'):esc(initials));
     var types=(p.loan_types||[]).map(function(t){ return '<span class="chip">'+esc(TYPES[t]||t)+'</span>'; }).join('');
-    var st=(p.states&&p.states.length)?(p.states.slice(0,8).join(', ')+(p.states.length>8?' +'+(p.states.length-8):'')):'Nationwide';
-    var facts=[['Loan size',amountRange(p)]];
+    var st=(p.states&&p.states.length)?(p.states.length>=45?(p.states.length+' states'):(p.states.slice(0,8).join(', ')+(p.states.length>8?' +'+(p.states.length-8):''))):((p.unclaimed&&!/nationwide/i.test(p.notes||''))?'See lender’s site':'Nationwide');
+    var ar=amountRange(p); if(ar==='Flexible'&&p.unclaimed) ar='See lender’s site';
+    var facts=[['Loan size',ar]];
     if(p.max_ltv) facts.push(['Max LTV',p.max_ltv+'%']);
     if(p.rate_from) facts.push(['Rates from',p.rate_from]);
     if(p.dscr_min) facts.push(['Min DSCR',String(p.dscr_min)]);
@@ -250,7 +251,7 @@ h1{font-weight:800;font-size:clamp(30px,4.6vw,48px);line-height:1.05;letter-spac
     var rows=ALL.filter(function(p){
       if(t && p.loan_types && p.loan_types.length && p.loan_types.indexOf(t)<0) return false;
       if(s && p.states && p.states.length && p.states.indexOf(s)<0) return false;
-      if(amt!=null){ if(p.min_loan!=null && amt<Number(p.min_loan)) return false; if(p.max_loan!=null && amt>Number(p.max_loan)) return false; }
+      if(amt!=null){ if(p.min_loan!=null && amt<Number(p.min_loan)) return false; if(p.max_loan!=null && Number(p.max_loan)>0 && amt>Number(p.max_loan)) return false; }
       return true;
     });
     var g=$('grid');
