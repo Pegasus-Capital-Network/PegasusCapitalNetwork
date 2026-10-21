@@ -99,6 +99,26 @@
 .fd-more{border:none;background:none;color:var(--blue);font-size:12px;cursor:pointer;padding:4px 0;font-family:inherit}
 .fd-img{display:block;margin-top:12px;border-radius:var(--r2);overflow:hidden;border:1px solid var(--border)}
 .fd-img img{width:100%;max-height:420px;object-fit:cover;display:block}
+.fd-car{position:relative;margin-top:12px;border-radius:var(--r2);overflow:hidden;background:#0e1824;border:1px solid var(--border)}
+.fd-car-track{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.fd-car-track::-webkit-scrollbar{display:none}
+.fd-car-track a{flex:0 0 100%;scroll-snap-align:center;display:block}
+.fd-car-track img{width:100%;aspect-ratio:4/3;object-fit:contain;display:block}
+.fd-car-n{position:absolute;top:10px;right:10px;background:rgba(9,18,30,.7);color:#fff;font-size:11.5px;font-weight:600;border-radius:999px;padding:3px 9px}
+.fd-car-dots{position:absolute;left:0;right:0;bottom:9px;display:flex;justify-content:center;gap:6px;pointer-events:none}
+.fd-car-dots i{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.45)}.fd-car-dots i.on{background:#fff}
+.fd-car-btn{position:absolute;top:50%;transform:translateY(-50%);width:34px;height:34px;border-radius:50%;border:0;background:rgba(255,255,255,.9);color:#0e1824;font-size:18px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.25)}
+.fd-car-btn.p{left:10px}.fd-car-btn.n{right:10px}
+@media(hover:none){.fd-car-btn{display:none}}
+.fd-thumbs{display:flex;gap:8px;flex-wrap:wrap}
+.fd-thumb{position:relative;width:84px;height:84px;border-radius:10px;overflow:hidden;background:#eef1f5}
+.fd-thumb img{width:100%;height:100%;object-fit:cover;display:block;max-height:none;border-radius:0}
+.fd-thumb button{position:absolute;top:4px;right:4px;width:22px;height:22px;border-radius:50%;border:0;background:rgba(9,18,30,.75);color:#fff;font-size:13px;line-height:22px;padding:0;cursor:pointer}
+.fd-thumb.add{display:flex;align-items:center;justify-content:center;border:1.5px dashed var(--border2,#cfd6de);background:#fff;color:var(--text2);font-size:12px;cursor:pointer;text-align:center}
+.fd-share-menu{position:absolute;z-index:2500;background:#fff;border:1px solid var(--border);border-radius:12px;box-shadow:0 14px 40px rgba(14,24,36,.18);padding:6px;min-width:190px}
+.fd-share-menu a,.fd-share-menu button{display:flex;align-items:center;gap:10px;width:100%;padding:9px 11px;border:0;background:none;border-radius:8px;font:inherit;font-size:13.5px;color:var(--text);text-decoration:none;cursor:pointer;text-align:left}
+.fd-share-menu a:hover,.fd-share-menu button:hover{background:var(--bg2,#f3f5f8)}
+.fd-share-menu span{width:20px;text-align:center;font-weight:700}
 .fd-linkcard{display:flex;align-items:center;gap:10px;margin-top:12px;padding:10px 12px;border:1px solid var(--border);border-radius:var(--r2);background:var(--bg2);text-decoration:none;color:var(--text2);font-size:12.5px;transition:border-color var(--dur-fast)}
 .fd-linkcard:hover{border-color:var(--blue);color:var(--text)}
 .fd-linkcard .dom{font-family:var(--mono);font-size:11px;color:var(--text3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
@@ -276,20 +296,32 @@ Pegasus.boot(async function(){
   var snap=document.getElementById('peg-seo-snapshot'); if(snap) snap.remove();
   var postAs=(qs.get('as')||'').replace(/[^0-9a-f-]/gi,''), pageFilter=(qs.get('page')||'').replace(/[^0-9a-f-]/gi,''), MY_PAGES=[];
   var postType='update', mediaOpen=false, before=null, exhausted=false, loading=false;
-  var upImg='', upLink='';
+  var upImgs=[], upLink='', MAX_IMGS=5;
   function uploadPreviewHTML(){
-    if(upImg) return '<img src="'+safeUrl(upImg)+'" alt=""><button type="button" class="fd-up-rm" id="fdUpRm">Remove</button>';
+    if(upImgs.length) return '<div class="fd-thumbs">'+upImgs.map(function(u,i){ return '<div class="fd-thumb"><img src="'+safeUrl(u)+'" alt=""><button type="button" data-rmimg="'+i+'" aria-label="Remove photo">×</button></div>'; }).join('')+
+      (upImgs.length<MAX_IMGS?'<label class="fd-thumb add" for="fdFile">+ Add<br>'+(MAX_IMGS-upImgs.length)+' more</label>':'')+'</div>';
     if(upLink) return '<video src="'+safeUrl(upLink)+'" controls muted playsinline></video><button type="button" class="fd-up-rm" id="fdUpRm">Remove</button>';
     return '';
   }
   async function handleUpload(input){
-    var f=input.files&&input.files[0]; if(!f) return;
+    var files=Array.prototype.slice.call(input.files||[]); if(!files.length) return;
+    var vids=files.filter(function(x){ return /^video\//.test(x.type); });
+    if(vids.length){ return uploadOne(input, vids[0]); }
+    var imgs=files.filter(function(x){ return /^image\//.test(x.type); });
     var err=document.getElementById('fdErr'); if(err) err.textContent='';
+    if(!imgs.length){ if(err) err.textContent='Please choose a photo or a video.'; input.value=''; return; }
+    var room=MAX_IMGS-upImgs.length; if(upLink){ upLink=''; room=MAX_IMGS; }
+    if(imgs.length>room){ imgs=imgs.slice(0,room); }
+    for(var i=0;i<imgs.length;i++){ await uploadOne(input, imgs[i], i+1, imgs.length); }
+    if(files.filter(function(x){ return /^image\//.test(x.type); }).length>room){ var e2=document.getElementById('fdErr'); if(e2) e2.textContent='Up to '+MAX_IMGS+' photos per post.'; }
+  }
+  async function uploadOne(input, f, idx, total){
+    var err=document.getElementById('fdErr'); if(err&&!idx) err.textContent='';
     var isVid=/^video\//.test(f.type), isImg=/^image\//.test(f.type);
     if(!isVid&&!isImg){ if(err) err.textContent='Please choose a photo or a video.'; input.value=''; return; }
     var max=isVid?75*1024*1024:10*1024*1024;
     if(f.size>max){ if(err) err.textContent=isVid?'That video is too large (max 75MB).':'That image is too large (max 10MB).'; input.value=''; return; }
-    var prev=document.getElementById('fdUpPrev'); if(prev){ prev.hidden=false; prev.innerHTML='<span class="fd-up-busy">Uploading '+esc(f.name)+'…</span>'; }
+    var prev=document.getElementById('fdUpPrev'); if(prev){ prev.hidden=false; prev.innerHTML=uploadPreviewHTML()+'<span class="fd-up-busy">Uploading '+(total>1?(idx+' of '+total):esc(f.name))+'…</span>'; }
     try{
       var sres=await sb.auth.getSession(); var uid=sres&&sres.data&&sres.data.session&&sres.data.session.user&&sres.data.session.user.id;
       if(!uid){ if(err) err.textContent='Please sign in to upload.'; if(prev){ prev.hidden=true; prev.innerHTML=''; } input.value=''; return; }
@@ -299,10 +331,10 @@ Pegasus.boot(async function(){
       if(up.error) throw up.error;
       var pub=sb.storage.from('feed-media').getPublicUrl(path); var url=pub&&pub.data&&pub.data.publicUrl;
       if(!url) throw new Error('no public url');
-      if(isImg){ upImg=url; upLink=''; } else { upLink=url; upImg=''; }
+      if(isImg){ if(upImgs.length<MAX_IMGS) upImgs.push(url); upLink=''; } else { upLink=url; upImgs=[]; }
       input.value='';
       var keep=val('fdTa'), kt=val('fdTitle'); renderComposer(); setVal('fdTa',keep); setVal('fdTitle',kt); upd();
-    }catch(e){ if(err) err.textContent='Upload failed. Please try again with a smaller file.'; var p2=document.getElementById('fdUpPrev'); if(p2){ p2.hidden=true; p2.innerHTML=''; } input.value=''; }
+    }catch(e){ if(err) err.textContent='Upload failed. Please try again with a smaller file.'; var p2=document.getElementById('fdUpPrev'); if(p2){ p2.hidden=!(upImgs.length||upLink); p2.innerHTML=uploadPreviewHTML(); wireThumbs(); } input.value=''; }
   }
   function videoEmbed(u){
     u=(u||'').trim(); if(!u) return '';
@@ -384,11 +416,11 @@ Pegasus.boot(async function(){
       '<div><div class="fd-comp-t">Share with the network</div><div class="fd-comp-sub">Posts are public: shown here, on your profile, and to search engines. Keep it professional — this is your advertising.</div></div></div>'+
       asHTML()+'<div class="fd-chips">'+chips+'</div>'+
       '<input class="fd-in title" id="fdTitle" type="text" maxlength="140" placeholder="'+(isEv?'Event title':'Headline (optional)')+'">'+
-      '<textarea class="fd-in fd-ta" id="fdTa" maxlength="1000" placeholder="'+esc(PLACEHOLDER[postType]||PLACEHOLDER.update)+'"></textarea>'+
+      '<textarea class="fd-in fd-ta" id="fdTa" maxlength="1500" placeholder="'+esc(PLACEHOLDER[postType]||PLACEHOLDER.update)+'"></textarea>'+
       evFields+media+
-      '<div class="fd-up-prev" id="fdUpPrev"'+((upImg||upLink)?'':' hidden')+'>'+uploadPreviewHTML()+'</div>'+
-      '<input type="file" id="fdFile" accept="image/*,video/*" style="display:none">'+
-      '<div class="fd-foot">'+(isEv?'':'<button class="fd-attach" id="fdUpload" type="button">📷 Photo / video</button>')+'<button class="fd-attach" id="fdAttach" type="button">'+(isEv?'':(mediaOpen?'– Hide link':'🔗 Add link'))+'</button><span class="fd-count" id="fdCount">0 / 1000</span><button class="btn btn-pri btn-sm" id="fdPost">'+(isEv?'Post Event':'Post to Feed')+'</button></div>'+
+      '<div class="fd-up-prev" id="fdUpPrev"'+((upImgs.length||upLink)?'':' hidden')+'>'+uploadPreviewHTML()+'</div>'+
+      '<input type="file" id="fdFile" accept="image/*,video/*" multiple style="display:none">'+
+      '<div class="fd-foot">'+(isEv?'':'<button class="fd-attach" id="fdUpload" type="button">📷 Photo / video</button>')+'<button class="fd-attach" id="fdAttach" type="button">'+(isEv?'':(mediaOpen?'– Hide link':'🔗 Add link'))+'</button><span class="fd-count" id="fdCount">0 / 1500</span><button class="btn btn-pri btn-sm" id="fdPost">'+(isEv?'Post Event':'Post to Feed')+'</button></div>'+
       '<div class="fd-err" id="fdErr"></div>'+
       '</div></div>';
     host.querySelectorAll('.fd-chip').forEach(function(b){ b.onclick=function(){ var keep=val('fdTa'), kt=val('fdTitle'); postType=b.getAttribute('data-t'); renderComposer(); setVal('fdTa',keep); setVal('fdTitle',kt); upd(); }; });
@@ -398,11 +430,12 @@ Pegasus.boot(async function(){
     host.querySelectorAll('.fd-as button').forEach(function(b){ b.onclick=function(){ var keep=val('fdTa'), kt=val('fdTitle'); postAs=b.getAttribute('data-as')||''; renderComposer(); setVal('fdTa',keep); setVal('fdTitle',kt); upd(); }; });
     var upBtn=document.getElementById('fdUpload'), upFile=document.getElementById('fdFile');
     if(upBtn&&upFile){ upBtn.onclick=function(){ upFile.click(); }; upFile.onchange=function(){ handleUpload(upFile); }; }
-    var rmBtn=document.getElementById('fdUpRm'); if(rmBtn) rmBtn.onclick=function(){ upImg=''; upLink=''; var keep=val('fdTa'), kt=val('fdTitle'); renderComposer(); setVal('fdTa',keep); setVal('fdTitle',kt); upd(); };
+    wireThumbs();
+    var rmBtn=document.getElementById('fdUpRm'); if(rmBtn) rmBtn.onclick=function(){ upImgs=[]; upLink=''; var keep=val('fdTa'), kt=val('fdTitle'); renderComposer(); setVal('fdTa',keep); setVal('fdTitle',kt); upd(); };
   }
   function val(id){ var e=document.getElementById(id); return e?e.value:''; }
   function setVal(id,v){ var e=document.getElementById(id); if(e) e.value=v||''; }
-  function upd(){ var c=document.getElementById('fdCount'); if(c) c.textContent=val('fdTa').length+' / 1000'; }
+  function upd(){ var c=document.getElementById('fdCount'); if(c) c.textContent=val('fdTa').length+' / 1500'; }
 
   function curPage(){ if(!postAs) return null; for(var i=0;i<MY_PAGES.length;i++){ if(MY_PAGES[i].id===postAs) return MY_PAGES[i]; } return null; }
   function asHTML(){
@@ -413,7 +446,7 @@ Pegasus.boot(async function(){
   }
   async function submit(){
     var btn=document.getElementById('fdPost'), err=document.getElementById('fdErr');
-    var txt=val('fdTa').trim(), title=val('fdTitle').trim(), img=(val('fdImg')||upImg||'').trim(), lnk=(val('fdLink')||upLink||'').trim();
+    var txt=val('fdTa').trim(), title=val('fdTitle').trim(), img=(val('fdImg')||upImgs[0]||'').trim(), lnk=(val('fdLink')||upLink||'').trim();
     var evAt=null, evLoc=null;
     if(!txt){ err.textContent='Write something first.'; return; }
     if(postType==='event'){
@@ -425,13 +458,15 @@ Pegasus.boot(async function(){
     btn.disabled=true; btn.textContent='Posting…'; err.textContent='';
     try{
       var pg=curPage();
-      var rr=pg?await sb.rpc('post_feed_item_as',{p_presence:pg.id,p_type:postType,p_content:txt,p_image:img||null,p_link:lnk||null,p_title:title||null,p_event_at:evAt,p_event_location:evLoc})
+      var imgs=upImgs.slice(); if(val('fdImg').trim()) imgs.unshift(val('fdImg').trim()); imgs=imgs.slice(0,MAX_IMGS);
+      var rr=await sb.rpc('post_feed_item_v2',{p_presence:pg?pg.id:null,p_type:postType,p_content:txt,p_images:imgs.length?imgs:null,p_link:lnk||null,p_title:title||null,p_event_at:evAt,p_event_location:evLoc});
+      if(rr.error&&rpcMissing(rr.error)) rr=pg?await sb.rpc('post_feed_item_as',{p_presence:pg.id,p_type:postType,p_content:txt,p_image:img||null,p_link:lnk||null,p_title:title||null,p_event_at:evAt,p_event_location:evLoc})
                :await sb.rpc('post_feed_item',{p_type:postType,p_content:txt,p_image:img||null,p_link:lnk||null,p_title:title||null,p_event_at:evAt,p_event_location:evLoc});
       if(rr.error) throw rr.error;
       var resp=rr.data||{};
       if(!resp.ok){ err.textContent=resp.message||'Could not post right now.'; btn.disabled=false; btn.textContent='Post to Feed'; return; }
       Pegasus.toast('✓','var(--green-dim)','Posted to the network',pg?('It’s live in the feed as '+pg.name+'.'):'It’s live in the feed and on your profile.');
-      mediaOpen=false; postType='update'; upImg=''; upLink=''; renderComposer();
+      mediaOpen=false; postType='update'; upImgs=[]; upLink=''; renderComposer();
       var nd=document.getElementById('fdNudge'); if(nd) nd.innerHTML='';
       before=null; exhausted=false; await loadFeed(true); loadEvents();
     }catch(e){ err.textContent='Could not post right now. Please try again.'; btn.disabled=false; btn.textContent='Post to Feed'; }
@@ -452,7 +487,12 @@ Pegasus.boot(async function(){
     var role=isCo?(p.presence_category||'Company'):[p.author_title,p.author_company].filter(Boolean).join(' · ');
     var nm=isCo?p.presence_name:p.author_name;
     var type=p.signal_type||'update';
-    var img=p.image_url?'<a class="fd-img" href="'+safeUrl(p.image_url)+'" target="_blank" rel="noopener noreferrer"><img src="'+safeUrl(p.image_url)+'" alt="" loading="lazy"></a>':'';
+    var pics=(Array.isArray(p.image_urls)&&p.image_urls.length>1)?p.image_urls.slice(0,5):(p.image_url?[p.image_url]:[]);
+    var img='';
+    if(pics.length===1) img='<a class="fd-img" href="'+safeUrl(pics[0])+'" target="_blank" rel="noopener noreferrer"><img src="'+safeUrl(pics[0])+'" alt="" loading="lazy"></a>';
+    else if(pics.length>1) img='<div class="fd-car"><div class="fd-car-track">'+pics.map(function(u){ return '<a href="'+safeUrl(u)+'" target="_blank" rel="noopener noreferrer"><img src="'+safeUrl(u)+'" alt="" loading="lazy"></a>'; }).join('')+'</div>'+
+      '<span class="fd-car-n">1/'+pics.length+'</span><div class="fd-car-dots">'+pics.map(function(_,i){ return '<i'+(i?'':' class="on"')+'></i>'; }).join('')+'</div>'+
+      '<button type="button" class="fd-car-btn p" aria-label="Previous photo">‹</button><button type="button" class="fd-car-btn n" aria-label="Next photo">›</button></div>';
     var vid=(type!=='event')?videoEmbed(p.link_url):'';
     var link=(p.link_url&&type!=='event'&&!vid)?'<a class="fd-linkcard" href="'+safeUrl(p.link_url)+'" target="_blank" rel="noopener noreferrer nofollow"><span>↗</span><span class="dom">'+esc(domainOf(p.link_url))+'</span></a>':'';
     var ev='';
@@ -529,6 +569,35 @@ Pegasus.boot(async function(){
       (r&&Array.isArray(r.data)?r.data:[]).forEach(function(x){ var n=document.querySelector('.fd-act.cmt[data-id="'+x.signal_id+'"] .n'); if(n) n.textContent=x.n||0; });
     }catch(e){}
   }
+  function wireThumbs(){
+    document.querySelectorAll('[data-rmimg]').forEach(function(x){ x.onclick=function(){ var i=+x.getAttribute('data-rmimg'); upImgs.splice(i,1); var keep=val('fdTa'), kt=val('fdTitle'); renderComposer(); setVal('fdTa',keep); setVal('fdTitle',kt); upd(); }; });
+  }
+  function wireCarousel(c){
+    var tr=c.querySelector('.fd-car-track'), n=c.querySelector('.fd-car-n'), dots=c.querySelectorAll('.fd-car-dots i'), total=dots.length;
+    function cur(){ return Math.round(tr.scrollLeft/Math.max(1,tr.clientWidth)); }
+    tr.addEventListener('scroll',function(){ var i=Math.min(total-1,Math.max(0,cur())); if(n) n.textContent=(i+1)+'/'+total; dots.forEach(function(d,j){ d.classList.toggle('on',j===i); }); },{passive:true});
+    var p=c.querySelector('.fd-car-btn.p'), nx=c.querySelector('.fd-car-btn.n');
+    if(p) p.onclick=function(){ tr.scrollTo({left:Math.max(0,cur()-1)*tr.clientWidth,behavior:'smooth'}); };
+    if(nx) nx.onclick=function(){ var i=cur()+1; if(i>=total) i=0; tr.scrollTo({left:i*tr.clientWidth,behavior:'smooth'}); };
+  }
+  function openShareMenu(btn,url,text){
+    var old=document.getElementById('fdShareMenu'); if(old){ old.remove(); if(old.getAttribute('data-for')===url) return; }
+    var u=encodeURIComponent(url), t=encodeURIComponent(text||'');
+    var m=document.createElement('div'); m.className='fd-share-menu'; m.id='fdShareMenu'; m.setAttribute('data-for',url);
+    m.innerHTML='<a target="_blank" rel="noopener" href="https://www.linkedin.com/sharing/share-offsite/?url='+u+'"><span>in</span>LinkedIn</a>'+
+      '<a target="_blank" rel="noopener" href="https://www.facebook.com/sharer/sharer.php?u='+u+'"><span>f</span>Facebook</a>'+
+      '<a target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?url='+u+(t?'&text='+t:'')+'"><span>𝕏</span>X</a>'+
+      '<a target="_blank" rel="noopener" href="https://wa.me/?text='+encodeURIComponent((text?text+' ':'')+url)+'"><span>✆</span>WhatsApp</a>'+
+      '<a href="mailto:?subject='+(t||encodeURIComponent('From Pegasus Capital Network'))+'&body='+encodeURIComponent((text?text+'\n\n':'')+url)+'"><span>✉</span>Email</a>'+
+      '<button type="button" data-copy><span>⧉</span>Copy link</button>';
+    document.body.appendChild(m);
+    var r=btn.getBoundingClientRect(), w=m.offsetWidth;
+    m.style.top=(window.scrollY+r.bottom+6)+'px';
+    m.style.left=Math.max(8,Math.min(window.scrollX+r.left, window.scrollX+document.documentElement.clientWidth-w-8))+'px';
+    m.querySelector('[data-copy]').onclick=async function(){ try{ await navigator.clipboard.writeText(url); Pegasus.toast('✓','var(--green-dim)','Link copied','Share it anywhere — it opens this post.'); }catch(e){ prompt('Copy this link:',url); } m.remove(); };
+    m.querySelectorAll('a').forEach(function(a){ a.addEventListener('click',function(){ setTimeout(function(){ m.remove(); },50); }); });
+    setTimeout(function(){ document.addEventListener('click',function off(e){ if(!m.contains(e.target)&&e.target!==btn){ m.remove(); document.removeEventListener('click',off); } }); },0);
+  }
   function wire(root){
     root.querySelectorAll('.fd-more').forEach(function(b){ b.onclick=function(){ var t=b.previousElementSibling; if(t) t.classList.remove('clamp'); b.remove(); }; });
     root.querySelectorAll('.fd-act.like').forEach(function(b){ b.onclick=async function(){
@@ -543,10 +612,14 @@ Pegasus.boot(async function(){
       var art=b.closest('article'); var owner=art?art.getAttribute('data-owner'):null;
       loadComments(id, owner);
     }; });
-    root.querySelectorAll('.fd-act.share').forEach(function(b){ b.onclick=async function(){
-      var url=ORIGIN+'/feed/post/'+b.getAttribute('data-id');
-      try{ if(navigator.share){ await navigator.share({url:url}); return; } }catch(e){ return; }
-      try{ await navigator.clipboard.writeText(url); Pegasus.toast('✓','var(--green-dim)','Link copied','Share it anywhere — it opens this post.'); }catch(e){ prompt('Copy this link:',url); }
+    root.querySelectorAll('.fd-car').forEach(wireCarousel);
+    root.querySelectorAll('.fd-act.share').forEach(function(b){ b.onclick=async function(ev){
+      var id=b.getAttribute('data-id'), url=ORIGIN+'/feed/post/'+id;
+      var art=b.closest('article'), t=art&&art.querySelector('.fd-post-title'), tx=art&&art.querySelector('.fd-post-txt');
+      var text=((t&&t.textContent)||(tx&&tx.textContent)||'').replace(/\s+/g,' ').trim().slice(0,140);
+      var touch=window.matchMedia&&window.matchMedia('(hover:none)').matches;
+      if(touch&&navigator.share){ try{ await navigator.share({title:text||'Pegasus Capital Network',text:text,url:url}); }catch(e){} return; }
+      openShareMenu(b,url,text);
     }; });
     root.querySelectorAll('.fd-act.del').forEach(function(b){ b.onclick=async function(){
       if(!confirm('Delete this post? This cannot be undone.')) return;
@@ -563,7 +636,8 @@ Pegasus.boot(async function(){
     try{
       var args=permalink?{p_limit:1,p_id:permalink}:{p_limit:PAGE,p_before:before,p_type:filter||null};
       var a2=Object.assign({},args); if(pageFilter&&!permalink) a2.p_presence=pageFilter;
-      var r=sb?await sb.rpc('get_network_feed_v2',a2):null;
+      var r=sb?await sb.rpc('get_network_feed_v3',a2):null;
+      if(r&&r.error&&rpcMissing(r.error)) r=await sb.rpc('get_network_feed_v2',a2);
       if(r&&r.error&&rpcMissing(r.error)) r=await sb.rpc('get_network_feed',args);
       if(r&&r.error) throw r.error;
       rows=(r&&Array.isArray(r.data))?r.data:[];
