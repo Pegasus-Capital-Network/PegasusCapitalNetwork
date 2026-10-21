@@ -1,0 +1,180 @@
+/* Pegasus — site languages.
+   One script on every page: a language switcher plus dictionary-based
+   translation of the page text (including text that scripts add later).
+   Dictionaries are produced by the i18n-translate function and served from
+   the public storage bucket "i18n". Strings not translated yet are reported
+   (public pages only) and get translated in the background.
+   ?lang=ar in any link opens the page in that language. */
+(function(){
+  'use strict';
+  if (window.__pegI18n) return; window.__pegI18n = true;
+
+  var LANGS = [['en','English'],['ar','العربية'],['zh','中文'],['ru','Русский'],['es','Español'],['fr','Français']];
+  var CODES = LANGS.map(function(l){ return l[0]; });
+  var C = window.PEG_CONFIG || {};
+  var SB_URL = C.SUPABASE_URL || 'https://trdwsssouhpawhfdkfqf.supabase.co';
+  var SB_KEY = C.SUPABASE_ANON || 'sb_publishable_hrR8wI6hM921mnxk7bBE_A_YKxWsoBI';
+  var PRIVATE = /^\/(dashboard|crm|admin|my-|deal-requests|messages|profile-edit|settings|ai-assistant|workspace|inbox|billing|notifications)/i;
+
+  function store(k, v){ try{ if (v === undefined) return localStorage.getItem(k); if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, v); }catch(e){ return null; } }
+
+  /* ── which language ── */
+  var qs = null; try{ qs = new URLSearchParams(location.search); }catch(e){}
+  var lang = (qs && qs.get('lang') || '').toLowerCase().slice(0,2);
+  if (CODES.indexOf(lang) >= 0) store('peg_lang', lang);
+  else {
+    lang = store('peg_lang') || '';
+    if (CODES.indexOf(lang) < 0) {
+      lang = 'en';
+      var nl = (navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language || 'en']);
+      for (var i = 0; i < nl.length; i++) { var c = String(nl[i]||'').toLowerCase().slice(0,2); if (c === 'en') break; if (CODES.indexOf(c) >= 0) { lang = c; break; } }
+    }
+  }
+  var html = document.documentElement;
+
+  /* ── switcher ── */
+  var CSS = '.peg-lang{position:fixed;left:14px;bottom:14px;z-index:1150;font-family:Inter,-apple-system,Segoe UI,Roboto,Arial,sans-serif}' +
+    '.peg-lang>button{display:inline-flex;align-items:center;gap:6px;border:1px solid rgba(14,24,36,.14);background:rgba(255,255,255,.96);backdrop-filter:blur(6px);border-radius:999px;padding:7px 11px;font:600 12.5px/1 inherit;color:#1b3a5b;cursor:pointer;box-shadow:0 4px 14px rgba(14,24,36,.12)}' +
+    '.peg-lang>button svg{width:15px;height:15px}' +
+    '.peg-lang-m{position:absolute;left:0;bottom:calc(100% + 8px);background:#fff;border:1px solid #e6e9ed;border-radius:12px;box-shadow:0 16px 40px rgba(14,24,36,.18);padding:6px;min-width:190px;display:none}' +
+    '.peg-lang.open .peg-lang-m{display:block}' +
+    '.peg-lang-m a{display:flex;justify-content:space-between;gap:12px;padding:9px 11px;border-radius:8px;color:#0e1824;text-decoration:none;font-size:14px}' +
+    '.peg-lang-m a:hover{background:#f3f5f8}.peg-lang-m a.on{font-weight:700;color:#1b3a5b}.peg-lang-m a small{color:#8a94a1;font-size:11px;text-transform:uppercase}' +
+    '.peg-lang-m p{font-size:11px;color:#8a94a1;padding:6px 11px 4px;line-height:1.4;max-width:220px}' +
+    'html[dir=rtl] .peg-lang{left:auto;right:14px}html[dir=rtl] .peg-lang-m{left:auto;right:0}' +
+    'html[dir=rtl] body{text-align:right}' +
+    'html.peg-i18n-wait body{opacity:0}html body{transition:opacity .15s}';
+  var st = document.createElement('style'); st.textContent = CSS; (document.head || html).appendChild(st);
+
+  if (lang !== 'en') {
+    html.setAttribute('lang', lang === 'zh' ? 'zh-CN' : lang);
+    if (lang === 'ar') html.setAttribute('dir', 'rtl');
+  }
+
+  function switcher(){
+    if (document.querySelector('.peg-lang')) return;
+    var cur = LANGS.filter(function(l){ return l[0] === lang; })[0] || LANGS[0];
+    var w = document.createElement('div'); w.className = 'peg-lang'; w.setAttribute('translate','no'); w.setAttribute('data-i18n-skip','1');
+    var items = LANGS.map(function(l){
+      var u; try{ u = new URL(location.href); u.searchParams.set('lang', l[0]); u = u.pathname + u.search + u.hash; }catch(e){ u = '?lang=' + l[0]; }
+      return '<a href="' + u + '" data-l="' + l[0] + '"' + (l[0] === lang ? ' class="on"' : '') + '><span>' + l[1] + '</span><small>' + l[0] + '</small></a>';
+    }).join('');
+    w.innerHTML = '<button type="button" aria-haspopup="true" aria-label="Language"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.7 3.8 5.7 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-5.7-3.8-9S9.5 5.7 12 3z"/></svg>' + cur[0].toUpperCase() + '</button>' +
+      '<div class="peg-lang-m">' + items + (lang !== 'en' ? '<p>Automatic translation. The English version governs.</p>' : '') + '</div>';
+    w.querySelector('button').onclick = function(e){ e.stopPropagation(); w.classList.toggle('open'); };
+    w.querySelectorAll('a').forEach(function(a){ a.addEventListener('click', function(){ store('peg_lang', a.getAttribute('data-l')); }); });
+    document.addEventListener('click', function(e){ if (!w.contains(e.target)) w.classList.remove('open'); });
+    document.body.appendChild(w);
+  }
+
+  function ready(fn){ if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fn); else fn(); }
+  if (lang === 'en') { ready(switcher); return; }
+
+  /* ── translation ── */
+  html.classList.add('peg-i18n-wait');
+  setTimeout(function(){ html.classList.remove('peg-i18n-wait'); }, 1600);
+
+  var DICT = null, missing = {}, done = new WeakMap(), tx = new WeakMap();
+  var NUM = /\$?\d[\d,]*(?:\.\d+)?%?[KMB+]?/g;
+  var SKIP_TAGS = { SCRIPT:1, STYLE:1, NOSCRIPT:1, TEXTAREA:1, CODE:1, PRE:1, SVG:1, IFRAME:1, CANVAS:1 };
+  var canReport = !PRIVATE.test(location.pathname);
+
+  function keyOf(t){ var nums = []; var k = t.replace(NUM, function(m){ nums.push(m); return '{' + nums.length + '}'; }); return { k: k, nums: nums }; }
+  function lookup(t){
+    if (!/[A-Za-z]/.test(t)) return null;
+    if (DICT[t]) return DICT[t];
+    var o = keyOf(t);
+    if (o.nums.length && DICT[o.k]) return DICT[o.k].replace(/\{(\d+)\}/g, function(m, n){ return o.nums[n-1] != null ? o.nums[n-1] : m; });
+    if (canReport && t.length <= 300 && !/@|https?:|www\./i.test(t)) missing[o.nums.length ? o.k : t] = 1;
+    return null;
+  }
+  function skipEl(el){
+    for (var e = el; e && e !== document.body; e = e.parentElement) {
+      if (SKIP_TAGS[e.tagName] || e.isContentEditable) return true;
+      if (e.getAttribute && (e.getAttribute('translate') === 'no' || e.hasAttribute('data-i18n-skip'))) return true;
+    }
+    return false;
+  }
+  function doText(n){
+    var v = n.nodeValue; if (!v || done.get(n) === v || tx.get(n) === v) return;
+    var t = v.trim(); if (t.length < 2) return;
+    if (skipEl(n.parentElement)) return;
+    var tr = lookup(t.replace(/\s+/g, ' '));
+    if (tr) { var nv = v.replace(t, tr); tx.set(n, nv); n.nodeValue = nv; } else done.set(n, v);
+  }
+  var ATTRS = ['placeholder', 'title', 'aria-label'];
+  function doAttrs(el){
+    if (skipEl(el)) return;
+    ATTRS.forEach(function(a){
+      var v = el.getAttribute(a); if (!v) return;
+      var mark = 'data-i18n-' + a; if (el.getAttribute(mark) === v) return;
+      var tr = lookup(v.trim()); if (tr) { el.setAttribute(a, tr); el.setAttribute(mark, tr); } else el.setAttribute(mark, v);
+    });
+    if (el.tagName === 'INPUT' && /^(button|submit)$/i.test(el.type) && el.value) {
+      var tv = lookup(el.value.trim()); if (tv) el.value = tv;
+    }
+  }
+  function walk(root){
+    if (!root) return;
+    if (root.nodeType === 3) { doText(root); return; }
+    if (root.nodeType !== 1 || SKIP_TAGS[root.tagName]) return;
+    var tw = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null), n;
+    while ((n = tw.nextNode())) doText(n);
+    if (root.querySelectorAll) { doAttrs(root); root.querySelectorAll('[placeholder],[title],[aria-label],input[type=button],input[type=submit]').forEach(doAttrs); }
+  }
+  function translateTitle(){ var t = document.title; if (t && document.__pegT !== t) { var tr = lookup(t.trim()); if (tr) document.title = tr; document.__pegT = document.title; } }
+
+  var pend = [], timer = null;
+  function flush(){ timer = null; var list = pend; pend = []; list.forEach(walk); translateTitle(); scheduleReport(); }
+  function observe(){
+    var mo = new MutationObserver(function(ms){
+      ms.forEach(function(m){
+        if (m.type === 'characterData') pend.push(m.target);
+        else if (m.type === 'attributes') pend.push(m.target);
+        else m.addedNodes.forEach(function(x){ pend.push(x); });
+      });
+      if (!timer) timer = setTimeout(flush, 60);
+    });
+    mo.observe(document.body, { childList: true, subtree: true, characterData: true, attributes: true, attributeFilter: ['placeholder', 'title', 'aria-label'] });
+  }
+
+  var reportTimer = null, reported = {};
+  try{ reported = JSON.parse(store('peg_i18n_rep') || '{}') || {}; }catch(e){ reported = {}; }
+  function scheduleReport(){ if (!canReport || reportTimer) return; reportTimer = setTimeout(sendReport, 4000); }
+  function sendReport(){
+    reportTimer = null;
+    var list = Object.keys(missing).filter(function(k){ return !reported[k]; }).slice(0, 60);
+    missing = {};
+    if (!list.length) return;
+    list.forEach(function(k){ reported[k] = 1; });
+    var keys = Object.keys(reported); if (keys.length > 3000) { reported = {}; }
+    store('peg_i18n_rep', JSON.stringify(reported));
+    try{
+      fetch(SB_URL + '/rest/v1/rpc/i18n_report', { method: 'POST', keepalive: true,
+        headers: { 'Content-Type': 'application/json', apikey: SB_KEY },
+        body: JSON.stringify({ p_strings: list, p_page: location.pathname }) }).catch(function(){});
+    }catch(e){}
+  }
+
+  function start(dict){
+    DICT = dict || {};
+    ready(function(){
+      walk(document.body); translateTitle(); switcher(); observe();
+      html.classList.remove('peg-i18n-wait');
+      scheduleReport();
+    });
+  }
+
+  var ck = 'peg_i18n_' + lang, cached = null;
+  try{ cached = JSON.parse(store(ck) || 'null'); }catch(e){ cached = null; }
+  var fresh = cached && cached.t && (Date.now() - cached.t < 30 * 60 * 1000);
+  if (cached && cached.d) start(cached.d);
+  if (!fresh) {
+    var bucket = Math.floor(Date.now() / (10 * 60 * 1000));
+    fetch(SB_URL + '/storage/v1/object/public/i18n/' + lang + '.json?v=' + bucket).then(function(r){ return r.ok ? r.json() : {}; }).then(function(d){
+      store(ck, JSON.stringify({ t: Date.now(), d: d }));
+      if (!cached || !cached.d) start(d);
+      else if (JSON.stringify(d).length !== JSON.stringify(cached.d).length) { DICT = d; done = new WeakMap(); ready(function(){ walk(document.body); translateTitle(); }); }
+    }).catch(function(){ if (!cached || !cached.d) start({}); });
+  }
+})();
