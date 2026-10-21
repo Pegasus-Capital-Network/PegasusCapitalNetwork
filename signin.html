@@ -50,6 +50,7 @@ Pegasus.mountPublic();
       }
     }
   } catch(_) {}
+  try { var _nx=(new URLSearchParams(location.search).get('next')||'').trim(); if(_nx && _nx.charAt(0)==='/' && _nx.indexOf('//')!==0) localStorage.setItem('pegasus.redirectAfterAuth', _nx); } catch(_) {}
   try {
     var s = await PegAuth.getSession();
     if (s && s.user) {

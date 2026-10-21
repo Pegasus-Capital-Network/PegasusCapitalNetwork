@@ -68,7 +68,7 @@ Pegasus.boot(async function(){
   if(!uid){
     try{ localStorage.setItem('pegasus.redirectAfterAuth','/claim?presence='+encodeURIComponent(slug)); }catch(_){}
     state('Sign in to claim this page','Claiming connects this page to your Pegasus account. Sign in or create a free profile, and we’ll bring you right back.<br><br><b>Tip:</b> use your work email on the company’s own domain (e.g. you@yourcompany.com) — claims from a verified work email are approved instantly.',
-      '<div style="display:flex;gap:10px;flex-wrap:wrap"><a class="btn btn-pri" href="/signin.html">Sign In</a><a class="btn btn-ghost" href="/signup.html">Create Free Profile</a></div>', 0);
+      '<div style="display:flex;gap:10px;flex-wrap:wrap"><a class="btn btn-pri" href="/signup.html?role=lender&next='+encodeURIComponent('/claim?presence='+slug)+'">Create free profile</a><a class="btn btn-ghost" href="/signin.html?next='+encodeURIComponent('/claim?presence='+slug)+'">Sign in</a></div>', 0);
     return;
   }
 
