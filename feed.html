@@ -187,17 +187,55 @@
 .fd-ai-sub{font-size:11.5px;color:var(--text3);text-align:center;margin-top:6px}
 .fd-ai-link{background:none;border:0;padding:0;margin-top:10px;font:inherit;font-size:13px;font-weight:600;color:var(--navy,#1b3a5b);cursor:pointer;text-decoration:underline}
 .fd-back{font-size:12px;color:var(--blue);text-decoration:none}
+.fd-worlds{display:flex;gap:8px;flex-wrap:wrap;position:relative}
+.fd-w{position:relative}
+.fd-w>button{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--border);background:#fff;border-radius:999px;padding:8px 14px;font:inherit;font-size:13px;font-weight:600;color:var(--text);cursor:pointer;white-space:nowrap}
+.fd-w>button .s{display:none}
+.fd-w.on>button{border-color:#9a7b3f;background:#fbf7ef;color:#6e5427}
+.fd-w-menu{position:absolute;top:calc(100% + 6px);left:0;z-index:60;background:#fff;border:1px solid var(--border);border-radius:14px;box-shadow:0 16px 40px rgba(14,24,36,.16);padding:6px;min-width:270px;display:none}
+.fd-w.open .fd-w-menu{display:block}
+.fd-w-menu a{display:block;padding:10px 12px;border-radius:9px;text-decoration:none;color:var(--text)}
+.fd-w-menu a:hover{background:var(--bg2,#f3f5f8)}
+.fd-w-menu a b{display:block;font-size:13.5px;font-weight:600}
+.fd-w-menu a small{display:block;font-size:11.5px;color:var(--text3);margin-top:1px}
+@media(max-width:640px){
+  .fd-head{flex-direction:column;align-items:flex-start;gap:10px}
+  .fd-head h1{font-size:22px}
+  .fd-w>button .l{display:none}.fd-w>button .s{display:inline}
+  .fd-worlds{width:100%}
+  .fd-w{position:static}
+  .fd-w-menu{left:0;right:0;min-width:0}
+}
 </style>
 </head>
 <body>
 <div id="nav"></div>
+<script>
+(function(){
+  function build(){
+    var host=document.getElementById('fdWorlds'); if(!host) return;
+    var W=window.PEG_WORLDS; if(!W){ return setTimeout(build,60); }
+    var NAMES={capital:['Capital & Real Estate','Capital'],ai:['AI & Technology','AI'],private:['Private & Tokenized','Private']};
+    var qs=new URLSearchParams(location.search), cur=(qs.get('world')||'').toLowerCase();
+    if(!W[cur]){ try{ cur=localStorage.getItem('peg_world')||''; }catch(e){ cur=''; } }
+    if(!W[cur]) cur='';
+    host.innerHTML=Object.keys(NAMES).map(function(k){
+      return '<div class="fd-w'+(k===cur?' on':'')+'" data-w="'+k+'"><button type="button" aria-haspopup="true"><span class="l">'+NAMES[k][0]+'</span><span class="s">'+NAMES[k][1]+'</span> \u25BE</button>'+
+        '<div class="fd-w-menu">'+W[k].items.map(function(i){ return '<a href="'+i[1]+'"><b>'+i[0]+'</b>'+(i[2]?'<small>'+i[2]+'</small>':'')+'</a>'; }).join('')+'</div></div>';
+    }).join('');
+    function closeAll(except){ host.querySelectorAll('.fd-w.open').forEach(function(x){ if(x!==except) x.classList.remove('open'); }); }
+    host.querySelectorAll('.fd-w>button').forEach(function(b){ b.onclick=function(e){ e.stopPropagation(); var w=b.parentNode; closeAll(w); w.classList.toggle('open'); host.querySelectorAll('.fd-w').forEach(function(x){ x.classList.toggle('on', x===w); }); try{ localStorage.setItem('peg_world', w.getAttribute('data-w')); }catch(_){} }; });
+    document.addEventListener('click',function(e){ if(!host.contains(e.target)) closeAll(); });
+    if(qs.get('world')&&W[cur]){ var w=host.querySelector('[data-w="'+cur+'"]'); if(w){ w.classList.add('open'); try{ localStorage.setItem('peg_world',cur); }catch(_){} } }
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',build); else build();
+})();
+</script>
 
 <div class="fd-shell">
   <div class="fd-head">
-    <div>
-      <h1>Network Feed</h1>
-      <p>What lenders, brokers, advisors, and real estate professionals across Pegasus are working on, offering, and hosting. Post to be seen by the whole network.</p>
-    </div>
+    <h1>Network Feed</h1>
+    <div class="fd-worlds" id="fdWorlds"></div>
   </div>
 
   <div class="fd-grid">
@@ -229,7 +267,7 @@
 <script src="/js/pegasus-api.js"></script>
 <script src="/js/pegasus-forms.js"></script>
 <script src="/js/pegasus-auth.js?v=20261020b"></script>
-<script src="/js/pegasus-core.js?v=20261020c"></script>
+<script src="/js/pegasus-core.js?v=20261021a"></script>
 <script src="/js/pegasus-billing.js"></script>
 <script src="/js/pegasus-pages.js"></script>
 <script src="/js/pegasus-invite.js"></script>

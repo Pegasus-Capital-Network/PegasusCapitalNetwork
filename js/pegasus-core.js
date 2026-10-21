@@ -87,6 +87,22 @@
     setTimeout(()=>{ t.classList.remove('show'); setTimeout(()=>t.remove(),320); },2800);
   }
 
+  // --- world menus: one place for every "what do you want to do" link ---
+  var PEG_WORLDS={
+    capital:{label:'Capital',items:[['Invest in real estate loans','/pegasus-direct-lending.html','Monthly interest, recorded deed of trust'],['Buy or refinance a home','/find-a-lender?type=residential_purchase','See matched lenders'],['Finance an investment deal','/get-financing.html','Bridge, construction, fix & flip, DSCR'],['Who lends what','/lending-programs.html','Programs lenders publish'],['Find a lender','/find-a-lender','Match by state and amount'],['Lender directory','/lenders','Ranked by real lending']]},
+    ai:{label:'AI',items:[['Raising? Apply for funding','/apply-for-funding.html','Meet aligned investors'],['AI companies','/ai-directory.html#companies','Startups in the network'],['AI investors','/ai-directory.html#investors','Who funds AI'],['Needs board','/ai-needs.html','What clients are looking for'],['About Pegasus AI','/ai-network.html','']]},
+    private:{label:'Private',items:[['Family offices & investors','/private-network.html#register','Introduce your mandate'],['Capital & development partners','/private-network.html#register','Projects and co-investment'],['Tokenization','/private-network.html#rwa','Real-world assets'],['About Private Network','/private-network.html','']]}
+  };
+  window.PEG_WORLDS=PEG_WORLDS;
+  function worldLinksHTML(){
+    var G=function(k){ var w=PEG_WORLDS[k]; return '<div class="nav-group"><span tabindex="0" role="button" aria-haspopup="true">'+w.label+' \u25BE</span><div class="nav-drop">'+w.items.map(function(i){ return '<a href="'+i[1]+'"><span>'+i[0]+'</span>'+(i[2]?'<small>'+i[2]+'</small>':'')+'</a>'; }).join('')+'</div></div>'; };
+    var feedOn=(location.pathname.indexOf('/feed')===0)?' class="on"':'';
+    return '<a href="/feed"'+feedOn+'>Feed</a>'+G('capital')+G('ai')+G('private');
+  }
+  function worldDrawerHTML(){
+    return '<a href="/feed"><b>Network Feed</b></a>'+['capital','ai','private'].map(function(k){ var w=PEG_WORLDS[k]; return '<div class="mob-sec">'+({capital:'Capital & Real Estate',ai:'Pegasus AI',private:'Private Network'})[k]+'</div>'+w.items.map(function(i){ return '<a href="'+i[1]+'">'+i[0]+'</a>'; }).join(''); }).join('');
+  }
+
   // --- public nav (full-site mega menu) ---
   function publicNav(active){
     const G=(label,items)=>`<div class="nav-group"><span tabindex="0" role="button" aria-haspopup="true">${label} \u25BE</span><div class="nav-drop">${items.map(i=>`<a href="${i[1]}"><span>${i[0]}</span>${i[2]?`<small>${i[2]}</small>`:''}</a>`).join('')}</div></div>`;
@@ -94,7 +110,7 @@
     const learn=G('Learn',[['How Pegasus Works','/how-it-works.html','The system explained'],['Growth Capital','/growth-capital.html','Financing & programs'],['Capital Sessions','/capital-sessions.html','Live institutional briefings'],['Capital Academy','/capital-academy.html','Finance fundamentals'],['Network Badge','/network-badge.html','Show your Pegasus connection'],['FAQ','/faq.html','Common questions']]);
     return `<a href="#maincontent" class="skip-link" onclick="var m=document.getElementById('maincontent')||document.querySelector('main,section,.section,.auth-wrap,.ar-wrap,.view');if(m){m.setAttribute('tabindex','-1');m.focus();}">Skip to content</a><nav class="pub-nav">
       <a class="brand" href="/"><img class="brand-mark" src="/assets/brand/pegasus-mark.png" alt="Pegasus"><span>Pegasus</span></a>
-      <div class="pub-links"><a href="/capital.html" class="${active==='People'||active==='Capital'?'on':''}">Capital &amp; Real Estate</a><a href="/lenders">Lenders</a><a href="/ai-network.html" class="${active==='AI'?'on':''}">Pegasus AI</a><a href="/private-network.html" class="${active==='Private'?'on':''}">Private Network</a><a href="/how-it-works.html" class="${active==='How'?'on':''}">How it works</a></div>
+      <div class="pub-links">${worldLinksHTML()}</div>
       <div class="nav-cta" id="pub-nav-cta"><a class="btn btn-ghost" id="nav-signin-btn" href="/signin.html">Sign In</a><a class="btn btn-pri nav-create" id="nav-create-btn" href="/signup.html">Create Free Profile</a></div>
       <button class="mob-menu-btn" id="mobMenuBtn" aria-label="Menu"><span></span><span></span><span></span></button>
     </nav>
@@ -102,10 +118,9 @@
     <div class="mob-drawer" id="mobDrawer">
       <div class="mob-drawer-head"><img src="/assets/brand/pegasus-wordmark.png" style="height:24px"><button class="mob-drawer-close" id="mobClose" aria-label="Close menu">✕</button></div>
       <div class="mob-drawer-nav" id="mobDrawerNav">
-        <a href="/capital.html">Capital &amp; Real Estate</a><a href="/ai-network.html">Pegasus AI</a><a href="/private-network.html">Private Network</a><a href="/how-it-works.html">How it works</a>
-        <div class="mob-sec">Capital &amp; Real Estate</div>
-        <a href="/realtors.html">Realtors</a><a href="/lenders">Lender Directory</a><a href="/find-a-lender">Find a Lender</a><a href="/lending-programs.html">Lending Programs</a>
+        ${worldDrawerHTML()}
         <div class="mob-sec">More</div>
+        <a href="/how-it-works.html">How it works</a>
         <a href="/about.html">About</a><a href="/contact.html">Contact</a><a href="/faq.html">FAQ</a>
       </div>
       <div class="mob-drawer-foot" id="mobDrawerFoot"><a class="btn btn-ghost" href="/signin.html">Sign In</a><a class="btn btn-pri nav-create" href="/signup.html">Create Profile</a></div>
@@ -889,40 +904,31 @@
           '</div>';
       } else {
         ctaEl.innerHTML =
-          (slug ? '<a class="btn btn-ghost" href="/u/'+slug+'" style="font-size:13px">My Profile</a>' : '') +
-          '<a class="btn btn-pri nav-create" href="/dashboard.html">My Workspace \u2192</a>';
+          '<div class="nav-group peg-acct"><span tabindex="0" role="button" aria-haspopup="true" class="btn btn-ghost" style="font-size:13px">Me \u25BE</span><div class="nav-drop" style="left:auto;right:0">'+
+            '<a href="'+(slug?'/u/'+slug:'/profile.html')+'"><span>My profile</span></a>'+
+            '<a href="/profile-edit.html"><span>Edit profile</span></a>'+
+            '<a href="/my-presences.html"><span>My business pages</span></a>'+
+            '<a href="/dashboard.html"><span>Workspace</span><small>Requests, CRM, deal rooms</small></a>'+
+            '<a href="#" onclick="PegAuth.signOut();return false"><span>Sign out</span></a>'+
+          '</div></div>';
       }
       ctaEl.style.visibility = '';
     }
 
     /* Replace public marketing links with member navigation. Logged-in members
        should never see the anonymous marketing nav. Done once (idempotent). */
-    var links = document.querySelector('.pub-links');
-    if (links && links.getAttribute('data-member') !== '1') {
-      links.setAttribute('data-member', '1');
-      var on = function(p){ return location.pathname.indexOf(p) === 0 ? ' on' : ''; };
-      links.innerHTML =
-        '<a class="member'+on('/businesses')+'" href="/businesses">Directory</a>'+
-        '<a class="member'+on('/lending-programs')+'" href="/lending-programs.html">Programs</a>'+
-        '<a class="member'+on('/dashboard')+'" href="/dashboard.html">My Workspace</a>'+
-        '<a class="member'+(slug?on('/u/'):'')+'" href="'+(slug?'/u/'+slug:'/profile.html')+'">My Profile</a>';
-    }
+    /* Members keep the same Feed + world menus as everyone else. */
     /* Mobile drawer → member links too */
     var mdn = document.getElementById('mobDrawerNav');
     if (mdn && mdn.getAttribute('data-member') !== '1') {
       mdn.setAttribute('data-member', '1');
       mdn.innerHTML =
-        '<a href="/businesses">Directory</a>'+
-        '<a href="/lending-programs.html">Lending Programs</a>'+
-        '<a href="/dashboard.html">My Workspace</a>'+
-        '<a href="'+(slug?'/u/'+slug:'/profile.html')+'">My Profile</a>'+
-        '<div class="mob-sec">Account</div>'+
-        '<a href="/my-presences.html">Business Pages</a>'+
-        '<a href="/feed">Feed</a>'+
-        '<a href="/deal-requests.html">Financing Requests</a>'+
-        '<a href="/membership.html">Access & Growth</a>'+
-        '<a href="/profile-edit.html">Manage Profile</a>'+
-        '<a href="/share-studio.html">Share Studio</a>';
+        '<div class="mob-sec">Me</div>'+
+        '<a href="'+(slug?'/u/'+slug:'/profile.html')+'">My profile</a>'+
+        '<a href="/profile-edit.html">Edit profile</a>'+
+        '<a href="/my-presences.html">My business pages</a>'+
+        '<a href="/dashboard.html">Workspace</a>'+
+        worldDrawerHTML();
     }
     var mdf = document.getElementById('mobDrawerFoot');
     if (mdf && mdf.getAttribute('data-member') !== '1') {
