@@ -207,7 +207,7 @@ function shell(o){
     '<meta name="twitter:card" content="summary"><meta name="twitter:title" content="'+esc(o.title)+'"><meta name="twitter:description" content="'+esc(o.desc)+'">'+
     '<link rel="stylesheet" href="/css/pegasus.css"><link rel="icon" href="/assets/brand/favicon.ico">'+
     (o.ld||[]).map(ld).join("")+
-    '<style>'+CSS+'</style></head><body>'+
+    '<style>'+CSS+'</style><script src="/js/i18n.js?v=20261021e"></script><script src="/js/ticker.js?v=20261021a" defer></script></head><body>'+
     '<nav class="pub-nav"><a class="brand" href="/"><img class="brand-mark" src="/assets/brand/pegasus-symbol.svg" alt="Pegasus"><span>Pegasus Network</span></a><div class="pub-links"><a href="/feed">Feed</a><a href="/people">People</a><a href="/businesses">Businesses</a><a href="/events">Events</a><a href="/rankings">Rankings</a></div><div class="nav-cta" id="dirNavCta"><a class="btn btn-ghost" href="/signin.html">Sign In</a><a class="btn btn-pri" href="/signup.html">Create Free Profile</a></div></nav>'+
     // Page is CDN-cached for everyone, so swap the guest CTA client-side for signed-in members.
     '<script>(function(){try{var raw=localStorage.getItem("pegasus.auth");if(!raw)return;var pj=JSON.parse(raw);if(!(pj&&(pj.access_token||(pj.currentSession&&pj.currentSession.access_token))))return;var c=document.getElementById("dirNavCta");if(!c)return;var s="";try{s=localStorage.getItem("peg_slug")||"";}catch(_){}c.innerHTML=\'<a class="btn btn-ghost" href="/members.html">Members Network</a><a class="btn btn-ghost" href="\'+(s?"/u/"+encodeURIComponent(s):"/profile-edit.html")+\'">My Profile</a><a class="btn btn-pri" href="/dashboard.html">My Workspace →</a>\';}catch(_){}})();</script>'+
