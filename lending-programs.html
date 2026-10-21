@@ -120,6 +120,8 @@ h1{font-weight:800;font-size:clamp(30px,4.6vw,48px);line-height:1.05;letter-spac
  .hero{padding:20px 0 8px}
  #programs .h2-sub,#deals .h2-sub{display:none}
 }
+.card .uc{display:inline-block;margin:10px 0 0;font-size:11px;font-weight:600;letter-spacing:.02em;color:#6b7685;background:#f3f5f8;border:1px dashed #cfd6de;border-radius:999px;padding:3px 10px}
+.card .pnotes{font-size:12.5px;color:var(--muted);line-height:1.5;margin-top:8px}
 </style></head>
 <body>
 <div class="bg"></div>
@@ -219,7 +221,7 @@ h1{font-weight:800;font-size:clamp(30px,4.6vw,48px);line-height:1.05;letter-spac
   function lenderHref(p){ return p.company_slug?('/business/'+encodeURIComponent(p.company_slug)):(p.profile_slug?('/u/'+encodeURIComponent(p.profile_slug)):'#'); }
   function card(p){
     var name=p.company_page_name||p.company_name||p.lender_name||'Lender';
-    var who=(p.company_page_name||p.company_name)&&p.lender_name&&p.lender_name!==name?p.lender_name:(p.location||'');
+    var who=p.unclaimed?(p.company_location||''):((p.company_page_name||p.company_name)&&p.lender_name&&p.lender_name!==name?p.lender_name:(p.location||''));
     var initials=name.split(/\s+/).map(function(w){return w.charAt(0);}).join('').slice(0,2).toUpperCase();
     var logo=p.logo_url?('<img src="'+esc(p.logo_url)+'" alt="">'):(p.avatar_url?('<img src="'+esc(p.avatar_url)+'" alt="">'):esc(initials));
     var types=(p.loan_types||[]).map(function(t){ return '<span class="chip">'+esc(TYPES[t]||t)+'</span>'; }).join('');
@@ -230,12 +232,18 @@ h1{font-weight:800;font-size:clamp(30px,4.6vw,48px);line-height:1.05;letter-spac
     if(p.dscr_min) facts.push(['Min DSCR',String(p.dscr_min)]);
     var firstType=(p.loan_types&&p.loan_types[0])||'';
     var href=lenderHref(p);
-    return '<div class="card"><a class="lender" href="'+href+'"><span class="logo">'+logo+'</span><span><span class="lname">'+esc(name)+'</span><br><span class="lsub">'+esc(who)+'</span></span></a>'+
+    var site=p.source_url||p.company_website||'';
+    var acts=p.unclaimed
+      ? (site?'<a class="btn sm" href="'+esc(site)+'" target="_blank" rel="noopener nofollow">Visit lender</a>':'')+(p.company_slug?'<a class="btn ghost sm" href="/claim?presence='+encodeURIComponent(p.company_slug)+'">Your company? Claim it</a>':'')
+      : '<a class="btn sm" href="/find-a-lender'+(firstType?('?type='+encodeURIComponent(firstType)):'')+'">Send a deal</a>'+(href!=='#'?'<a class="btn ghost sm" href="'+href+'">View lender</a>':'');
+    return '<div class="card'+(p.unclaimed?' unclaimed':'')+'"><a class="lender" href="'+href+'"><span class="logo">'+logo+'</span><span><span class="lname">'+esc(name)+'</span><br><span class="lsub">'+esc(who)+'</span></span></a>'+
+      (p.unclaimed?'<div class="uc">Unclaimed · from the lender’s public website</div>':'')+
       '<div class="pname">'+esc(p.program_name||'')+'</div>'+
       (types?'<div class="chips">'+types+'</div>':'')+
       '<div class="facts">'+facts.map(function(f){ return '<div class="fact"><div class="k">'+esc(f[0])+'</div><div class="v">'+esc(f[1])+'</div></div>'; }).join('')+'</div>'+
       '<div class="states"><span style="color:var(--muted)">Lends in:</span> '+esc(st)+(p.bridge_ok?' · Bridge OK':'')+(p.construction_ok?' · Construction OK':'')+'</div>'+
-      '<div class="acts"><a class="btn sm" href="/find-a-lender'+(firstType?('?type='+encodeURIComponent(firstType)):'')+'">Send a deal</a>'+(href!=='#'?'<a class="btn ghost sm" href="'+href+'">View lender</a>':'')+'</div></div>';
+      (p.notes?'<div class="pnotes">'+esc(p.notes)+'</div>':'')+
+      '<div class="acts">'+acts+'</div></div>';
   }
   function render(){
     var t=$('fType').value, s=$('fState').value, amt=digits($('fAmount').value);
@@ -264,10 +272,10 @@ h1{font-weight:800;font-size:clamp(30px,4.6vw,48px);line-height:1.05;letter-spac
     try{
       var r=await sb.from('public_lender_programs').select('*').order('updated_at',{ascending:false}).limit(300);
       if(r.error) throw r.error;
-      ALL=r.data||[];
+      ALL=(r.data||[]).sort(function(x,y){ return (x.unclaimed?1:0)-(y.unclaimed?1:0); });
     }catch(e){ console.error('[programs]',e); ALL=[]; }
     var lenders={}, states={}, national=false;
-    ALL.forEach(function(p){ lenders[p.user_id]=1; if(!p.states||!p.states.length) national=true; else p.states.forEach(function(x){ states[x]=1; }); });
+    ALL.forEach(function(p){ lenders[p.company_slug||p.user_id]=1; if(!p.states||!p.states.length) national=true; else p.states.forEach(function(x){ states[x]=1; }); });
     $('stPrograms').textContent=ALL.length; $('stLenders').textContent=Object.keys(lenders).length;
     $('stStates').textContent=national?'All':Object.keys(states).length;
     render();
