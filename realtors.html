@@ -104,18 +104,22 @@ h1{font-weight:800;font-size:clamp(34px,5vw,52px);line-height:1.04;letter-spacin
   function esc(x){return (x==null?'':String(x)).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
   function initials(n){return (n||'').split(/\s+/).map(function(w){return w[0]||'';}).slice(0,2).join('').toUpperCase();}
   function telHref(p){return 'tel:'+String(p||'').replace(/[^0-9+]/g,'');}
+  function webHref(u){u=String(u||'').trim();if(!u)return '';return /^https?:\/\//i.test(u)?u:('https://'+u.replace(/^\/+/,''));}
+  function completeness(a){return (a.photo_url?3:0)+(a.brokerage?2:0)+(a.specialty?1:0)+(a.dre?1:0)+(a.city?1:0)+(a.website?1:0)+(a.phone?1:0);}
 
   function card(a){
     var photo=a.photo_url
       ? '<img class="ph" src="'+esc(a.photo_url)+'" alt="'+esc(a.full_name)+'" loading="lazy" onerror="this.outerHTML=\'<div class=&quot;ph ph-fallback&quot; style=&quot;aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;color:#737e8b;font-weight:700;font-size:34px;background:#f6f7f9;border-bottom:1px solid #e6e9ed&quot;>'+esc(initials(a.full_name))+'</div>\'">'
       : '<div class="ph ph-fallback" style="aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;color:#737e8b;font-weight:700;font-size:34px;background:#f6f7f9;border-bottom:1px solid #e6e9ed">'+esc(initials(a.full_name))+'</div>';
     var meta=[a.dre?('DRE '+esc(a.dre)):'',[a.city,a.state].filter(Boolean).map(esc).join(', ')].filter(Boolean).join(' · ');
+    var site=webHref(a.website);
     var contact='';
     if(a.phone) contact+='<a class="btn call" href="'+telHref(a.phone)+'">Call '+esc(a.phone)+'</a>';
     if(a.email) contact+='<a class="btn mail" href="mailto:'+esc(a.email)+'">Email</a>';
+    if(site) contact+='<a class="btn mail" href="'+esc(site)+'" target="_blank" rel="noopener">Website</a>';
     return '<div class="ag">'+photo+'<div class="body">'+
       '<div class="nm">'+esc(a.full_name)+'</div>'+
-      (a.job_title?'<div class="ti">'+esc(a.job_title)+'</div>':'')+
+      '<div class="ti">'+esc(a.job_title||'Real Estate Agent')+'</div>'+
       (a.brokerage?'<div class="br">'+esc(a.brokerage)+'</div>':'')+
       (meta?'<div class="meta">'+meta+'</div>':'')+
       (a.specialty?'<div class="sp">'+esc(a.specialty)+'</div>':'<div class="sp"></div>')+
@@ -151,7 +155,7 @@ h1{font-weight:800;font-size:clamp(34px,5vw,52px);line-height:1.04;letter-spacin
   function applyFilter(q){
     q=(q||'').trim().toLowerCase();
     view = !q ? ALL.slice() : ALL.filter(function(a){
-      var hay=[a.full_name,a.brokerage,a.city,a.state,a.specialty,a.job_title].join(' ').toLowerCase();
+      var hay=[a.full_name,a.brokerage,a.city,a.state,a.specialty,a.job_title,a.website].join(' ').toLowerCase();
       return hay.indexOf(q)>=0;
     });
     grid.innerHTML=''; shown=0;
@@ -170,7 +174,7 @@ h1{font-weight:800;font-size:clamp(34px,5vw,52px);line-height:1.04;letter-spacin
       var acc=[], from=0, STEP=1000, done=false;
       while(!done){
         var r=await sb.from('public_realtors')
-          .select('full_name,job_title,brokerage,dre,city,state,specialty,phone,email,photo_url,profile_url')
+          .select('full_name,job_title,brokerage,dre,city,state,specialty,phone,email,website,photo_url,profile_url')
           .order('full_name',{ascending:true})
           .range(from, from+STEP-1);
         if(r.error) throw r.error;
@@ -178,7 +182,11 @@ h1{font-weight:800;font-size:clamp(34px,5vw,52px);line-height:1.04;letter-spacin
         acc=acc.concat(batch);
         if(batch.length<STEP || from>20000) done=true; else from+=STEP;
       }
-      ALL=acc;
+      // Surface the most complete profiles (photo, brokerage, licence, etc.) first.
+      ALL=acc.sort(function(x,y){
+        var d=completeness(y)-completeness(x);
+        return d!==0 ? d : String(x.full_name||'').localeCompare(String(y.full_name||''));
+      });
       loading.style.display='none';
       applyFilter(qEl?qEl.value:'');
     }catch(e){
