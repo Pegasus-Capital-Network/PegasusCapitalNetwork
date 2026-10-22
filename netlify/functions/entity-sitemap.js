@@ -1,6 +1,10 @@
 // Pegasus SEO — dynamic sitemap index + entity sitemaps.
 // Public data only; uses the publishable Supabase key and public read surfaces.
 
+// Every outbound request gets a 4 s deadline: a hung connection falls into this
+// function's own error path (503) instead of running into Netlify's 10 s limit (504).
+const fetch=(u,o={})=>globalThis.fetch(u,o.signal?o:{...o,signal:AbortSignal.timeout(4000)});
+
 const ORIGIN = "https://pegasuscapitalnetwork.com";
 
 // People taxonomy (inlined; Netlify functions do not reliably bundle a

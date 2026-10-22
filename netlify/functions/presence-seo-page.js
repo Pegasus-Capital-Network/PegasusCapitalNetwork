@@ -1,5 +1,9 @@
 // Pegasus SEO — server-delivered public Business/Event metadata + semantic snapshot.
 
+// Every outbound request gets a 4 s deadline: a hung connection falls into this
+// function's own error path (503) instead of running into Netlify's 10 s limit (504).
+const fetch=(u,o={})=>globalThis.fetch(u,o.signal?o:{...o,signal:AbortSignal.timeout(4000)});
+
 const ORIGIN="https://pegasuscapitalnetwork.com";
 function env(name){return globalThis.Netlify?.env?.get(name)||"";}
 function cfg(){
@@ -53,6 +57,8 @@ async function getPresence(slug){
     const body=await res.text().catch(()=> "");
     console.warn("[presence-seo-page] RPC unavailable, using public view:",res.status,body.slice(0,180));
   }catch(err){
+    // A timed-out Supabase would time out the fallback too: fail fast (503).
+    if(err&&err.name==="TimeoutError") throw err;
     console.warn("[presence-seo-page] RPC threw, using public view:",err&&err.message);
   }
 
@@ -125,11 +131,22 @@ async function isHonoree(slug,d){
     return !!((cat&&catAhead+1<=25)||(st&&stTotal>=3&&stAhead===0));
   }catch(_){return false;}
 }
+// The page template is a static file: keep it for 10 minutes per warm instance
+// and fall back to the last good copy if the self-fetch fails.
+let tplCache=null;
 async function getTemplate(request){
-  const u=new URL(request.url);
-  const res=await fetch(u.origin+"/presence.html?seo_template=1",{headers:{"User-Agent":"Pegasus-SEO-Renderer/1.0"}});
-  if(!res.ok) throw new Error("presence template fetch failed: "+res.status);
-  return await res.text();
+  if(tplCache&&Date.now()-tplCache.t<600000) return tplCache.html;
+  try{
+    const u=new URL(request.url);
+    const res=await fetch(u.origin+"/presence.html?seo_template=1",{headers:{"User-Agent":"Pegasus-SEO-Renderer/1.0"}});
+    if(!res.ok) throw new Error("presence template fetch failed: "+res.status);
+    const html=await res.text();
+    tplCache={t:Date.now(),html};
+    return html;
+  }catch(err){
+    if(tplCache) return tplCache.html;
+    throw err;
+  }
 }
 function typeAllowed(kind,type){
   return kind==="event" ? type==="event" : (type==="company" || type==="capital_program");
@@ -302,7 +319,7 @@ function render(html,p,kind){
 }
 function simple(status,title,message){
   return new Response('<!doctype html><html><head><meta charset="utf-8"><meta name="robots" content="noindex,nofollow"><title>'+esc(title)+'</title></head><body><main><h1>'+esc(title)+'</h1><p>'+esc(message)+'</p><p><a href="/">Pegasus Capital Network</a></p></main></body></html>',{
-    status,headers:{"Content-Type":"text/html; charset=utf-8","Cache-Control":status===404?"public, max-age=60":"no-store","X-Robots-Tag":"noindex, nofollow"}
+    status,headers:{"Content-Type":"text/html; charset=utf-8","Cache-Control":status===404?"public, max-age=60":"no-store","X-Robots-Tag":"noindex, nofollow",...(status===503?{"Retry-After":"120"}:{})}
   });
 }
 
@@ -329,7 +346,9 @@ export default async (request) => {
       status:200,
       headers:{
         "Content-Type":"text/html; charset=utf-8",
-        "Cache-Control":"public, max-age=0, s-maxage=300, stale-while-revalidate=600",
+        // CDN copy for 15 min, then stale-while-revalidate for a day: repeat
+        // crawls never wait on this function or Supabase.
+        "Cache-Control":"public, max-age=0, s-maxage=900, stale-while-revalidate=86400",
         "X-Robots-Tag":"index, follow, max-image-preview:large",
         "Link":"<"+canonical+'>; rel="canonical"'
       }
