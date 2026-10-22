@@ -42,7 +42,7 @@
 
   /* ── switcher ── */
   var CSS = '.peg-lang{position:relative;flex:0 0 auto;margin-left:auto;margin-right:10px;z-index:260;font-family:Inter,-apple-system,Segoe UI,Roboto,Arial,sans-serif}' +
-    '.peg-lang.fx{position:fixed;right:14px;top:12px;margin:0;z-index:1150}' +
+    '.peg-lang.fx{position:fixed;right:14px;top:12px;margin:0;z-index:1150}.peg-lang.fx.wait{visibility:hidden}' +
     '.pub-nav .pub-links{margin-left:auto}.tb-right .peg-lang{margin:0}' +
     '.peg-lang>button{display:inline-flex;align-items:center;gap:5px;height:34px;border:1px solid rgba(14,24,36,.16);background:rgba(255,255,255,.96);border-radius:999px;padding:0 11px;font:600 12.5px/1 Inter,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:#1b3a5b;cursor:pointer;white-space:nowrap}' +
     '.peg-lang>button:hover{border-color:#1b3a5b}.peg-lang>button svg{width:15px;height:15px}.peg-lang>button i{font-style:normal;font-size:9px;opacity:.6}' +
@@ -75,8 +75,20 @@
     w.querySelector('button').onclick = function(e){ e.stopPropagation(); w.classList.toggle('open'); };
     w.querySelectorAll('a').forEach(function(a){ a.addEventListener('click', function(){ store('peg_lang', a.getAttribute('data-l')); }); });
     document.addEventListener('click', function(e){ if (!w.contains(e.target)) w.classList.remove('open'); });
+    // Most headers are drawn by scripts after this runs. Until one appears the
+    // switcher stays hidden (a fixed corner button would sit on top of the
+    // header's own buttons); it moves in the moment the header is added, and
+    // only falls back to the visible corner position if no header shows up.
+    w.classList.add('wait');
     place(w);
-    var tries = 0, iv = setInterval(function(){ if (++tries > 40) clearInterval(iv); if (!document.contains(w) || w.classList.contains('fx')) place(w); }, 500);
+    var mo = null, iv = null, tries = 0;
+    function settle(){
+      if (!document.contains(w) || w.classList.contains('fx')) place(w);
+      if (!w.classList.contains('fx')) { w.classList.remove('wait'); if (mo) mo.disconnect(); }
+    }
+    try{ mo = new MutationObserver(settle); mo.observe(document.body, { childList: true, subtree: true }); }catch(e){}
+    iv = setInterval(function(){ settle(); if (++tries >= 8) w.classList.remove('wait'); if (tries > 40) { clearInterval(iv); if (mo) mo.disconnect(); } }, 500);
+    settle();
   }
   // Put the switcher in the page header, next to Sign in / the account menu.
   function place(w){
