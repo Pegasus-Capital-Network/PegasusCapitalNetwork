@@ -6,6 +6,10 @@
 // Rank 1 = largest 2025 U.S. mortgage originator by total HMDA-reported volume.
 // Self-contained (Netlify functions do not reliably bundle cross-file imports).
 
+// Every outbound request gets a 4 s deadline: a hung connection falls into this
+// function's own error path (503) instead of running into Netlify's 10 s limit (504).
+const fetch=(u,o={})=>globalThis.fetch(u,o.signal?o:{...o,signal:AbortSignal.timeout(4000)});
+
 const ORIGIN="https://pegasuscapitalnetwork.com";
 const BASE="/rankings/top-mortgage-lenders-2025";
 const PER_PAGE=100;

@@ -3,6 +3,10 @@
 // (category / role) chips and dedicated landing pages for SEO. People are REAL,
 // consented members only — grouped by their own public fields, never fabricated.
 
+// Every outbound request gets a 4 s deadline: a hung connection falls into this
+// function's own error path (503) instead of running into Netlify's 10 s limit (504).
+const fetch=(u,o={})=>globalThis.fetch(u,o.signal?o:{...o,signal:AbortSignal.timeout(4000)});
+
 const ORIGIN="https://pegasuscapitalnetwork.com";
 
 // ── People taxonomy (inlined; Netlify functions do not reliably bundle a
@@ -433,7 +437,7 @@ function renderSearch(ctx){
     '</main><footer style="text-align:center;padding:28px;color:var(--text3);border-top:1px solid var(--border)"><a href="/" style="color:inherit">Pegasus Capital Network</a> · Public professional discovery network</footer></body></html>';
 }
 function errPage(status,title){
-  return new Response('<!doctype html><html><head><meta name="robots" content="noindex,nofollow"><title>'+esc(title)+'</title></head><body><h1>'+esc(title)+'</h1><a href="/">Pegasus Capital Network</a></body></html>',{status,headers:{"Content-Type":"text/html; charset=utf-8","X-Robots-Tag":"noindex,nofollow","Cache-Control":"no-store"}});
+  return new Response('<!doctype html><html><head><meta name="robots" content="noindex,nofollow"><title>'+esc(title)+'</title></head><body><h1>'+esc(title)+'</h1><a href="/">Pegasus Capital Network</a></body></html>',{status,headers:{"Content-Type":"text/html; charset=utf-8","X-Robots-Tag":"noindex,nofollow","Cache-Control":"no-store",...(status===503?{"Retry-After":"120"}:{})}});
 }
 
 export default async (request)=>{
@@ -499,7 +503,9 @@ export default async (request)=>{
   }catch(err){
     console.error("[public-directory]",err);
     // Never 503 the directory — fall back to a flat, un-sectioned list.
+    // (Unless Supabase timed out: the fallback would only wait out the limit.)
     try{
+      if(err&&err.name==="TimeoutError") throw err;
       if(kind==="people"){
         const all=await loadPeopleAll();
         const pageRows=all.slice((page-1)*PAGE_SIZE,page*PAGE_SIZE);

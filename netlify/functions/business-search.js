@@ -4,6 +4,10 @@
 // with q, then a word starting with q, then names containing q).
 // Self-contained (Netlify functions do not reliably bundle cross-file imports).
 
+// Every outbound request gets a 4 s deadline: a hung connection falls into this
+// function's own error path (503) instead of running into Netlify's 10 s limit (504).
+const fetch=(u,o={})=>globalThis.fetch(u,o.signal?o:{...o,signal:AbortSignal.timeout(4000)});
+
 function env(name){return globalThis.Netlify?.env?.get(name)||"";}
 function cfg(){
   const url=env("SUPABASE_URL"),key=env("SUPABASE_PUBLISHABLE_KEY");
