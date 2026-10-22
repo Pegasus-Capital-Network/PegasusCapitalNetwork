@@ -18,15 +18,52 @@ const reportedAt: Record<string, number> = {};
 // Pages whose untranslated text is sent to the translation queue (public, list-type pages only).
 const REPORTABLE = /^\/(?:[a-z0-9-]+(?:\.html)?)?$|^\/(?:businesses\/(?:capital|ai|in\/[a-z]{2})|rankings\/[a-z0-9-]+|awards\/[a-z0-9-]+)$/i;
 
-async function dict(lang: string): Promise<Record<string, string>> {
+// null = no dictionary available (never cached, so one failed load does not
+// leave a language untranslated for the next 10 minutes).
+async function dict(lang: string): Promise<Record<string, string> | null> {
   const c = cache[lang];
   if (c && Date.now() - c.t < 10 * 60 * 1000) return c.d;
   try {
-    const r = await fetch(DICT_URL + lang + ".json?v=" + Math.floor(Date.now() / 600000));
-    const d = r.ok ? await r.json() : {};
+    const r = await fetch(DICT_URL + lang + ".json?v=" + Math.floor(Date.now() / 600000), { signal: AbortSignal.timeout(8000) });
+    if (!r.ok) throw new Error("dictionary HTTP " + r.status);
+    const d = await r.json();
+    if (!d || typeof d !== "object" || !Object.keys(d).length) throw new Error("empty dictionary");
     cache[lang] = { t: Date.now(), d };
     return d;
-  } catch { return c ? c.d : {}; }
+  } catch (e) {
+    console.log("i18n: dictionary " + lang + " unavailable: " + e);
+    return c ? c.d : null;
+  }
+}
+
+// Fetch the English page. A dropped connection or a 502/503/504 from the
+// origin is retried once; anything still failing is reported to the caller.
+async function fetchSource(target: URL, req: Request): Promise<Response> {
+  const init = {
+    headers: { accept: "text/html", "user-agent": req.headers.get("user-agent") || "Pegasus-i18n" },
+    redirect: "manual" as RequestRedirect,
+  };
+  let lastErr: unknown = null;
+  for (let attempt = 0; attempt < 2; attempt++) {
+    if (attempt) await new Promise((r) => setTimeout(r, 250));
+    try {
+      const r = await fetch(target, { ...init, signal: AbortSignal.timeout(attempt ? 15000 : 20000) });
+      if (r.status >= 502 && r.status <= 504 && attempt === 0) { lastErr = new Error("origin HTTP " + r.status); await r.body?.cancel(); continue; }
+      return r;
+    } catch (e) { lastErr = e; }
+  }
+  throw lastErr;
+}
+
+// Temporary failure: 503 + Retry-After tells crawlers to come back later
+// instead of treating the page as broken (a 500 does not). Never cached.
+function unavailable(rest: string, why: unknown): Response {
+  console.log("i18n: serving 503 for " + rest + ": " + why);
+  const en = ORIGIN + (rest === "/" ? "/" : rest);
+  return new Response(
+    `<!doctype html><meta charset="utf-8"><meta name="robots" content="noindex"><title>Temporarily unavailable</title><p>This page is temporarily unavailable. <a href="${escAttr(en)}">Open the English version</a>.</p>`,
+    { status: 503, headers: { "content-type": "text/html; charset=utf-8", "retry-after": "120", "cache-control": "no-store", "netlify-cdn-cache-control": "no-store" } },
+  );
 }
 
 const NAMED: Record<string, string> = { amp: "&", lt: "<", gt: ">", quot: '"', apos: "'", nbsp: " ", rarr: "→", larr: "←", mdash: "—", ndash: "–", hellip: "…", middot: "·", rsquo: "’", lsquo: "‘", ldquo: "“", rdquo: "”", copy: "©", reg: "®", trade: "™", bull: "•", times: "×", le: "≤", ge: "≥", darr: "↓", uarr: "↑", check: "✓" };
@@ -118,30 +155,35 @@ export default async (req: Request, _ctx: Context) => {
   if (/\.(js|css|png|jpe?g|svg|webp|gif|ico|json|xml|txt|mp4|webm|mov|pdf|woff2?|ttf|map)$/i.test(rest)) {
     return Response.redirect(url.origin + rest + url.search, 301);
   }
-  const src = await fetch(new URL(rest + url.search, url.origin), {
-    headers: { accept: "text/html", "user-agent": req.headers.get("user-agent") || "Pegasus-i18n" },
-    redirect: "manual",
-  });
-  if (src.status >= 300 && src.status < 400) {
+  // /fr/ru/… → /ru/… (one language prefix only; stops prefix chains).
+  if (/^\/(ar|zh|ru|es|fr)(\/|$)/.test(rest)) return Response.redirect(url.origin + rest + url.search, 301);
+  let src: Response, body = "";
+  try {
+    src = await fetchSource(new URL(rest + url.search, url.origin), req);
+  } catch (e) { return unavailable(rest, e); }
+  if ([301, 302, 303, 307, 308].includes(src.status)) {
     const loc = new URL(src.headers.get("location") || "/", url.origin);
     if (loc.origin === url.origin && !/^\/(ar|zh|ru|es|fr)(\/|$)/.test(loc.pathname) && !SKIP_PREFIX.test(loc.pathname)) {
       loc.pathname = "/" + lang + (loc.pathname === "/" ? "" : loc.pathname);
     }
     return Response.redirect(loc.toString(), src.status);
   }
+  if (src.status >= 500) { await src.body?.cancel(); return unavailable(rest, "origin HTTP " + src.status); }
   const ct = src.headers.get("content-type") || "";
   if (!ct.includes("text/html")) return new Response(src.body, { status: src.status, headers: src.headers });
-  const body = await src.text();
-  const report = src.status === 200 && REPORTABLE.test(rest) && !/name="robots"[^>]*noindex/i.test(body) && Date.now() - (reportedAt[rest] || 0) > 3600000;
+  try { body = await src.text(); } catch (e) { return unavailable(rest, e); }
   const d = await dict(lang);
+  if (!d) return unavailable(rest, "no " + lang + " dictionary");
+  const report = src.status === 200 && REPORTABLE.test(rest) && !/name="robots"[^>]*noindex/i.test(body) && Date.now() - (reportedAt[rest] || 0) > 3600000;
+  let html: string;
   MISSING = report ? new Set() : null; // set and cleared synchronously around translateHtml
-  const html = translateHtml(body, d, lang, rest);
+  try { html = translateHtml(body, d, lang, rest); } catch (e) { MISSING = null; return unavailable(rest, e); }
   const miss = MISSING ? [...MISSING].slice(0, 60) : [];
   MISSING = null;
   if (miss.length) {
     reportedAt[rest] = Date.now();
     _ctx.waitUntil(fetch("https://trdwsssouhpawhfdkfqf.supabase.co/rest/v1/rpc/i18n_report", {
-      method: "POST", headers: { "content-type": "application/json", apikey: SB_KEY },
+      method: "POST", headers: { "content-type": "application/json", apikey: SB_KEY }, signal: AbortSignal.timeout(5000),
       body: JSON.stringify({ p_strings: miss, p_page: rest }),
     }).catch(() => {}));
   }
