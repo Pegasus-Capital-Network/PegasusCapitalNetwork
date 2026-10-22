@@ -28,6 +28,15 @@ a{color:inherit;text-decoration:none}
 .tag i{width:7px;height:7px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 4px rgba(201,164,92,.18)}
 h1{font-size:clamp(28px,6vw,42px);line-height:1.08;letter-spacing:-.03em;font-weight:800;margin-top:10px}
 h1 em{font-style:normal;color:var(--gold)}
+.fl{margin:22px 0 4px;border:1px solid #e3cf9f;border-radius:16px;background:linear-gradient(180deg,#fffaf0,#fff);padding:18px 18px 16px}
+.fl-h{display:flex;gap:12px;align-items:center}
+.fl-star{width:40px;height:40px;border-radius:50%;background:var(--gold);color:#1a1205;display:flex;align-items:center;justify-content:center;font-size:19px;flex:none}
+.fl-h b{display:block;font-size:17px;color:var(--ink);letter-spacing:-.01em}
+.fl-h span{font-size:13px;color:var(--gold-d);font-weight:700}
+.fl ul{margin:12px 0 0 2px;padding:0;list-style:none;font-size:14px;color:var(--text)}
+.fl li{padding:4px 0 4px 20px;position:relative}
+.fl li:before{content:"✓";position:absolute;left:0;color:var(--gold-d);font-weight:800}
+.fl-s{font-size:12.5px;color:var(--muted);margin-top:8px}
 .find{margin-top:22px;background:#fff;border-radius:16px;padding:6px;display:flex;gap:6px;box-shadow:0 18px 40px rgba(0,0,0,.25)}
 .find input{flex:1;min-width:0;border:0;outline:0;font:inherit;font-size:16px;padding:12px 12px;color:var(--ink);background:transparent}
 .find button{border:0;border-radius:11px;background:var(--gold-d);color:#fff;font:inherit;font-weight:700;font-size:14px;padding:0 16px;cursor:pointer;white-space:nowrap}
@@ -75,6 +84,12 @@ h1 em{font-style:normal;color:var(--gold)}
     <div class="stat"><b id="sC">—</b><span>companies</span></div>
   </div>
 
+  <div class="fl" id="fl">
+    <div class="fl-h"><span class="fl-star">★</span><div><b>Founding Lender</b><span id="flLeft">First 50 lenders only</span></div></div>
+    <ul><li>Gold <b>Founding Lender</b> badge on your page, for good</li><li>Top placement in Find a Lender &amp; Lending Programs for a year</li><li>Your own lender page with a <b>QR code</b>: brokers scan it here and send you deals</li></ul>
+    <div class="fl-s">Claim your company or publish a program and it’s yours, free.</div>
+  </div>
+
   <div class="acts">
     <a class="act primary" id="pubLink" href="/signup.html?role=lender&amp;intent=program&amp;next=%2Flending-programs.html%23post">
       <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg></span>
@@ -103,6 +118,10 @@ h1 em{font-style:normal;color:var(--gold)}
 
   async function stats(){
     if(!sb) return;
+    try{
+      var fs=await sb.rpc('founding_lenders_status');
+      if(fs&&fs.data&&fs.data.remaining!=null) document.getElementById('flLeft').textContent=fs.data.remaining+' of 50 spots left';
+    }catch(e){}
     try{
       var p=await sb.from('public_lender_programs').select('company_slug');
       var rows=p.data||[]; var co={}; rows.forEach(function(r){ if(r.company_slug) co[r.company_slug]=1; });

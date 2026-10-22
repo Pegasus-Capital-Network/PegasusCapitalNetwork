@@ -89,6 +89,18 @@ Pegasus.boot(async function(){
         '<li><b>Add your team</b> — invite colleagues below.<a href="#cl-invite">Invite →</a></li>'+
       '</ul><div id="cl-invite"></div>', 3);
     if(window.PegInvite) PegInvite.mount(document.getElementById('cl-invite'));
+    // Lenders: their lender page with QR (and Founding Lender number) is ready right away.
+    (async function(){
+      try{
+        var lr=await c.from('public_lender_programs').select('founding_no').eq('company_slug',pr.slug);
+        var rows=(lr&&!lr.error&&lr.data)||[]; if(!rows.length) return;
+        var fno=rows.reduce(function(a,x){ return a||x.founding_no; },null);
+        var ul=document.querySelector('.cl-next'); if(!ul) return;
+        var li=document.createElement('li');
+        li.innerHTML=(fno?'<b>★ You’re Founding Lender №'+(fno<10?'0':'')+fno+'</b> — one of the first 50 lenders on Pegasus. ':'')+'<b>Your lender page &amp; QR code are ready</b> — show it at events, brokers scan it and send you deals.<a href="/lend/'+encodeURIComponent(pr.slug)+'">Open &amp; download QR →</a>';
+        ul.insertBefore(li, ul.firstChild);
+      }catch(_){}
+    })();
   }
   if(data.can_manage){ nextSteps('You can edit '+esc(pr.name||'this page')+' anytime from Business Pages.'); return; }
   var site=domainOf(pr.website_url||pr.public_cta_url||''), edom=(uemail.split('@')[1]||'').toLowerCase();

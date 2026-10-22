@@ -54,6 +54,7 @@
 .fl-chip.ver{background:rgba(12,143,92,.10);color:var(--green)}
 .fl-chip.rank{background:var(--blue-dim);color:var(--blue)}
 .fl-chip.feat{background:#f6e7b8;color:#7a5a00}
+.fl-chip.found{background:linear-gradient(90deg,#f7ecd3,#fbf5e7);color:#7a5c22;border:1px solid #e3cf9f}
 .fl-card.fl-placed{border-color:#e3c76d}
 .fl-reasons{margin:8px 0 0;padding-left:18px;font-size:12.5px;color:var(--text2);line-height:1.6}
 .fl-pos{flex:none;font-family:var(--mono);font-size:11px;color:var(--text4);margin-top:3px;width:22px;text-align:right}
@@ -240,7 +241,8 @@ Pegasus.boot(async function(){
     var meta=[r.cat_label,r.location].filter(Boolean).map(esc).join(' · ');
     var rank=parseInt(r.hmda_rank,10);
     var placed=r.placement==='featured'||r.placement==='sponsored';
-    var chips=(r.placement==='featured'?'<span class="fl-chip feat">Featured</span>':r.placement==='sponsored'?'<span class="fl-chip feat">Sponsored</span>':'')+
+    var fno=FOUND[slug]&&FOUND[slug].no;
+    var chips=(fno?'<span class="fl-chip found">★ Founding Lender</span>':'')+(r.placement==='featured'?'<span class="fl-chip feat">Featured</span>':r.placement==='sponsored'?'<span class="fl-chip feat">Sponsored</span>':'')+
       (r.verified?'<span class="fl-chip ver">Verified program</span>':'')+
       (rank>0?'<span class="fl-chip rank">Ranked #'+esc(rank.toLocaleString('en-US'))+'</span>':'')+
       (Number(r.hmda_volume_usd)>0?'<span class="fl-chip">'+esc(money(r.hmda_volume_usd))+' 2025 volume</span>':'');
@@ -325,6 +327,11 @@ Pegasus.boot(async function(){
     return true;
   }
 
+  /* ── Founding Lenders ── */
+  var FOUND={};
+  var foundReady=(async function(){ try{ if(!sb) return; var fr=await sb.from('public_lender_programs').select('company_slug,founding_no,founding_at').not('founding_no','is',null); (fr.data||[]).forEach(function(x){ if(x.company_slug) FOUND[x.company_slug]={no:x.founding_no,at:x.founding_at}; }); }catch(e){} })();
+  function foundFresh(slug){ var f=FOUND[slug]; return !!(f && f.at && (Date.now()-Date.parse(f.at)) < 365*864e5); }
+
   /* ── Search ─────────────────────────────────────────────────────────────── */
   async function search(d){
     var btn=$('flGo'), out=$('flOut');
@@ -334,7 +341,10 @@ Pegasus.boot(async function(){
     try{
       var r=await sb.rpc('match_lenders',{p_deal:d,p_limit:10});
       if(r&&r.error) throw r.error;
+      await foundReady;
       lastDeal=d; rows=(r&&Array.isArray(r.data)?r.data:[]).slice(0,10); picked={};
+      // Founding Lenders (first year on Pegasus) are listed first among the matches
+      rows=rows.map(function(x,i){ return [x,i]; }).sort(function(a,b){ var fa=foundFresh(a[0].slug)?0:1, fb=foundFresh(b[0].slug)?0:1; return fa-fb || a[1]-b[1]; }).map(function(p){ return p[0]; });
       rows.forEach(function(x,i){ if(i<PRECHECK&&x.slug) picked[String(x.slug)]=true; });
       syncUrl(d);
       renderResults('results');

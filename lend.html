@@ -1,0 +1,359 @@
+<!DOCTYPE html><html lang="en"><head>
+<title>Lender — Pegasus Capital Network</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="Lending programs on Pegasus Capital Network: what this lender finances, where and how much. Send your deal in a minute.">
+<meta property="og:title" content="Lender on Pegasus Capital Network">
+<meta property="og:description" content="What this lender finances, where and how much. Send your deal in a minute.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://pegasuscapitalnetwork.com/assets/brand/og-default.png">
+<link rel="icon" href="/assets/brand/favicon.ico" sizes="any">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#ffffff;--bg2:#f6f7f9;--line:#e6e9ed;
+  --ink:#0e1824;--ink2:#2a3a4e;--text:#46525f;--muted:#737e8b;
+  --navy:#1b3a5b;--navy-d:#0f2236;--gold:#9a7b3f;--gold-l:#c9a45c;--green:#1b7f3b;--red:#b3261e;
+  --sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  --shadow-sm:0 1px 2px rgba(14,24,36,.06);--shadow:0 2px 6px rgba(14,24,36,.05),0 16px 40px rgba(14,24,36,.10);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1080px;margin:0 auto;padding:0 32px}
+@media(max-width:640px){.wrap{padding:0 16px}}
+header.top{position:relative;z-index:3;border-bottom:1px solid var(--line);background:#fff}
+.top-in{max-width:1080px;margin:0 auto;padding:14px 32px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+@media(max-width:640px){.top-in{padding:12px 16px}}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:18px;letter-spacing:-.015em;color:var(--ink)}
+.brand img{height:26px;width:auto;display:block}
+.nav{display:flex;gap:18px;align-items:center;font-size:13px;color:var(--muted);font-weight:500}
+.nav a:hover{color:var(--navy)}
+@media(max-width:760px){.nav .hideSm{display:none}}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;font-family:inherit;font-size:14px;font-weight:600;padding:11px 18px;border-radius:9px;background:var(--navy);color:#fff;border:1px solid var(--navy);cursor:pointer;transition:transform .15s,opacity .15s,border-color .15s;white-space:nowrap}
+.btn:hover{transform:translateY(-1px)}
+.btn:disabled{opacity:.55;cursor:default;transform:none}
+.btn.ghost{background:#fff;color:var(--navy);border-color:var(--line)}
+.btn.ghost:hover{border-color:#c7cfd8}
+.btn.gold{background:var(--gold);border-color:var(--gold)}
+.btn.sm{font-size:12.5px;padding:7px 12px;border-radius:8px}
+.nav .btn{color:#fff}
+
+/* hero */
+.hero{background:linear-gradient(180deg,#0f2236 0,#13304d 100%);color:#e8eef5;position:relative;overflow:hidden}
+.hero:before{content:"";position:absolute;inset:0;background:radial-gradient(700px 300px at 85% -20%,rgba(201,164,92,.18),transparent 60%);pointer-events:none}
+.hero-in{position:relative;display:grid;grid-template-columns:1fr 300px;gap:40px;align-items:center;padding-top:44px;padding-bottom:46px}
+@media(max-width:860px){.hero-in{grid-template-columns:1fr;gap:26px;padding-top:30px;padding-bottom:32px}}
+.who{display:flex;gap:16px;align-items:center}
+.logo{flex:0 0 auto;width:64px;height:64px;border-radius:14px;background:#fff;display:flex;align-items:center;justify-content:center;overflow:hidden;font-weight:800;color:var(--navy);font-size:22px}
+.logo img{width:100%;height:100%;object-fit:contain}
+.name{font-size:clamp(26px,3.6vw,38px);font-weight:800;letter-spacing:-.025em;line-height:1.08;color:#fff}
+.meta{font-size:13.5px;color:#9fb0c4;margin-top:6px;display:flex;flex-wrap:wrap;gap:6px 14px}
+.meta a{color:#cfe0f2;text-decoration:underline;text-underline-offset:3px}
+.founding{display:inline-flex;align-items:center;gap:8px;margin-top:18px;padding:7px 14px 7px 9px;border-radius:999px;background:linear-gradient(90deg,rgba(201,164,92,.22),rgba(201,164,92,.08));border:1px solid rgba(201,164,92,.55);color:#f1dcae;font-size:12.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.founding i{width:22px;height:22px;border-radius:50%;background:var(--gold-l);color:#0f2236;display:inline-flex;align-items:center;justify-content:center;font-style:normal;font-size:12px}
+.lead{margin-top:16px;font-size:15.5px;color:#c4d1df;max-width:60ch}
+.facts{display:flex;flex-wrap:wrap;gap:22px;margin-top:22px}
+.facts div{font-size:12px;color:#8ea2b8;text-transform:uppercase;letter-spacing:.08em;font-weight:600}
+.facts b{display:block;font-size:19px;color:#fff;letter-spacing:-.01em;text-transform:none;font-weight:800;margin-top:2px}
+.hero .cta{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px}
+.hero .cta .btn.ghost{background:transparent;color:#e8eef5;border-color:rgba(255,255,255,.28)}
+.hero .cta .btn.ghost:hover{border-color:rgba(255,255,255,.6)}
+.hero .btn.gold{color:#0f2236;background:var(--gold-l);border-color:var(--gold-l)}
+
+.qr{background:#fff;border-radius:18px;padding:18px 18px 14px;color:var(--ink);box-shadow:0 20px 50px rgba(0,0,0,.35);text-align:center}
+.qr-box{width:100%;aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;cursor:zoom-in}
+.qr-box canvas,.qr-box img{width:100%!important;height:auto!important;image-rendering:pixelated}
+.qr-cap{font-size:12.5px;font-weight:700;color:var(--ink);margin-top:8px}
+.qr-url{font-size:11px;color:var(--muted);word-break:break-all}
+.qr-acts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.qr-acts .btn{width:100%}
+@media(max-width:860px){.qr{max-width:340px}}
+
+.notice{margin:22px 0 0;padding:14px 16px;border:1px dashed #cfd6de;border-radius:12px;background:#f8f9fb;font-size:14px;color:var(--ink2);display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.owner{margin:22px 0 0;padding:16px 18px;border-radius:12px;background:#fbf7ee;border:1px solid #eadcbc;font-size:14px;color:var(--ink2)}
+.owner b{color:var(--ink)}
+.owner .row{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+
+.sec{padding:30px 0 6px}
+.h2{font-size:21px;font-weight:800;color:var(--ink);letter-spacing:-.02em}
+.h2-sub{font-size:14px;color:var(--muted);margin-top:4px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-top:16px}
+.card{border:1px solid var(--line);border-radius:14px;padding:18px;background:#fff;box-shadow:var(--shadow-sm)}
+.pname{font-weight:700;color:var(--ink);font-size:16px;letter-spacing:-.01em}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.chip{font-size:11.5px;font-weight:600;color:var(--navy);background:#eef3f8;border-radius:999px;padding:3px 9px}
+.kv{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}
+.kv div{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-weight:600}
+.kv b{display:block;font-size:14.5px;color:var(--ink);text-transform:none;letter-spacing:0;margin-top:2px}
+.st{font-size:13px;color:var(--text);margin-top:12px}
+.pn{font-size:12.5px;color:var(--muted);margin-top:8px}
+
+.send{margin:8px 0 40px;border:1px solid var(--line);border-radius:16px;background:var(--bg2);padding:22px}
+.send h3{font-size:19px;color:var(--ink);font-weight:800;letter-spacing:-.02em}
+.send p.s{font-size:13.5px;color:var(--muted);margin-top:4px}
+.f{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px}
+@media(max-width:700px){.f{grid-template-columns:1fr}}
+.f label{font-size:12px;font-weight:600;color:var(--ink2);display:block;margin-bottom:4px}
+.f select,.f input,.f textarea{width:100%;font-family:inherit;font-size:14.5px;color:var(--ink);background:#fff;border:1px solid var(--line);border-radius:9px;padding:10px 12px;outline:none}
+.f select:focus,.f input:focus,.f textarea:focus{border-color:var(--navy)}
+.f .full{grid-column:1/-1}
+.chk{display:flex;gap:8px;align-items:flex-start;font-size:13px;color:var(--text);margin-top:12px}
+.err{color:var(--red);font-size:13px;margin-top:8px;min-height:1em}
+.done{font-size:15px;color:var(--ink);font-weight:600}
+.fine{font-size:11.5px;color:var(--muted);margin:0 0 40px;max-width:80ch}
+
+/* full-screen QR */
+.fs{position:fixed;inset:0;z-index:2000;background:#fff;display:none;flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center}
+.fs.on{display:flex}
+.fs .fs-q{width:min(78vw,78vh,520px)}
+.fs .fs-q canvas,.fs .fs-q img{width:100%!important;height:auto!important;image-rendering:pixelated}
+.fs .fs-n{font-size:clamp(20px,4vw,30px);font-weight:800;color:var(--ink);margin-top:18px;letter-spacing:-.02em}
+.fs .fs-s{font-size:14px;color:var(--muted);margin-top:4px}
+.fs .fs-x{position:absolute;top:14px;right:16px;font-size:26px;background:none;border:none;color:var(--muted);cursor:pointer;line-height:1}
+.skel{opacity:.5}
+.empty{padding:60px 0;text-align:center;color:var(--muted)}
+</style><script src="/js/i18n.js?v=20261021e"></script><script src="/js/ticker.js?v=20261021b" defer></script>
+</head>
+<body>
+<header class="top"><div class="top-in">
+  <a class="brand" href="/"><img src="/assets/brand/pegasus-mark.png" alt="Pegasus"> Pegasus</a>
+  <nav class="nav"><a href="/lending-programs.html" class="hideSm">Lending programs</a><a href="/find-a-lender" class="hideSm">Find a lender</a><span id="navAuth"><a class="btn sm" href="/signin.html">Sign in</a></span></nav>
+</div></header>
+
+<main id="main">
+  <section class="hero"><div class="wrap hero-in">
+    <div>
+      <div class="who"><span class="logo" id="lgLogo"></span><div><h1 class="name" id="lgName">&nbsp;</h1><div class="meta" id="lgMeta"></div></div></div>
+      <div id="lgFounding"></div>
+      <p class="lead" id="lgLead"></p>
+      <div class="facts" id="lgFacts"></div>
+      <div class="cta"><a class="btn gold" href="#send">Send a deal</a><a class="btn ghost" id="lgBiz" href="#">Company page</a></div>
+    </div>
+    <div class="qr" id="lgQR">
+      <div class="qr-box" id="qrBox" title="Show full screen"></div>
+      <div class="qr-cap">Scan to see programs &amp; send a deal</div>
+      <div class="qr-url" id="qrUrl" translate="no"></div>
+      <div class="qr-acts">
+        <button class="btn sm ghost" type="button" id="qrFull">Full screen</button>
+        <button class="btn sm ghost" type="button" id="qrShare">Share</button>
+        <button class="btn sm" type="button" id="qrCard" style="grid-column:1/-1">Download QR card</button>
+      </div>
+    </div>
+  </div></section>
+
+  <div class="wrap">
+    <div id="lgNotice"></div>
+    <section class="sec"><div class="h2">Lending programs</div><div class="h2-sub" id="lgCount"></div><div class="grid" id="lgPrograms"><div class="card skel">Loading…</div></div></section>
+    <section class="sec" id="send"><div class="send" id="sendBox"></div></section>
+    <p class="fine">Pegasus Capital Network is a membership marketplace, not a lender, broker or investment adviser. Program details are published by the lender (or, for unclaimed pages, taken from the lender’s public website) and are not an offer or commitment to lend.</p>
+  </div>
+</main>
+
+<div class="fs" id="fs" role="dialog" aria-modal="true" aria-label="QR code"><button class="fs-x" id="fsX" aria-label="Close">✕</button><div class="fs-q" id="fsQ"></div><div class="fs-n" id="fsN"></div><div class="fs-s">Scan to see programs &amp; send a deal</div></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="/js/pegasus-config.js?v=20261021a"></script>
+<script>
+(function(){
+  var C=window.PEG_CONFIG||{};
+  var URL_=C.SUPABASE_URL||'https://auth.pegasuscapitalnetwork.com';
+  var KEY=C.SUPABASE_ANON||'sb_publishable_hrR8wI6hM921mnxk7bBE_A_YKxWsoBI';
+  var sb=(window.supabase&&window.supabase.createClient)?window.supabase.createClient(URL_,KEY,{auth:{persistSession:true,autoRefreshToken:true,storageKey:'pegasus.auth'}}):null;
+  var ORIGIN='https://pegasuscapitalnetwork.com';
+  var TYPES={residential_purchase:'Home purchase (1–4)',residential_refi:'Refinance (1–4)',dscr_rental:'DSCR / rental',fix_flip:'Fix & flip',bridge:'Bridge',construction:'Construction',multifamily:'Multifamily 5+',commercial:'Commercial',sba_business:'SBA / business'};
+  var STATES={AL:'Alabama',AK:'Alaska',AZ:'Arizona',AR:'Arkansas',CA:'California',CO:'Colorado',CT:'Connecticut',DE:'Delaware',DC:'District of Columbia',FL:'Florida',GA:'Georgia',HI:'Hawaii',ID:'Idaho',IL:'Illinois',IN:'Indiana',IA:'Iowa',KS:'Kansas',KY:'Kentucky',LA:'Louisiana',ME:'Maine',MD:'Maryland',MA:'Massachusetts',MI:'Michigan',MN:'Minnesota',MS:'Mississippi',MO:'Missouri',MT:'Montana',NE:'Nebraska',NV:'Nevada',NH:'New Hampshire',NJ:'New Jersey',NM:'New Mexico',NY:'New York',NC:'North Carolina',ND:'North Dakota',OH:'Ohio',OK:'Oklahoma',OR:'Oregon',PA:'Pennsylvania',RI:'Rhode Island',SC:'South Carolina',SD:'South Dakota',TN:'Tennessee',TX:'Texas',UT:'Utah',VT:'Vermont',VA:'Virginia',WA:'Washington',WV:'West Virginia',WI:'Wisconsin',WY:'Wyoming'};
+  function $(id){ return document.getElementById(id); }
+  function esc(x){ return (x==null?'':String(x)).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];}); }
+  function money(n){ if(n==null||n==='') return null; n=Number(n); if(!isFinite(n)||n<=0) return null; if(n>=1e6) return '$'+(Math.round(n/1e5)/10).toString().replace(/\.0$/,'')+'M'; if(n>=1e3) return '$'+Math.round(n/1e3)+'K'; return '$'+n; }
+  function digits(x){ var d=String(x==null?'':x).replace(/[^0-9]/g,''); return d?Number(d):null; }
+  function pad(n){ return (n<10?'0':'')+n; }
+
+  var m=location.pathname.match(/^\/(?:(?:ar|zh|ru|es|fr)\/)?lend\/([^\/?#]+)/);
+  var slug=m?decodeURIComponent(m[1]):(new URLSearchParams(location.search).get('slug')||'');
+  slug=slug.toLowerCase().replace(/[^a-z0-9-]/g,'');
+  var PAGE_URL=ORIGIN+'/lend/'+slug;
+  var QR_URL=PAGE_URL+'?src=qr';
+  var P=null, PROGS=[], CAN=false, ME=null;
+
+  function notFound(){ $('main').innerHTML='<div class="wrap empty"><h1 style="color:var(--ink);font-size:26px">Lender not found</h1><p style="margin-top:8px">This page may have moved. <a href="/lending-programs.html" style="color:var(--navy);text-decoration:underline">Browse lending programs</a></p></div>'; }
+
+  function summary(){
+    var types={}, states={}, min=null, max=null, ltv=null, nation=false;
+    PROGS.forEach(function(p){
+      (p.loan_types||[]).forEach(function(t){ types[t]=1; });
+      if((!p.states||!p.states.length||p.states.length>=45) && (!p.unclaimed || /nationwide/i.test(p.notes||''))) nation=true;
+      (p.states||[]).forEach(function(s){ states[s]=1; });
+      if(Number(p.min_loan)>0) min=min==null?Number(p.min_loan):Math.min(min,Number(p.min_loan));
+      if(Number(p.max_loan)>0) max=max==null?Number(p.max_loan):Math.max(max,Number(p.max_loan));
+      if(Number(p.max_ltv)>0) ltv=ltv==null?Number(p.max_ltv):Math.max(ltv,Number(p.max_ltv));
+    });
+    var nst=nation?51:Object.keys(states).length;
+    return { types:Object.keys(types), states:Object.keys(states).sort(), nst:nst, min:min, max:max, ltv:ltv };
+  }
+  function rangeText(s){ var a=money(s.min), b=money(s.max); if(a&&b) return a+' – '+b; if(b) return 'Up to '+b; if(a) return 'From '+a; return null; }
+
+  function renderHero(){
+    var name=P.name||'Lender';
+    document.title=name+' — Lending programs · Pegasus Capital Network';
+    var initials=name.split(/\s+/).map(function(w){return w.charAt(0);}).join('').slice(0,2).toUpperCase();
+    $('lgLogo').innerHTML=P.logo_url?'<img src="'+esc(P.logo_url)+'" alt="">':esc(initials);
+    $('lgName').textContent=name;
+    var meta=[]; if(P.location) meta.push(esc(P.location));
+    if(P.website_url){ var host=String(P.website_url).replace(/^https?:\/\//,'').replace(/\/.*$/,''); meta.push('<a href="'+esc(P.website_url)+'" target="_blank" rel="noopener nofollow">'+esc(host)+'</a>'); }
+    $('lgMeta').innerHTML=meta.join('<span style="opacity:.4">·</span>');
+    var fno=PROGS.reduce(function(a,p){ return a||p.founding_no; },null);
+    $('lgFounding').innerHTML=fno?'<span class="founding" title="One of the first 50 lenders on Pegasus"><i>★</i>Founding Lender <span translate="no">№'+pad(fno)+'</span> · 2026</span>':'';
+    $('lgLead').textContent=P.tagline||P.short_description||'';
+    var s=summary(), facts=[];
+    facts.push(['Programs', String(PROGS.length)]);
+    var rt=rangeText(s); if(rt) facts.push(['Loan size', rt]);
+    if(s.ltv) facts.push(['Up to', s.ltv+'% LTV']);
+    facts.push(['Lends in', s.nst>=45?'Nationwide':(s.nst?s.nst+(s.nst===1?' state':' states'):'See programs')]);
+    $('lgFacts').innerHTML=facts.map(function(f){ return '<div>'+esc(f[0])+'<b>'+esc(f[1])+'</b></div>'; }).join('');
+    $('lgBiz').href='/business/'+encodeURIComponent(P.slug);
+    $('fsN').textContent=name;
+    var og=document.querySelector('meta[property="og:title"]'); if(og) og.setAttribute('content', name+' — Lending programs on Pegasus');
+  }
+
+  function renderNotice(){
+    var unclaimed=PROGS.length && PROGS.every(function(p){ return p.unclaimed; });
+    var h='';
+    if(CAN){
+      h='<div class="owner"><b>This is your lender page.</b> Show the QR code at events, put it on your business card or email signature. Anyone who scans it sees your programs and can send you a deal; you get a notification.'+
+        '<div class="row"><button class="btn sm" type="button" onclick="document.getElementById(\'qrCard\').click()">Download QR card</button><a class="btn sm ghost" href="/lending-programs.html#post">Edit programs</a><a class="btn sm ghost" href="/deal-requests.html">Deals sent to you</a></div></div>';
+    } else if(unclaimed){
+      h='<div class="notice"><span><b>Unclaimed page.</b> Programs below are taken from the lender’s public website. Is this your company? Claim it to manage the page and receive deals directly.</span><a class="btn sm" href="/claim?presence='+encodeURIComponent(P.slug)+'">Claim this page</a></div>';
+    }
+    $('lgNotice').innerHTML=h;
+  }
+
+  function renderPrograms(){
+    $('lgCount').textContent=PROGS.length+(PROGS.length===1?' program':' programs');
+    $('lgPrograms').innerHTML=PROGS.map(function(p){
+      var types=(p.loan_types||[]).map(function(t){ return '<span class="chip">'+esc(TYPES[t]||t)+'</span>'; }).join('');
+      var a=money(p.min_loan), b=money(p.max_loan);
+      var size=a&&b?a+' – '+b:(b?'Up to '+b:(a?'From '+a:(p.unclaimed?'See lender’s site':'Flexible')));
+      var kv=[['Loan size',size]];
+      if(p.max_ltv) kv.push(['Max LTV',p.max_ltv+'%']);
+      if(p.rate_from) kv.push(['Rates from',p.rate_from]);
+      else if(p.dscr_min) kv.push(['Min DSCR',String(p.dscr_min)]);
+      var st=(p.states&&p.states.length)?(p.states.length>=45?'Nationwide':p.states.slice(0,10).join(', ')+(p.states.length>10?' +'+(p.states.length-10):'')):((p.unclaimed&&!/nationwide/i.test(p.notes||''))?'See lender’s site':'Nationwide');
+      return '<div class="card"><div class="pname">'+esc(p.program_name||'Lending program')+'</div>'+(types?'<div class="chips">'+types+'</div>':'')+
+        '<div class="kv">'+kv.map(function(x){ return '<div>'+esc(x[0])+'<b>'+esc(x[1])+'</b></div>'; }).join('')+'</div>'+
+        '<div class="st"><span style="color:var(--muted)">Lends in:</span> '+esc(st)+(p.bridge_ok?' · Bridge OK':'')+(p.construction_ok?' · Construction OK':'')+'</div>'+
+        (p.notes?'<div class="pn">'+esc(p.notes)+'</div>':'')+'</div>';
+    }).join('')||'<div class="card">No active programs right now.</div>';
+  }
+
+  /* ── send a deal ── */
+  var SAVE='peg_lend_send_'+slug;
+  function renderSend(){
+    var s=summary();
+    var typeKeys=s.types.length?s.types:Object.keys(TYPES);
+    var stKeys=(s.nst&&s.nst<45)?s.states:Object.keys(STATES);
+    var saved={}; try{ saved=JSON.parse(sessionStorage.getItem(SAVE)||'{}'); }catch(e){}
+    $('sendBox').innerHTML='<h3>Send a deal to '+esc(P.name||'this lender')+'</h3><p class="s">Takes a minute. '+(CAN?'(This is your own page — this is what borrowers and brokers see.)':'The lender is notified and can reply to you inside Pegasus.')+'</p>'+
+      '<div class="f">'+
+        '<div><label for="dType">Loan type</label><select id="dType">'+typeKeys.map(function(k){ return '<option value="'+k+'">'+esc(TYPES[k]||k)+'</option>'; }).join('')+'</select></div>'+
+        '<div><label for="dAmt">Loan amount</label><input id="dAmt" inputmode="numeric" placeholder="$750,000"></div>'+
+        '<div><label for="dSt">Property state</label><select id="dSt">'+stKeys.map(function(k){ return '<option value="'+k+'">'+esc(STATES[k]||k)+'</option>'; }).join('')+'</select></div>'+
+        '<div class="full"><label for="dNotes">About the deal <span style="font-weight:400;color:var(--muted)">(optional)</span></label><textarea id="dNotes" rows="3" maxlength="600" placeholder="Property type, purchase price or value, timeline, exit…"></textarea></div>'+
+      '</div>'+
+      '<label class="chk"><input type="checkbox" id="dShare" checked> Share my name and contact with this lender</label>'+
+      '<div class="err" id="dErr"></div>'+
+      '<button class="btn" type="button" id="dGo">'+(ME?'Send deal':'Sign in & send deal')+'</button>';
+    if(saved.type&&typeKeys.indexOf(saved.type)>=0) $('dType').value=saved.type;
+    if(saved.state&&stKeys.indexOf(saved.state)>=0) $('dSt').value=saved.state;
+    if(saved.amount) $('dAmt').value='$'+Number(saved.amount).toLocaleString('en-US');
+    if(saved.notes) $('dNotes').value=saved.notes;
+    $('dAmt').addEventListener('input',function(){ var d=digits(this.value); this.value=d!=null?('$'+d.toLocaleString('en-US')):''; });
+    $('dGo').onclick=send;
+    if(saved.type && ME && location.hash==='#send') setTimeout(function(){ $('send').scrollIntoView({behavior:'smooth'}); },300);
+  }
+  async function send(){
+    var deal={type:$('dType').value, amount:digits($('dAmt').value), state:$('dSt').value, notes:$('dNotes').value.trim()};
+    $('dErr').textContent='';
+    if(!deal.amount){ $('dErr').textContent='Enter the loan amount.'; return; }
+    if(!ME){
+      try{ sessionStorage.setItem(SAVE, JSON.stringify(deal)); localStorage.setItem('pegasus.redirectAfterAuth','/lend/'+slug+'#send'); }catch(e){}
+      location.href='/signup.html?role=borrower&next='+encodeURIComponent('/lend/'+slug+'#send'); return;
+    }
+    var b=$('dGo'); b.disabled=true; b.textContent='Sending…';
+    try{
+      var r=await sb.rpc('submit_deal_request',{p_deal:deal,p_slugs:[P.slug],p_share_contact:$('dShare').checked});
+      if(r.error) throw r.error;
+      var d=r.data||{};
+      if(!d.ok){ $('dErr').textContent=d.message||'Could not send right now.'; b.disabled=false; b.textContent='Send deal'; return; }
+      try{ sessionStorage.removeItem(SAVE); }catch(e){}
+      $('sendBox').innerHTML='<div class="done">✓ Sent to '+esc(P.name)+'.</div><p class="s" style="margin-top:6px">'+(PROGS.some(function(p){return !p.unclaimed;})?'They’ve been notified and can reply to you inside Pegasus.':'This page isn’t claimed yet — we keep your request on file for the lender and will let you know.')+'</p><div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px"><a class="btn sm" href="/find-a-lender?type='+encodeURIComponent(deal.type)+'&amount='+deal.amount+'&state='+deal.state+'">Match more lenders</a><a class="btn sm ghost" href="/feed?type=deal">Post it to the Network Feed</a></div>';
+    }catch(e){ console.error('[lend] send failed',e); $('dErr').textContent='Could not send right now. Please try again.'; b.disabled=false; b.textContent='Send deal'; }
+  }
+
+  /* ── QR ── */
+  function makeQR(el, size){
+    el.innerHTML='';
+    if(!window.QRCode){ el.innerHTML='<div style="font-size:12px;color:var(--muted)">QR unavailable</div>'; return null; }
+    new QRCode(el,{text:QR_URL,width:size,height:size,colorDark:'#0e1824',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M});
+    return el.querySelector('canvas');
+  }
+  function openFull(){ makeQR($('fsQ'),720); $('fs').classList.add('on'); }
+  function closeFull(){ $('fs').classList.remove('on'); }
+  function roundRect(ctx,x,y,w,h,r){ ctx.beginPath(); ctx.moveTo(x+r,y); ctx.arcTo(x+w,y,x+w,y+h,r); ctx.arcTo(x+w,y+h,x,y+h,r); ctx.arcTo(x,y+h,x,y,r); ctx.arcTo(x,y,x+w,y,r); ctx.closePath(); }
+  function wrapText(ctx,text,x,y,maxW,lh,maxLines){ var words=String(text).split(/\s+/), line='', lines=[]; words.forEach(function(w){ var t=line?line+' '+w:w; if(ctx.measureText(t).width>maxW&&line){ lines.push(line); line=w; } else line=t; }); if(line) lines.push(line); lines=lines.slice(0,maxLines); lines.forEach(function(l,i){ ctx.fillText(l,x,y+i*lh); }); return lines.length; }
+  function loadImg(src){ return new Promise(function(res){ var i=new Image(); i.crossOrigin='anonymous'; i.onload=function(){res(i);}; i.onerror=function(){res(null);}; i.src=src; }); }
+  async function downloadCard(){
+    var W=1080,H=1350, c=document.createElement('canvas'); c.width=W; c.height=H; var x=c.getContext('2d');
+    var g=x.createLinearGradient(0,0,0,H); g.addColorStop(0,'#0f2236'); g.addColorStop(1,'#163a5c'); x.fillStyle=g; x.fillRect(0,0,W,H);
+    var rg=x.createRadialGradient(W*.85,-80,10,W*.85,-80,700); rg.addColorStop(0,'rgba(201,164,92,.28)'); rg.addColorStop(1,'rgba(201,164,92,0)'); x.fillStyle=rg; x.fillRect(0,0,W,H);
+    var mark=await loadImg('/assets/brand/pegasus-mark-white.png');
+    if(mark){ var mh=54, mw=mark.width*mh/mark.height; x.drawImage(mark,80,78,mw,mh); }
+    x.fillStyle='#ffffff'; x.font='700 34px Inter,Arial,sans-serif'; x.textBaseline='middle'; x.fillText('Pegasus Capital Network', mark?80+54*1.2+18:80, 105);
+    var y=210, fno=PROGS.reduce(function(a,p){ return a||p.founding_no; },null);
+    if(fno){ x.font='800 26px Inter,Arial,sans-serif'; var t='★  FOUNDING LENDER  №'+pad(fno)+'  ·  2026'; var tw=x.measureText(t).width; roundRect(x,80,y-30,tw+48,60,30); x.fillStyle='rgba(201,164,92,.22)'; x.fill(); x.strokeStyle='rgba(201,164,92,.8)'; x.lineWidth=2; x.stroke(); x.fillStyle='#f1dcae'; x.fillText(t,104,y); y+=86; }
+    x.fillStyle='#ffffff'; x.font='800 70px Inter,Arial,sans-serif'; x.textBaseline='alphabetic';
+    var n=wrapText(x,P.name||'Lender',80,y+40,W-160,80,2); y+=40+n*80;
+    var s=summary(); var line=[s.types.slice(0,3).map(function(t){return TYPES[t]||t;}).join(' · '), rangeText(s), s.nst>=45?'Nationwide':(s.nst?s.nst+' states':'')].filter(Boolean).join('   |   ');
+    x.fillStyle='#b9c8d8'; x.font='500 32px Inter,Arial,sans-serif'; var n2=wrapText(x,line,80,y+10,W-160,44,2); y+=10+n2*44+40;
+    var qs=Math.max(380, Math.min(540, H-210-(y+72))), qx=(W-qs)/2, qy=H-210-qs;
+    roundRect(x,qx-36,qy-36,qs+72,qs+72,36); x.fillStyle='#ffffff'; x.fill();
+    var tmp=document.createElement('div'); var qc=makeQR(tmp,qs);
+    var qimg=qc||tmp.querySelector('img'); if(qimg) { x.imageSmoothingEnabled=false; x.drawImage(qimg,qx,qy,qs,qs); }
+    x.textAlign='center'; x.fillStyle='#ffffff'; x.font='700 36px Inter,Arial,sans-serif'; x.fillText('Scan to see programs & send a deal', W/2, qy+qs+96);
+    x.fillStyle='#8ea2b8'; x.font='500 28px Inter,Arial,sans-serif'; x.fillText(PAGE_URL.replace('https://',''), W/2, qy+qs+142);
+    c.toBlob(function(b){ var a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download=(P.slug||'pegasus-lender')+'-qr-card.png'; document.body.appendChild(a); a.click(); setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); },500); },'image/png');
+  }
+  async function share(){
+    var data={title:(P&&P.name||'Lender')+' on Pegasus', text:'Lending programs and send a deal:', url:PAGE_URL};
+    if(navigator.share){ try{ await navigator.share(data); return; }catch(e){ if(e&&e.name==='AbortError') return; } }
+    try{ await navigator.clipboard.writeText(PAGE_URL); $('qrShare').textContent='Link copied'; setTimeout(function(){ $('qrShare').textContent='Share'; },1800); }catch(e){ prompt('Copy this link', PAGE_URL); }
+  }
+
+  async function init(){
+    if(!slug||!sb){ notFound(); return; }
+    $('qrUrl').textContent=PAGE_URL.replace('https://','');
+    makeQR($('qrBox'),300);
+    $('qrBox').onclick=openFull; $('qrFull').onclick=openFull; $('fsX').onclick=closeFull; $('fs').onclick=function(e){ if(e.target===this) closeFull(); };
+    document.addEventListener('keydown',function(e){ if(e.key==='Escape') closeFull(); });
+    $('qrShare').onclick=share; $('qrCard').onclick=function(){ if(P) downloadCard(); };
+    var ses=null; try{ ses=(await sb.auth.getSession()).data.session; }catch(e){}
+    ME=ses&&ses.user||null;
+    if(ME) $('navAuth').innerHTML='<a class="btn sm" href="/feed">My network</a>';
+    var pres=null, progs=null;
+    try{
+      var r=await Promise.all([sb.rpc('get_presence_page_by_slug',{p_slug:slug}), sb.from('public_lender_programs').select('*').eq('company_slug',slug).order('updated_at',{ascending:false})]);
+      pres=r[0]&&r[0].data; progs=r[1]&&r[1].data;
+    }catch(e){ console.error('[lend] load failed',e); }
+    P=pres&&pres.presence; CAN=!!(pres&&pres.can_manage); PROGS=progs||[];
+    if(!P||!P.id||P.presence_type==='personal'){ notFound(); return; }
+    if(!PROGS.length && !CAN){ location.replace('/business/'+encodeURIComponent(P.slug)); return; }
+    renderHero(); renderNotice(); renderPrograms(); renderSend();
+  }
+  init();
+})();
+</script>
+</body>
+</html>

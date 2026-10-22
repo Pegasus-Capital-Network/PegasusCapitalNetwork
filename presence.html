@@ -476,6 +476,21 @@ Pegasus.boot(async function(){
     }catch(e){}
   })();
 
+  (async function loadLender(){
+    var anchor=document.getElementById('ps-posts'); if(!anchor||p.presence_type!=='company') return;
+    try{
+      var lr=await c.from('public_lender_programs').select('id,founding_no,unclaimed').eq('company_slug',p.slug);
+      var progs=(lr&&!lr.error&&lr.data)||[]; if(!progs.length) return;
+      var fno=progs.reduce(function(a,x){ return a||x.founding_no; },null);
+      var box=document.createElement('div');
+      box.innerHTML='<div class="pp-card" style="border-color:#e3cf9f;background:linear-gradient(180deg,#fffaf0,#fff)"><div class="pp-card-body" style="display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between">'+
+        '<div>'+(fno?'<div style="display:inline-block;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#7a5c22;background:#f7ecd3;border:1px solid #e3cf9f;border-radius:999px;padding:3px 10px;margin-bottom:6px">★ Founding Lender №'+(fno<10?'0':'')+fno+'</div><br>':'')+
+        '<b style="font-size:15px">'+progs.length+' lending program'+(progs.length===1?'':'s')+'</b><div style="font-size:13px;opacity:.75">What they finance, where and how much, plus a QR code to share.</div></div>'+
+        '<a class="btn btn-pri" href="/lend/'+encodeURIComponent(p.slug)+'">Lender page &amp; QR →</a></div></div>';
+      anchor.parentNode.insertBefore(box.firstChild, anchor);
+    }catch(e){}
+  })();
+
   var _opps = [];
   (async function loadOpps(){
     try{

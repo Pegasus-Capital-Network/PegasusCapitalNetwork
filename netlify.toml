@@ -232,6 +232,12 @@
 
 # ── Clean business/project page URLs → internal presence resolver (200 rewrite;
 #    browser URL stays clean). The legacy /presence.html?slug=… still works. ──
+# ── Lender page with QR (programs + send a deal) ──
+[[redirects]]
+  from = "/lend/:slug"
+  to = "/lend.html"
+  status = 200
+
 [[redirects]]
   from = "/business/:slug"
   to = "/.netlify/functions/presence-seo-page?kind=business&slug=:slug"
