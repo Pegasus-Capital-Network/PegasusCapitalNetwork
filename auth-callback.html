@@ -107,6 +107,7 @@ Pegasus.mountPublic('');
     // password the user must click the confirmation link first. If we get an
     // unconfirmed email-flow session, show the "check email" card.
     if (!isConfirmed) { showCheckEmail(); return; }
+    (window.PegTrackQ = window.PegTrackQ || []).push(['signin_done']);
 
     // Hydrate the store so we know the current profile state.
     await Pegasus.store.hydrate();

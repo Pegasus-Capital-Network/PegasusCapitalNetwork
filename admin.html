@@ -120,6 +120,7 @@ async function loadDirectory(p){
           : '<div style="font-size:12.5px;color:var(--text3)">Nothing new to publish. Import more companies into Partner Network, then return here.</div>')+
         '<div id="dir-status" style="font-size:12px;color:var(--text3);margin-top:12px"></div>'+
       '</div></div>'+
+      '<div class="card" style="margin-top:14px"><div class="card-head"><div class="card-title">Site analytics &amp; claim funnel · last 30 days</div></div><div class="card-body" id="site-an" style="font-size:12px;color:var(--text3)">Loading…</div></div>'+
       '<div class="card" style="margin-top:14px"><div class="card-head"><div class="card-title">Most viewed pages · last 30 days</div></div><div class="card-body" id="dir-views" style="font-size:12px;color:var(--text3)">Loading…</div></div>'+
       '<div class="card" style="margin-top:14px"><div class="card-head"><div class="card-title">Placements · Featured &amp; Sponsored</div></div><div class="card-body">'+
         '<div style="font-size:12px;color:var(--text2);line-height:1.55;margin-bottom:10px"><b>Featured</b> (house companies) show first on every directory page, in search and in the Lender Matcher. <b>Sponsored</b> (paid) show first where relevant — matching section/category/state in the directory, matching deal type in the matcher — until the end date. Both are labelled for visitors. HMDA rankings and awards are never affected.</div>'+
@@ -133,6 +134,33 @@ async function loadDirectory(p){
           '<button class="btn btn-pri btn-sm" id="pl-add">Add placement</button></div>'+
         '<div id="pl-status" style="font-size:12px;margin-top:8px"></div>'+
       '</div></div>';
+    /* Site analytics (migration 101): first-party page views, referrers, email
+       campaigns (utm) and the claim funnel. No cookies, no personal data. */
+    (async function(){
+      var hs=document.getElementById('site-an'); if(!hs) return;
+      try{
+        var fr=await c.rpc('admin_site_funnel',{p_days:30});
+        if(fr.error) throw fr.error;
+        var d=fr.data||{}, t=d.totals||{}, f=d.funnel||{};
+        function n(k){ return Number(f[k]||0); }
+        var steps=[['Business page visitors',Number(t.business_page_visitors||0)],['Opened claim page',n('claim_view')],['Asked to sign in',n('claim_signin_prompt')],['Sign-in link sent',n('claim_link_sent')],['Signed in / confirmed',n('signin_done')],['Claim submitted',n('claim_submit')+n('claim_done')],['Verified instantly',n('claim_done')]];
+        var top=steps[0][1]||1;
+        hs.innerHTML=
+          '<div style="display:flex;gap:18px;flex-wrap:wrap;margin-bottom:14px">'+
+            '<div class="stat" style="--accent:var(--blue)"><div class="stat-v">'+(t.visitors||0)+'</div><div class="stat-l">Visitors</div></div>'+
+            '<div class="stat" style="--accent:var(--teal)"><div class="stat-v">'+(t.page_views||0)+'</div><div class="stat-l">Page views</div></div>'+
+            '<div class="stat" style="--accent:var(--gold)"><div class="stat-v">'+n('signup_view')+' → '+n('signup_submit')+'</div><div class="stat-l">Signup page → submitted</div></div>'+
+          '</div>'+
+          '<div style="font-weight:600;color:var(--text);margin-bottom:6px">Claim funnel</div>'+
+          tbl(['Step','Visitors','% of business page visitors'], steps.map(function(s){ return [aesc(s[0]), String(s[1]), steps[0][1]?Math.round(100*s[1]/top)+'%':'—']; }))+
+          '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-top:14px">'+
+            '<div><div style="font-weight:600;color:var(--text);margin-bottom:6px">Email campaigns (utm)</div>'+((d.campaigns||[]).length?tbl(['Source','Campaign','Visitors','Claim views'],(d.campaigns||[]).map(function(x){ return [aesc(x.source),aesc(x.campaign||'—'),String(x.visitors),String(x.claim_views)]; })):'No tagged visits yet.')+'</div>'+
+            '<div><div style="font-weight:600;color:var(--text);margin-bottom:6px">Referrers</div>'+((d.referrers||[]).length?tbl(['Site','Visitors'],(d.referrers||[]).map(function(x){ return [aesc(x.host),String(x.visitors)]; })):'No external referrers yet.')+'</div>'+
+            '<div><div style="font-weight:600;color:var(--text);margin-bottom:6px">Top pages</div>'+((d.top_pages||[]).length?tbl(['Path','Views'],(d.top_pages||[]).slice(0,12).map(function(x){ return ['<a href="'+aesc(x.path)+'" target="_blank" style="color:var(--text)">'+aesc(x.path)+'</a>',String(x.views)]; })):'No page views yet.')+'</div>'+
+          '</div>'+
+          '<div style="margin-top:10px;color:var(--text3)">Counted from real browsers only (bots skipped); a visitor is one browser tab session. Collection started with migration 101.</div>';
+      }catch(e){ hs.textContent='Site analytics unavailable — apply migration 101. ('+((e&&e.message)||e)+')'; }
+    })();
     /* Page views (presence_views_daily via admin_top_viewed_pages) — shows which
        companies attract visitors: the best candidates to nudge toward a claim. */
     (async function(){

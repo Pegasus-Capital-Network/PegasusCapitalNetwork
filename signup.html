@@ -81,6 +81,7 @@ Pegasus.mountPublic();
    to where they started. */
 (function(){
   try{
+    (window.PegTrackQ=window.PegTrackQ||[]).push(['signup_view']);
     var qs=new URLSearchParams(location.search);
     var role=(qs.get('role')||'').trim().toLowerCase();
     if(role){ var rs=document.getElementById('role'); if(rs){ for(var i=0;i<rs.options.length;i++){ if(rs.options[i].value===role){ rs.selectedIndex=i; break; } } try{ onRoleChange(); }catch(_){} } }
@@ -156,6 +157,7 @@ async function doSignup(){
   try{
     await PegAuth.signUp({email,password,full_name,role,access_code:access_code||null,headline:headline||null,location:location||null});
     try{ __suReleaseGuard(); }catch(_){}
+    (window.PegTrackQ=window.PegTrackQ||[]).push(['signup_submit']);
     _signupEmail=email;
     // Do NOT redirect — show "check your email" state.
     // Supabase sends a confirmation email; user must click it before accessing the platform.

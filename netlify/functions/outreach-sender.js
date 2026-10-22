@@ -127,6 +127,9 @@ function fmtUsdLong(n){
 // Ranked lender: tell them their place. metadata.award =
 //   { rank, volume_usd, count, labels:["Top 100 U.S. Mortgage Lenders 2025 (#46)", …],
 //     verify_domain } — labels empty when ranked but not an award honoree.
+// Campaign tag on links to public pages (never on /yes or /unsubscribe, which
+// carry the token), so site analytics (migration 101) can attribute visits.
+function utm(url, r){ return url+(url.indexOf("?")>=0?"&":"?")+"utm_source=email&utm_medium=outreach&utm_campaign="+encodeURIComponent(r.source||"outreach"); }
 function buildAwardEmail(r, footer, unsub){
   const m = r.metadata||{}, a = m.award||{}, co = r.company||"your company";
   const slug = m.presence_slug, rank = fmtInt(a.rank);
@@ -135,27 +138,27 @@ function buildAwardEmail(r, footer, unsub){
   const greet = m.mailbox==="direct" && firstName(r) ? "Hi "+firstName(r)+"," : "Hello,";
   const fact = "In 2025, "+co+" originated "+(vol||"its mortgage volume")+(cnt?" across "+cnt+" loans":"")+
     ", according to public Home Mortgage Disclosure Act (HMDA) data. That places it #"+rank+" among U.S. mortgage lenders by origination volume.";
-  const claim = co+" also has a free page on Pegasus Capital Network: "+ORIGIN+"/business/"+slug+"\n"+
+  const claim = co+" also has a free page on Pegasus Capital Network: "+utm(ORIGIN+"/business/"+slug, r)+"\n"+
     "Anyone on your team can claim it and keep the details current"+(a.verify_domain ? ". Sign in with an @"+a.verify_domain+" email address and the claim is verified instantly" : "")+":\n"+
-    ORIGIN+"/claim?presence="+encodeURIComponent(slug);
+    utm(ORIGIN+"/claim?presence="+encodeURIComponent(slug), r);
   const about = "Pegasus Capital Network (pegasuscapitalnetwork.com) is a professional network for real estate developers, lenders, brokers, and capital partners. The ranking reflects 2025 origination volume reported under HMDA, aggregated by Pegasus; it is not a paid listing.";
   let subject, body;
   if(labels.length){
     subject = co+" named to Pegasus Top Lenders 2025 (#"+rank+")";
     body = greet+"\n\nCongratulations — "+co+" has been named to Pegasus Top Lenders 2025, our recognition of the largest U.S. mortgage lenders:\n"+
       labels.map(l=>"  • "+l).join("\n")+"\n\n"+fact+"\n\n"+
-      "Your honoree page has the official award badge for your website and a ready-to-use press release:\n"+ORIGIN+"/awards/top-lenders-2025/"+encodeURIComponent(slug)+"\n"+
+      "Your honoree page has the official award badge for your website and a ready-to-use press release:\n"+utm(ORIGIN+"/awards/top-lenders-2025/"+encodeURIComponent(slug), r)+"\n"+
       "The badge and press materials are free to use. No membership or payment is required.\n\n"+claim+"\n\n"+about+"\n\n"+footer;
   } else {
     subject = co+" ranked #"+rank+" among U.S. mortgage lenders (2025)";
     body = greet+"\n\n"+fact+"\n\n"+
-      "The full ranking and a free \"Ranked by Pegasus\" badge for your website are here:\n"+ORIGIN+"/rankings/badge/"+encodeURIComponent(slug)+"\n\n"+claim+"\n\n"+about+"\n\n"+footer;
+      "The full ranking and a free \"Ranked by Pegasus\" badge for your website are here:\n"+utm(ORIGIN+"/rankings/badge/"+encodeURIComponent(slug), r)+"\n\n"+claim+"\n\n"+about+"\n\n"+footer;
   }
   return { subject, text: body, unsub };
 }
 function buildEmail(r){
   const m = r.metadata||{};
-  const page = m.presence_slug ? ORIGIN+"/business/"+m.presence_slug : null;
+  const page = m.presence_slug ? utm(ORIGIN+"/business/"+m.presence_slug, r) : null;
   const unsub = ORIGIN+"/unsubscribe?t="+r.token;
   const domain = m.source_domain || String(r.email.split("@")[1]||"");
   const intro = "I'm reaching out from Pegasus Capital Network (pegasuscapitalnetwork.com), a professional network for real estate developers, lenders, brokers, and capital partners. Our directory covers more than 2,400 companies in more than 80 countries, including the largest U.S. mortgage lenders, ranked by 2025 origination volume, and members share deals, projects, market views, and events in a shared network feed.";
@@ -172,7 +175,7 @@ function buildEmail(r){
     const name = String(r.full_name||"").trim(), title = String(m.title||"").trim();
     subject = (name ? "For "+name+" — " : "")+(r.company||"Your company")+" on Pegasus Capital Network";
     text = "Hello,\n\n"+(name ? "Could you please pass this note to "+name+(title?", "+title:"")+"? Thank you.\n\n"+firstName(r)+" — " : "")+intro+"\n\n"+whyLine(r)+"\n\n"+(pageLine?pageLine+"\n\n":"")+
-      "Prefer a personal profile? Create one for free: "+ORIGIN+"/signup.html — or simply reply to this email.\n\n"+footer;
+      "Prefer a personal profile? Create one for free: "+utm(ORIGIN+"/signup.html", r)+" — or simply reply to this email.\n\n"+footer;
   }
   return { subject, text, unsub };
 }

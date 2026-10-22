@@ -9,6 +9,10 @@
   'use strict';
   if (window.__pegI18n) return; window.__pegI18n = true;
 
+  // This script is on every page, so it also loads the first-party analytics
+  // (no cookies, no personal data — see js/pegasus-track.js).
+  try{ var tr = document.createElement('script'); tr.src = '/js/pegasus-track.js?v=1'; tr.defer = true; (document.head || document.documentElement).appendChild(tr); }catch(e){}
+
   var LANGS = [['en','English'],['ar','العربية'],['zh','中文'],['ru','Русский'],['es','Español'],['fr','Français']];
   var CODES = LANGS.map(function(l){ return l[0]; });
   var C = window.PEG_CONFIG || {};
