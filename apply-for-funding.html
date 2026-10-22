@@ -110,6 +110,12 @@ textarea{min-height:70px;resize:vertical}
   var URL=C.SUPABASE_URL||'https://auth.pegasuscapitalnetwork.com';
   var KEY=C.SUPABASE_ANON||'sb_publishable_hrR8wI6hM921mnxk7bBE_A_YKxWsoBI';
   var sb=(window.supabase&&window.supabase.createClient)?window.supabase.createClient(URL,KEY):null;
+  // Prefill from a deep link (e.g. the AI directory "apply for funding" CTA) and record where it came from.
+  try{
+    var qs=new URLSearchParams(location.search);
+    var co=qs.get('company'); if(co){ var ce=document.getElementById('f-company'); if(ce && !ce.value) ce.value=co; }
+    window.__applySrc=(qs.get('src')||'form').slice(0,40);
+  }catch(e){ window.__applySrc='form'; }
   function v(id){var el=document.getElementById(id);return el?(el.value||'').trim():'';}
   window.submitReq=async function(){
     var err=document.getElementById('err'), btn=document.getElementById('submit');
@@ -126,7 +132,7 @@ textarea{min-height:70px;resize:vertical}
         company_name:company, website:v('f-web')||null, sector:v('f-sector')||null,
         stage:v('f-stage')||null, raising_amount:v('f-amount')||null, location:v('f-loc')||null,
         one_liner:one, traction:v('f-traction')||null, deck_url:v('f-deck')||null,
-        contact_name:name, contact_email:email, contact_phone:v('f-phone')||null, source:'form'
+        contact_name:name, contact_email:email, contact_phone:v('f-phone')||null, source:(window.__applySrc||'form')
       });
       if(r.error) throw r.error;
       document.getElementById('formCard').style.display='none';

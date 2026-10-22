@@ -42,6 +42,8 @@ h1{font-weight:800;font-size:clamp(32px,4.6vw,50px);line-height:1.05;letter-spac
 .c .tags span{font-size:11px;color:var(--ink2);background:var(--bg2);border:1px solid var(--line);border-radius:999px;padding:3px 10px}
 .c .req{font-size:12.5px;font-weight:600;color:#fff;background:var(--navy);border:none;border-radius:8px;padding:9px 14px;cursor:pointer;transition:background .18s;text-align:center}
 .c .req:hover{background:var(--navy-d)}
+.c .apply{display:block;margin-top:9px;font-size:12px;font-weight:600;color:var(--navy);text-decoration:none;text-align:center}
+.c .apply:hover{text-decoration:underline}
 .loading,.empty{position:relative;z-index:2;text-align:center;color:var(--muted);font-size:13px;padding:40px 0}
 .foot{position:relative;z-index:2;border-top:1px solid var(--line);margin-top:26px;padding:26px 0 60px;font-size:11px;color:var(--muted);line-height:1.7;max-width:80ch}
 .foot a{color:var(--navy);font-weight:600}
@@ -123,7 +125,8 @@ h1{font-weight:800;font-size:clamp(32px,4.6vw,50px);line-height:1.05;letter-spac
     return '<div class="c"><div class="nm">'+esc(r.name)+'</div>'+
       (r.one_liner?'<div class="ds">'+esc(r.one_liner)+'</div>':'<div class="ds"></div>')+
       '<div class="tags">'+tags+'</div>'+
-      '<button class="req" onclick="askIntro(\'startup\',\''+r.id+'\',\''+esc(r.name).replace(/'/g,"&#39;")+'\')">Request an introduction</button></div>';
+      '<button class="req" onclick="askIntro(\'startup\',\''+r.id+'\',\''+esc(r.name).replace(/'/g,"&#39;")+'\')">Request an introduction</button>'+
+      '<a class="apply" href="/apply-for-funding.html?company='+encodeURIComponent(r.name)+'&src=ai-directory">This is your company — apply for funding &rarr;</a></div>';
   }
   function investorCard(r){
     var title=r.firm||r.name;
