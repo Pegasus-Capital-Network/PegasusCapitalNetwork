@@ -549,6 +549,11 @@
 [functions."outreach-sender"]
   schedule = "10 * * * *"
 
+# One-time profile-completion reminder for members who signed up 1–21 days ago
+# and never finished onboarding (daily, ~9:17 PT). Eligibility: migration 102.
+[functions."profile-reminder"]
+  schedule = "17 16 * * *"
+
 # Member referral invitations ("Invite colleagues") — sent within ~15 min of a
 # member queuing them; honours the global outreach pause.
 [functions."referral-sender"]
