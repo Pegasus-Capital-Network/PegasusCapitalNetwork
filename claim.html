@@ -63,17 +63,20 @@ Pegasus.boot(async function(){
   var slug=(qs.get('presence')||qs.get('slug')||'').trim();
   if(!slug){ state('Nothing to claim','No page was specified. Browse the directory and open a business page to claim it.','<a class="btn btn-ghost" href="/businesses">Browse businesses</a>'); return; }
 
+  function track(ev){ (window.PegTrackQ=window.PegTrackQ||[]).push([ev,{slug:slug}]); }
+  track('claim_view');
+  var back='/claim?presence='+encodeURIComponent(slug);
+  var pwLinks='<a style="text-decoration:underline" href="/signup.html?role=lender&next='+encodeURIComponent(back)+'">create a profile with a password</a> or <a style="text-decoration:underline" href="/signin.html?next='+encodeURIComponent(back)+'">sign in</a>';
+
   var c=null; try{ c=await window.PegSB.ready; }catch(e){ c=null; }
-  // Require sign-in; come back here afterward.
   var uid=null, uemail=''; if(c){ try{ var u=await c.auth.getUser(); uid=u&&u.data&&u.data.user&&u.data.user.id; uemail=(u&&u.data&&u.data.user&&u.data.user.email)||''; }catch(e){} }
-  if(!uid){
-    try{ localStorage.setItem('pegasus.redirectAfterAuth','/claim?presence='+encodeURIComponent(slug)); }catch(_){}
-    state('Sign in to claim this page','Claiming connects this page to your Pegasus account. Sign in or create a free profile, and we’ll bring you right back.<br><br><b>Tip:</b> use your work email on the company’s own domain (e.g. you@yourcompany.com) — claims from a verified work email are approved instantly.',
-      '<div style="display:flex;gap:10px;flex-wrap:wrap"><a class="btn btn-pri" href="/signup.html?role=lender&next='+encodeURIComponent('/claim?presence='+slug)+'">Create free profile</a><a class="btn btn-ghost" href="/signin.html?next='+encodeURIComponent('/claim?presence='+slug)+'">Sign in</a></div>', 0);
+  if(!c){
+    try{ localStorage.setItem('pegasus.redirectAfterAuth',back); }catch(_){}
+    state('Sign in to claim this page','Claiming connects this page to your Pegasus account. You can '+pwLinks+', and we’ll bring you right back.','',0);
     return;
   }
 
-  // Resolve the presence.
+  // Resolve the presence (public pages resolve for signed-out visitors too).
   var data=null;
   try{ var r=await c.rpc('get_presence_page_by_slug',{p_slug:slug}); if(r && !r.error) data=r.data; }catch(e){}
   var pr=data && data.presence;
@@ -81,6 +84,50 @@ Pegasus.boot(async function(){
   if(pr.presence_type==='personal'){ state('Personal profiles can’t be claimed here','This page is a personal profile. Business, project, and event pages can be claimed.','<a class="btn btn-ghost" href="/">Return home</a>'); return; }
   // Ranking context (HMDA) for the page, if any.
   var rank=null; try{ var dr=await c.from('public_business_directory').select('hmda_rank').eq('slug',pr.slug).maybeSingle(); rank=dr&&dr.data&&dr.data.hmda_rank; }catch(_){}
+  var site=domainOf(pr.website_url||pr.public_cta_url||'');
+
+  // Signed out: one step — work email → one-time sign-in link → back here, and
+  // the claim is submitted automatically (no password, no separate signup).
+  if(!uid){
+    try{ localStorage.setItem('pegasus.redirectAfterAuth',back); }catch(_){}
+    track('claim_signin_prompt');
+    show(
+      steps(0)+
+      '<div class="cl-eyebrow">Claim a page</div>'+
+      (rank?'<div class="cl-rank">Ranked #'+esc(rank)+' U.S. mortgage lender 2025 by Pegasus</div>':'')+
+      '<div class="cl-h1">Claim '+esc(pr.name||'this page')+'</div>'+
+      '<div class="cl-sub">Claiming is free. Enter your work email and we’ll send a one-time sign-in link — no password needed. Open it and your claim is submitted.</div>'+
+      '<div class="cl-hint">'+(site?'Use an email on <b>'+esc(site)+'</b> and your claim is verified instantly.':'Use an email on your company’s own domain and your claim is verified instantly.')+' Otherwise a Pegasus admin reviews it, usually within one business day.</div>'+
+      '<label class="cl-label">Work email *</label>'+
+      '<input id="cl-email" class="cl-input" type="email" autocomplete="email" placeholder="you@'+esc(site||'yourcompany.com')+'">'+
+      '<label class="cl-label">Your name</label>'+
+      '<input id="cl-name" class="cl-input" type="text" autocomplete="name" placeholder="First and last name">'+
+      '<label class="cl-label">How are you connected? (optional with a company email)</label>'+
+      '<textarea id="cl-evidence" class="cl-ta" placeholder="e.g. I’m the founder / owner / authorized representative."></textarea>'+
+      '<div style="display:flex;gap:10px;margin-top:18px;flex-wrap:wrap"><button class="btn btn-pri" id="cl-send">Email me a sign-in link</button>'+
+      '<a class="btn btn-ghost" href="'+esc('/business/'+encodeURIComponent(pr.slug))+'">View page</a></div>'+
+      '<div class="cl-note">Prefer a password? You can also '+pwLinks+'.</div>'
+    );
+    document.getElementById('cl-send').onclick=async function(){
+      var btn=this, em=(document.getElementById('cl-email').value||'').trim().toLowerCase();
+      var nm=(document.getElementById('cl-name').value||'').trim(), ev=(document.getElementById('cl-evidence').value||'').trim();
+      if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(em)){ Pegasus.toast('!','var(--gold-dim)','Enter your work email','We send the sign-in link there.'); return; }
+      btn.disabled=true; btn.textContent='Sending…';
+      try{ localStorage.setItem('pegasus.pendingClaim',JSON.stringify({slug:slug,ev:ev,at:Date.now()})); localStorage.setItem('pegasus.redirectAfterAuth',back); }catch(_){}
+      try{
+        var meta={role:'lender'}; if(nm) meta.full_name=nm;
+        var rs=await c.auth.signInWithOtp({email:em,options:{emailRedirectTo:location.origin+'/auth-callback.html',data:meta}});
+        if(rs && rs.error) throw rs.error;
+        track('claim_link_sent');
+        state('Check your inbox','We sent a sign-in link to <b>'+esc(em)+'</b>. Open it <b>on this device</b> and you’ll come straight back here — your claim for '+esc(pr.name||'this page')+' is then submitted automatically.<br><br>Nothing arrived after a few minutes? Check spam, or '+pwLinks+'.','',1);
+      }catch(err){
+        console.error('[claim] sign-in link failed:', err);
+        Pegasus.toast('!','var(--gold-dim)','Could not send the link',(err&&err.message)||'Please try again in a minute.');
+        btn.disabled=false; btn.textContent='Email me a sign-in link';
+      }
+    };
+    return;
+  }
   function nextSteps(intro){
     state('You now manage '+(pr.name||'this page'), intro,
       '<ul class="cl-next">'+
@@ -103,7 +150,7 @@ Pegasus.boot(async function(){
     })();
   }
   if(data.can_manage){ nextSteps('You can edit '+esc(pr.name||'this page')+' anytime from Business Pages.'); return; }
-  var site=domainOf(pr.website_url||pr.public_cta_url||''), edom=(uemail.split('@')[1]||'').toLowerCase();
+  var edom=(uemail.split('@')[1]||'').toLowerCase();
   var instant = !!site && !!edom && (edom===site || edom.slice(-(site.length+1))==='.'+site);
 
   // Claim form.
@@ -134,6 +181,7 @@ Pegasus.boot(async function(){
       var rr=await c.rpc('create_entity_claim',{p_presence_id:pr.id,p_evidence:ev,p_contact_note:ct||null});
       if(rr && rr.error) throw rr.error;
       var managed=false; try{ var r2=await c.rpc('get_presence_page_by_slug',{p_slug:slug}); managed=!!(r2&&r2.data&&r2.data.can_manage); }catch(_){}
+      track(managed?'claim_done':'claim_submit');
       if(managed){ nextSteps('Verified with your work email on '+esc(site)+'. Here’s how to get the most from your page:'); return; }
       state('Claim submitted','Thanks — your claim for '+esc(pr.name||'this page')+' is with our review team, usually within one business day. You’ll get a notification once it’s approved, and the page will appear in your Business Pages.',
         '<div style="display:flex;gap:10px;flex-wrap:wrap"><a class="btn btn-pri" href="/dashboard.html">Go to Workspace</a><a class="btn btn-ghost" href="/businesses">Browse more</a></div>', 1);
@@ -143,6 +191,13 @@ Pegasus.boot(async function(){
       btn.disabled=false; btn.textContent='Submit claim';
     }
   };
+  // Back from the emailed sign-in link: finish the claim the visitor started.
+  var pend=null; try{ pend=JSON.parse(localStorage.getItem('pegasus.pendingClaim')||'null'); }catch(_){}
+  if(pend && pend.slug===slug && Date.now()-(pend.at||0) < 2*86400000){
+    try{ localStorage.removeItem('pegasus.pendingClaim'); }catch(_){}
+    if(pend.ev) document.getElementById('cl-evidence').value=pend.ev;
+    if(instant || pend.ev) document.getElementById('cl-submit').click();
+  }
 });
 </script>
 </body></html>
