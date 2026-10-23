@@ -44,11 +44,14 @@ if(!_isAdmin) { location.replace('/dashboard.html'); return; } // authenticated 
 // ── END ADMIN GATE ─────────────────────────────────────────────────────────
 
 const v=Pegasus.mountApp({active:'Admin',title:'Admin Console',sub:'Platform operations'});
-// KPI row
+// KPI row — placeholder inserted synchronously so the cards stay at the top of the console
+v.insertAdjacentHTML('beforeend','<div id="akpi" class="grid g4" style="margin-bottom:16px"></div>');
 (async function loadAdminStats(){
+    var kpi=document.getElementById('akpi');
     try{
       var c=await window.PegSB.ready;
-      var dash=[['👥','—','Members','Live from Supabase','var(--blue)'],['▤','—','Public Pages','Directory','var(--green)'],['◎','—','Feed Posts','Network feed','var(--teal)'],['⚑','—','Pending Review','Claims + trust reviews','var(--amber)']];
+      /* k[5] = admin tab this card opens on click ('' = not clickable) */
+      var dash=[['👥','—','Members','Live from Supabase','var(--blue)','Users'],['▤','—','Public Pages','Directory','var(--green)',''],['◎','—','Feed Posts','Network feed','var(--teal)',''],['⚑','—','Pending Review','Claims + trust reviews','var(--amber)','Manual Review']];
       if(c){
         /* Each count is isolated so one failing table never blanks the row. */
         var cnt=async function(q){ try{ var r=await q; return (r&&typeof r.count==='number')?r.count:0; }catch(_){ return 0; } };
@@ -64,9 +67,9 @@ const v=Pegasus.mountApp({active:'Admin',title:'Admin Console',sub:'Platform ope
         dash[2][1]=String(fc||0);
         dash[3][1]=String((cl||0)+(tr||0));
       }
-      v.insertAdjacentHTML('beforeend','<div class="grid g4" style="margin-bottom:16px">'+dash.map(function(k){return '<div class="stat" style="--accent:'+k[4]+'"><div class="stat-ic">'+k[0]+'</div><div class="stat-v">'+k[1]+'</div><div class="stat-l">'+k[2]+'</div><div class="stat-m" style="color:'+k[4]+'">'+k[3]+'</div></div>';}).join('')+'</div>');
+      kpi.innerHTML=dash.map(function(k){var click=k[5]?(' onclick="aShow(\''+k[5]+'\')" role="button" tabindex="0"'):'';var cur=k[5]?';cursor:pointer':'';return '<div class="stat" style="--accent:'+k[4]+cur+'"'+click+'><div class="stat-ic">'+k[0]+'</div><div class="stat-v">'+k[1]+'</div><div class="stat-l">'+k[2]+'</div><div class="stat-m" style="color:'+k[4]+'">'+k[3]+'</div></div>';}).join('');
     }catch(e){
-      v.insertAdjacentHTML('beforeend','<div class="panel" style="padding:18px;color:var(--text2);font-size:12px;margin-bottom:16px">Platform metrics load from Supabase. Verify database connection and RLS policies.</div>');
+      kpi.innerHTML='<div class="panel" style="padding:18px;color:var(--text2);font-size:12px;grid-column:1/-1">Platform metrics load from Supabase. Verify database connection and RLS policies.</div>';
     }
   })();
 // section tabs
@@ -76,7 +79,15 @@ v.insertAdjacentHTML('beforeend',
   '<a href="/showcase-admin.html" style="color:var(--blue)">Showcase Moderation</a> · <a href="/admin/intelligence" style="color:var(--blue)">Capital Intelligence</a> · '+
   '<a href="/admin/partner-network" style="color:var(--blue)">Partner Network</a></div>'+
   '<div style="display:flex;gap:4px;margin-bottom:16px;flex-wrap:wrap" id="atabs"></div><div id="apanel"></div>');
-const sections=['Dashboard','Users','Pegasus AI','Intelligence','Investors','AI Companies','Intro Requests','Funding','Private Network','Capital Pipeline','Capital Metrics','Direct Lending','PN Capital Leads','Feed','Invites','Claims','Deal Requests','Duplicates','Directory','Homepage Event','Subscriptions','Access System','Deal Rooms','Lender Profiles','Growth Partner Submissions','Match Activity','Analytics','Member Log','Manual Review','Platform Health','Schema & Repair'];
+/* Visible admin tabs — trimmed to the sections in active use. Every other
+   loader (Pegasus AI, Intelligence, Investors, AI Companies, Intro Requests,
+   Private Network, Capital Metrics, Direct Lending, Feed, Invites, Claims,
+   Deal Requests, Duplicates, Directory, Homepage Event, Subscriptions,
+   Access System, Deal Rooms, Lender Profiles, Growth Partner Submissions,
+   Match Activity, Analytics, Member Log, Platform Health, Schema & Repair)
+   still exists and routes through aShow(); add its name back below to re-show
+   the tab. Manual Review surfaces both trust reviews and page claims. */
+const sections=['Dashboard','Capital Pipeline','PN Capital Leads','Funding','Users','Manual Review'];
 document.getElementById('atabs').innerHTML=sections.map((s,i)=>'<div class="toggle-opt '+(i===0?'on':'')+'" style="font-size:11px" onclick="aShow(\''+s+'\')">'+s+'</div>').join('');
 function tbl(cols,rows){return '<div class="card"><table class="tbl"><thead><tr>'+cols.map(c=>'<th>'+c+'</th>').join('')+'</tr></thead><tbody>'+rows.map(r=>'<tr>'+r.map(c=>'<td>'+c+'</td>').join('')+'</tr>').join('')+'</tbody></table></div>';}
 const chip=(t,c)=>'<span class="badge '+c+'">'+t+'</span>';
