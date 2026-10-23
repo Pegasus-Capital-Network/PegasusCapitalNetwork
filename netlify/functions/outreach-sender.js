@@ -129,6 +129,9 @@ function fmtUsdLong(n){
 //     verify_domain } — labels empty when ranked but not an award honoree.
 // Campaign tag on links to public pages (never on /yes or /unsubscribe, which
 // carry the token), so site analytics (migration 101) can attribute visits.
+// Founding offer (migration 104) — mentioned only while spots remain; set once per run.
+let PERK_SPOTS = 0;
+function perkLine(){ return PERK_SPOTS > 0 ? " The first 50 companies to claim their page are Featured free for 60 days at the top of their directory and search results." : ""; }
 function utm(url, r){ return url+(url.indexOf("?")>=0?"&":"?")+"utm_source=email&utm_medium=outreach&utm_campaign="+encodeURIComponent(r.source||"outreach"); }
 function buildAwardEmail(r, footer, unsub){
   const m = r.metadata||{}, a = m.award||{}, co = r.company||"your company";
@@ -139,7 +142,7 @@ function buildAwardEmail(r, footer, unsub){
   const fact = "In 2025, "+co+" originated "+(vol||"its mortgage volume")+(cnt?" across "+cnt+" loans":"")+
     ", according to public Home Mortgage Disclosure Act (HMDA) data. That places it #"+rank+" among U.S. mortgage lenders by origination volume.";
   const claim = co+" also has a free page on Pegasus Capital Network: "+utm(ORIGIN+"/business/"+slug, r)+"\n"+
-    "Anyone on your team can claim it and keep the details current"+(a.verify_domain ? ". Sign in with an @"+a.verify_domain+" email address and the claim is verified instantly" : "")+":\n"+
+    "Anyone on your team can claim it and keep the details current"+(a.verify_domain ? ". Sign in with an @"+a.verify_domain+" email address and the claim is verified instantly" : "")+"."+perkLine()+" Claim it here:\n"+
     utm(ORIGIN+"/claim?presence="+encodeURIComponent(slug), r);
   const about = "Pegasus Capital Network (pegasuscapitalnetwork.com) is a professional network for real estate developers, lenders, brokers, and capital partners. The ranking reflects 2025 origination volume reported under HMDA, aggregated by Pegasus; it is not a paid listing.";
   let subject, body;
@@ -162,7 +165,7 @@ function buildEmail(r){
   const unsub = ORIGIN+"/unsubscribe?t="+r.token;
   const domain = m.source_domain || String(r.email.split("@")[1]||"");
   const intro = "I'm reaching out from Pegasus Capital Network (pegasuscapitalnetwork.com), a professional network for real estate developers, lenders, brokers, and capital partners. Our directory covers more than 2,400 companies in more than 80 countries, including the largest U.S. mortgage lenders, ranked by 2025 origination volume, and members share deals, projects, market views, and events in a shared network feed.";
-  const pageLine = page ? "We've added a page for "+r.company+", based on the public information on your website: "+page+" — it's free to claim and manage." : "";
+  const pageLine = page ? "We've added a page for "+r.company+", based on the public information on your website: "+page+" — it's free to claim and manage."+perkLine() : "";
   const footer = "Best regards,\nPegasus Capital Network\n\nYou are receiving this one-time note because this address is published on "+domain+" as a business contact. We will not follow up unless you reply.\n"+ADDRESS+"\nUnsubscribe: "+unsub;
   if(m.award && Number(m.award.rank) >= 1 && m.presence_slug) return buildAwardEmail(r, footer, unsub);
   let subject, text;
@@ -197,6 +200,7 @@ exports.handler = async () => {
   const out = { ran:false, reason:null, sent:0, failed:0, cap:0, sent_today:0, health:null, errors:[] };
   try{
     const s = await loadSettings();
+    try{ const n = await sb("/rest/v1/rpc/founding_perk_spots_left", { method:"POST", body:"{}" }); PERK_SPOTS = Number(n)||0; }catch(_){ PERK_SPOTS = 0; }
     if(!s || !s.source){ out.reason="no settings"; return done(out); }
     const sources = [...new Set([].concat(s.priority_sources||[], s.source).filter(x=>/^[a-z0-9_-]+$/i.test(String(x||""))))];
     out.health = await checkDeliveries(sources);

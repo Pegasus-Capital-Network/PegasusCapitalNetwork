@@ -200,24 +200,28 @@ async function loadBusinesses(section,category,state,page){
 async function loadPlacements(){
   try{
     const {url,key}=cfg();
-    const qs=new URLSearchParams({select:"slug,name,category,cat_slug,cat_label,section_slug,location,state_code,tagline,short_description,hmda_rank,kind,weight,surfaces,states",order:"weight.desc,name.asc"});
+    const qs=new URLSearchParams({select:"slug,name,category,cat_slug,cat_label,section_slug,location,state_code,tagline,short_description,hmda_rank,kind,weight,surfaces,states,perk",order:"weight.desc,name.asc"});
     const res=await fetch(url+"/rest/v1/public_business_placements?"+qs.toString(),{headers:{apikey:key,Authorization:"Bearer "+key,Range:"0-49","Range-Unit":"items"}});
     if(!res.ok) return [];
     const rows=await res.json();
     return Array.isArray(rows)?rows.filter(r=>r&&Array.isArray(r.surfaces)&&r.surfaces.includes("directory")):[];
   }catch(_){return [];}
 }
-// Featured placements show on every business page; Sponsored ones only where
-// relevant (matching section / category / state).
+// Featured (house) placements show on every business page; Sponsored ones and
+// the founding-offer Featured perks (migration 104) only where relevant
+// (matching section / category / state), perks in random order so they share
+// the slots fairly.
 function placementsFor(list,activeSection,activeSub,activeState){
   const out=list.filter(p=>{
-    if(p.kind==="featured") return true;
+    if(p.kind==="featured"&&!p.perk) return true;
     if(activeSection!=="all"&&p.section_slug!==activeSection) return false;
     if(activeSub&&p.cat_slug!==activeSub) return false;
     if(activeState){const sts=Array.isArray(p.states)?p.states:[];if(!(sts.includes(activeState)||p.state_code===activeState)) return false;}
     return true;
   });
-  out.sort((a,b)=>(a.kind==="featured"?0:1)-(b.kind==="featured"?0:1)||(b.weight||0)-(a.weight||0));
+  const rnd=new Map(out.map(p=>[p,Math.random()]));
+  const rank=p=>p.kind==="featured"&&!p.perk?0:p.kind==="sponsored"?1:2;
+  out.sort((a,b)=>rank(a)-rank(b)||(b.weight||0)-(a.weight||0)||rnd.get(a)-rnd.get(b));
   return out.slice(0,4);
 }
 async function searchBusinesses(q){
