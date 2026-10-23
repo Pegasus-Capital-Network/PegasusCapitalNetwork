@@ -84,6 +84,9 @@ Pegasus.boot(async function(){
   if(pr.presence_type==='personal'){ state('Personal profiles can’t be claimed here','This page is a personal profile. Business, project, and event pages can be claimed.','<a class="btn btn-ghost" href="/">Return home</a>'); return; }
   // Ranking context (HMDA) for the page, if any.
   var rank=null; try{ var dr=await c.from('public_business_directory').select('hmda_rank').eq('slug',pr.slug).maybeSingle(); rank=dr&&dr.data&&dr.data.hmda_rank; }catch(_){}
+  // Founding offer (migration 104): first 50 claimed companies get 60 days Featured.
+  var spots=0; if(pr.presence_type==='company'){ try{ var sp=await c.rpc('founding_perk_spots_left'); spots=(sp&&!sp.error&&Number(sp.data))||0; }catch(_){} }
+  var perkLine=spots>0?'<div class="cl-hint ok">★ <b>Founding offer:</b> the first 50 companies to claim their page are <b>Featured free for 60 days</b> at the top of their directory and search results. '+spots+' of 50 spots left.</div>':'';
   var site=domainOf(pr.website_url||pr.public_cta_url||'');
 
   // Signed out: one step — work email → one-time sign-in link → back here, and
@@ -97,6 +100,7 @@ Pegasus.boot(async function(){
       (rank?'<div class="cl-rank">Ranked #'+esc(rank)+' U.S. mortgage lender 2025 by Pegasus</div>':'')+
       '<div class="cl-h1">Claim '+esc(pr.name||'this page')+'</div>'+
       '<div class="cl-sub">Claiming is free. Enter your work email and we’ll send a one-time sign-in link — no password needed. Open it and your claim is submitted.</div>'+
+      perkLine+
       '<div class="cl-hint">'+(site?'Use an email on <b>'+esc(site)+'</b> and your claim is verified instantly.':'Use an email on your company’s own domain and your claim is verified instantly.')+' Otherwise a Pegasus admin reviews it, usually within one business day.</div>'+
       '<label class="cl-label">Work email *</label>'+
       '<input id="cl-email" class="cl-input" type="email" autocomplete="email" placeholder="you@'+esc(site||'yourcompany.com')+'">'+
@@ -136,6 +140,16 @@ Pegasus.boot(async function(){
         '<li><b>Add your team</b> — invite colleagues below.<a href="#cl-invite">Invite →</a></li>'+
       '</ul><div id="cl-invite"></div>', 3);
     if(window.PegInvite) PegInvite.mount(document.getElementById('cl-invite'));
+    // Founding offer: show the Featured end date when this claim earned it.
+    (async function(){
+      try{
+        var fp=await c.rpc('my_featured_perk',{p_slug:pr.slug}); var end=fp&&!fp.error&&fp.data; if(!end) return;
+        var ul=document.querySelector('.cl-next'); if(!ul) return;
+        var li=document.createElement('li');
+        li.innerHTML='<b>★ Featured until '+esc(new Date(end).toLocaleDateString('en-US',{month:'short',day:'numeric'}))+'</b> — founding offer: your company shows at the top of its directory and search results, free. Complete your profile so visitors see the full picture.<a href="/my-presences.html">Edit page →</a>';
+        ul.insertBefore(li, ul.firstChild);
+      }catch(_){}
+    })();
     // Lenders: their lender page with QR (and Founding Lender number) is ready right away.
     (async function(){
       try{
@@ -160,6 +174,7 @@ Pegasus.boot(async function(){
     (rank?'<div class="cl-rank">Ranked #'+esc(rank)+' U.S. mortgage lender 2025 by Pegasus</div>':'')+
     '<div class="cl-h1">Claim '+esc(pr.name||'this page')+'</div>'+
     '<div class="cl-sub">Claiming is free. Once verified you can update the page, add your team, and display your official badge.</div>'+
+    perkLine+
     (instant
       ? '<div class="cl-hint ok">✓ Your account email is on <b>'+esc(site)+'</b> — your claim will be verified instantly.</div>'
       : '<div class="cl-hint">Verification: claims from a verified work email on '+(site?'<b>'+esc(site)+'</b>':'the company’s own domain')+' are approved instantly. Otherwise a Pegasus admin reviews your claim, usually within one business day.</div>')+

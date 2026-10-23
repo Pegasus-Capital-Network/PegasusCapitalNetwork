@@ -131,6 +131,14 @@ async function isHonoree(slug,d){
     return !!((cat&&catAhead+1<=25)||(st&&stTotal>=3&&stAhead===0));
   }catch(_){return false;}
 }
+// Founding offer spots left (migration 104); 0 on any failure, so the line hides.
+async function perkSpots(){
+  try{
+    const {url,key}=cfg();
+    const r=await fetch(url+"/rest/v1/rpc/founding_perk_spots_left",{method:"POST",headers:{apikey:key,Authorization:"Bearer "+key,"Content-Type":"application/json"},body:"{}"});
+    return r.ok?Number(await r.json())||0:0;
+  }catch(_){return 0;}
+}
 // The page template is a static file: keep it for 10 minutes per warm instance
 // and fall back to the last good copy if the self-fetch fails.
 let tplCache=null;
@@ -217,7 +225,7 @@ function joinCta(kind){
 // Previously: always visible (claiming is relevant to
 // signed-in members too). Routes to the claim flow with the presence slug.
 // Ranked lenders (hmda_rank present) get a more specific pitch.
-function claimCta(kind,slug,rank){
+function claimCta(kind,slug,rank,spots){
   var noun=kind==="event"?"event":"business";
   var href="/claim?presence="+encodeURIComponent(slug);
   var r=Number(rank);
@@ -226,7 +234,9 @@ function claimCta(kind,slug,rank){
     : "Is this your "+noun+" on Pegasus?";
   return '<aside style="max-width:1000px;margin:0 auto 34px;padding:14px 20px;border:1px dashed #cdd6e0;border-radius:14px;background:#f7f9fb;color:#51607a;font-family:Arial,sans-serif;display:flex;gap:12px;align-items:center;justify-content:center;flex-wrap:wrap;font-size:13.5px">'+
     '<span>'+esc(lead)+'<span id="peg-views" style="display:none"></span></span>'+
-    '<a href="'+esc(href)+'" style="color:#235fa6;font-weight:600;text-decoration:none">Claim this page →</a></aside>';
+    '<a href="'+esc(href)+'" style="color:#235fa6;font-weight:600;text-decoration:none">Claim this page →</a>'+
+    (kind==="business"&&Number(spots)>0?'<span style="flex-basis:100%;text-align:center;font-size:12.5px;color:#0c8f5c">★ Founding offer: the first 50 companies to claim are Featured free for 60 days ('+Number(spots)+' spots left).</span>':"")+
+    '</aside>';
 }
 // Page-view beacon (all public company/event pages) + "viewed N times" in the
 // claim strip. The HTML is CDN-cached, so counting happens client-side: one
@@ -313,7 +323,7 @@ function render(html,p,kind){
     }
   }
   html=html.replace("</head>",og+"\n"+jsonLd+"\n</head>");
-  html=html.replace("<body>","<body>\n"+snapshot(p,kind,canonical)+"\n"+(p.is_claimable===true?claimCta(kind,slug,(p._dir||{}).hmda_rank)+"\n":"")+joinCta(kind));
+  html=html.replace("<body>","<body>\n"+snapshot(p,kind,canonical)+"\n"+(p.is_claimable===true?claimCta(kind,slug,(p._dir||{}).hmda_rank,p._spots)+"\n":"")+joinCta(kind));
   html=html.replace("</body>",viewsScript(slug)+"\n</body>");
   return html;
 }
@@ -330,13 +340,13 @@ export default async (request) => {
   const kind=publicPath ? publicPath[1] : (u.searchParams.get("kind")==="event"?"event":"business");
   if(!slug) return simple(404,"Page not found","This page does not exist.");
   try{
-    const [data,template,dirRow]=await Promise.all([getPresence(slug),getTemplate(request),getDirectoryRow(slug)]);
+    const [data,template,dirRow,spots]=await Promise.all([getPresence(slug),getTemplate(request),getDirectoryRow(slug),perkSpots()]);
     if(!data||data.access==="unavailable") return simple(404,"Page not found","This page is not available.");
     if(data.access!=="full"||!data.presence){
       // Member-only/private public requests stay non-indexable.
       return new Response(template,{status:200,headers:{"Content-Type":"text/html; charset=utf-8","Cache-Control":"public, max-age=0, s-maxage=60","X-Robots-Tag":"noindex, nofollow"}});
     }
-    const p={...data.presence,is_claimable:dirRow.is_claimable,_dir:dirRow.dir,_award:dirRow.award===true};
+    const p={...data.presence,is_claimable:dirRow.is_claimable,_dir:dirRow.dir,_award:dirRow.award===true,_spots:spots};
     if(!typeAllowed(kind,p.presence_type)) return simple(404,"Page not found","This page does not exist.");
     if(p.visibility!=="public_preview"||p.status!=="active") {
       return new Response(template,{status:200,headers:{"Content-Type":"text/html; charset=utf-8","Cache-Control":"public, max-age=0, s-maxage=60","X-Robots-Tag":"noindex, nofollow"}});
