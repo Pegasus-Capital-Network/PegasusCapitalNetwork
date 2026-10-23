@@ -57,4 +57,24 @@
   window.PegTrackQ = { push: function(a){ if (a && a[0]) send(a[0], a[1]); } };
   if (!PRIVATE.test(location.pathname)) send('page_view');
   queued.forEach(function(a){ window.PegTrackQ.push(a); });
+
+  // Email link scanners and rendering crawlers load pages but never touch
+  // them. The first real scroll, tap, click, key press or pointer movement
+  // marks this tab as a person; reports count people from this event.
+  var engaged = false, mx = null;
+  function engage(){
+    if (engaged) return; engaged = true;
+    ['scroll', 'touchstart', 'pointerdown', 'keydown', 'mousemove'].forEach(function(t){ window.removeEventListener(t, onEv, true); });
+    send('engaged');
+  }
+  function onEv(e){
+    if (e.type === 'mousemove') { // a single synthetic move is not enough
+      if (!mx) { mx = [e.clientX, e.clientY]; return; }
+      if (Math.abs(e.clientX - mx[0]) + Math.abs(e.clientY - mx[1]) < 12) return;
+    }
+    if (e.isTrusted === false) return;
+    if (e.type === 'scroll' && performance.now() < 1500) return; // scroll restoration on load
+    engage();
+  }
+  ['scroll', 'touchstart', 'pointerdown', 'keydown', 'mousemove'].forEach(function(t){ window.addEventListener(t, onEv, { capture: true, passive: true }); });
 })();
