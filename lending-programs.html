@@ -134,11 +134,11 @@ h1{font-weight:800;font-size:clamp(30px,4.6vw,48px);line-height:1.05;letter-spac
 
 <section class="hero"><div class="wrap">
   <div class="eyebrow">Pegasus Capital Network · Lending Programs</div>
-  <h1>Who lends what, where and how much.</h1>
-  <p class="sub">Private lenders, banks and capital providers publish their lending programs here. Borrowers, brokers and developers find the right fit in seconds and send a deal straight to the lender.</p>
+  <h1>The kind of deals lenders actually want.</h1>
+  <p class="sub">Lenders show their appetite in broad strokes, not a rulebook. No need to publish rigid criteria. Borrowers and brokers bring the real file, and it goes straight to the lender, who responds on the deals worth their time.</p>
   <div class="cta-row">
     <a class="btn gold" href="/find-a-lender">Find a lender for my deal &rarr;</a>
-    <button class="btn ghost" type="button" id="postBtn">I'm a lender: publish my program</button>
+    <button class="btn ghost" type="button" id="postBtn">I'm a lender: show my appetite</button>
   </div>
   <div class="stats"><div><b id="stPrograms">—</b>active programs</div><div><b id="stLenders">—</b>lenders publishing</div><div><b id="stStates">—</b>states covered</div></div>
 </div></section>
@@ -169,14 +169,14 @@ h1{font-weight:800;font-size:clamp(30px,4.6vw,48px);line-height:1.05;letter-spac
 <!-- program editor -->
 <div class="ov" id="ov"><div class="box">
   <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px">
-    <div><h3>Your lending programs</h3><div class="hint">Publish the box you lend in. Borrowers and brokers who match it can send you deals. To also be ranked in <a href="/find-a-lender" target="_blank">Find a Lender</a>, make sure your company page is listed in the Lenders directory — manage it in <a href="/my-presences.html" target="_blank">Business Pages</a>.</div></div>
+    <div><h3>Your lending appetite</h3><div class="hint">Show the kind of deals you want, in broad strokes. Everything but the name and loan types is optional, leave blank what you'd rather keep off the record. This is an appetite, not a commitment: borrowers and brokers who look like a fit send you the real file, and you respond only to the ones worth your time. To also be ranked in <a href="/find-a-lender" target="_blank">Find a Lender</a>, make sure your company page is listed in the Lenders directory, manage it in <a href="/my-presences.html" target="_blank">Business Pages</a>.</div></div>
     <button class="btn ghost sm" type="button" id="ovClose">Close</button>
   </div>
   <div class="mine" id="mine"></div>
   <div class="form" id="form">
     <input type="hidden" id="pId">
     <div class="g2">
-      <div class="fld full"><label for="pName">Program name *</label><input id="pName" maxlength="90" placeholder="e.g. California bridge & fix-and-flip, up to 75% LTV"></div>
+      <div class="fld full"><label for="pName">Program / appetite name *</label><input id="pName" maxlength="90" placeholder="e.g. California bridge & fix-and-flip, up to 75% LTV"></div>
       <div class="fld full" id="pCoWrap" style="display:none"><label for="pCo">Published under company page</label><select id="pCo"></select></div>
       <div class="fld full"><label>Loan types *</label><div class="checks" id="pTypes"></div></div>
       <div class="fld"><label for="pMin">Minimum loan</label><input id="pMin" inputmode="numeric" placeholder="$100,000"></div>
@@ -260,7 +260,7 @@ h1{font-weight:800;font-size:clamp(30px,4.6vw,48px);line-height:1.05;letter-spac
     });
     var g=$('grid');
     if(!ALL.length){
-      g.innerHTML='<div class="empty"><b>Lenders are joining Pegasus now.</b>Be one of the first to publish your lending program. It takes a minute, and borrowers, brokers and developers whose deals fit your box can send them straight to you.<br><button class="btn gold" type="button" data-post="1">Publish my program</button></div>';
+      g.innerHTML='<div class="empty"><b>Lenders are joining Pegasus now.</b>Be one of the first to show your appetite. No rigid criteria to publish, just the kind of deals you want, in broad strokes. Borrowers and brokers bring the real file and send it straight to you.<br><button class="btn gold" type="button" data-post="1">Show my appetite</button></div>';
     }else if(!rows.length){
       g.innerHTML='<div class="empty"><b>No published program matches that exact deal yet.</b>Try another state or amount, or run it through Find a Lender, which also ranks lenders by their real lending history.<br><a class="btn" href="/find-a-lender'+(t?('?type='+t):'')+'">Find a lender</a></div>';
     }else{
