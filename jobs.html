@@ -335,6 +335,19 @@ h1{font-weight:800;font-size:clamp(30px,4.6vw,48px);line-height:1.05;letter-spac
     var r=await sb.from('pn_jobs').select('*').eq('user_id',ME.id).order('created_at',{ascending:false});
     MINE=(r&&r.data)||[]; renderMine();
   }
+  // Announce a new listing to the Network Feed so the board reaches more people.
+  async function postToFeed(j){
+    try{
+      var kindTxt=j.kind==='seeking'?'Open to work':'Hiring';
+      var head=[CATS[j.category]||'',j.location||'',(j.remote&&REMOTE[j.remote])||'',j.comp||''].filter(Boolean).join(' · ');
+      var body=(head?head+'\n\n':'')+(j.description||'');
+      if(body.length>900) body=body.slice(0,900)+'…';
+      body+='\n\nPosted on the Pegasus Jobs & Talent board → pegasuscapitalnetwork.com/jobs';
+      var a={p_presence:null,p_type:(j.kind==='seeking'?'seeking_intro':'offering'),p_content:body,p_images:null,p_link:'https://pegasuscapitalnetwork.com/jobs',p_title:kindTxt+': '+j.title};
+      var rr=await sb.rpc('post_feed_item_v2',a);
+      if(rr&&rr.error) await sb.rpc('post_feed_item',{p_type:a.p_type,p_content:body,p_link:a.p_link,p_title:a.p_title});
+    }catch(e){ console.warn('[jobs] feed announce',e); }
+  }
   async function openEditor(kind){
     var s=await session();
     if(!(s&&s.user)){ location.href='/signup.html?intent=jobs&next='+encodeURIComponent('/jobs.html#post'+(kind?('-'+kind):'')); return; }
@@ -368,7 +381,8 @@ h1{font-weight:800;font-size:clamp(30px,4.6vw,48px);line-height:1.05;letter-spac
       if(id) r=await sb.from('pn_jobs').update(row).eq('id',id).select().single();
       else r=await sb.from('pn_jobs').insert(row).select().single();
       if(r.error) throw r.error;
-      ok.textContent=row.status==='active'?'Posted. Your listing is live on the board.':'Saved as closed.';
+      if(!id && row.status==='active') postToFeed(r.data||row);
+      ok.textContent=row.status==='active'?'Posted. Your listing is live on the board and shared to the Feed.':'Saved as closed.';
       fill(r.data); await loadMine(); loadBoard();
     }catch(e){ console.error('[jobs] save',e); err.textContent=(e&&e.message)||'Could not save. Please try again.'; }
     btn.disabled=false; btn.textContent=$('jId').value?'Save changes':'Post to the board';
