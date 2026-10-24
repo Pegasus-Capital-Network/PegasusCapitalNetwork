@@ -1,0 +1,387 @@
+<!DOCTYPE html><html lang="en"><head>
+<title>Jobs & Talent — Pegasus Capital Network</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="The jobs and talent board for finance and real estate. Hire MLOs, loan officers, processors, underwriters, agents, brokers and analysts — or post that you're looking for your next role. Free to post on Pegasus Capital Network.">
+<link rel="canonical" href="https://pegasuscapitalnetwork.com/jobs.html">
+<meta property="og:title" content="Jobs & Talent — Pegasus Capital Network">
+<meta property="og:description" content="Finance & real estate jobs and talent. Post a role you're hiring for, or let the network know you're open to work. MLO, loan officers, processors, underwriters, agents, analysts.">
+<meta property="og:type" content="website">
+<link rel="icon" href="/assets/brand/favicon.ico" sizes="any">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#ffffff;--bg2:#f6f7f9;--panel:#ffffff;--line:#e6e9ed;
+  --ink:#0e1824;--ink2:#2a3a4e;--text:#46525f;--muted:#737e8b;
+  --navy:#1b3a5b;--navy-d:#14304b;--navy-l:#2b5580;--gold:#9a7b3f;--green:#1b7f3b;--red:#b3261e;
+  --sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  --shadow-sm:0 1px 2px rgba(14,24,36,.06);--shadow:0 2px 6px rgba(14,24,36,.05),0 16px 40px rgba(14,24,36,.10);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1120px;margin:0 auto;padding:0 32px}
+@media(max-width:640px){.wrap{padding:0 18px}}
+.bg{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(1100px 600px at 50% -10%,rgba(27,58,91,.07),transparent 60%),linear-gradient(180deg,#fbfcfe 0,#ffffff 520px)}
+header.top{position:relative;z-index:3;border-bottom:1px solid var(--line);background:rgba(255,255,255,.85);backdrop-filter:blur(6px)}
+.top-in{max-width:1120px;margin:0 auto;padding:16px 32px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+@media(max-width:640px){.top-in{padding:12px 18px}}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:18px;letter-spacing:-.015em;color:var(--ink)}
+.brand img{height:26px;width:auto;display:block}
+.nav{display:flex;gap:18px;align-items:center;font-size:13px;color:var(--muted);font-weight:500}
+.nav a:hover{color:var(--navy)}
+.nav .btn{color:#fff}
+@media(max-width:760px){.nav .hideSm{display:none}}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;font-family:inherit;font-size:14px;font-weight:600;padding:11px 20px;border-radius:9px;background:var(--navy);color:#fff;border:1px solid var(--navy);cursor:pointer;transition:transform .15s,opacity .2s,background .2s}
+.btn:hover{transform:translateY(-1px);opacity:.96}
+.btn:disabled{opacity:.55;cursor:default;transform:none}
+.btn.gold{background:var(--gold);border-color:var(--gold)}
+.btn.ghost{background:#fff;color:var(--navy);border-color:var(--line)}
+.btn.ghost:hover{border-color:#cfd6de}
+.btn.sm{font-size:12.5px;padding:7px 13px;border-radius:8px}
+.btn.danger{background:#fff;color:var(--red);border-color:#f1c9c5}
+.hero{position:relative;z-index:2;padding:54px 0 18px}
+.eyebrow{font-size:11.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:14px}
+h1{font-weight:800;font-size:clamp(30px,4.6vw,48px);line-height:1.05;letter-spacing:-.03em;color:var(--ink);max-width:20ch}
+.sub{margin:16px 0 0;font-size:clamp(15px,1.7vw,17.5px);color:var(--muted);max-width:64ch}
+.cta-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px}
+.stats{display:flex;flex-wrap:wrap;gap:26px;margin-top:26px;font-size:13px;color:var(--muted)}
+.stats b{display:block;font-size:22px;color:var(--ink);font-weight:800;letter-spacing:-.02em}
+.sec{position:relative;z-index:2;padding:22px 0}
+.h2{font-size:22px;font-weight:800;color:var(--ink);letter-spacing:-.02em}
+.h2-sub{font-size:14px;color:var(--muted);margin-top:6px;max-width:70ch}
+/* segmented kind toggle */
+.seg{display:inline-flex;background:var(--bg2);border:1px solid var(--line);border-radius:999px;padding:4px;gap:4px;margin-top:16px}
+.seg button{font-family:inherit;font-size:13.5px;font-weight:600;color:var(--muted);background:none;border:none;border-radius:999px;padding:8px 18px;cursor:pointer;transition:background .2s,color .2s}
+.seg button.on{background:var(--navy);color:#fff}
+.seg button.on.seek{background:var(--gold);border-color:var(--gold)}
+.filters{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:14px;background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:12px}
+.filters select,.filters input{font-family:inherit;font-size:14px;color:var(--ink);background:#fff;border:1px solid var(--line);border-radius:9px;padding:9px 12px;outline:none;min-width:0}
+.filters select:focus,.filters input:focus{border-color:var(--navy)}
+.filters .grow{flex:1;min-width:180px}
+.filters .clear{font-size:12.5px;color:var(--muted);background:none;border:none;cursor:pointer;text-decoration:underline}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:16px;margin-top:18px}
+@media(max-width:520px){.grid{grid-template-columns:1fr}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px;box-shadow:var(--shadow-sm);display:flex;flex-direction:column;transition:box-shadow .2s,border-color .2s,transform .2s}
+.card:hover{box-shadow:var(--shadow);border-color:#d7dde4;transform:translateY(-2px)}
+.card .kind{display:inline-flex;align-self:flex-start;align-items:center;gap:6px;font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;border-radius:999px;padding:3px 10px;margin-bottom:12px}
+.kind.hiring{color:var(--navy);background:rgba(27,58,91,.08);border:1px solid rgba(27,58,91,.16)}
+.kind.seeking{color:#7a5c22;background:linear-gradient(90deg,#f7ecd3,#fbf5e7);border:1px solid #e3cf9f}
+.jtitle{font-weight:800;color:var(--ink);font-size:17px;line-height:1.25;letter-spacing:-.01em}
+.jco{font-size:13px;color:var(--muted);margin-top:3px;font-weight:600}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.chip{font-size:11.5px;color:var(--navy);background:rgba(27,58,91,.06);border:1px solid rgba(27,58,91,.12);border-radius:999px;padding:3px 9px}
+.chip.g{color:#7a5c22;background:#f7ecd3;border-color:#e3cf9f}
+.jmeta{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:12px;font-size:12.5px;color:var(--text)}
+.jmeta .k{color:var(--muted)}
+.jdesc{font-size:13.5px;color:var(--text);line-height:1.55;margin-top:12px;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+.jage{font-size:11.5px;color:var(--muted);margin-top:12px}
+.card .acts{display:flex;gap:8px;margin-top:auto;padding-top:16px}
+.card .acts .btn{flex:1}
+.empty{grid-column:1/-1;text-align:center;background:var(--bg2);border:1px dashed #d5dbe2;border-radius:14px;padding:36px 22px;color:var(--muted);font-size:14.5px}
+.empty b{display:block;color:var(--ink);font-size:17px;margin-bottom:6px}
+.empty .btn{margin-top:16px}
+.foot{position:relative;z-index:2;font-size:11.5px;color:var(--muted);text-align:center;padding:26px 0 54px;max-width:78ch;margin:0 auto;line-height:1.7}
+/* editor */
+.ov{position:fixed;inset:0;z-index:50;background:rgba(14,24,36,.45);display:none;align-items:flex-start;justify-content:center;overflow-y:auto;padding:40px 16px}
+.ov.open{display:flex}
+.box{background:#fff;border-radius:16px;max-width:720px;width:100%;padding:26px 24px;box-shadow:var(--shadow)}
+.box h3{font-size:20px;font-weight:800;color:var(--ink);letter-spacing:-.02em}
+.box .hint{font-size:13px;color:var(--muted);margin-top:6px;line-height:1.55}
+.box .hint a{color:var(--navy);font-weight:600}
+.mine{margin-top:16px;display:flex;flex-direction:column;gap:8px}
+.mine .row{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:13.5px}
+.mine .row .nm{flex:1;color:var(--ink);font-weight:600}
+.mine .row .st{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.st.on{color:var(--green)}.st.off{color:var(--muted)}
+.kindpick{display:flex;gap:8px;margin-top:4px}
+.kindpick label{flex:1;display:flex;flex-direction:column;gap:3px;border:1.5px solid var(--line);border-radius:11px;padding:12px 14px;cursor:pointer;font-size:13.5px;font-weight:600;color:var(--ink);transition:border-color .15s,background .15s}
+.kindpick label small{font-weight:500;color:var(--muted);font-size:12px}
+.kindpick label.sel{border-color:var(--navy);background:rgba(27,58,91,.04)}
+.kindpick input{position:absolute;opacity:0;pointer-events:none}
+.form{margin-top:18px;border-top:1px solid var(--line);padding-top:18px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:560px){.g2{grid-template-columns:1fr}}
+.fld{display:flex;flex-direction:column;margin-bottom:12px}
+.fld.full{grid-column:1/-1}
+.fld label{font-size:12px;font-weight:600;color:var(--ink);margin-bottom:6px}
+.fld input,.fld select,.fld textarea{font-family:inherit;font-size:14px;color:var(--ink);border:1px solid var(--line);border-radius:9px;padding:10px 12px;outline:none;background:#fff;resize:vertical}
+.fld input:focus,.fld select:focus,.fld textarea:focus{border-color:var(--navy)}
+.fld .cnt{font-size:11px;color:var(--muted);margin-top:4px;text-align:right}
+.err{color:var(--red);font-size:13px;min-height:18px;margin-top:6px}
+.ok{color:var(--green);font-size:13px;min-height:18px;margin-top:6px}
+.formacts{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+@media(max-width:640px){
+ .hero .sub,.hero .eyebrow{display:none}
+ .hero h1{font-size:26px}
+ .hero{padding:20px 0 8px}
+}
+</style><script src="/js/i18n.js?v=20261021e"></script><script src="/js/ticker.js?v=20261021b" defer></script>
+</head>
+<body>
+<div class="bg"></div>
+<header class="top"><div class="top-in">
+  <a class="brand" href="/"><img src="/assets/brand/pegasus-mark.png" alt="Pegasus"> Pegasus</a>
+  <nav class="nav"><a href="/lending-programs.html" class="hideSm">Lending</a><a href="/find-a-lender" class="hideSm">Find a lender</a><a href="/feed" class="hideSm">Feed</a><span id="navAuth"><a class="btn sm" href="/signin.html">Sign in</a></span></nav>
+</div></header>
+
+<section class="hero"><div class="wrap">
+  <div class="eyebrow">Pegasus Capital Network · Jobs & Talent</div>
+  <h1>Where finance and real estate hire — and get hired.</h1>
+  <p class="sub">The board for the people who move money and close deals: MLOs, loan officers, processors, underwriters, agents, brokers, analysts and the teams that need them. Post a role you're hiring for, or let the network know you're open to work. Free to post.</p>
+  <div class="cta-row">
+    <button class="btn" type="button" id="postHire">Post a job you're hiring for</button>
+    <button class="btn gold" type="button" id="postSeek">I'm looking for work</button>
+  </div>
+  <div class="stats"><div><b id="stHiring">—</b>open roles</div><div><b id="stSeeking">—</b>people open to work</div><div><b id="stCats">—</b>specialties</div></div>
+</div></section>
+
+<section class="sec" id="board"><div class="wrap">
+  <div class="h2">The board</div>
+  <div class="h2-sub">Everything finance and real estate. Listings are posted by members; reach out directly through the contact each one provides.</div>
+  <div class="seg" id="seg">
+    <button type="button" data-k="" class="on">All</button>
+    <button type="button" data-k="hiring">Hiring</button>
+    <button type="button" data-k="seeking">Open to work</button>
+  </div>
+  <div class="filters">
+    <select id="fCat" class="grow" aria-label="Specialty"><option value="">Any specialty</option></select>
+    <select id="fEmp" aria-label="Type"><option value="">Any type</option></select>
+    <select id="fRemote" aria-label="Location"><option value="">Anywhere</option><option value="remote">Remote</option><option value="hybrid">Hybrid</option><option value="onsite">On-site</option></select>
+    <input id="fQ" class="grow" placeholder="Search title, company, location…" aria-label="Search">
+    <button class="clear" type="button" id="fClear">Clear</button>
+  </div>
+  <div class="grid" id="grid"><div class="empty">Loading the board…</div></div>
+</div></section>
+
+<div class="foot wrap">
+  Listings are posted by Pegasus members and are not screened, endorsed or verified by Pegasus Capital Network. Pegasus is a membership marketplace and is not an employer, recruiter or staffing agency, and is not a party to any hiring, engagement or compensation arrangement between members. Verify licensing, credentials and terms directly with the other party. Equal opportunity: do not post listings that discriminate on any basis protected by law.
+</div>
+
+<!-- post editor -->
+<div class="ov" id="ov"><div class="box">
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px">
+    <div><h3 id="ovTitle">Post to the board</h3><div class="hint">Finance and real estate only. Keep it specific and honest. You can edit or close your listing any time. Members reach out to you directly through the contact you provide.</div></div>
+    <button class="btn ghost sm" type="button" id="ovClose">Close</button>
+  </div>
+  <div class="mine" id="mine"></div>
+  <div class="form" id="form">
+    <input type="hidden" id="jId">
+    <div class="fld full"><label>I'm posting a…</label>
+      <div class="kindpick" id="kindPick">
+        <label data-k="hiring"><input type="radio" name="jk" value="hiring">Job I'm hiring for<small>You or your company need someone</small></label>
+        <label data-k="seeking"><input type="radio" name="jk" value="seeking">My availability for work<small>You're open to a new role</small></label>
+      </div>
+    </div>
+    <div class="g2">
+      <div class="fld full"><label for="jTitle" id="lblTitle">Role / headline *</label><input id="jTitle" maxlength="140" placeholder="e.g. Senior Mortgage Loan Officer — purchase & refi"></div>
+      <div class="fld full"><label for="jCompany" id="lblCo">Company</label><input id="jCompany" maxlength="140" placeholder="Company name (optional)"></div>
+      <div class="fld"><label for="jCat">Specialty *</label><select id="jCat"></select></div>
+      <div class="fld"><label for="jEmp">Type</label><select id="jEmp"><option value="">Not specified</option></select></div>
+      <div class="fld"><label for="jLoc">Location</label><input id="jLoc" maxlength="90" placeholder="e.g. Los Angeles, CA"></div>
+      <div class="fld"><label for="jRemote">On-site / remote</label><select id="jRemote"><option value="">Not specified</option><option value="onsite">On-site</option><option value="hybrid">Hybrid</option><option value="remote">Remote</option></select></div>
+      <div class="fld full"><label for="jComp" id="lblComp">Compensation</label><input id="jComp" maxlength="120" placeholder="e.g. Base + commission, 100% commission + leads, or leave blank"></div>
+      <div class="fld full"><label for="jMarkets">States / markets</label><input id="jMarkets" maxlength="120" placeholder="e.g. CA, NV, AZ — or Nationwide"></div>
+      <div class="fld full"><label for="jDesc" id="lblDesc">Details *</label><textarea id="jDesc" rows="5" maxlength="6000" placeholder="What the role is, what you're looking for, must-haves, licenses (e.g. NMLS, DRE), and anything that helps the right person reach out."></textarea><div class="cnt"><span id="jDescN">0</span>/6000</div></div>
+      <div class="fld"><label for="jEmail" id="lblEmail">Contact email</label><input id="jEmail" type="email" maxlength="140" placeholder="you@company.com"></div>
+      <div class="fld"><label for="jUrl">Link (apply / profile)</label><input id="jUrl" maxlength="300" placeholder="https://…"></div>
+      <div class="fld full"><label>Status</label><div class="filters" style="margin-top:0;background:none;border:none;padding:0"><label style="display:inline-flex;align-items:center;gap:7px;font-size:13.5px;font-weight:500;color:var(--text)"><input type="checkbox" id="jActive" checked style="min-width:auto;width:auto"> Active and visible on the board</label></div></div>
+    </div>
+    <div class="err" id="jErr"></div><div class="ok" id="jOk"></div>
+    <div class="formacts"><button class="btn" type="button" id="jSave">Post to the board</button><button class="btn ghost" type="button" id="jNew" style="display:none">New listing</button></div>
+  </div>
+</div></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="/js/pegasus-config.js?v=20261021a"></script>
+<script>
+(function(){
+  var C=window.PEG_CONFIG||window.PEGASUS_CONFIG||{};
+  var URL=C.SUPABASE_URL||'https://auth.pegasuscapitalnetwork.com';
+  var KEY=C.SUPABASE_ANON||'sb_publishable_hrR8wI6hM921mnxk7bBE_A_YKxWsoBI';
+  var sb=(window.supabase&&window.supabase.createClient)?window.supabase.createClient(URL,KEY,{auth:{persistSession:true,autoRefreshToken:true,storageKey:'pegasus.auth'}}):null;
+
+  var CATS={mlo:'Mortgage Loan Officer (MLO)',loan_officer:'Loan Officer',branch_manager:'Branch / Sales Manager',processor:'Loan Processor',underwriter:'Underwriter',closer:'Closer / Funder',real_estate_agent:'Real Estate Agent',broker:'Broker (mortgage / real estate)',escrow_title:'Escrow / Title',appraiser:'Appraiser',analyst:'Financial Analyst',advisor:'Financial Advisor / Planner',accountant:'Accountant / Bookkeeper',insurance:'Insurance',capital_ir:'Capital / Investor Relations',operations:'Operations / Admin',marketing:'Marketing / BD',tech:'Fintech / Tech',other:'Other (finance / real estate)'};
+  var EMP={full_time:'Full-time',part_time:'Part-time',contract:'Contract','1099':'1099 / Independent',commission:'Commission-only',internship:'Internship'};
+  var REMOTE={onsite:'On-site',hybrid:'Hybrid',remote:'Remote'};
+
+  function $(id){ return document.getElementById(id); }
+  function esc(x){ return (x==null?'':String(x)).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];}); }
+  function ago(t){ var d=Date.parse(t); if(!d) return ''; var s=(Date.now()-d)/1000; if(s<3600) return Math.max(1,Math.round(s/60))+'m ago'; if(s<86400) return Math.round(s/3600)+'h ago'; var dd=Math.round(s/86400); if(dd<30) return dd+'d ago'; return Math.round(dd/30)+'mo ago'; }
+  async function session(){ try{ var r=await sb.auth.getSession(); return (r&&r.data)?r.data.session:null; }catch(e){ return null; } }
+
+  /* populate selects */
+  Object.keys(CATS).forEach(function(k){ var o=document.createElement('option'); o.value=k; o.textContent=CATS[k]; $('fCat').appendChild(o); var o2=o.cloneNode(true); $('jCat').appendChild(o2); });
+  Object.keys(EMP).forEach(function(k){ var o=document.createElement('option'); o.value=k; o.textContent=EMP[k]; $('fEmp').appendChild(o); var o2=o.cloneNode(true); $('jEmp').appendChild(o2); });
+  (function(){ var qs=new URLSearchParams(location.search); var c=qs.get('cat'); if(CATS[c]) $('fCat').value=c; var k=qs.get('kind'); if(k==='hiring'||k==='seeking') KIND=k; })();
+
+  /* ── board ──────────────────────────────────────────────────────────── */
+  var ALL=[], KIND='';
+  function card(j){
+    var cat=CATS[j.category]||j.category||'';
+    var chips=[cat?'<span class="chip'+(j.kind==='seeking'?' g':'')+'">'+esc(cat)+'</span>':''];
+    if(j.employment&&EMP[j.employment]) chips.push('<span class="chip">'+esc(EMP[j.employment])+'</span>');
+    if(j.remote&&REMOTE[j.remote]) chips.push('<span class="chip">'+esc(REMOTE[j.remote])+'</span>');
+    var meta=[];
+    if(j.location) meta.push('<span><span class="k">Location</span> '+esc(j.location)+'</span>');
+    if(j.markets) meta.push('<span><span class="k">Markets</span> '+esc(j.markets)+'</span>');
+    if(j.comp) meta.push('<span><span class="k">Comp</span> '+esc(j.comp)+'</span>');
+    var url=(j.apply_url&&/^https?:\/\//i.test(j.apply_url))?j.apply_url:'';
+    var email=j.contact_email||'';
+    var acts='';
+    if(url) acts+='<a class="btn sm" href="'+esc(url)+'" target="_blank" rel="noopener nofollow">'+(j.kind==='hiring'?'Apply / view':'View profile')+'</a>';
+    if(email) acts+='<a class="btn '+(url?'ghost ':'')+'sm" href="mailto:'+esc(email)+'?subject='+encodeURIComponent('Pegasus — '+(j.title||''))+'">'+(j.kind==='hiring'?'Contact':'Reach out')+'</a>';
+    if(!acts) acts='<a class="btn ghost sm" href="/signup.html?next='+encodeURIComponent('/jobs.html')+'">Join to connect</a>';
+    return '<div class="card">'+
+      '<span class="kind '+(j.kind==='seeking'?'seeking':'hiring')+'">'+(j.kind==='seeking'?'★ Open to work':'● Hiring')+'</span>'+
+      '<div class="jtitle">'+esc(j.title||'')+'</div>'+
+      (j.company?'<div class="jco">'+esc(j.company)+'</div>':'')+
+      '<div class="chips">'+chips.filter(Boolean).join('')+'</div>'+
+      (meta.length?'<div class="jmeta">'+meta.join('')+'</div>':'')+
+      (j.description?'<div class="jdesc">'+esc(j.description)+'</div>':'')+
+      '<div class="jage">Posted '+esc(ago(j.created_at))+'</div>'+
+      '<div class="acts">'+acts+'</div></div>';
+  }
+  function render(){
+    var k=KIND, cat=$('fCat').value, emp=$('fEmp').value, rem=$('fRemote').value, q=$('fQ').value.trim().toLowerCase();
+    var rows=ALL.filter(function(j){
+      if(k && j.kind!==k) return false;
+      if(cat && j.category!==cat) return false;
+      if(emp && j.employment!==emp) return false;
+      if(rem && j.remote!==rem) return false;
+      if(q){ var hay=[(j.title||''),(j.company||''),(j.location||''),(j.markets||''),(CATS[j.category]||'')].join(' ').toLowerCase(); if(hay.indexOf(q)<0) return false; }
+      return true;
+    });
+    var g=$('grid');
+    if(!ALL.length){
+      g.innerHTML='<div class="empty"><b>The board is just getting started.</b>Be the first to post. Hiring an MLO, a processor or an agent? Looking for your next role? Put it up and let the network find you.<br><button class="btn" type="button" data-post="hiring">Post a job</button></div>';
+    }else if(!rows.length){
+      g.innerHTML='<div class="empty"><b>Nothing matches that filter yet.</b>Try clearing filters or a different specialty.<br><button class="btn ghost" type="button" id="clr2">Clear filters</button></div>';
+      var c2=g.querySelector('#clr2'); if(c2) c2.onclick=function(){ clearAll(); };
+    }else{
+      g.innerHTML=rows.map(card).join('');
+    }
+    var pb=g.querySelector('[data-post]'); if(pb) pb.onclick=function(){ openEditor(pb.getAttribute('data-post')); };
+  }
+  function setSeg(){ Array.prototype.forEach.call($('seg').children,function(b){ b.classList.toggle('on',b.getAttribute('data-k')===KIND); b.classList.toggle('seek',b.getAttribute('data-k')==='seeking'); }); }
+  Array.prototype.forEach.call($('seg').children,function(b){ b.onclick=function(){ KIND=b.getAttribute('data-k'); setSeg(); render(); }; });
+  ['fCat','fEmp','fRemote'].forEach(function(id){ $(id).addEventListener('change',render); });
+  $('fQ').addEventListener('input',render);
+  function clearAll(){ KIND=''; $('fCat').value=''; $('fEmp').value=''; $('fRemote').value=''; $('fQ').value=''; setSeg(); render(); }
+  $('fClear').onclick=clearAll;
+
+  async function loadBoard(){
+    if(!sb){ $('grid').innerHTML='<div class="empty">Connection unavailable. Please refresh shortly.</div>'; return; }
+    try{
+      var r=await sb.from('pn_jobs').select('id,kind,title,company,category,employment,location,remote,markets,comp,description,apply_url,contact_email,created_at').eq('status','active').order('created_at',{ascending:false}).limit(400);
+      if(r.error) throw r.error;
+      ALL=r.data||[];
+    }catch(e){ console.error('[jobs]',e); ALL=[]; }
+    var hiring=0, seeking=0, cats={};
+    ALL.forEach(function(j){ if(j.kind==='seeking') seeking++; else hiring++; if(j.category) cats[j.category]=1; });
+    $('stHiring').textContent=hiring; $('stSeeking').textContent=seeking; $('stCats').textContent=Object.keys(cats).length||Object.keys(CATS).length;
+    setSeg(); render();
+  }
+
+  /* ── editor ─────────────────────────────────────────────────────────── */
+  var ME=null, MINE=[];
+  $('jDesc').addEventListener('input',function(){ $('jDescN').textContent=$('jDesc').value.length; });
+  function curKind(){ var el=document.querySelector('input[name="jk"]:checked'); return el?el.value:'hiring'; }
+  function syncKindUI(){
+    var k=curKind();
+    Array.prototype.forEach.call($('kindPick').children,function(l){ l.classList.toggle('sel',l.getAttribute('data-k')===k); });
+    var hiring=k==='hiring';
+    $('ovTitle').textContent=hiring?'Post a job you’re hiring for':'Post that you’re open to work';
+    $('lblTitle').textContent=hiring?'Role you’re hiring for *':'Your headline *';
+    $('jTitle').placeholder=hiring?'e.g. Senior Mortgage Loan Officer — purchase & refi':'e.g. Licensed MLO, 8 yrs, purchase-heavy — open to remote';
+    $('lblCo').textContent=hiring?'Company':'Current / most recent company';
+    $('lblComp').textContent=hiring?'Compensation offered':'Compensation sought';
+    $('jComp').placeholder=hiring?'e.g. Base + commission, or 100% commission + leads':'e.g. Looking for base + comm, or open';
+    $('lblDesc').textContent=hiring?'About the role *':'About you *';
+    $('jDesc').placeholder=hiring?'What the role is, must-haves, licenses (NMLS, DRE), territory, and how to apply.':'Your experience, licenses (NMLS, DRE), production/track record, what you’re looking for, and how to reach you.';
+    $('lblEmail').textContent=hiring?'Contact email':'Your contact email';
+    $('jUrl').placeholder=hiring?'https://… apply link or job post':'https://… your LinkedIn or profile';
+  }
+  Array.prototype.forEach.call(document.querySelectorAll('input[name="jk"]'),function(r){ r.addEventListener('change',syncKindUI); });
+
+  function fill(j){
+    j=j||{}; $('jId').value=j.id||'';
+    var k=j.kind||'hiring'; var rk=document.querySelector('input[name="jk"][value="'+k+'"]'); if(rk) rk.checked=true;
+    $('jTitle').value=j.title||''; $('jCompany').value=j.company||'';
+    $('jCat').value=j.category||''; $('jEmp').value=j.employment||''; $('jLoc').value=j.location||'';
+    $('jRemote').value=j.remote||''; $('jComp').value=j.comp||''; $('jMarkets').value=j.markets||'';
+    $('jDesc').value=j.description||''; $('jDescN').textContent=$('jDesc').value.length;
+    $('jEmail').value=j.contact_email||(ME&&ME.email)||''; $('jUrl').value=j.apply_url||'';
+    $('jActive').checked=j.id?(j.status!=='closed'):true;
+    $('jSave').textContent=j.id?'Save changes':'Post to the board'; $('jNew').style.display=j.id?'':'none';
+    $('jErr').textContent=''; $('jOk').textContent=''; syncKindUI();
+  }
+  function renderMine(){
+    var h=$('mine');
+    if(!MINE.length){ h.innerHTML=''; return; }
+    h.innerHTML='<div style="font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)">Your listings</div>'+MINE.map(function(j){
+      var on=j.status!=='closed';
+      return '<div class="row"><span class="nm">'+esc(j.title||'Untitled')+' <span style="font-weight:500;color:var(--muted)">· '+(j.kind==='seeking'?'Open to work':'Hiring')+'</span></span><span class="st '+(on?'on':'off')+'">'+(on?'Active':'Closed')+'</span>'+
+        '<button class="btn ghost sm" type="button" data-edit="'+j.id+'">Edit</button><button class="btn ghost sm" type="button" data-tog="'+j.id+'">'+(on?'Close':'Reopen')+'</button><button class="btn danger sm" type="button" data-del="'+j.id+'">Delete</button></div>';
+    }).join('');
+    h.querySelectorAll('[data-edit]').forEach(function(b){ b.onclick=function(){ fill(MINE.filter(function(x){return x.id===b.getAttribute('data-edit');})[0]); $('jTitle').focus(); }; });
+    h.querySelectorAll('[data-tog]').forEach(function(b){ b.onclick=async function(){ var j=MINE.filter(function(x){return x.id===b.getAttribute('data-tog');})[0]; if(!j) return; b.disabled=true; var r=await sb.from('pn_jobs').update({status:j.status==='closed'?'active':'closed'}).eq('id',j.id); if(r.error){ $('jErr').textContent=r.error.message; b.disabled=false; return; } await loadMine(); loadBoard(); }; });
+    h.querySelectorAll('[data-del]').forEach(function(b){ b.onclick=async function(){ if(!confirm('Delete this listing? This cannot be undone.')) return; b.disabled=true; var r=await sb.from('pn_jobs').delete().eq('id',b.getAttribute('data-del')); if(r.error){ $('jErr').textContent=r.error.message; b.disabled=false; return; } fill(null); await loadMine(); loadBoard(); }; });
+  }
+  async function loadMine(){
+    if(!ME) return;
+    var r=await sb.from('pn_jobs').select('*').eq('user_id',ME.id).order('created_at',{ascending:false});
+    MINE=(r&&r.data)||[]; renderMine();
+  }
+  async function openEditor(kind){
+    var s=await session();
+    if(!(s&&s.user)){ location.href='/signup.html?intent=jobs&next='+encodeURIComponent('/jobs.html#post'+(kind?('-'+kind):'')); return; }
+    ME=s.user; $('ov').classList.add('open'); fill(null);
+    if(kind){ var rk=document.querySelector('input[name="jk"][value="'+kind+'"]'); if(rk){ rk.checked=true; syncKindUI(); } }
+    await loadMine();
+  }
+  $('postHire').onclick=function(){ openEditor('hiring'); };
+  $('postSeek').onclick=function(){ openEditor('seeking'); };
+  $('ovClose').onclick=function(){ $('ov').classList.remove('open'); };
+  $('ov').addEventListener('click',function(e){ if(e.target===this) this.classList.remove('open'); });
+  $('jNew').onclick=function(){ fill(null); $('jTitle').focus(); };
+
+  $('jSave').onclick=async function(){
+    var err=$('jErr'), ok=$('jOk'), btn=$('jSave'); err.textContent=''; ok.textContent='';
+    var title=$('jTitle').value.trim(), cat=$('jCat').value, desc=$('jDesc').value.trim();
+    if(title.length<3){ err.textContent='Add a short, specific title.'; return; }
+    if(!cat){ err.textContent='Pick a specialty.'; return; }
+    if(desc.length<10){ err.textContent='Add a few details so the right person can reach out.'; return; }
+    var email=$('jEmail').value.trim(), urlv=$('jUrl').value.trim();
+    if(email && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){ err.textContent='That email doesn’t look right.'; return; }
+    if(urlv && !/^https?:\/\//i.test(urlv)){ urlv='https://'+urlv; }
+    if(!email && !urlv){ err.textContent='Add a contact email or a link so people can reach you.'; return; }
+    var row={ user_id:ME.id, kind:curKind(), title:title, company:$('jCompany').value.trim()||null,
+      category:cat, employment:$('jEmp').value||null, location:$('jLoc').value.trim()||null,
+      remote:$('jRemote').value||null, markets:$('jMarkets').value.trim()||null, comp:$('jComp').value.trim()||null,
+      description:desc, contact_email:email||null, apply_url:urlv||null, status:$('jActive').checked?'active':'closed' };
+    btn.disabled=true; btn.textContent='Saving…';
+    try{
+      var id=$('jId').value, r;
+      if(id) r=await sb.from('pn_jobs').update(row).eq('id',id).select().single();
+      else r=await sb.from('pn_jobs').insert(row).select().single();
+      if(r.error) throw r.error;
+      ok.textContent=row.status==='active'?'Posted. Your listing is live on the board.':'Saved as closed.';
+      fill(r.data); await loadMine(); loadBoard();
+    }catch(e){ console.error('[jobs] save',e); err.textContent=(e&&e.message)||'Could not save. Please try again.'; }
+    btn.disabled=false; btn.textContent=$('jId').value?'Save changes':'Post to the board';
+  };
+
+  /* nav state + deep link */
+  session().then(function(s){
+    if(s&&s.user){ $('navAuth').innerHTML='<a class="btn sm" href="/dashboard.html">My workspace</a>'; }
+    var h=location.hash;
+    if(s&&s.user&&/^#post/.test(h)){ openEditor(h==='#post-seeking'?'seeking':(h==='#post-hiring'?'hiring':null)); }
+  });
+
+  loadBoard();
+})();
+</script>
+</body></html>

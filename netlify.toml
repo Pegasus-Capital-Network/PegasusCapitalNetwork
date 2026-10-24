@@ -424,6 +424,12 @@
   to = "/deal-requests.html"
   status = 200
 
+# Jobs & Talent board (public, indexable; member-gated posting).
+[[redirects]]
+  from = "/jobs"
+  to = "/jobs.html"
+  status = 200
+
 # No "/* -> /index.html" catch-all: multi-page static site, not an SPA.
 
 # ════════════════════════════════════════════════════════════════════════════

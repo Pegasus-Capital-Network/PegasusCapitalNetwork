@@ -97,10 +97,11 @@
   function worldLinksHTML(){
     var G=function(k){ var w=PEG_WORLDS[k]; return '<div class="nav-group"><span tabindex="0" role="button" aria-haspopup="true">'+w.label+' \u25BE</span><div class="nav-drop">'+w.items.map(function(i){ return '<a href="'+i[1]+'"><span>'+i[0]+'</span>'+(i[2]?'<small>'+i[2]+'</small>':'')+'</a>'; }).join('')+'</div></div>'; };
     var feedOn=(/^\/(?:(?:ar|zh|ru|es|fr)\/)?feed/.test(location.pathname))?' class="on"':'';
-    return '<a href="/feed"'+feedOn+'>Feed</a>'+G('capital')+G('ai')+G('private');
+    var jobsOn=(/^\/(?:(?:ar|zh|ru|es|fr)\/)?jobs/.test(location.pathname))?' class="on"':'';
+    return '<a href="/feed"'+feedOn+'>Feed</a>'+G('capital')+G('ai')+G('private')+'<a href="/jobs"'+jobsOn+'>Jobs</a>';
   }
   function worldDrawerHTML(){
-    return '<a href="/feed"><b>Network Feed</b></a>'+['capital','ai','private'].map(function(k){ var w=PEG_WORLDS[k]; return '<div class="mob-sec">'+({capital:'Capital & Real Estate',ai:'Pegasus AI',private:'Private Network'})[k]+'</div>'+w.items.map(function(i){ return '<a href="'+i[1]+'">'+i[0]+'</a>'; }).join(''); }).join('');
+    return '<a href="/feed"><b>Network Feed</b></a><a href="/jobs"><b>Jobs &amp; Talent</b></a>'+['capital','ai','private'].map(function(k){ var w=PEG_WORLDS[k]; return '<div class="mob-sec">'+({capital:'Capital & Real Estate',ai:'Pegasus AI',private:'Private Network'})[k]+'</div>'+w.items.map(function(i){ return '<a href="'+i[1]+'">'+i[0]+'</a>'; }).join(''); }).join('');
   }
 
   // --- public nav (full-site mega menu) ---
