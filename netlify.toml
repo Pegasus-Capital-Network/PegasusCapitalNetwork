@@ -106,7 +106,6 @@
   to = "/.netlify/functions/loan-landing"
   status = 200
   force = true
-  force = true
 
 # People surface retired — the network is lenders, borrowers and financial
 # institutions, not a public "people" roster. All /people URLs 301 to the
