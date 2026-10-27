@@ -97,8 +97,8 @@
 .fd-post-txt a:hover{text-decoration:underline}
 .fd-post-txt.clamp{display:-webkit-box;-webkit-line-clamp:6;-webkit-box-orient:vertical;overflow:hidden}
 .fd-more{border:none;background:none;color:var(--blue);font-size:12px;cursor:pointer;padding:4px 0;font-family:inherit}
-.fd-img{display:block;margin-top:12px;border-radius:var(--r2);overflow:hidden;border:1px solid var(--border)}
-.fd-img img{width:100%;max-height:420px;object-fit:cover;display:block}
+.fd-img{display:flex;align-items:center;justify-content:center;margin-top:12px;border-radius:var(--r2);overflow:hidden;border:1px solid var(--border);background:var(--bg2)}
+.fd-img img{width:100%;height:auto;max-height:min(760px,80vh);object-fit:contain;display:block;background:var(--bg2)}
 .fd-car{position:relative;margin-top:12px;border-radius:var(--r2);overflow:hidden;background:#0e1824;border:1px solid var(--border)}
 .fd-car-track{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch}
 .fd-car-track::-webkit-scrollbar{display:none}
