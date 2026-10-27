@@ -2,10 +2,10 @@
 <title>AI Directory — Pegasus AI</title>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="description" content="AI companies and the investors who back them, in one network. Browse the directory and request a warm introduction — Pegasus brokers the connection.">
+<meta name="description" content="A research base of real AI companies with verifiable products. Not every company here is raising — this is who exists. Companies that are raising move to Seeking Capital.">
 <link rel="canonical" href="https://pegasuscapitalnetwork.com/ai-directory.html">
 <meta property="og:title" content="Pegasus AI Directory">
-<meta property="og:description" content="AI companies and investors in one network. Request a warm introduction.">
+<meta property="og:description" content="A research base of real AI companies with verifiable products.">
 <meta property="og:type" content="website">
 <link rel="icon" href="/assets/brand/favicon.ico" sizes="any">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -68,22 +68,22 @@ h1{font-weight:800;font-size:clamp(32px,4.6vw,50px);line-height:1.05;letter-spac
 <div class="bg"></div>
 <header class="top"><div class="top-in">
   <a class="brand" href="/"><img src="/assets/brand/pegasus-mark.png" alt="Pegasus" style="height:26px;width:auto;display:block"> Pegasus</a>
-  <nav class="nav"><a href="/ai-network.html">Pegasus AI</a><a href="/apply-for-funding.html">Apply for funding</a><a href="/ai-needs.html">Needs Board</a><a href="/intel.html">Intelligence</a><a href="/">All worlds</a></nav>
+  <nav class="nav"><a href="/ai-network.html">Pegasus AI</a><a href="/seeking-capital.html">Seeking Capital</a><a href="/capital-providers.html">Capital Providers</a><a href="/investment-matches.html">Matches</a></nav>
 </div></header>
 
 <section class="hero"><div class="wrap">
   <div class="kick">Pegasus AI · Directory</div>
-  <h1>AI companies and the capital behind them.</h1>
-  <p class="sub">One network for AI builders and the investors who fund them. Browse who's here, then request a warm introduction — we broker the connection so both sides meet the right match.</p>
-  <div class="gate">&#128274; Contacts are private. You tell us who you want to meet, we make the intro.</div>
+  <h1>Who exists in AI. The research base.</h1>
+  <p class="sub">Real AI companies with products you can check. This is a reference layer, not a list of deals — being here doesn't mean a company is raising. The ones that are raising now move to Seeking Capital; investors live under Capital Providers; and the actual introductions worth making show up as Investment Matches.</p>
+  <div class="surfaces" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:16px">
+    <a class="tab" href="/seeking-capital.html">Seeking Capital &rarr;</a>
+    <a class="tab" href="/capital-providers.html">Capital Providers &rarr;</a>
+    <a class="tab" href="/investment-matches.html">Investment Matches &rarr;</a>
+  </div>
 </div></section>
 
 <div class="wrap">
-  <div class="tabs">
-    <button class="tab on" id="tab-startups" onclick="showTab('startups')">AI Companies</button>
-    <button class="tab" id="tab-investors" onclick="showTab('investors')">Investors</button>
-  </div>
-  <input id="q" type="search" placeholder="Search by name, sector, stage, location…" autocomplete="off" spellcheck="false" style="width:100%;max-width:540px;padding:11px 15px;border:1px solid #e6e9ed;border-radius:10px;font-size:14px;font-family:inherit;color:#16202e;background:#fff;margin:4px 0 14px;outline:none">
+  <input id="q" type="search" placeholder="Search companies by name, sector, stage, location…" autocomplete="off" spellcheck="false" style="width:100%;max-width:540px;padding:11px 15px;border:1px solid #e6e9ed;border-radius:10px;font-size:14px;font-family:inherit;color:#16202e;background:#fff;margin:4px 0 14px;outline:none">
   <div class="count" id="count"></div>
   <div class="grid" id="grid"></div>
   <div class="loading" id="loading">Loading the network…</div>
@@ -125,8 +125,7 @@ h1{font-weight:800;font-size:clamp(32px,4.6vw,50px);line-height:1.05;letter-spac
     return '<div class="c"><div class="nm">'+esc(r.name)+'</div>'+
       (r.one_liner?'<div class="ds">'+esc(r.one_liner)+'</div>':'<div class="ds"></div>')+
       '<div class="tags">'+tags+'</div>'+
-      '<button class="req" onclick="askIntro(\'startup\',\''+r.id+'\',\''+esc(r.name).replace(/'/g,"&#39;")+'\')">Request an introduction</button>'+
-      '<a class="apply" href="/apply-for-funding.html?company='+encodeURIComponent(r.name)+'&src=ai-directory">This is your company — apply for funding &rarr;</a></div>';
+      '<a class="apply" href="/apply-for-funding.html?company='+encodeURIComponent(r.name)+'&src=ai-directory" style="background:var(--navy);color:#fff;border-radius:8px;padding:9px 14px;font-weight:600">This is your company — raising? Apply &rarr;</a></div>';
   }
   function investorCard(r){
     var title=r.firm||r.name;
@@ -208,9 +207,9 @@ h1{font-weight:800;font-size:clamp(32px,4.6vw,50px);line-height:1.05;letter-spac
 
   var qEl=document.getElementById('q'), qt;
   if(qEl){ qEl.addEventListener('input',function(){ clearTimeout(qt); qt=setTimeout(function(){ QV=qEl.value; render(); },150); }); }
-  function hashTab(){ return ((location.hash||'').replace('#','').toLowerCase()==='investors')?'investors':'startups'; }
-  (hashTab()==='investors') ? showTab('investors') : loadTab('startups');
-  window.addEventListener('hashchange',function(){ showTab(hashTab()); });
+  // Directory is the research base: companies only. Investors live on /capital-providers.html.
+  if(/^#?investors$/i.test(location.hash||'')){ location.replace('/capital-providers.html'); return; }
+  loadTab('startups');
 })();
 </script>
 </body></html>

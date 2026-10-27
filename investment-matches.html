@@ -1,0 +1,120 @@
+<!DOCTYPE html><html lang="en"><head>
+<title>Investment Matches — Pegasus AI</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="Not a list of who exists — a short list of who should meet. Each Pegasus match pairs a company that's raising with an investor whose thesis actually fits, and says why.">
+<link rel="canonical" href="https://pegasuscapitalnetwork.com/investment-matches.html">
+<meta property="og:title" content="Investment Matches — Pegasus AI">
+<meta property="og:description" content="Curated matches between AI companies raising and the right capital — with the reason they should meet.">
+<meta property="og:type" content="website">
+<link rel="icon" href="/assets/brand/favicon.ico" sizes="any">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#fff;--bg2:#f5f6f8;--panel:#fff;--line:#e6e9ed;--ink:#0e1824;--ink2:#2a3a4e;--text:#46525f;--muted:#737e8b;--navy:#1b3a5b;--navy-d:#14304b;--gold:#9a7b3f;--green:#1b7f3b;
+--sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;--shadow-sm:0 1px 2px rgba(14,24,36,.06);--shadow:0 2px 6px rgba(14,24,36,.05),0 14px 38px rgba(14,24,36,.10)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-weight:400;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1080px;margin:0 auto;padding:0 32px}@media(max-width:640px){.wrap{padding:0 20px}}
+.bg{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(1000px 540px at 50% -10%,rgba(27,58,91,.06),transparent 60%),linear-gradient(180deg,#fbfcfe 0,#fff 460px)}
+header.top{position:relative;z-index:3;border-bottom:1px solid var(--line)}
+.top-in{max-width:1080px;margin:0 auto;padding:16px 32px;display:flex;align-items:center;justify-content:space-between}@media(max-width:640px){.top-in{padding:14px 20px}}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:18px;color:var(--ink);letter-spacing:-.01em}
+.top .nav{display:flex;gap:18px;align-items:center;font-size:13px;color:var(--muted);font-weight:500}
+.top .nav a:hover{color:var(--navy)}
+@media(max-width:640px){.top .nav a.hideSm{display:none}}
+.hero{position:relative;z-index:2;padding:48px 0 14px}
+.kick{font-size:11.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--gold);margin-bottom:14px}
+h1{font-weight:800;font-size:clamp(32px,4.6vw,50px);line-height:1.05;letter-spacing:-.03em;color:var(--ink)}
+.sub{margin:16px 0 0;font-size:clamp(15px,1.7vw,17.5px);color:var(--muted);max-width:66ch}
+.matches{position:relative;z-index:2;display:flex;flex-direction:column;gap:16px;padding:24px 0 10px;max-width:860px}
+.m{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:22px 24px;box-shadow:var(--shadow-sm);transition:box-shadow .18s,border-color .18s}
+.m:hover{box-shadow:var(--shadow);border-color:#d7dde4}
+.pair{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.side{flex:1;min-width:180px}
+.side .role{font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.side .who{font-size:17px;font-weight:700;color:var(--ink);letter-spacing:-.01em;margin-top:3px}
+.x{flex:none;width:34px;height:34px;border-radius:50%;background:var(--bg2);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:var(--navy);font-weight:700}
+.why{margin-top:14px;padding-top:14px;border-top:1px solid var(--line);font-size:14px;color:var(--text);line-height:1.6}
+.why .lbl{font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:5px}
+.status{margin-top:12px;font-size:11.5px;color:var(--muted)}
+.status.rev{color:var(--green);font-weight:600}
+.panel{position:relative;z-index:2;background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:34px 28px;text-align:center;max-width:640px;margin:14px auto 0}
+.panel h3{font-size:21px;font-weight:800;color:var(--ink);letter-spacing:-.02em}
+.panel p{font-size:14px;color:var(--muted);margin-top:8px;line-height:1.6}
+.panel .row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:18px}
+.btn{font-size:13.5px;font-weight:600;padding:12px 20px;border-radius:9px;cursor:pointer;border:none;display:inline-flex;align-items:center;gap:7px}
+.btn.pri{background:var(--navy);color:#fff}.btn.pri:hover{background:var(--navy-d)}
+.btn.gh{background:#fff;border:1px solid var(--line);color:var(--ink)}
+.loading{position:relative;z-index:2;text-align:center;color:var(--muted);font-size:13px;padding:40px 0}
+.foot{position:relative;z-index:2;border-top:1px solid var(--line);margin-top:26px;padding:26px 0 60px;font-size:11px;color:var(--muted);line-height:1.7;max-width:80ch}
+.foot a{color:var(--navy);font-weight:600}
+</style><script src="/js/i18n.js?v=20261021e"></script><script src="/js/ticker.js?v=20261021b" defer></script>
+</head>
+<body>
+<div class="bg"></div>
+<header class="top"><div class="top-in">
+  <a class="brand" href="/"><img src="/assets/brand/pegasus-mark.png" alt="Pegasus" style="height:26px;width:auto;display:block"> Pegasus</a>
+  <nav class="nav"><a href="/ai-network.html">Pegasus AI</a><a href="/seeking-capital.html" class="hideSm">Seeking Capital</a><a href="/capital-providers.html" class="hideSm">Capital Providers</a><a href="/apply-for-funding.html">Apply</a></nav>
+</div></header>
+
+<section class="hero"><div class="wrap">
+  <div class="kick">Pegasus AI · Investment Matches</div>
+  <h1>Not who exists. Who should meet.</h1>
+  <p class="sub">Each match pairs a company that's raising with an investor whose thesis, stage and check size actually fit, and says why. We only introduce the two sides when both agree, so names appear here once both have said yes.</p>
+</div></section>
+
+<div class="wrap">
+  <div class="matches" id="list"></div>
+  <div class="loading" id="loading">Loading matches…</div>
+  <div id="gate"></div>
+</div>
+
+<div class="foot wrap">
+  Matches are Pegasus's own view of a potential fit, not advice, an endorsement, or a commitment by either side. Identities are revealed only after both the company and the investor agree to be introduced. Pegasus facilitates professional introductions and is not a broker-dealer, investment adviser, or placement agent. <a href="/apply-for-funding.html">Raising? Apply &rarr;</a>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="/js/pegasus-config.js?v=20261021a"></script>
+<script>
+(function(){
+  var C=window.PEG_CONFIG||window.PEGASUS_CONFIG||{};
+  var URL=C.SUPABASE_URL||'https://auth.pegasuscapitalnetwork.com';
+  var KEY=C.SUPABASE_ANON||'sb_publishable_hrR8wI6hM921mnxk7bBE_A_YKxWsoBI';
+  var sb=(window.supabase&&window.supabase.createClient)?window.supabase.createClient(URL,KEY):null;
+  function $(id){return document.getElementById(id);}
+  function esc(x){return (x==null?'':String(x)).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+
+  function row(m){
+    var inv=m.revealed ? (m.investor_name_pub?(m.investor_name_pub+(m.investor_label&&m.investor_label!==m.investor_name_pub?' · '+m.investor_label:'')):m.investor_label) : m.investor_label;
+    return '<div class="m"><div class="pair">'+
+        '<div class="side"><div class="role">Company raising</div><div class="who">'+esc(m.company_label)+'</div></div>'+
+        '<div class="x">&#43;</div>'+
+        '<div class="side"><div class="role">Capital provider</div><div class="who">'+esc(inv)+'</div></div>'+
+      '</div>'+
+      '<div class="why"><span class="lbl">Why they should meet</span>'+esc(m.rationale)+'</div>'+
+      '<div class="status'+(m.revealed?' rev':'')+'">'+(m.revealed?'&#10003; Both sides agreed to be introduced':'Introduction pending — names shown once both sides agree')+'</div>'+
+    '</div>';
+  }
+  function gate(){
+    $('gate').innerHTML='<div class="panel"><h3>The first matches are being put together.</h3>'+
+      '<p>A match goes up only when there’s a real fit worth both sides’ time, not just a shared sector. Want to be in the running? Tell us you’re raising, or list yourself as an investor.</p>'+
+      '<div class="row"><a class="btn pri" href="/apply-for-funding.html">We’re raising</a>'+
+      '<a class="btn gh" href="/capital-providers.html">We invest</a></div></div>';
+  }
+  async function load(){
+    if(!sb){ $('loading').textContent='Connection unavailable, refresh shortly.'; return; }
+    try{
+      var r=await sb.from('public_ai_matches').select('id,rationale,revealed,company_label,investor_name_pub,investor_label,sort,created_at').order('sort',{ascending:true}).limit(100);
+      if(r.error) throw r.error;
+      var rows=r.data||[];
+      $('loading').style.display='none';
+      if(!rows.length){ gate(); return; }
+      $('list').innerHTML=rows.map(row).join('');
+    }catch(e){ console.error('[matches]',e); $('loading').style.display='none'; gate(); }
+  }
+  load();
+})();
+</script>
+</body></html>

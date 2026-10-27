@@ -1,0 +1,222 @@
+<!DOCTYPE html><html lang="en"><head>
+<title>Capital Providers — Pegasus AI</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="Investors and capital providers active in AI — what they back, at what stage and check size. Investors join on their own terms and with their consent.">
+<link rel="canonical" href="https://pegasuscapitalnetwork.com/capital-providers.html">
+<meta property="og:title" content="Capital Providers — Pegasus AI">
+<meta property="og:description" content="Investors and capital providers active in AI. Request a warm introduction, or list yourself.">
+<meta property="og:type" content="website">
+<link rel="icon" href="/assets/brand/favicon.ico" sizes="any">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#fff;--bg2:#f5f6f8;--panel:#fff;--line:#e6e9ed;--ink:#0e1824;--ink2:#2a3a4e;--text:#46525f;--muted:#737e8b;--navy:#1b3a5b;--navy-d:#14304b;--gold:#9a7b3f;--green:#1b7f3b;
+--sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;--shadow-sm:0 1px 2px rgba(14,24,36,.06);--shadow:0 2px 6px rgba(14,24,36,.05),0 14px 38px rgba(14,24,36,.10)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-weight:400;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1080px;margin:0 auto;padding:0 32px}@media(max-width:640px){.wrap{padding:0 20px}}
+.bg{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(1000px 540px at 50% -10%,rgba(27,58,91,.06),transparent 60%),linear-gradient(180deg,#fbfcfe 0,#fff 460px)}
+header.top{position:relative;z-index:3;border-bottom:1px solid var(--line)}
+.top-in{max-width:1080px;margin:0 auto;padding:16px 32px;display:flex;align-items:center;justify-content:space-between}@media(max-width:640px){.top-in{padding:14px 20px}}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:18px;color:var(--ink);letter-spacing:-.01em}
+.top .nav{display:flex;gap:18px;align-items:center;font-size:13px;color:var(--muted);font-weight:500}
+.top .nav a:hover{color:var(--navy)}
+@media(max-width:640px){.top .nav a.hideSm{display:none}}
+.hero{position:relative;z-index:2;padding:48px 0 14px}
+.kick{font-size:11.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--gold);margin-bottom:14px}
+h1{font-weight:800;font-size:clamp(32px,4.6vw,50px);line-height:1.05;letter-spacing:-.03em;color:var(--ink)}
+.sub{margin:16px 0 0;font-size:clamp(15px,1.7vw,17.5px);color:var(--muted);max-width:64ch}
+.cta-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
+.btn{font-size:13.5px;font-weight:600;padding:12px 20px;border-radius:9px;cursor:pointer;border:none;display:inline-flex;align-items:center;gap:7px}
+.btn.pri{background:var(--navy);color:#fff}.btn.pri:hover{background:var(--navy-d)}
+.btn.gh{background:#fff;border:1px solid var(--line);color:var(--ink)}
+.tools{position:relative;z-index:2;display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:22px 0 2px}
+#q{flex:1;min-width:240px;max-width:540px;padding:11px 15px;border:1px solid #e6e9ed;border-radius:10px;font-size:14px;font-family:inherit;color:#16202e;background:#fff;outline:none}
+.count{position:relative;z-index:2;font-size:12.5px;color:var(--muted);font-weight:500;padding:12px 0 4px}
+.grid{position:relative;z-index:2;display:grid;grid-template-columns:repeat(3,1fr);gap:16px;padding:8px 0 10px}
+@media(max-width:860px){.grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:560px){.grid{grid-template-columns:1fr;max-width:440px;margin:0 auto}}
+.c{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px 20px 16px;display:flex;flex-direction:column;box-shadow:var(--shadow-sm);transition:transform .18s,box-shadow .18s,border-color .18s}
+.c:hover{transform:translateY(-3px);box-shadow:var(--shadow);border-color:#d7dde4}
+.c .nm{font-size:17px;font-weight:700;color:var(--ink);letter-spacing:-.01em}
+.c .badge{display:inline-flex;align-self:flex-start;align-items:center;gap:5px;font-size:10.5px;font-weight:700;letter-spacing:.03em;color:var(--green);background:rgba(27,127,59,.08);border:1px solid rgba(27,127,59,.2);border-radius:999px;padding:2px 9px;margin-bottom:9px}
+.c .ds{font-size:13px;color:var(--text);margin-top:7px;flex:1;line-height:1.5}
+.c .tags{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0 14px}
+.c .tags span{font-size:11px;color:var(--ink2);background:var(--bg2);border:1px solid var(--line);border-radius:999px;padding:3px 10px}
+.c .req{font-size:12.5px;font-weight:600;color:#fff;background:var(--navy);border:none;border-radius:8px;padding:9px 14px;cursor:pointer;transition:background .18s;text-align:center}
+.c .req:hover{background:var(--navy-d)}
+.loading,.empty{position:relative;z-index:2;text-align:center;color:var(--muted);font-size:13px;padding:40px 0}
+.foot{position:relative;z-index:2;border-top:1px solid var(--line);margin-top:26px;padding:26px 0 60px;font-size:11px;color:var(--muted);line-height:1.7;max-width:80ch}
+.foot a{color:var(--navy);font-weight:600}
+.ov{position:fixed;inset:0;background:rgba(18,28,42,.45);backdrop-filter:blur(3px);z-index:9600;display:none;align-items:flex-start;justify-content:center;padding:40px 16px;overflow:auto}
+.ov.open{display:flex}
+.box{background:#fff;border:1px solid var(--line);border-radius:12px;max-width:520px;width:100%;padding:26px 26px 22px;box-shadow:0 24px 60px rgba(14,24,36,.2)}
+.box h3{font-size:21px;font-weight:800;color:var(--ink);letter-spacing:-.02em;margin-bottom:4px}
+.box .note{font-size:12.5px;color:var(--muted);margin-bottom:16px}
+.fld{margin-bottom:11px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}@media(max-width:480px){.g2{grid-template-columns:1fr}}
+.fld label{display:block;font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
+.fld input,.fld select,.fld textarea{width:100%;background:#f7f8fa;border:1px solid var(--line);color:var(--ink);font-family:var(--sans);font-size:14px;padding:10px 12px;border-radius:7px}
+.fld input:focus,.fld select:focus,.fld textarea:focus{outline:none;border-color:var(--navy);background:#fff}
+.fld textarea{min-height:60px;resize:vertical}
+.consent{display:flex;gap:9px;align-items:flex-start;font-size:12.5px;color:var(--text);background:var(--bg2);border:1px solid var(--line);border-radius:9px;padding:11px 13px;line-height:1.5;margin-top:4px}
+.consent input{margin-top:3px;accent-color:var(--navy);flex:none}
+.err{color:#c0392b;font-size:12.5px;min-height:15px;margin-top:6px}
+.ok{color:var(--green);font-size:12.5px;min-height:15px;margin-top:6px}
+.rw{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.gh2{margin-left:auto}
+</style><script src="/js/i18n.js?v=20261021e"></script><script src="/js/ticker.js?v=20261021b" defer></script>
+</head>
+<body>
+<div class="bg"></div>
+<header class="top"><div class="top-in">
+  <a class="brand" href="/"><img src="/assets/brand/pegasus-mark.png" alt="Pegasus" style="height:26px;width:auto;display:block"> Pegasus</a>
+  <nav class="nav"><a href="/ai-network.html">Pegasus AI</a><a href="/ai-directory.html" class="hideSm">Directory</a><a href="/seeking-capital.html" class="hideSm">Seeking Capital</a><a href="/investment-matches.html">Matches</a></nav>
+</div></header>
+
+<section class="hero"><div class="wrap">
+  <div class="kick">Pegasus AI · Capital Providers</div>
+  <h1>The investors active in AI.</h1>
+  <p class="sub">Who backs AI, at what stage and check size. Request a warm introduction when there's a real fit. Investors can list themselves, on their own terms, and confirmed participants carry a verified badge.</p>
+  <div class="cta-row">
+    <button class="btn pri" id="listBtn" type="button">List yourself as an investor</button>
+    <a class="btn gh" href="/seeking-capital.html">See who's raising &rarr;</a>
+  </div>
+</div></section>
+
+<div class="wrap">
+  <div class="tools"><input id="q" type="search" placeholder="Search by firm, focus, stage, check size, location…" autocomplete="off" spellcheck="false"></div>
+  <div class="count" id="count"></div>
+  <div class="grid" id="grid"></div>
+  <div class="loading" id="loading">Loading…</div>
+</div>
+
+<div class="foot wrap">
+  Entries marked <b>Confirmed</b> were submitted by the investor with their consent. Other entries compile publicly available information to help members find a fit; being listed is not a solicitation or an endorsement, and an investor can ask to be updated or removed at any time at <a href="mailto:hello@pegasuscapitalnetwork.com">hello@pegasuscapitalnetwork.com</a>. Pegasus facilitates professional introductions and is not a broker-dealer, investment adviser, or placement agent.
+</div>
+
+<!-- intro modal -->
+<div class="ov" id="ov"><div class="box">
+  <h3 id="ovTitle">Request an introduction</h3>
+  <div class="note">Tell us why it's a fit. We review every request and, where both sides are open, make the introduction. Nothing is shared without both agreeing.</div>
+  <div class="fld"><label>Your name</label><input id="rName" placeholder="Full name"></div>
+  <div class="fld"><label>Email</label><input id="rEmail" type="email" placeholder="you@company.com"></div>
+  <div class="fld"><label>Company / fund</label><input id="rOrg" placeholder="Organization"></div>
+  <div class="fld"><label>Why this match</label><textarea id="rMsg" maxlength="400" placeholder="A line on why you want this intro"></textarea></div>
+  <div class="err" id="rErr"></div>
+  <div class="rw"><button class="btn pri" id="rSubmit" onclick="submitIntro()">Request intro &rarr;</button><button class="btn gh gh2" onclick="closeOv()">Cancel</button></div>
+</div></div>
+
+<!-- self-list modal -->
+<div class="ov" id="ovL"><div class="box">
+  <h3>List yourself as an investor</h3>
+  <div class="note">You control what's shown. Submitted entries are reviewed before they go live and carry a Confirmed badge. Leave anything blank you'd rather keep off the record.</div>
+  <div class="g2">
+    <div class="fld"><label>Your name</label><input id="lName" placeholder="Full name"></div>
+    <div class="fld"><label>Fund / firm</label><input id="lFirm" placeholder="Firm (optional)"></div>
+  </div>
+  <div class="g2">
+    <div class="fld"><label>Type</label><select id="lType"><option value="">Not specified</option><option>Angel</option><option>VC</option><option>Family office</option><option>Corporate / strategic</option><option>Fund of funds</option><option>Syndicate</option><option>Accelerator</option></select></div>
+    <div class="fld"><label>Stage</label><input id="lStage" placeholder="e.g. pre-seed, seed, Series A"></div>
+  </div>
+  <div class="g2">
+    <div class="fld"><label>Check size</label><input id="lCheck" placeholder="e.g. $100K–$1M"></div>
+    <div class="fld"><label>Location</label><input id="lLoc" placeholder="e.g. Los Angeles"></div>
+  </div>
+  <div class="fld"><label>What you look for</label><textarea id="lFocus" maxlength="400" placeholder="Thesis / sectors / what a founder should know before reaching out"></textarea></div>
+  <div class="g2">
+    <div class="fld"><label>Website</label><input id="lWeb" placeholder="https://"></div>
+    <div class="fld"><label>Contact email (private)</label><input id="lEmail" type="email" placeholder="you@fund.com"></div>
+  </div>
+  <label class="consent"><input type="checkbox" id="lConsent"><span>I confirm I'm authorized to list this, and I consent to being shown on Pegasus as an active AI investor. I understand founders may request a warm introduction, and I can update or remove my listing anytime.</span></label>
+  <div class="err" id="lErr"></div><div class="ok" id="lOk"></div>
+  <div class="rw"><button class="btn pri" id="lSubmit" onclick="submitList()">Submit for review &rarr;</button><button class="btn gh gh2" onclick="closeL()">Cancel</button></div>
+</div></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="/js/pegasus-config.js?v=20261021a"></script>
+<script>
+(function(){
+  var C=window.PEG_CONFIG||window.PEGASUS_CONFIG||{};
+  var URL=C.SUPABASE_URL||'https://auth.pegasuscapitalnetwork.com';
+  var KEY=C.SUPABASE_ANON||'sb_publishable_hrR8wI6hM921mnxk7bBE_A_YKxWsoBI';
+  var sb=(window.supabase&&window.supabase.createClient)?window.supabase.createClient(URL,KEY,{auth:{persistSession:true,autoRefreshToken:true,storageKey:'pegasus.auth'}}):null;
+  function $(id){return document.getElementById(id);}
+  function esc(x){return (x==null?'':String(x)).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+  function v(id){var el=$(id);return el?(el.value||'').trim():'';}
+  async function session(){ try{ var r=await sb.auth.getSession(); return (r&&r.data)?r.data.session:null; }catch(e){ return null; } }
+  var grid=$('grid'),loading=$('loading'),count=$('count');
+  var ALL=[],QV='';
+
+  function card(r){
+    var title=r.firm||r.name||'Investor';
+    var tags=[r.tier,r.stage,r.check_size,r.location].filter(Boolean).map(function(t){return '<span>'+esc(t)+'</span>';}).join('');
+    return '<div class="c">'+(r.consent?'<span class="badge">&#10003; Confirmed</span>':'')+
+      '<div class="nm">'+esc(title)+'</div>'+
+      (r.focus?'<div class="ds">'+esc(r.focus)+'</div>':'<div class="ds"></div>')+
+      '<div class="tags">'+tags+'</div>'+
+      '<button class="req" onclick="askIntro(\''+r.id+'\',\''+esc(title).replace(/\x27/g,"&#39;")+'\')">Request an introduction</button></div>';
+  }
+  function matches(r,q){ var hay=[r.firm,r.name,r.focus,r.stage,r.check_size,r.tier,r.location].filter(Boolean).join(' ').toLowerCase(); return q.split(/\s+/).every(function(w){return hay.indexOf(w)>=0;}); }
+  function render(){
+    if(!ALL.length){ grid.innerHTML='<div class="empty" style="grid-column:1/-1">No investors listed yet.</div>'; count.textContent=''; return; }
+    var q=(QV||'').trim().toLowerCase();
+    var rows=q?ALL.filter(function(r){return matches(r,q);}):ALL;
+    if(!rows.length){ grid.innerHTML='<div class="empty" style="grid-column:1/-1">No investors match your search.</div>'; count.textContent='0 matches'; return; }
+    rows.sort(function(a,b){ return (b.consent?1:0)-(a.consent?1:0); });
+    count.textContent=rows.length+' investors'+(q?' found':'');
+    grid.innerHTML=rows.map(card).join('');
+  }
+  async function load(){
+    if(!sb){ loading.textContent='Connection unavailable, refresh shortly.'; return; }
+    try{
+      var r=await sb.from('public_ai_investors').select('id,name,firm,focus,stage,check_size,tier,location,consent').order('firm',{ascending:true}).limit(400);
+      if(r.error) throw r.error;
+      ALL=r.data||[]; loading.style.display='none'; render();
+    }catch(e){ console.error('[capital-providers]',e); loading.textContent='Could not load right now. Please refresh.'; }
+  }
+
+  // intro
+  var ctx={};
+  window.askIntro=function(id,name){
+    ctx={id:id,name:name}; $('ovTitle').textContent='Request an intro to '+name; $('rErr').textContent='';
+    session().then(function(s){ if(s&&s.user){ var em=$('rEmail'); if(em&&!em.value) em.value=s.user.email||''; var md=(s.user.user_metadata)||{}; var nm=$('rName'); if(nm&&!nm.value) nm.value=md.full_name||''; } });
+    $('ov').classList.add('open');
+  };
+  window.closeOv=function(){ $('ov').classList.remove('open'); };
+  $('ov').addEventListener('click',function(e){ if(e.target===this) closeOv(); });
+  window.submitIntro=async function(){
+    var err=$('rErr'),btn=$('rSubmit'); err.textContent='';
+    var email=v('rEmail'); if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){ err.textContent='Please add a valid email.'; return; }
+    btn.disabled=true; btn.textContent='Sending…';
+    try{
+      var r=await sb.from('ai_intro_requests').insert({ requester_name:v('rName'), requester_email:email, requester_org:v('rOrg'), requester_side:'startup', target_type:'investor', target_id:ctx.id, target_name:ctx.name, message:v('rMsg') });
+      if(r.error) throw r.error;
+      document.querySelector('#ov .box').innerHTML='<h3>Request received.</h3><div class="note" style="margin-top:8px">Thank you. We’ll review the fit and, where both sides are open, reach out at '+esc(email)+' to make the introduction.</div><div class="rw"><button class="btn pri" onclick="closeOv()">Done</button></div>';
+    }catch(e){ console.error('[capital-providers] intro',e); err.textContent=(e&&e.message)||'Could not send. Please try again.'; btn.disabled=false; btn.textContent='Request intro →'; }
+  };
+
+  // self-list
+  $('listBtn').onclick=function(){ $('lErr').textContent=''; $('lOk').textContent=''; $('ovL').classList.add('open'); };
+  window.closeL=function(){ $('ovL').classList.remove('open'); };
+  $('ovL').addEventListener('click',function(e){ if(e.target===this) closeL(); });
+  window.submitList=async function(){
+    var err=$('lErr'),ok=$('lOk'),btn=$('lSubmit'); err.textContent=''; ok.textContent='';
+    if(!v('lName') && !v('lFirm')){ err.textContent='Add your name or firm.'; return; }
+    if(!$('lConsent').checked){ err.textContent='Please confirm consent to be listed.'; return; }
+    var email=v('lEmail'); if(email && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){ err.textContent='That email doesn’t look right.'; return; }
+    btn.disabled=true; btn.textContent='Submitting…';
+    try{
+      var r=await sb.rpc('submit_investor_listing',{ p_name:v('lName'), p_firm:v('lFirm'), p_investor_type:v('lType'), p_focus:v('lFocus'), p_stage:v('lStage'), p_check_size:v('lCheck'), p_location:v('lLoc'), p_website:v('lWeb'), p_angle:v('lFocus'), p_contact_email:email, p_consent:true });
+      if(r.error) throw r.error;
+      if(r.data && r.data.ok===false){ err.textContent=r.data.message||'Could not submit.'; btn.disabled=false; btn.textContent='Submit for review →'; return; }
+      document.querySelector('#ovL .box').innerHTML='<h3>Thank you.</h3><div class="note" style="margin-top:8px">Your listing is in for review. Once approved it appears here with a Confirmed badge. We’ll reach out if we need anything.</div><div class="rw"><button class="btn pri" onclick="closeL()">Done</button></div>';
+    }catch(e){ console.error('[capital-providers] list',e); err.textContent=(e&&e.message)||'Could not submit. Please try again.'; btn.disabled=false; btn.textContent='Submit for review →'; }
+  };
+
+  var qEl=$('q'),qt; if(qEl){ qEl.addEventListener('input',function(){ clearTimeout(qt); qt=setTimeout(function(){ QV=qEl.value; render(); },150); }); }
+  load();
+})();
+</script>
+</body></html>

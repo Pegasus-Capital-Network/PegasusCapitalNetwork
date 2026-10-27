@@ -454,6 +454,20 @@
   to = "/jobs.html"
   status = 200
 
+# Pegasus AI surfaces (reference vs real opportunity).
+[[redirects]]
+  from = "/seeking-capital"
+  to = "/seeking-capital.html"
+  status = 200
+[[redirects]]
+  from = "/capital-providers"
+  to = "/capital-providers.html"
+  status = 200
+[[redirects]]
+  from = "/investment-matches"
+  to = "/investment-matches.html"
+  status = 200
+
 # No "/* -> /index.html" catch-all: multi-page static site, not an SPA.
 
 # ════════════════════════════════════════════════════════════════════════════

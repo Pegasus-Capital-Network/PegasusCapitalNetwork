@@ -76,7 +76,7 @@ v.insertAdjacentHTML('beforeend',
   '<a href="/showcase-admin.html" style="color:var(--blue)">Showcase Moderation</a> · <a href="/admin/intelligence" style="color:var(--blue)">Capital Intelligence</a> · '+
   '<a href="/admin/partner-network" style="color:var(--blue)">Partner Network</a></div>'+
   '<div style="display:flex;gap:4px;margin-bottom:16px;flex-wrap:wrap" id="atabs"></div><div id="apanel"></div>');
-const sections=['Dashboard','Users','Pegasus AI','Intelligence','Investors','AI Companies','Intro Requests','Funding','Private Network','Capital Pipeline','Capital Metrics','Direct Lending','PN Capital Leads','Feed','Invites','Claims','Deal Requests','Duplicates','Directory','Homepage Event','Subscriptions','Access System','Deal Rooms','Lender Profiles','Growth Partner Submissions','Match Activity','Analytics','Member Log','Manual Review','Platform Health','Schema & Repair'];
+const sections=['Dashboard','Users','Pegasus AI','Intelligence','Investors','AI Companies','Intro Requests','Funding','Investment Matches','Private Network','Capital Pipeline','Capital Metrics','Direct Lending','PN Capital Leads','Feed','Invites','Claims','Deal Requests','Duplicates','Directory','Homepage Event','Subscriptions','Access System','Deal Rooms','Lender Profiles','Growth Partner Submissions','Match Activity','Analytics','Member Log','Manual Review','Platform Health','Schema & Repair'];
 document.getElementById('atabs').innerHTML=sections.map((s,i)=>'<div class="toggle-opt '+(i===0?'on':'')+'" style="font-size:11px" onclick="aShow(\''+s+'\')">'+s+'</div>').join('');
 function tbl(cols,rows){return '<div class="card"><table class="tbl"><thead><tr>'+cols.map(c=>'<th>'+c+'</th>').join('')+'</tr></thead><tbody>'+rows.map(r=>'<tr>'+r.map(c=>'<td>'+c+'</td>').join('')+'</tr>').join('')+'</tbody></table></div>';}
 const chip=(t,c)=>'<span class="badge '+c+'">'+t+'</span>';
@@ -1056,7 +1056,7 @@ async function loadFunding(p){
   var esc=diEsc;
   try{
     var c=await window.PegSB.ready;
-    var res=await c.from('funding_requests').select('id,company_name,website,sector,stage,raising_amount,deck_url,one_liner,traction,location,contact_name,contact_email,contact_phone,status,owner,next_action,next_action_date,notes,created_at').order('created_at',{ascending:false}).limit(1000);
+    var res=await c.from('funding_requests').select('id,company_name,website,sector,stage,raising_amount,deck_url,one_liner,traction,location,contact_name,contact_email,contact_phone,status,member_visible,owner,next_action,next_action_date,notes,created_at').order('created_at',{ascending:false}).limit(1000);
     if(res.error) throw res.error;
     var rows=res.data||[];
     function cnt(st){return rows.filter(function(r){return (r.status||'new')===st;}).length;}
@@ -1098,6 +1098,7 @@ async function loadFunding(p){
             '<input id="fr-na-'+r.id+'" value="'+esc(r.next_action||'')+'" placeholder="Next action" style="padding:6px 8px;font-size:12px;flex:1;min-width:140px">'+
             '<input id="fr-nad-'+r.id+'" type="date" value="'+(r.next_action_date?esc(r.next_action_date):'')+'" style="padding:6px 8px;font-size:12px">'+
             '<button class="btn btn-ghost btn-sm" onclick="frSaveMeta(\''+r.id+'\')">Save</button>'+
+            '<button class="btn '+(r.member_visible?'btn-pri':'btn-ghost')+' btn-sm" onclick="frSeeking(\''+r.id+'\','+(r.member_visible?'false':'true')+')" title="Confirmed current raise — show to members on /seeking-capital">'+(r.member_visible?'✓ In Seeking Capital':'Show in Seeking Capital')+'</button>'+
           '</div>'+
         '</div>';
       }).join('')+'</div>';
@@ -1124,6 +1125,102 @@ window.frSaveMeta=async function(id){
     if(r.error) throw r.error;
     loadFunding(document.getElementById('apanel'));
   }catch(e){ alert('Could not save: '+((e&&e.message)||'error')); }
+};
+window.frSeeking=async function(id,on){
+  try{
+    var c=await window.PegSB.ready;
+    var r=await c.from('funding_requests').update({ member_visible:!!on }).eq('id',id);
+    if(r.error) throw r.error;
+    loadFunding(document.getElementById('apanel'));
+  }catch(e){ alert('Could not update: '+((e&&e.message)||'error')); }
+};
+
+/* ===== Investment Matches (ai_matches) — curated pairs with a reason ===== */
+async function loadInvMatches(p){
+  p.innerHTML='<div style="padding:40px;text-align:center;color:var(--text3);font-size:12px">Loading matches…</div>';
+  var esc=function(x){return (x==null?'':String(x)).replace(/[&<>"]/g,function(ch){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch];});};
+  try{
+    var c=await window.PegSB.ready;
+    var mRes=await c.from('ai_matches').select('*').order('sort',{ascending:true}).order('created_at',{ascending:false}).limit(300);
+    if(mRes.error) throw mRes.error;
+    var rows=mRes.data||[];
+    window.__imRows=rows;
+    var pub=rows.filter(function(r){return r.status==='published';}).length;
+    var html='<div style="font-size:11.5px;color:var(--text3);max-width:78ch;margin:0 0 14px">Curated introductions shown publicly on <b>/investment-matches</b>. Pair a company that is raising with an investor whose thesis fits, and write <b>why they should meet</b>. Names stay masked publicly until <b>both</b> sides consent. Publish to make a match visible.</div>'+
+      '<div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px">'+
+        '<div class="card" style="padding:14px 18px"><div style="font-size:22px;font-weight:700;color:var(--text)">'+rows.length+'</div><div style="font-size:11px;color:var(--text3);font-family:var(--mono)">TOTAL</div></div>'+
+        '<div class="card" style="padding:14px 18px"><div style="font-size:22px;font-weight:700;color:var(--green)">'+pub+'</div><div style="font-size:11px;color:var(--text3);font-family:var(--mono)">PUBLISHED</div></div>'+
+      '</div>';
+    // create form
+    html+='<div class="card" style="padding:16px 18px;margin-bottom:18px">'+
+      '<div style="font-weight:600;font-size:14px;margin-bottom:10px">New match</div>'+
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">'+
+        '<input id="im-co" placeholder="Company name *" style="padding:8px 10px;font-size:13px">'+
+        '<input id="im-cosec" placeholder="Company sector (e.g. applied AI, health)" style="padding:8px 10px;font-size:13px">'+
+        '<input id="im-inv" placeholder="Investor name *" style="padding:8px 10px;font-size:13px">'+
+        '<input id="im-invf" placeholder="Investor firm" style="padding:8px 10px;font-size:13px">'+
+      '</div>'+
+      '<textarea id="im-why" placeholder="Why they should meet * — the specific fit: stage, check size, thesis, traction. Not just same sector." style="width:100%;margin-top:8px;padding:8px 10px;font-size:13px;min-height:64px"></textarea>'+
+      '<div style="display:flex;gap:8px;align-items:center;margin-top:8px;flex-wrap:wrap">'+
+        '<label style="font-size:12px;color:var(--text2);display:flex;gap:5px;align-items:center"><input type="checkbox" id="im-cc"> company consented</label>'+
+        '<label style="font-size:12px;color:var(--text2);display:flex;gap:5px;align-items:center"><input type="checkbox" id="im-ic"> investor consented</label>'+
+        '<input id="im-sort" type="number" value="0" title="Sort (lower first)" style="width:70px;padding:6px 8px;font-size:12px">'+
+        '<button class="btn btn-pri btn-sm" onclick="imCreate(false)">Save draft</button>'+
+        '<button class="btn btn-pri btn-sm" onclick="imCreate(true)">Save &amp; publish</button>'+
+      '</div></div>';
+    if(!rows.length){ html+=adminEmpty('🤝','No matches yet','Create your first curated introduction above. A match goes up only when there is a real fit worth both sides’ time.'); }
+    else{
+      html+='<div>'+rows.map(function(m){
+        var both=m.company_consent&&m.investor_consent;
+        var stc={'draft':'var(--amber)','published':'var(--green)','archived':'var(--text3)'}[m.status]||'var(--text3)';
+        return '<div class="card" style="padding:15px 18px;margin-bottom:9px">'+
+          '<div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:flex-start">'+
+            '<div style="min-width:0;flex:1">'+
+              '<div style="font-weight:600;color:var(--text);font-size:14px">'+esc(m.company_name)+' <span style="color:var(--text3)">+</span> '+esc(m.investor_firm||m.investor_name)+' <span style="font-size:10px;font-family:var(--mono);text-transform:uppercase;color:'+stc+'">· '+esc(m.status)+'</span> '+(both?'<span style="font-size:10px;color:var(--green)">✓ revealed</span>':'<span style="font-size:10px;color:var(--text3)">masked</span>')+'</div>'+
+              '<div style="font-size:12.5px;color:var(--text2);margin-top:4px">'+esc(m.rationale)+'</div>'+
+            '</div>'+
+            '<div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">'+
+              '<label style="font-size:11px;color:var(--text2);display:flex;gap:4px;align-items:center"><input type="checkbox" '+(m.company_consent?'checked':'')+' onclick="imConsent(\''+m.id+'\',\'company\',this.checked)"> co</label>'+
+              '<label style="font-size:11px;color:var(--text2);display:flex;gap:4px;align-items:center"><input type="checkbox" '+(m.investor_consent?'checked':'')+' onclick="imConsent(\''+m.id+'\',\'investor\',this.checked)"> inv</label>'+
+              (m.status==='published'?'<button class="btn btn-ghost btn-sm" onclick="imStatus(\''+m.id+'\',\'archived\')">Unpublish</button>':'<button class="btn btn-pri btn-sm" onclick="imStatus(\''+m.id+'\',\'published\')">Publish</button>')+
+              '<button class="btn btn-ghost btn-sm" onclick="imDelete(\''+m.id+'\')">Delete</button>'+
+            '</div>'+
+          '</div></div>';
+      }).join('')+'</div>';
+    }
+    p.innerHTML=html;
+  }catch(e){
+    console.error('[admin] loadInvMatches failed:',e);
+    p.innerHTML=adminErr((e&&e.message)||'Could not load matches. Apply the ai_restructure_surfaces migration.');
+  }
+}
+window.imCreate=async function(publish){
+  function gv(x){var el=document.getElementById(x);return el?(el.value||'').trim():'';}
+  var co=gv('im-co'), inv=gv('im-inv'), why=gv('im-why');
+  if(!co||!inv||!why){ alert('Company, investor and the reason are all required.'); return; }
+  try{
+    var c=await window.PegSB.ready;
+    var row={ company_name:co, company_sector:gv('im-cosec')||null, investor_name:inv, investor_firm:gv('im-invf')||null,
+      rationale:why, company_consent:document.getElementById('im-cc').checked, investor_consent:document.getElementById('im-ic').checked,
+      sort:parseInt(gv('im-sort')||'0',10)||0, status:publish?'published':'draft' };
+    var r=await c.from('ai_matches').insert(row);
+    if(r.error) throw r.error;
+    loadInvMatches(document.getElementById('apanel'));
+  }catch(e){ alert('Could not save: '+((e&&e.message)||'error')); }
+};
+window.imConsent=async function(id,side,val){
+  try{ var c=await window.PegSB.ready; var patch={}; patch[side==='company'?'company_consent':'investor_consent']=!!val;
+    var r=await c.from('ai_matches').update(patch).eq('id',id); if(r.error) throw r.error; loadInvMatches(document.getElementById('apanel'));
+  }catch(e){ alert('Could not update: '+((e&&e.message)||'error')); }
+};
+window.imStatus=async function(id,status){
+  try{ var c=await window.PegSB.ready; var r=await c.from('ai_matches').update({status:status}).eq('id',id); if(r.error) throw r.error; loadInvMatches(document.getElementById('apanel'));
+  }catch(e){ alert('Could not update: '+((e&&e.message)||'error')); }
+};
+window.imDelete=async function(id){
+  if(!confirm('Delete this match? This cannot be undone.')) return;
+  try{ var c=await window.PegSB.ready; var r=await c.from('ai_matches').delete().eq('id',id); if(r.error) throw r.error; loadInvMatches(document.getElementById('apanel'));
+  }catch(e){ alert('Could not delete: '+((e&&e.message)||'error')); }
 };
 /* ===== Pegasus Direct Lending (deed of trust) ===== */
 var DL_STAGES=['draft','open','funding','funded','closed'];
@@ -2346,6 +2443,7 @@ window.aShow=function(s){[...document.querySelectorAll('#atabs .toggle-opt')].fo
   if(s==='AI Companies'){ loadAiStartups(p); return; }
   if(s==='Intro Requests'){ loadIntroRequests(p); return; }
   if(s==='Funding'){ loadFunding(p); return; }
+  if(s==='Investment Matches'){ loadInvMatches(p); return; }
   if(s==='Claims'){ loadClaims(p); return; }
   if(s==='Deal Requests'){ loadDealRequests(p); return; }
   if(s==='Duplicates'){ loadDuplicates(p); return; }

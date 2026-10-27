@@ -131,13 +131,13 @@ footer .fnote{font-size:11px;color:var(--muted);max-width:62ch;line-height:1.7}
 
 <header class="top">
   <a class="brand" href="/"><img src="/assets/brand/pegasus-mark.png" alt="Pegasus" style="height:26px;width:auto;display:block"> Pegasus</a>
-  <span style="display:flex;gap:18px;align-items:center"><a class="back" href="/ai-directory.html">Directory</a><a class="back" href="/intel.html">Intelligence</a><a class="back" href="/ai-needs.html">Needs Board →</a></span>
+  <span style="display:flex;gap:18px;align-items:center"><a class="back" href="/ai-directory.html">Directory</a><a class="back" href="/seeking-capital.html">Seeking Capital</a><a class="back" href="/capital-providers.html">Capital Providers</a><a class="back" href="/investment-matches.html">Matches →</a></span>
 </header>
 
 <section class="hero"><div class="wrap">
   <div class="eyebrow">Pegasus AI Network</div>
   <h1>Where AI companies, <em>capital</em>, and clients meet.</h1>
-  <p class="lede">Most AI founders don't need another cold investor list. They need the right capital and their first serious client, through people who actually move. Pegasus connects all three sides in one private network.</p>
+  <p class="lede">Not another directory of who exists. Pegasus separates the research base from the real opportunity: companies that are actually raising, investors who actually deploy, and the specific introductions worth making, with the reason the two sides should meet.</p>
   <div class="live-strip" id="liveStrip"></div>
   <div class="status-line"><span class="dot"></span> Early network forming · founding members joining now</div>
   <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:22px">
@@ -148,11 +148,11 @@ footer .fnote{font-size:11px;color:var(--muted);max-width:62ch;line-height:1.7}
 
 <div class="wrap">
   <div class="triad">
-    <a class="node" href="/ai-directory.html#companies">AI Companies<span>build it</span><span class="go">See the companies →</span></a>
+    <a class="node" href="/seeking-capital.html">Seeking Capital<span>who's raising now</span><span class="go">See who's raising →</span></a>
     <div class="link">↔</div>
-    <a class="node" href="/ai-directory.html#investors">Investors<span>fund it</span><span class="go">See the investors →</span></a>
+    <a class="node" href="/capital-providers.html">Capital Providers<span>who funds AI</span><span class="go">See the investors →</span></a>
     <div class="link">↔</div>
-    <a class="node" href="/ai-directory.html#companies">Clients<span>deploy it</span><span class="go">Browse the companies →</span></a>
+    <a class="node" href="/investment-matches.html">Investment Matches<span>why they should meet</span><span class="go">See the matches →</span></a>
   </div>
 </div>
 
@@ -299,8 +299,8 @@ footer .fnote{font-size:11px;color:var(--muted);max-width:62ch;line-height:1.7}
 <script>
 window.__pegCounts.then(function(c){
   var el=document.getElementById('liveStrip');if(!el)return;var h='';
-  if(c.ai)h+='<a href="/ai-directory.html#companies"><b>'+c.ai+'</b><span>AI companies</span></a>';
-  if(c.inv)h+='<a href="/ai-directory.html#investors"><b>'+c.inv+'</b><span>AI investors</span></a>';
+  if(c.ai)h+='<a href="/ai-directory.html"><b>'+c.ai+'</b><span>AI companies</span></a>';
+  if(c.inv)h+='<a href="/capital-providers.html"><b>'+c.inv+'</b><span>capital providers</span></a>';
   el.innerHTML=h;
 });
 </script>
