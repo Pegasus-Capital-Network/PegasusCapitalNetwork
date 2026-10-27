@@ -1,0 +1,107 @@
+<!DOCTYPE html><html lang="en"><head><title>Matched scenario — Pegasus Network</title>
+<meta name="robots" content="noindex,nofollow">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:ital,wght@0,300;0,400;0,600;1,300&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/pegasus.css">
+<link rel="icon" href="/assets/brand/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="/assets/brand/apple-touch-icon.png">
+<meta name="theme-color" content="#08111C">
+<style>
+.li-wrap{max-width:620px;margin:40px auto 80px;padding:0 20px}
+.li-eyebrow{font-size:9px;font-family:var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--text3);margin-bottom:8px}
+.li-h1{font-family:var(--serif);font-weight:300;font-size:26px;line-height:1.15;color:var(--text);margin:0 0 6px}
+.li-sub{font-size:13.5px;color:var(--text2);line-height:1.6;margin-bottom:20px}
+.li-card{background:var(--bg1);border:1px solid var(--border);border-radius:16px;padding:24px 22px}
+.li-rows{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border:1px solid var(--border);border-radius:11px;overflow:hidden;margin-bottom:18px}
+@media(max-width:520px){.li-rows{grid-template-columns:1fr}}
+.li-cell{background:var(--bg1);padding:12px 14px}
+.li-cell.full{grid-column:1/-1}
+.li-k{font-size:10px;font-family:var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--text4);margin-bottom:4px}
+.li-v{font-size:14px;color:var(--text)}
+.li-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:4px}
+.li-note{font-size:11.5px;color:var(--text4);line-height:1.55;margin-top:14px;padding-top:12px;border-top:1px solid var(--border)}
+.li-msg{color:var(--text3);font-size:13.5px;padding:22px;line-height:1.6}
+</style>
+<script src="/js/i18n.js?v=20261021e"></script><script src="/js/ticker.js?v=20261021b" defer></script>
+</head><body>
+<div id="nav"></div>
+<div class="li-wrap">
+  <div class="li-eyebrow">Matched scenario</div>
+  <h1 class="li-h1">A borrower fits your appetite</h1>
+  <div class="li-sub">This file was matched to one of your lending pages. Details are anonymized until you both agree to connect. Appetite match is a signal, not a commitment — you quote the file your own way.</div>
+  <div class="li-card" id="li-card"><div class="li-msg">Loading…</div></div>
+</div>
+
+<script src="/js/pegasus-config.js?v=20261021a"></script>
+<script src="/js/pegasus-supabase.js"></script>
+<script src="/js/pegasus-entitlements.js"></script>
+<script src="/js/pegasus-data.js"></script>
+<script src="/js/pegasus-content.js"></script>
+<script src="/js/pegasus-match.js"></script>
+<script src="/js/pegasus-store.js"></script>
+<script src="/js/pegasus-api.js"></script>
+<script src="/js/pegasus-forms.js"></script>
+<script src="/js/pegasus-auth.js?v=20261020b"></script>
+<script src="/js/pegasus-core.js?v=20261021b"></script>
+<script src="/js/pegasus-pages.js"></script>
+<script>
+Pegasus.boot(async function(){
+  Pegasus.mountPublic('');
+  var esc=Pegasus.esc, card=document.getElementById('li-card');
+  function msg(h){ card.innerHTML='<div class="li-msg">'+h+'</div>'; }
+  var LOANLBL={construction:'Construction / Completion',bridge:'Bridge',fix_flip:'Fix & Flip',dscr_rental:'DSCR / Rental',residential_refi:'Refinance / Cash-out',residential_purchase:'Purchase',commercial:'Commercial',multifamily:'Multifamily'};
+  var EXITLBL={sale:'Sale',refinance:'Refinance',rent:'Rent / Hold'};
+  var TLLBL={ASAP:'ASAP','30d':'Within 30 days','60d':'30-60 days',flex:'Flexible'};
+  function money(n){ n=Number(n); if(!n) return '—'; return n>=1e6?('$'+(n/1e6).toFixed(n%1e6?1:0)+'M'):('$'+Math.round(n/1000)+'K'); }
+
+  var req=(new URLSearchParams(location.search).get('req')||'').trim();
+  if(!req){ msg('No scenario was specified.'); return; }
+
+  var c=null; try{ c=await window.PegSB.ready; }catch(e){ c=null; }
+  var uid=null; if(c){ try{ var u=await c.auth.getUser(); uid=u&&u.data&&u.data.user&&u.data.user.id; }catch(e){} }
+  if(!c||!uid){
+    try{ localStorage.setItem('pegasus.redirectAfterAuth','/lender-inbox.html?req='+encodeURIComponent(req)); }catch(_){}
+    msg('Please <a style="color:var(--blue)" href="/signin.html?next='+encodeURIComponent('/lender-inbox.html?req='+req)+'">sign in</a> to view this matched scenario.');
+    return;
+  }
+
+  var r=null; try{ r=await c.rpc('get_lender_scenario',{p_request_id:req}); }catch(e){}
+  var d = r && !r.error && r.data && r.data[0];
+  if(!d){ msg('This scenario isn\'t matched to your lending pages, or it has closed.'); return; }
+
+  function cell(k,v,full){ return '<div class="li-cell'+(full?' full':'')+'"><div class="li-k">'+esc(k)+'</div><div class="li-v">'+esc(v||'—')+'</div></div>'; }
+  var amt = money(d.amount) + (d.amount_min && Number(d.amount_min)<Number(d.amount) ? ' (flex to '+money(d.amount_min)+')' : '');
+  var loc = [d.metro, d.state].filter(Boolean).join(', ');
+  var exp = d.sponsor_years ? (d.sponsor_years+'+ projects') : '—';
+  var rows =
+    cell('Loan type', LOANLBL[d.loan_type]||d.loan_type) +
+    cell('Property', [d.asset_type, d.occupancy==='non_owner'?'Non-owner':(d.occupancy==='owner'?'Owner':'')].filter(Boolean).join(' · ')) +
+    cell('Location', loc) +
+    cell('Requested', amt) +
+    cell('ARV', money(d.arv)) +
+    cell('As-is value', money(d.as_is_value)) +
+    cell('LTARV', d.ltarv?(d.ltarv+'%'):'—') +
+    cell('Rehab remaining', money(d.rehab_remaining)) +
+    cell('Exit', EXITLBL[d.exit_strategy]||d.exit_strategy) +
+    cell('Timeline', TLLBL[d.timeline]||d.timeline) +
+    cell('Credit band', d.fico_band) +
+    cell('Experience', exp) +
+    cell('Appraisal', d.appraisal_on_hand?'In hand':'Not yet', true);
+
+  card.innerHTML='<div class="li-rows">'+rows+'</div>'+
+    '<div class="li-actions"><button class="btn btn-pri" id="li-yes">I\'m interested</button>'+
+    '<a class="btn btn-ghost" href="/dashboard.html">Not a fit</a></div>'+
+    '<div class="li-note">If you\'re interested, the borrower is notified and can choose to connect. Identity and full file are shared only after you both agree. Pegasus charges no referral or success fees.</div>';
+
+  document.getElementById('li-yes').onclick=async function(){
+    var btn=this; btn.disabled=true; btn.textContent='Sending…';
+    try{
+      var rr=await c.rpc('lender_express_interest',{p_request_id:req});
+      if(rr && rr.error) throw rr.error;
+      card.innerHTML='<div class="li-msg">✓ The borrower has been notified of your interest. If they choose to connect, you\'ll both get the full file. You can manage this from your <a style="color:var(--blue)" href="/dashboard.html">Workspace</a>.</div>';
+    }catch(e){ Pegasus.toast('!','var(--gold-dim)','Could not send',(e&&e.message)||'Please try again.'); btn.disabled=false; btn.textContent='I\'m interested'; }
+  };
+});
+</script>
+</body></html>
