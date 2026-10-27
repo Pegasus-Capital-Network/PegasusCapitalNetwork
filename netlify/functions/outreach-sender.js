@@ -159,6 +159,17 @@ function buildAwardEmail(r, footer, unsub){
   }
   return { subject, text: body, unsub };
 }
+// Scenario match: a borrower's file fits this (unclaimed) lender's stated
+// appetite. We never reveal the borrower; the lender claims the page to see
+// matching scenarios and respond. Minimal, one-time, opt-out in the footer.
+function buildScenarioInvite(r, footer, unsub){
+  const m = r.metadata||{}, co = r.company||"your firm", slug = m.presence_slug;
+  const claim = utm(ORIGIN+"/claim?presence="+encodeURIComponent(slug), r);
+  const page = utm(ORIGIN+"/business/"+slug, r);
+  const subject = "A borrower on Pegasus matches "+co+"'s lending";
+  const body = "Hello,\n\nA borrower on Pegasus Capital Network submitted a financing scenario that lines up with what "+co+" lends on, based on the public information on your website. We can't share the borrower's details until "+co+" is on the platform and both sides agree to connect.\n\n"+co+" has a free page here: "+page+"\nClaim it to see matching scenarios and respond to the ones that fit."+perkLine()+" Claim it here:\n"+claim+"\n\nPegasus is a professional network for lenders, borrowers and brokers. It charges no referral or success fees, and lenders quote each file directly. An appetite match is a signal, not an approval.\n\n"+footer;
+  return { subject, text: body, unsub };
+}
 function buildEmail(r){
   const m = r.metadata||{};
   const page = m.presence_slug ? utm(ORIGIN+"/business/"+m.presence_slug, r) : null;
@@ -167,6 +178,7 @@ function buildEmail(r){
   const intro = "I'm reaching out from Pegasus Capital Network (pegasuscapitalnetwork.com), a professional network for real estate developers, lenders, brokers, and capital partners. Our directory covers more than 2,400 companies in more than 80 countries, including the largest U.S. mortgage lenders, ranked by 2025 origination volume, and members share deals, projects, market views, and events in a shared network feed.";
   const pageLine = page ? "We've added a page for "+r.company+", based on the public information on your website: "+page+" — it's free to claim and manage."+perkLine() : "";
   const footer = "Best regards,\nPegasus Capital Network\n\nYou are receiving this one-time note because this address is published on "+domain+" as a business contact. We will not follow up unless you reply.\n"+ADDRESS+"\nUnsubscribe: "+unsub;
+  if(m.scenario_match && m.presence_slug) return buildScenarioInvite(r, footer, unsub);
   if(m.award && Number(m.award.rank) >= 1 && m.presence_slug) return buildAwardEmail(r, footer, unsub);
   let subject, text;
   if(m.mailbox === "direct"){

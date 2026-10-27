@@ -96,7 +96,8 @@ Pegasus.boot(async function(){
     '<div class="si-card"><div class="si-sect">Dictate or paste</div>'+
       '<div class="si-field full si-dictate"><textarea id="si_notes" class="si-ta" placeholder="Describe the deal in your own words — property, loan type, numbers, exit. Or tap the mic and talk. You can still fill the fields below; this note rides along to the lender."></textarea>'+
       '<button type="button" class="si-mic" id="si_mic" title="Dictate">&#127908;</button></div>'+
-      '<div class="si-note" id="si_micnote">Tap the mic to dictate. Everything you add here is sent with the file.</div>'+
+      '<div style="margin-top:10px"><button type="button" class="btn btn-ghost" id="si_fill">Fill fields from this &#10024;</button></div>'+
+      '<div class="si-note" id="si_micnote">Tap the mic to dictate, or write and paste. Fill fields reads it and completes the form below — you review everything before submitting.</div>'+
     '</div>'+
 
     '<div class="si-card"><div class="si-sect">The loan</div><div class="si-grid">'+
@@ -138,6 +139,7 @@ Pegasus.boot(async function(){
     '<div class="si-actions"><button class="btn btn-pri" id="si_submit">Match my scenario &rarr;</button><span class="si-err" id="si_err"></span></div>';
 
     wireMic();
+    document.getElementById('si_fill').onclick=onFill;
     document.getElementById('si_submit').onclick=onSubmit;
   }
   function field(label,inner,cls){return '<div class="si-field'+(cls==='full'?' full':'')+'"><label class="si-label">'+esc(label)+'</label>'+inner+'</div>';}
@@ -151,6 +153,34 @@ Pegasus.boot(async function(){
     rec.onend=function(){on=false;mic.classList.remove('on');};
     rec.onerror=function(){on=false;mic.classList.remove('on');};
     mic.onclick=function(){ if(on){rec.stop();return;} try{rec.start();on=true;mic.classList.add('on');}catch(_){} };
+  }
+
+  function setVal(id,v){var e=document.getElementById(id);if(e&&v)e.value=v;}
+  function setSel(id,v){var e=document.getElementById(id);if(!e||!v)return;for(var i=0;i<e.options.length;i++){if(e.options[i].value===v){e.selectedIndex=i;return;}}}
+  async function onFill(){
+    var ta=document.getElementById('si_notes'); var text=(ta&&ta.value||'').trim();
+    if(text.length<12){ Pegasus.toast('!','var(--gold-dim)','Add a description first','Dictate or type a sentence or two about the deal.'); return; }
+    var btn=document.getElementById('si_fill'), t=btn.textContent; btn.disabled=true; btn.textContent='Reading…';
+    try{
+      var c=await window.PegSB.ready;
+      var r=await c.functions.invoke('scenario-parse',{body:{text:text}});
+      var d=r&&r.data;
+      if((r&&r.error)||!d||!d.ok){
+        var code=(d&&d.code)||''; var is401=(r&&r.error&&/401|auth/i.test(JSON.stringify(r.error)))||code==='auth';
+        if(is401) Pegasus.toast('!','var(--gold-dim)','Sign in to auto-fill','Fill the fields manually, or sign in and try again.');
+        else Pegasus.toast('!','var(--gold-dim)','Could not read that',(d&&d.message)||'Please fill the fields manually.');
+        return;
+      }
+      var f=d.draft||{};
+      setSel('si_loan',f.loan_type); setSel('si_asset',f.asset_type); setSel('si_occ',f.occupancy); setSel('si_vest',f.vesting);
+      setVal('si_state',f.state); setVal('si_metro',f.metro); setVal('si_amount',f.amount); setVal('si_amin',f.amount_min);
+      setVal('si_pp',f.purchase_price); setVal('si_payoff',f.current_payoff); setVal('si_asis',f.as_is_value); setVal('si_arv',f.arv);
+      setVal('si_rspent',f.rehab_spent); setVal('si_rrem',f.rehab_remaining); setVal('si_exp',f.sponsor_years);
+      setSel('si_fico',f.fico_band); setSel('si_exit',f.exit_strategy); setSel('si_tl',f.timeline);
+      if(f.appraisal_on_hand===true){ var a=document.getElementById('si_appr'); if(a) a.checked=true; }
+      Pegasus.toast('✓','var(--green-dim)','Filled '+(d.filled||0)+' fields','Check everything, then match.');
+    }catch(e){ Pegasus.toast('!','var(--gold-dim)','Could not read that','Please fill the fields manually.'); }
+    finally{ btn.disabled=false; btn.textContent=t; }
   }
 
   function buildPayload(){
