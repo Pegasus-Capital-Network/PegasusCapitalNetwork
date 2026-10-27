@@ -141,3 +141,6 @@ Disallow: /*/request.html
 Sitemap: https://pegasuscapitalnetwork.com/sitemap.xml
 Sitemap: https://pegasuscapitalnetwork.com/sitemap-entities.xml
 Sitemap: https://pegasuscapitalnetwork.com/sitemap-i18n.xml
+
+# Borrower loan landing pages
+Sitemap: https://pegasuscapitalnetwork.com/sitemap-loans.xml

@@ -81,6 +81,31 @@
   from = "/sitemap-events.xml"
   to = "/.netlify/functions/entity-sitemap?kind=events"
   status = 200
+
+# Borrower loan landing pages (SEO) + loans sitemap. Specific routes first so
+# /loans/:type/in/:state is not swallowed by /loans/:type.
+[[redirects]]
+  from = "/sitemap-loans.xml"
+  to = "/.netlify/functions/loan-landing?sitemap=1"
+  status = 200
+
+[[redirects]]
+  from = "/loans/:type/in/:state"
+  to = "/.netlify/functions/loan-landing?type=:type&state=:state"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/loans/:type"
+  to = "/.netlify/functions/loan-landing?type=:type"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/loans"
+  to = "/.netlify/functions/loan-landing"
+  status = 200
+  force = true
   force = true
 
 # People surface retired — the network is lenders, borrowers and financial
