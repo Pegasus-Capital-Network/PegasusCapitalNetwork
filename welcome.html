@@ -1,0 +1,206 @@
+<!DOCTYPE html><html lang="en"><head>
+<title>Welcome to Pegasus</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="/assets/brand/favicon.ico" sizes="any">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a111c;--panel:#111d2e;--line:#20304a;--ink:#f4f7fb;--text:#c6d2e2;--muted:#8a9bb3;--navy:#1b3a5b;--navy-l:#2b5580;--gold:#c9a45c;--green:#3ecf8e;
+--sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+.bg{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(1200px 700px at 50% -8%,rgba(201,164,92,.14),transparent 60%),radial-gradient(900px 600px at 80% 20%,rgba(43,85,128,.22),transparent 55%)}
+.wrap{position:relative;z-index:1;max-width:860px;margin:0 auto;padding:0 22px}
+header{position:relative;z-index:2;padding:22px;display:flex;justify-content:center}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:17px;color:var(--ink)}
+.brand img{height:26px;width:auto;display:block}
+.hero{text-align:center;padding:26px 0 8px}
+.crest{width:68px;height:68px;margin:0 auto 18px;border-radius:50%;background:linear-gradient(160deg,#16294a,#0c1726);border:1px solid var(--line);display:flex;align-items:center;justify-content:center}
+.crest img{width:40px;height:40px;object-fit:contain}
+.eyebrow{font-size:11.5px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--gold)}
+h1{font-weight:800;font-size:clamp(28px,5vw,46px);line-height:1.08;letter-spacing:-.02em;color:var(--ink);margin:12px 0 0}
+.lede{font-size:clamp(15px,2vw,17px);color:var(--muted);max-width:52ch;margin:14px auto 0}
+.badge{display:inline-flex;align-items:center;gap:10px;margin:22px auto 0;padding:10px 18px;border-radius:999px;background:linear-gradient(90deg,rgba(201,164,92,.16),rgba(201,164,92,.06));border:1px solid rgba(201,164,92,.4);color:var(--gold);font-weight:700;letter-spacing:.04em;font-size:14px}
+.badge .n{font-size:18px}
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:30px 0 10px}
+@media(max-width:680px){.cards{grid-template-columns:1fr}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:22px}
+.card.full{grid-column:1/-1}
+.card h3{font-size:16px;font-weight:700;color:var(--ink);letter-spacing:-.01em}
+.card p{font-size:13.5px;color:var(--muted);margin-top:6px;line-height:1.55}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-family:inherit;font-size:14px;font-weight:600;padding:11px 18px;border-radius:10px;background:var(--gold);color:#1a1205;border:1px solid var(--gold);cursor:pointer;transition:transform .15s,opacity .2s}
+.btn:hover{transform:translateY(-1px);opacity:.95}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+.btn.ghost:hover{border-color:#32496b}
+.btn.sm{font-size:13px;padding:9px 14px}
+.btn.wide{width:100%}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+.linkbox{display:flex;gap:8px;margin-top:14px}
+.linkbox input{flex:1;min-width:0;background:#0c1726;border:1px solid var(--line);color:var(--ink);font-family:ui-monospace,Menlo,monospace;font-size:13px;padding:11px 13px;border-radius:10px;outline:none}
+.linkbox input:focus{border-color:var(--gold)}
+.ok{color:var(--green);font-size:12.5px;min-height:16px;margin-top:8px}
+textarea{width:100%;background:#0c1726;border:1px solid var(--line);color:var(--ink);font-family:inherit;font-size:14px;padding:12px 14px;border-radius:12px;outline:none;resize:vertical;min-height:88px;margin-top:14px}
+textarea:focus{border-color:var(--gold)}
+.preview{margin-top:16px;border-radius:14px;overflow:hidden;border:1px solid var(--line);background:#0c1726}
+.preview canvas{display:block;width:100%;height:auto}
+.steps{display:flex;flex-direction:column;gap:2px;margin-top:6px}
+.steps a{display:flex;align-items:center;gap:12px;padding:12px 2px;border-bottom:1px solid var(--line);color:var(--text);font-size:14px;font-weight:500}
+.steps a:last-child{border-bottom:0}
+.steps a .ic{width:30px;height:30px;border-radius:9px;background:#0c1726;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:var(--gold);flex:none}
+.steps a .ar{margin-left:auto;color:var(--muted)}
+.foot{text-align:center;font-size:12px;color:var(--muted);padding:30px 0 50px}
+.foot a{color:var(--gold)}
+.loading{text-align:center;color:var(--muted);padding:60px 0}
+</style>
+</head>
+<body>
+<div class="bg"></div>
+<header><a class="brand" href="/"><img src="/assets/brand/pegasus-mark.png" alt="Pegasus"> Pegasus Capital Network</a></header>
+
+<div class="wrap" id="app"><div class="loading" id="loading">Loading…</div></div>
+
+<div class="foot">You're part of Pegasus now. Questions any time at <a href="mailto:hello@pegasuscapitalnetwork.com">hello@pegasuscapitalnetwork.com</a></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="/js/pegasus-config.js?v=20261021a"></script>
+<script>
+(function(){
+  var C=window.PEG_CONFIG||window.PEGASUS_CONFIG||{};
+  var URL_=C.SUPABASE_URL||'https://auth.pegasuscapitalnetwork.com';
+  var KEY=C.SUPABASE_ANON||'sb_publishable_hrR8wI6hM921mnxk7bBE_A_YKxWsoBI';
+  var sb=(window.supabase&&window.supabase.createClient)?window.supabase.createClient(URL_,KEY,{auth:{persistSession:true,autoRefreshToken:true,storageKey:'pegasus.auth'}}):null;
+  function $(id){return document.getElementById(id);}
+  function esc(x){return (x==null?'':String(x)).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+  function firstName(n){ return (n||'').trim().split(/\s+/)[0]||'there'; }
+
+  var ME=null, NAME='', FNO=null, INVITE='https://pegasuscapitalnetwork.com/signup.html';
+
+  async function boot(){
+    if(!sb){ $('loading').textContent='Connection unavailable, please refresh.'; return; }
+    var s=null; try{ var r=await sb.auth.getSession(); s=r&&r.data&&r.data.session; }catch(e){}
+    if(!(s&&s.user)){ location.replace('/signin.html?next='+encodeURIComponent('/welcome.html')); return; }
+    ME=s.user; var md=ME.user_metadata||{};
+    NAME=md.full_name||md.name||'';
+    try{ var pr=await sb.from('profiles').select('full_name,founding_no,profile_slug').eq('id',ME.id).single(); if(pr&&pr.data){ NAME=pr.data.full_name||NAME; FNO=pr.data.founding_no; } }catch(e){}
+    if(FNO==null){ try{ var fr=await sb.rpc('my_founding_number'); if(fr&&!fr.error&&fr.data!=null) FNO=fr.data; }catch(e){} }
+    try{ var cr=await sb.rpc('get_or_create_referral_code'); if(cr&&!cr.error&&cr.data){ INVITE='https://pegasuscapitalnetwork.com/signup.html?ref='+encodeURIComponent(cr.data); } }catch(e){}
+    render();
+    try{ localStorage.setItem('peg_welcomed','1'); }catch(e){}
+  }
+
+  function render(){
+    var fn=firstName(NAME);
+    var badge=FNO!=null ? '<div class="badge">★ Founding Member <span class="n">No.'+(FNO<10?'0':'')+FNO+'</span></div>' : '';
+    var h=''+
+     '<section class="hero">'+
+        '<div class="crest"><img src="/assets/brand/pegasus-mark.png" alt=""></div>'+
+        '<div class="eyebrow">You’re in</div>'+
+        '<h1>Welcome to Pegasus, '+esc(fn)+'.</h1>'+
+        '<p class="lede">This network runs on who’s in it. You’re one of the early ones, so let’s make it count.</p>'+
+        badge+
+     '</section>'+
+     '<div class="cards">'+
+       '<div class="card full">'+
+         '<h3>Tell the network you’re here</h3>'+
+         '<p>A line or two about who you are and what you’re working on. It posts to the feed, and people say hi. This is the fastest way to get noticed.</p>'+
+         '<textarea id="intro" maxlength="600" placeholder="e.g. Private lender focused on California bridge and fix-and-flip. Here to meet brokers and borrowers with real deals."></textarea>'+
+         '<div class="row"><button class="btn" id="postIntro">Post my intro</button><a class="btn ghost" href="/feed">Skip to the feed</a></div>'+
+         '<div class="ok" id="introOk"></div>'+
+       '</div>'+
+       '<div class="card">'+
+         '<h3>Bring your people</h3>'+
+         '<p>Your personal invite link. Anyone who joins through it is tracked to you, and you look good for bringing them.</p>'+
+         '<div class="linkbox"><input id="invite" readonly value="'+esc(INVITE)+'"><button class="btn sm" id="copyInvite">Copy</button></div>'+
+         '<div class="row"><button class="btn ghost sm" id="shareInvite">Share link</button></div>'+
+         '<div class="ok" id="inviteOk"></div>'+
+       '</div>'+
+       '<div class="card">'+
+         '<h3>Your "I joined" card</h3>'+
+         '<p>A clean image to post on LinkedIn or Instagram. Says you’re a Founding Member.</p>'+
+         '<div class="preview"><canvas id="card" width="1080" height="1350"></canvas></div>'+
+         '<div class="row"><button class="btn sm" id="dlCard">Download image</button><button class="btn ghost sm" id="shareCard">Share</button></div>'+
+       '</div>'+
+       '<div class="card full">'+
+         '<h3>Get set up</h3>'+
+         '<div class="steps">'+
+           '<a href="/profile-edit.html"><span class="ic">◉</span><span>Complete your profile<br><span style="color:var(--muted);font-size:12px">so people know who they’re meeting</span></span><span class="ar">→</span></a>'+
+           '<a href="/members.html"><span class="ic">▦</span><span>See who’s in the network</span><span class="ar">→</span></a>'+
+           '<a href="/feed"><span class="ic">▸</span><span>Go to the feed</span><span class="ar">→</span></a>'+
+         '</div>'+
+       '</div>'+
+     '</div>';
+    $('app').innerHTML=h;
+    wire(); drawCard();
+  }
+
+  function wire(){
+    $('copyInvite').onclick=function(){ var i=$('invite'); i.select(); try{ document.execCommand('copy'); }catch(e){} try{ navigator.clipboard&&navigator.clipboard.writeText(i.value); }catch(e){} $('inviteOk').textContent='Copied. Paste it anywhere.'; };
+    $('shareInvite').onclick=async function(){ var t='Join me on Pegasus Capital Network.'; if(navigator.share){ try{ await navigator.share({title:'Pegasus Capital Network',text:t,url:INVITE}); return; }catch(e){} } var i=$('invite'); i.select(); try{ document.execCommand('copy'); }catch(e){} $('inviteOk').textContent='Link copied, ready to paste.'; };
+    $('postIntro').onclick=postIntro;
+    $('dlCard').onclick=downloadCard;
+    $('shareCard').onclick=shareCard;
+  }
+
+  async function postIntro(){
+    var ta=$('intro'), ok=$('introOk'), btn=$('postIntro');
+    var txt=(ta.value||'').trim();
+    if(txt.length<10){ ok.style.color='#ff6b6b'; ok.textContent='Add a line or two first.'; return; }
+    btn.disabled=true; btn.textContent='Posting…';
+    try{
+      var rr=await sb.rpc('post_feed_item_v2',{p_presence:null,p_type:'update',p_content:txt,p_images:null,p_link:null,p_title:null,p_event_at:null,p_event_location:null});
+      if(rr&&rr.error) rr=await sb.rpc('post_feed_item',{p_type:'update',p_content:txt,p_image:null,p_link:null,p_title:null,p_event_at:null,p_event_location:null});
+      ok.style.color='var(--green)'; ok.textContent='Posted. The network can see you now.';
+      btn.textContent='Posted ✓';
+      setTimeout(function(){ location.href='/feed'; },1100);
+    }catch(e){ ok.style.color='#ff6b6b'; ok.textContent=(e&&e.message)||'Could not post. Try again.'; btn.disabled=false; btn.textContent='Post my intro'; }
+  }
+
+  function drawCard(){
+    var cv=$('card'); if(!cv) return; var g=cv.getContext('2d'); var W=1080,H=1350;
+    var grad=g.createLinearGradient(0,0,W,H); grad.addColorStop(0,'#0e1e36'); grad.addColorStop(.55,'#12304f'); grad.addColorStop(1,'#0a111c');
+    g.fillStyle=grad; g.fillRect(0,0,W,H);
+    // gold frame
+    g.strokeStyle='rgba(201,164,92,.55)'; g.lineWidth=3; g.strokeRect(46,46,W-92,H-92);
+    g.textAlign='center';
+    // eyebrow
+    g.fillStyle='#c9a45c'; g.font='700 30px Inter, sans-serif'; g.fillText('P E G A S U S   C A P I T A L   N E T W O R K', W/2, 150);
+    function body(){
+      g.fillStyle='#c9a45c'; g.font='700 34px Inter, sans-serif';
+      if(FNO!=null){ g.fillText('FOUNDING MEMBER', W/2, 620); g.font='800 150px Inter, sans-serif'; g.fillStyle='#f4f7fb'; g.fillText('No.'+(FNO<10?'0':'')+FNO, W/2, 770); }
+      else { g.font='800 60px Inter, sans-serif'; g.fillStyle='#f4f7fb'; g.fillText('I just joined', W/2, 700); }
+      // name
+      g.fillStyle='#f4f7fb'; g.font='700 56px Inter, sans-serif';
+      var nm=(NAME||'A new member'); if(nm.length>26) nm=nm.slice(0,25)+'…';
+      g.fillText(nm, W/2, 900);
+      g.fillStyle='#8a9bb3'; g.font='500 32px Inter, sans-serif';
+      g.fillText('just joined Pegasus Capital Network', W/2, 958);
+      // tagline
+      g.fillStyle='#c6d2e2'; g.font='600 34px Inter, sans-serif';
+      g.fillText('Where capital meets opportunity.', W/2, 1130);
+      g.fillStyle='#c9a45c'; g.font='700 30px Inter, sans-serif';
+      g.fillText('pegasuscapitalnetwork.com', W/2, 1200);
+    }
+    var img=new Image();
+    img.onload=function(){ g.drawImage(img,W/2-55,300,110,110); body(); };
+    img.onerror=function(){ body(); };
+    try{ img.src='/assets/brand/pegasus-mark.png'; }catch(e){ body(); }
+  }
+  function cardBlob(cb){ var cv=$('card'); if(cv.toBlob) cv.toBlob(cb,'image/png'); else cb(null); }
+  function downloadCard(){ var cv=$('card'); var a=document.createElement('a'); a.download='pegasus-founding-member'+(FNO!=null?('-'+FNO):'')+'.png'; a.href=cv.toDataURL('image/png'); document.body.appendChild(a); a.click(); a.remove(); }
+  async function shareCard(){
+    cardBlob(async function(blob){
+      var file=blob?new File([blob],'pegasus.png',{type:'image/png'}):null;
+      if(file && navigator.canShare && navigator.canShare({files:[file]})){
+        try{ await navigator.share({files:[file],text:'I just joined Pegasus Capital Network. '+INVITE}); return; }catch(e){}
+      }
+      downloadCard();
+    });
+  }
+
+  boot();
+})();
+</script>
+</body></html>

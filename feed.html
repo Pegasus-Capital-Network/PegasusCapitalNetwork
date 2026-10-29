@@ -433,7 +433,7 @@ Pegasus.boot(async function(){
     var first=(ME.full_name||'').split(/\s+/)[0]||'';
     host.innerHTML='<div class="fd-card" style="border-color:rgba(29,90,158,.35);background:var(--blue-dim)"><div class="fd-card-b fd-guest">'+
       '<div><div class="fd-guest-t">Welcome'+(first?', '+esc(first):'')+'. Say hello to the network</div><div class="fd-guest-s">Members who post an intro get found first.</div></div>'+
-      '<div class="fd-guest-a"><button class="btn btn-pri btn-sm" type="button" id="fdIntro">Write my intro</button></div></div></div>';
+      '<div class="fd-guest-a"><button class="btn btn-pri btn-sm" type="button" id="fdIntro">Write my intro</button><a class="btn btn-ghost btn-sm" href="/welcome">Your welcome &amp; invite link</a></div></div></div>';
     var b=document.getElementById('fdIntro'); if(b) b.onclick=function(){
       postType='update'; renderComposer();
       var t=INTRO_TPL.replace('{name}',ME.full_name||'').replace('{title}',ME.professional_title||ME.headline||'a '+(ME.role||'member').replace(/_/g,' '))

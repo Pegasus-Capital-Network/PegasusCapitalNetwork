@@ -454,6 +454,12 @@
   to = "/jobs.html"
   status = 200
 
+# New-member welcome (personal; noindex).
+[[redirects]]
+  from = "/welcome"
+  to = "/welcome.html"
+  status = 200
+
 # Pegasus AI surfaces (reference vs real opportunity).
 [[redirects]]
   from = "/seeking-capital"
