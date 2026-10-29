@@ -311,11 +311,18 @@ Pegasus.boot(async function(){
   function ago(ts){ try{ var d=Math.max(0,(Date.now()-new Date(ts).getTime())/1000); if(d<60)return 'just now'; if(d<3600)return Math.floor(d/60)+'m ago'; if(d<86400)return Math.floor(d/3600)+'h ago'; if(d<86400*14)return Math.floor(d/86400)+'d ago'; return new Date(ts).toLocaleDateString('en-US',{month:'short',day:'numeric'}); }catch(e){ return ''; } }
   function safeUrl(u){ u=(u||'').trim(); if(!u) return ''; if(!/^https?:\/\//i.test(u)) u='https://'+u.replace(/^\/+/,''); return Pegasus.safeUrl?Pegasus.safeUrl(u):esc(u); }
   function domainOf(u){ try{ return new URL(u).hostname.replace(/^www\./,''); }catch(e){ return (u||'').replace(/^https?:\/\//,'').split('/')[0]; } }
-  /* Escape text, then turn bare URLs into links (escaped before wrapping). */
+  /* Light markdown on already-escaped text (no tags inside): **bold** and *italic*.
+     Underscores are left alone so URLs with _ are never mangled. */
+  function mdInline(s){
+    return s
+      .replace(/\*\*([^*\n]+?)\*\*/g,'<strong>$1</strong>')
+      .replace(/(^|[\s(])\*([^*\s][^*\n]*?)\*(?=$|[\s.,!?)])/g,'$1<em>$2</em>');
+  }
+  /* Escape text, render light markdown, then turn bare URLs into links. */
   function linkify(t){
     var re=/(https?:\/\/[^\s<>"']+)/g, out='', last=0, m;
-    while((m=re.exec(t))){ out+=esc(t.slice(last,m.index)); out+='<a href="'+safeUrl(m[1])+'" target="_blank" rel="noopener noreferrer nofollow">'+esc(m[1].replace(/^https?:\/\//,'').slice(0,60))+'</a>'; last=m.index+m[1].length; }
-    return out+esc(t.slice(last));
+    while((m=re.exec(t))){ out+=mdInline(esc(t.slice(last,m.index))); out+='<a href="'+safeUrl(m[1])+'" target="_blank" rel="noopener noreferrer nofollow">'+esc(m[1].replace(/^https?:\/\//,'').slice(0,60))+'</a>'; last=m.index+m[1].length; }
+    return out+mdInline(esc(t.slice(last)));
   }
   function evParts(ts){ var d=new Date(ts); return { m:d.toLocaleDateString('en-US',{month:'short'}), d:d.getDate(), when:d.toLocaleString('en-US',{weekday:'short',month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}) }; }
   function rpcMissing(err){ var c=err&&(err.code||''); var m=(((err&&err.message)||'')+' '+((err&&err.details)||'')).toLowerCase(); return c==='PGRST202'||c==='404'||/does not exist|could not find the function|schema cache|not found/.test(m); }
