@@ -96,6 +96,7 @@ function html(first, d, unsub){
   body+snap+
   '<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:26px 0 0;"><tr><td align="center" bgcolor="#3a8fe8" style="background-color:#3a8fe8;border-radius:10px;">'+
   '<a href="'+esc(ORIGIN+"/feed")+'" style="display:inline-block;padding:12px 24px;font-family:Arial,Helvetica,sans-serif;font-size:14px;font-weight:bold;color:#ffffff;text-decoration:none;">Open the Network Feed</a></td></tr></table>'+
+  '<p style="margin:14px 0 0;font-size:13px;line-height:1.8;"><a href="'+esc(ORIGIN+"/share-studio.html?utm_source=email&utm_medium=digest&utm_campaign=member_activation")+'" style="color:#235fa6;font-weight:bold;text-decoration:none;">Share my profile</a> &nbsp;·&nbsp; <a href="'+esc(ORIGIN+"/dashboard.html?invite=1&utm_source=email&utm_medium=digest&utm_campaign=member_activation")+'" style="color:#235fa6;font-weight:bold;text-decoration:none;">Invite someone I trust</a></p>'+
   '<p style="margin:18px 0 0;font-size:13px;line-height:1.6;color:#5b6573;">Post what you are working on, a deal, a market view, or an event — it shows on your profile and to the whole network.</p>'+
   '<hr style="border:none;border-top:1px solid #e4e7eb;margin:24px 0 16px;">'+
   '<p style="margin:0;font-size:11px;line-height:1.5;color:#8a97a8;">'+esc(ADDRESS)+'<br>You receive this weekly digest as a Pegasus Capital Network member. <a href="'+esc(unsub)+'" style="color:#8a97a8;">Unsubscribe from the digest</a></p>'+
@@ -106,7 +107,7 @@ function text(first, d, unsub){
   if(d.members.length){ lines.push("NEW IN THE NETWORK"); d.members.forEach(m=>lines.push("- "+m.full_name+(m.company_name?" · "+m.company_name:"")+" "+profileHref(m))); lines.push(""); }
   if(d.posts.length){ lines.push("MOST NOTICED THIS WEEK"); d.posts.forEach(p=>lines.push("- "+(p.title||trunc(p.content,70))+" — "+p.author_name+" "+ORIGIN+"/feed/post/"+p.id)); lines.push(""); }
   if(d.events.length){ lines.push("UPCOMING EVENTS"); d.events.forEach(e=>lines.push("- "+(e.title||"Event")+" · "+fmtWhen(e.event_at)+" "+ORIGIN+"/feed/post/"+e.id)); lines.push(""); }
-  lines.push("Open the Network Feed: "+ORIGIN+"/feed", "", "— Pegasus Capital Network", ADDRESS, "Unsubscribe from the digest: "+unsub);
+  lines.push("Open the Network Feed: "+ORIGIN+"/feed", "Share my profile: "+ORIGIN+"/share-studio.html", "Invite someone I trust: "+ORIGIN+"/dashboard.html?invite=1", "", "— Pegasus Capital Network", ADDRESS, "Unsubscribe from the digest: "+unsub);
   return lines.join("\n");
 }
 

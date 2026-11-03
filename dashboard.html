@@ -48,6 +48,15 @@ Pegasus.boot((st)=>{
       '</div>'+
     '</div>');
 
+  /* Lifecycle emails can deep-link directly to the member's personal invite
+     modal. Remove the query marker after opening so refresh does not reopen it. */
+  if(new URLSearchParams(location.search).get('invite')==='1'){
+    setTimeout(function(){
+      if(Pegasus.inviteOpen) Pegasus.inviteOpen();
+      try{ var u=new URL(location.href); u.searchParams.delete('invite'); history.replaceState({},'',u.pathname+(u.searchParams.toString()?'?'+u.searchParams:'')+u.hash); }catch(_){ }
+    },350);
+  }
+
   /* ── Invite your network — the growth loop. Opens the personal invite-link
      modal (Pegasus.inviteOpen); link routes to /signup.html?ref=CODE. ── */
   v.insertAdjacentHTML('beforeend',

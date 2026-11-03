@@ -604,6 +604,12 @@
 [functions."profile-reminder"]
   schedule = "17 16 * * *"
 
+# Three-step member activation: profile visibility, trusted-person invitation,
+# and social distribution through Share Studio. Migration 105 deduplicates each
+# step and automatically includes every future member with a live profile.
+[functions."member-activation"]
+  schedule = "37 16 * * *"
+
 # Member referral invitations ("Invite colleagues") — sent within ~15 min of a
 # member queuing them; honours the global outreach pause.
 [functions."referral-sender"]
