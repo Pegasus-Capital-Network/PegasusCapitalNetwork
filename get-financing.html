@@ -100,7 +100,7 @@ textarea{min-height:70px;resize:vertical}
     <div id="err" class="err"></div>
     <div style="margin-top:8px"><button id="submit" class="btn" onclick="submitReq()">Create account &amp; request review &rarr;</button></div>
     <div style="margin-top:10px;font-size:12.5px;color:var(--muted)">Already a member? <a href="/signin.html" style="color:var(--navy);font-weight:600">Sign in</a> to submit faster.</div>
-    <div class="hint">We review every request and reach out if it is a fit. Loans are arranged through West Coast Capital Mortgage Inc. (NMLS #2817729, DRE #01385024). Submitting is not a loan application or commitment and does not pull your credit.</div>
+    <div class="hint">We review every request and reach out if it is a fit. Loans are arranged through West Coast Capital Mortgage Inc. (NMLS #2817729, CA DRE Corporation License #02440065). Submitting is not a loan application or commitment and does not pull your credit.</div>
   </div>
 
   <div id="done" class="done" style="display:none">
@@ -123,11 +123,27 @@ textarea{min-height:70px;resize:vertical}
   var URL=C.SUPABASE_URL||'https://auth.pegasuscapitalnetwork.com';
   var KEY=C.SUPABASE_ANON||'sb_publishable_hrR8wI6hM921mnxk7bBE_A_YKxWsoBI';
   var sb=(window.supabase&&window.supabase.createClient)?window.supabase.createClient(URL,KEY,{auth:{persistSession:true,autoRefreshToken:true,storageKey:'pegasus.auth'}}):null;
+  function firstTouch(){
+    var out={source_path:location.pathname};
+    try{
+      var q=new URLSearchParams(location.search), saved=JSON.parse(sessionStorage.getItem('peg.att')||'null')||{};
+      out.utm_source=(q.get('utm_source')||saved.utm_source||'').slice(0,60)||null;
+      out.utm_medium=(q.get('utm_medium')||saved.utm_medium||'').slice(0,60)||null;
+      out.utm_campaign=(q.get('utm_campaign')||saved.utm_campaign||'').slice(0,80)||null;
+      out.referral_code=(q.get('ref')||q.get('code')||'').slice(0,40)||null;
+      out.referrer_host=(saved.ref||'').slice(0,120)||null;
+    }catch(_){}
+    return out;
+  }
+  var ATTR=firstTouch(), started=false;
+  function track(name){ try{ if(window.PegTrack&&window.PegTrack.event) window.PegTrack.event(name); else (window.PegTrackQ=window.PegTrackQ||[]).push([name]); }catch(_){} }
+  track('financing_view');
+  document.addEventListener('input',function(e){ if(!started&&e.target&&/^(INPUT|SELECT|TEXTAREA)$/.test(e.target.tagName)){ started=true; track('financing_start'); } },true);
   async function session(){ try{ var r=await sb.auth.getSession(); return (r&&r.data)?r.data.session:null; }catch(e){ return null; } }
   async function ensureAuth(role,intent){ var s=await session(); if(s&&s.user) return s; location.href='/signup.html?role='+encodeURIComponent(role||'')+'&intent='+encodeURIComponent(intent||'')+'&next='+encodeURIComponent(location.pathname); return null; }
   function v(id){var el=document.getElementById(id);return el?(el.value||'').trim():'';}
   // Restore a saved financing draft once the member returns signed in.
-  (function(){ try{ var raw=localStorage.getItem('peg.financing.draft'); if(!raw) return; session().then(function(s){ if(!(s&&s.user)) return; var d=JSON.parse(raw); function set(id,val){var e=document.getElementById(id); if(e&&val&&!e.value) e.value=val;} set('f-name',d.name); set('f-email',d.email||s.user.email); set('f-phone',d.phone); set('f-addr',d.property_address); set('f-city',d.city); set('f-amount',d.loan_amount); set('f-value',d.est_value); set('f-msg',d.message); set('f-ptype',d.property_type); set('f-purpose',d.purpose); set('f-timeline',d.timeline); }); }catch(_){} })();
+  (function(){ try{ var raw=localStorage.getItem('peg.financing.draft'); if(!raw) return; session().then(function(s){ if(!(s&&s.user)) return; var d=JSON.parse(raw); if(d.attribution) ATTR=Object.assign({},d.attribution,ATTR); function set(id,val){var e=document.getElementById(id); if(e&&val&&!e.value) e.value=val;} set('f-name',d.name); set('f-email',d.email||s.user.email); set('f-phone',d.phone); set('f-addr',d.property_address); set('f-city',d.city); set('f-amount',d.loan_amount); set('f-value',d.est_value); set('f-msg',d.message); set('f-ptype',d.property_type); set('f-purpose',d.purpose); set('f-timeline',d.timeline); }); }catch(_){} })();
   function num(x){ if(!x) return null; var n=parseFloat(String(x).replace(/[^0-9.]/g,'')); return isNaN(n)?null:n; }
   (function(){ function fmt(e){ var d=(e.value||'').replace(/[^0-9]/g,''); e.value=d?('$'+Number(d).toLocaleString('en-US')):''; } ['f-amount','f-value'].forEach(function(id){ var el=document.getElementById(id); if(el) el.addEventListener('input',function(){ fmt(el); }); }); })();
   (function(){ var sel=document.getElementById('f-purpose'); var bs=document.querySelectorAll('.pts button[data-p]');
@@ -144,18 +160,23 @@ textarea{min-height:70px;resize:vertical}
     if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){ err.textContent='Please add a valid email.'; return; }
     if(!sb){ err.textContent='Connection unavailable, please try again in a moment.'; return; }
     // Registration-first: capture the deal, then route through account creation.
-    var draft={ name:name, email:email, phone:v('f-phone'), property_address:v('f-addr'), property_type:v('f-ptype'), city:v('f-city'), loan_amount:v('f-amount'), est_value:v('f-value'), purpose:v('f-purpose'), timeline:v('f-timeline'), message:v('f-msg') };
+    var draft={ name:name, email:email, phone:v('f-phone'), property_address:v('f-addr'), property_type:v('f-ptype'), city:v('f-city'), loan_amount:v('f-amount'), est_value:v('f-value'), purpose:v('f-purpose'), timeline:v('f-timeline'), message:v('f-msg'), attribution:ATTR };
     try{ localStorage.setItem('peg.financing.draft', JSON.stringify(draft)); }catch(_){}
     var sess=await ensureAuth('borrower','financing'); if(!sess) return;
+    track('financing_submit');
     btn.disabled=true; btn.textContent='Submitting…';
     try{
       var r=await sb.from('dl_borrower_requests').insert({
         name:name, email:email, phone:v('f-phone')||null, property_address:v('f-addr')||null,
         property_type:v('f-ptype')||null, city:v('f-city')||null, state:'CA',
         loan_amount:num(v('f-amount')), est_value:num(v('f-value')),
-        purpose:v('f-purpose')||null, timeline:v('f-timeline')||null, message:v('f-msg')||null
+        purpose:v('f-purpose')||null, timeline:v('f-timeline')||null, message:v('f-msg')||null,
+        source_path:ATTR.source_path||'/get-financing.html', utm_source:ATTR.utm_source||null,
+        utm_medium:ATTR.utm_medium||null, utm_campaign:ATTR.utm_campaign||null,
+        referral_code:ATTR.referral_code||null, referrer_host:ATTR.referrer_host||null
       });
       if(r.error) throw r.error;
+      track('financing_done');
       try{ localStorage.removeItem('peg.financing.draft'); localStorage.removeItem('peg.financing.autosubmit'); }catch(_){}
       document.getElementById('formCard').style.display='none';
       document.getElementById('done').style.display='block';
