@@ -1,0 +1,181 @@
+<!DOCTYPE html><html lang="en"><head><title>Claim your agent profile — Pegasus Network</title>
+<meta name="robots" content="noindex,nofollow">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500&family=IBM+Plex+Serif:wght@0,300;0,400;0,600&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/pegasus.css?v=dealroom-entitlements-20260524-1529">
+<link rel="icon" href="/assets/brand/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="/assets/brand/apple-touch-icon.png">
+<meta name="theme-color" content="#08111C">
+<style>
+.cl-wrap{max-width:560px;margin:70px auto;padding:0 20px}
+.cl-card{background:var(--bg1);border:1px solid var(--border);border-radius:16px;padding:28px 26px}
+.cl-eyebrow{font-size:9px;font-family:var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--text3);margin-bottom:8px}
+.cl-h1{font-family:var(--serif);font-weight:300;font-size:26px;line-height:1.15;color:var(--text);margin:0 0 8px}
+.cl-sub{font-size:13.5px;color:var(--text2);line-height:1.6;margin-bottom:20px}
+.cl-label{display:block;font-size:11px;color:var(--text3);margin:0 0 6px}
+.cl-input,.cl-ta{width:100%;padding:11px 13px;background:var(--bg2);border:1px solid var(--border);border-radius:9px;color:var(--text);font-size:13.5px;font-family:var(--sans);margin-bottom:16px;resize:vertical}
+.cl-ta{min-height:96px;line-height:1.55}
+.cl-note{font-size:11.5px;color:var(--text4);line-height:1.5;margin-top:4px}
+.cl-steps{display:flex;gap:6px;margin:0 0 18px;flex-wrap:wrap}
+.cl-step{flex:1;min-width:110px;font-size:10.5px;font-family:var(--mono);letter-spacing:.04em;text-transform:uppercase;color:var(--text4);border-top:3px solid var(--border);padding-top:6px}
+.cl-step.on{color:var(--blue);border-top-color:var(--blue)}.cl-step.done{color:var(--green);border-top-color:var(--green)}
+.cl-hint{font-size:12.5px;line-height:1.55;padding:10px 12px;border-radius:9px;margin-bottom:16px;background:var(--bg2);color:var(--text2)}
+.cl-hint.ok{background:rgba(12,143,92,.08);color:var(--green)}
+.cl-card-ag{display:flex;gap:14px;align-items:center;background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:18px}
+.cl-card-ag .ph{width:56px;height:56px;border-radius:10px;object-fit:cover;flex:0 0 56px;background:var(--bg3);display:flex;align-items:center;justify-content:center;color:var(--text3);font-weight:700;font-size:20px}
+.cl-card-ag .nm{font-size:15px;font-weight:600;color:var(--text)}
+.cl-card-ag .mt{font-size:12px;color:var(--text3);margin-top:2px}
+.cl-next{list-style:none;padding:0;margin:4px 0 18px}.cl-next li{display:flex;gap:10px;align-items:baseline;padding:8px 0;border-bottom:1px solid var(--border);font-size:13.5px;color:var(--text2)}
+.cl-next li b{color:var(--text);font-weight:600}.cl-next a{color:var(--blue);text-decoration:none;margin-left:auto;white-space:nowrap}
+</style>
+<script src="/js/i18n.js?v=20261021e"></script><script src="/js/ticker.js?v=20261021b" defer></script>
+</head><body>
+<div id="nav"></div>
+<div class="cl-wrap"><div class="cl-card" id="cl-card">
+  <div style="text-align:center;color:var(--text3);font-size:13px;padding:30px">Loading…</div>
+</div></div>
+
+<script src="/js/pegasus-config.js?v=20261021a"></script>
+<script src="/js/pegasus-supabase.js"></script>
+<script src="/js/pegasus-entitlements.js"></script>
+<script src="/js/pegasus-data.js"></script>
+<script src="/js/pegasus-content.js"></script>
+<script src="/js/pegasus-match.js"></script>
+<script src="/js/pegasus-store.js"></script>
+<script src="/js/pegasus-api.js"></script>
+<script src="/js/pegasus-forms.js"></script>
+<script src="/js/pegasus-auth.js?v=20261020b"></script>
+<script src="/js/pegasus-core.js?v=20261021b"></script>
+<script src="/js/pegasus-pages.js"></script>
+<script>
+Pegasus.boot(async function(){
+  Pegasus.mountPublic('');
+  var esc=Pegasus.esc;
+  var card=document.getElementById('cl-card');
+  function show(html){ card.innerHTML=html; }
+  var STEPS=['Claim','Verify','Make it yours'];
+  function steps(cur){ return '<div class="cl-steps">'+STEPS.map(function(t,i){ return '<div class="cl-step '+(i<cur?'done':(i===cur?'on':''))+'">'+(i+1)+' · '+esc(t)+'</div>'; }).join('')+'</div>'; }
+  function state(title, body, cta, cur){
+    show((cur==null?'':steps(cur))+'<div class="cl-eyebrow">Claim your profile</div><div class="cl-h1">'+esc(title)+'</div><div class="cl-sub">'+body+'</div>'+(cta||''));
+  }
+  function initials(n){ return (String(n||'').trim().split(/\s+/).map(function(w){return w[0];}).join('').slice(0,2)||'·').toUpperCase(); }
+
+  var qs=new URLSearchParams(location.search);
+  var slug=(qs.get('agent')||qs.get('slug')||'').trim();
+  if(!slug){ state('Nothing to claim','No profile was specified. Browse the realtor directory and find your listing.','<a class="btn btn-ghost" href="/realtors.html">Browse realtors</a>'); return; }
+
+  function track(ev){ (window.PegTrackQ=window.PegTrackQ||[]).push([ev,{slug:slug}]); }
+  track('agent_claim_view');
+  var back='/claim-realtor?agent='+encodeURIComponent(slug);
+  var pwLinks='<a style="text-decoration:underline" href="/signup.html?role=agent&next='+encodeURIComponent(back)+'">create a profile with a password</a> or <a style="text-decoration:underline" href="/signin.html?next='+encodeURIComponent(back)+'">sign in</a>';
+
+  var c=null; try{ c=await window.PegSB.ready; }catch(e){ c=null; }
+  var uid=null; if(c){ try{ var u=await c.auth.getUser(); uid=u&&u.data&&u.data.user&&u.data.user.id; }catch(e){} }
+  if(!c){
+    try{ localStorage.setItem('pegasus.redirectAfterAuth',back); }catch(_){}
+    state('Sign in to claim your profile','Claiming connects your listing to your Pegasus account. You can '+pwLinks+', and we’ll bring you right back.','',0);
+    return;
+  }
+
+  // Resolve the agent (resolves for signed-out visitors too).
+  var ag=null;
+  try{ var r=await c.rpc('public_realtor_by_slug',{p_slug:slug}); if(r && !r.error) ag=r.data; }catch(e){}
+  if(!ag || !ag.id){ state('Profile not found','We couldn’t find that listing. It may have been removed.','<a class="btn btn-ghost" href="/realtors.html">Browse realtors</a>'); return; }
+
+  function agCard(){
+    var photo=ag.photo_url?'<img class="ph" src="'+esc(ag.photo_url)+'" alt="">':'<div class="ph">'+esc(initials(ag.full_name))+'</div>';
+    var mt=[ag.brokerage,[ag.city,ag.state].filter(Boolean).join(', ')].filter(Boolean).join(' · ');
+    return '<div class="cl-card-ag">'+photo+'<div><div class="nm">'+esc(ag.full_name)+'</div>'+(mt?'<div class="mt">'+esc(mt)+'</div>':'')+'</div></div>';
+  }
+  function mineCta(){
+    return '<ul class="cl-next">'+
+      '<li><b>Update your listing</b> — photo, brokerage, specialties, contact.<a href="/my-listing.html">Edit profile →</a></li>'+
+      '<li><b>Get found</b> — you’re in the public directory for clients, lenders and partners.<a href="/realtors.html">View directory →</a></li>'+
+    '</ul>';
+  }
+
+  // Signed out: work email → one-time sign-in link → back here → auto-submit.
+  if(!uid){
+    try{ localStorage.setItem('pegasus.redirectAfterAuth',back); }catch(_){}
+    track('agent_claim_signin_prompt');
+    show(
+      steps(0)+
+      '<div class="cl-eyebrow">Claim your profile</div>'+
+      '<div class="cl-h1">Claim your Pegasus profile</div>'+
+      agCard()+
+      '<div class="cl-sub">Claiming is free. Enter your email and we’ll send a one-time sign-in link — no password needed. Open it and your claim is submitted.</div>'+
+      '<div class="cl-hint">Use the email on your record and your claim is verified instantly. Otherwise a Pegasus admin reviews it, usually within one business day.</div>'+
+      '<label class="cl-label">Your email *</label>'+
+      '<input id="cl-email" class="cl-input" type="email" autocomplete="email" placeholder="you@email.com">'+
+      '<label class="cl-label">Your name</label>'+
+      '<input id="cl-name" class="cl-input" type="text" autocomplete="name" placeholder="First and last name" value="'+esc(ag.full_name||'')+'">'+
+      '<div style="display:flex;gap:10px;margin-top:18px;flex-wrap:wrap"><button class="btn btn-pri" id="cl-send">Email me a sign-in link</button>'+
+      '<a class="btn btn-ghost" href="/realtors.html">Back to directory</a></div>'+
+      '<div class="cl-note">Prefer a password? You can also '+pwLinks+'.</div>'
+    );
+    document.getElementById('cl-send').onclick=async function(){
+      var btn=this, em=(document.getElementById('cl-email').value||'').trim().toLowerCase();
+      var nm=(document.getElementById('cl-name').value||'').trim();
+      if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(em)){ Pegasus.toast('!','var(--gold-dim)','Enter your email','We send the sign-in link there.'); return; }
+      btn.disabled=true; btn.textContent='Sending…';
+      try{ localStorage.setItem('pegasus.pendingAgentClaim',JSON.stringify({slug:slug,at:Date.now()})); localStorage.setItem('pegasus.redirectAfterAuth',back); }catch(_){}
+      try{
+        var meta={role:'agent'}; if(nm) meta.full_name=nm;
+        var rs=await c.auth.signInWithOtp({email:em,options:{emailRedirectTo:location.origin+'/auth-callback.html',data:meta}});
+        if(rs && rs.error) throw rs.error;
+        track('agent_claim_link_sent');
+        state('Check your inbox','We sent a sign-in link to <b>'+esc(em)+'</b>. Open it <b>on this device</b> and you’ll come straight back here — your claim is then submitted automatically.<br><br>Nothing after a few minutes? Check spam, or '+pwLinks+'.','',1);
+      }catch(err){
+        console.error('[agent-claim] sign-in link failed:', err);
+        Pegasus.toast('!','var(--gold-dim)','Could not send the link',(err&&err.message)||'Please try again in a minute.');
+        btn.disabled=false; btn.textContent='Email me a sign-in link';
+      }
+    };
+    return;
+  }
+
+  // Signed in. Already mine or already taken?
+  if(ag.claimed){
+    // Is it mine?
+    var mine=false; try{ var ml=await c.rpc('get_my_agent_listings'); mine=Array.isArray(ml&&ml.data)&&ml.data.some(function(x){return x&&x.id===ag.id;}); }catch(_){}
+    if(mine){ state('You manage this profile', 'Here’s how to get the most from your listing:', mineCta(), 2); return; }
+    state('Already claimed','This profile has already been claimed. If this is you, contact us and we’ll sort it out.','<a class="btn btn-ghost" href="/realtors.html">Back to directory</a>'); return;
+  }
+
+  function submit(){
+    show(steps(1)+'<div class="cl-eyebrow">Claim your profile</div><div class="cl-h1">Claiming…</div><div class="cl-sub">One moment.</div>');
+    c.rpc('create_agent_claim',{p_agent_id:ag.id}).then(function(rr){
+      if(rr && rr.error) throw rr.error;
+      var st=(rr&&rr.data&&rr.data.status)||'pending';
+      if(st==='approved'){ track('agent_claim_done'); state('Your profile is yours', 'Verified. Here’s how to get the most from your listing:', mineCta(), 2); }
+      else{ track('agent_claim_submit'); state('Claim submitted','Thanks — your claim for <b>'+esc(ag.full_name)+'</b> is with our review team, usually within one business day. You’ll be able to edit your listing once it’s approved.','<div style="display:flex;gap:10px;flex-wrap:wrap"><a class="btn btn-pri" href="/realtors.html">Browse directory</a></div>',1); }
+    }).catch(function(err){
+      console.error('[agent-claim] submit failed:', err);
+      Pegasus.toast('!','var(--gold-dim)','Could not submit',(err&&err.message)||'Please try again in a minute.');
+      renderForm();
+    });
+  }
+  function renderForm(){
+    show(
+      steps(0)+
+      '<div class="cl-eyebrow">Claim your profile</div>'+
+      '<div class="cl-h1">Claim your Pegasus profile</div>'+
+      agCard()+
+      '<div class="cl-sub">Claiming is free. If the email on your account matches the one on your record, you’re verified instantly; otherwise a Pegasus admin reviews it, usually within one business day.</div>'+
+      '<div style="display:flex;gap:10px;margin-top:4px;flex-wrap:wrap"><button class="btn btn-pri" id="cl-submit">This is me — claim it</button>'+
+      '<a class="btn btn-ghost" href="/realtors.html">Back to directory</a></div>'
+    );
+    document.getElementById('cl-submit').onclick=function(){ this.disabled=true; submit(); };
+  }
+  renderForm();
+
+  // Back from the emailed sign-in link: finish the claim automatically.
+  var pend=null; try{ pend=JSON.parse(localStorage.getItem('pegasus.pendingAgentClaim')||'null'); }catch(_){}
+  if(pend && pend.slug===slug && Date.now()-(pend.at||0) < 2*86400000){
+    try{ localStorage.removeItem('pegasus.pendingAgentClaim'); }catch(_){}
+    submit();
+  }
+});
+</script>
+</body></html>

@@ -1,0 +1,103 @@
+<!DOCTYPE html><html lang="en"><head><title>My agent listing — Pegasus Network</title>
+<meta name="robots" content="noindex,nofollow">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500&family=IBM+Plex+Serif:wght@0,300;0,400;0,600&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/pegasus.css?v=dealroom-entitlements-20260524-1529">
+<link rel="icon" href="/assets/brand/favicon.ico" sizes="any">
+<meta name="theme-color" content="#08111C">
+<style>
+.ml-wrap{max-width:600px;margin:70px auto;padding:0 20px}
+.ml-card{background:var(--bg1);border:1px solid var(--border);border-radius:16px;padding:28px 26px}
+.ml-eyebrow{font-size:9px;font-family:var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--text3);margin-bottom:8px}
+.ml-h1{font-family:var(--serif);font-weight:300;font-size:26px;line-height:1.15;color:var(--text);margin:0 0 6px}
+.ml-sub{font-size:13.5px;color:var(--text2);line-height:1.6;margin-bottom:22px}
+.ml-label{display:block;font-size:11px;color:var(--text3);margin:14px 0 6px}
+.ml-input{width:100%;padding:11px 13px;background:var(--bg2);border:1px solid var(--border);border-radius:9px;color:var(--text);font-size:13.5px;font-family:var(--sans)}
+.ml-row{display:flex;gap:12px}.ml-row>div{flex:1}
+.ml-check{display:flex;gap:9px;align-items:flex-start;margin-top:16px;font-size:13px;color:var(--text2);line-height:1.5}
+.ml-note{font-size:11.5px;color:var(--text4);margin-top:5px;line-height:1.5}
+.ml-tab{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+.ml-tab button{background:var(--bg2);border:1px solid var(--border);color:var(--text2);font-size:12.5px;padding:7px 13px;border-radius:999px;cursor:pointer;font-family:inherit}
+.ml-tab button.on{background:var(--navy,#1b3a5b);color:#fff;border-color:transparent}
+</style>
+<script src="/js/i18n.js?v=20261021e"></script><script src="/js/ticker.js?v=20261021b" defer></script>
+</head><body>
+<div id="nav"></div>
+<div class="ml-wrap"><div class="ml-card" id="ml-card">
+  <div style="text-align:center;color:var(--text3);font-size:13px;padding:30px">Loading…</div>
+</div></div>
+
+<script src="/js/pegasus-config.js?v=20261021a"></script>
+<script src="/js/pegasus-supabase.js"></script>
+<script src="/js/pegasus-entitlements.js"></script>
+<script src="/js/pegasus-data.js"></script>
+<script src="/js/pegasus-content.js"></script>
+<script src="/js/pegasus-match.js"></script>
+<script src="/js/pegasus-store.js"></script>
+<script src="/js/pegasus-api.js"></script>
+<script src="/js/pegasus-forms.js"></script>
+<script src="/js/pegasus-auth.js?v=20261020b"></script>
+<script src="/js/pegasus-core.js?v=20261021b"></script>
+<script src="/js/pegasus-pages.js"></script>
+<script>
+Pegasus.boot(async function(){
+  Pegasus.mountPublic('');
+  var esc=Pegasus.esc, card=document.getElementById('ml-card');
+  function show(h){ card.innerHTML=h; }
+  var c=null; try{ c=await window.PegSB.ready; }catch(e){ c=null; }
+  var uid=null; if(c){ try{ var u=await c.auth.getUser(); uid=u&&u.data&&u.data.user&&u.data.user.id; }catch(e){} }
+  if(!uid){
+    try{ localStorage.setItem('pegasus.redirectAfterAuth','/my-listing.html'); }catch(_){}
+    show('<div class="ml-eyebrow">My listing</div><div class="ml-h1">Sign in</div><div class="ml-sub">Sign in to manage your agent listing.</div><a class="btn btn-pri" href="/signin.html?next='+encodeURIComponent('/my-listing.html')+'">Sign in</a>');
+    return;
+  }
+  var listings=[]; try{ var r=await c.rpc('get_my_agent_listings'); listings=(r&&!r.error&&r.data)||[]; }catch(e){}
+  if(!listings.length){
+    show('<div class="ml-eyebrow">My listing</div><div class="ml-h1">No listing yet</div><div class="ml-sub">You haven’t claimed an agent profile. Find yours in the directory and claim it — it’s free.</div><a class="btn btn-pri" href="/realtors.html">Find my profile →</a>');
+    return;
+  }
+  var idx=0;
+  function val(id){ var e=document.getElementById(id); return e?(e.type==='checkbox'?e.checked:(e.value||'').trim()):''; }
+  function render(){
+    var a=listings[idx];
+    var tabs=listings.length>1?'<div class="ml-tab">'+listings.map(function(x,i){return '<button data-i="'+i+'" class="'+(i===idx?'on':'')+'">'+esc(x.full_name)+'</button>';}).join('')+'</div>':'';
+    show(
+      '<div class="ml-eyebrow">My listing</div><div class="ml-h1">'+esc(a.full_name)+'</div>'+
+      '<div class="ml-sub">This is how you appear in the Pegasus realtor directory. Update it any time.</div>'+tabs+
+      '<label class="ml-label">Title</label><input id="ml-title" class="ml-input" value="'+esc(a.job_title||'')+'" placeholder="Real Estate Agent">'+
+      '<label class="ml-label">Specialty</label><input id="ml-spec" class="ml-input" value="'+esc(a.specialty||'')+'" placeholder="e.g. Luxury homes, first-time buyers, investment property">'+
+      '<label class="ml-label">Website</label><input id="ml-web" class="ml-input" value="'+esc(a.website||'')+'" placeholder="https://yoursite.com">'+
+      '<label class="ml-label">Photo URL</label><input id="ml-photo" class="ml-input" value="'+esc(a.photo_url||'')+'" placeholder="https://… a headshot image link">'+
+      '<div class="ml-row"><div><label class="ml-label">Phone</label><input id="ml-phone" class="ml-input" value="'+esc(a.phone||'')+'" placeholder="(555) 555-5555"></div>'+
+      '<div><label class="ml-label">Email</label><input id="ml-email" class="ml-input" value="'+esc(a.email||'')+'" placeholder="you@email.com"></div></div>'+
+      '<label class="ml-check"><input type="checkbox" id="ml-pub" '+(a.contact_public?'checked':'')+'> <span>Show my phone and email on my public profile so clients and partners can reach me directly.</span></label>'+
+      '<div class="ml-note">Leave it unchecked to keep your contact details private — people can still find you through the network.</div>'+
+      '<div style="display:flex;gap:10px;margin-top:22px;flex-wrap:wrap"><button class="btn btn-pri" id="ml-save">Save changes</button><a class="btn btn-ghost" href="/realtors.html">View directory</a></div>'+
+      '<div id="ml-msg" style="font-size:12.5px;margin-top:12px"></div>'
+    );
+    document.querySelectorAll('.ml-tab button').forEach(function(b){ b.onclick=function(){ idx=+b.getAttribute('data-i'); render(); }; });
+    document.getElementById('ml-save').onclick=async function(){
+      var btn=this; btn.disabled=true; btn.textContent='Saving…';
+      var msg=document.getElementById('ml-msg');
+      try{
+        var rr=await c.rpc('agent_update_my_listing',{
+          p_agent_id:a.id, p_job_title:val('ml-title'), p_specialty:val('ml-spec'),
+          p_website:val('ml-web'), p_photo_url:val('ml-photo'),
+          p_phone:val('ml-phone'), p_email:val('ml-email'), p_contact_public:val('ml-pub')
+        });
+        if(rr && rr.error) throw rr.error;
+        // refresh local copy
+        a.job_title=val('ml-title'); a.specialty=val('ml-spec'); a.website=val('ml-web'); a.photo_url=val('ml-photo'); a.phone=val('ml-phone'); a.email=val('ml-email'); a.contact_public=val('ml-pub');
+        msg.style.color='var(--green)'; msg.textContent='✓ Saved. Your public listing is updated.';
+      }catch(err){
+        console.error('[my-listing] save failed:', err);
+        msg.style.color='var(--gold-dim)'; msg.textContent=(err&&err.message)||'Could not save. Try again.';
+      }
+      btn.disabled=false; btn.textContent='Save changes';
+    };
+  }
+  render();
+});
+</script>
+</body></html>

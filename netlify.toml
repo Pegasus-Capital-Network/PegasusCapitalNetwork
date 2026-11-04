@@ -345,6 +345,20 @@
   to = "/claim.html"
   status = 200
 
+# Realtor claiming + agent landing (pretty URLs).
+[[redirects]]
+  from = "/claim-realtor"
+  to = "/claim-realtor.html"
+  status = 200
+[[redirects]]
+  from = "/for-realtors"
+  to = "/for-realtors.html"
+  status = 200
+[[redirects]]
+  from = "/my-listing"
+  to = "/my-listing.html"
+  status = 200
+
 # Invite consent (concierge onboarding): tokenized links from the invite email.
 [[redirects]]
   from = "/yes"
