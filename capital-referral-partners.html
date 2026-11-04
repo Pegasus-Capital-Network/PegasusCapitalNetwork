@@ -4,12 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Referral Partners — Send a Real Estate Capital Need | Pegasus</title>
-<meta name="description" content="Pegasus members can create a personal, attributable link for borrowers, sponsors, builders and property owners with a current business-purpose real estate capital need.">
+<meta name="description" content="Pegasus members can create a personal, attributable link for borrowers, sponsors, founders, builders and businesses with a current capital need.">
 <link rel="canonical" href="https://pegasuscapitalnetwork.com/capital-referral-partners.html">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Pegasus Capital Network">
 <meta property="og:title" content="One tracked link for a real capital need">
-<meta property="og:description" content="Help a borrower, sponsor, builder or property owner submit a current business-purpose real estate financing request.">
+<meta property="og:description" content="Help a borrower, sponsor, founder, builder or business submit a current capital need for individual review.">
 <meta property="og:url" content="https://pegasuscapitalnetwork.com/capital-referral-partners.html">
 <meta property="og:image" content="https://pegasuscapitalnetwork.com/assets/brand/og-default.png">
 <meta name="twitter:card" content="summary_large_image">
@@ -38,7 +38,7 @@ footer{border-top:1px solid var(--line);margin-top:50px;padding:28px 22px 45px;t
 <div>
 <div class="eyebrow">Member referral path</div>
 <h1>One tracked link for a real capital need.</h1>
-<p class="lead">If you already know a borrower, sponsor, builder or property owner with a current business-purpose real estate financing need, give them your personal Pegasus link. When they submit a request, your member identifier stays attached to the request.</p>
+<p class="lead">If you already know a borrower, sponsor, founder, builder or business with a current capital need, give them your personal Pegasus link. When they submit a request, your member identifier stays attached to the request.</p>
 <div class="aud"><span>Mortgage & commercial brokers</span><span>Real estate agents</span><span>Builders & developers</span><span>Title & escrow</span><span>Attorneys & CPAs</span><span>Property managers</span></div>
 </div>
 <aside class="builder" id="builder">
@@ -64,8 +64,8 @@ footer{border-top:1px solid var(--line);margin-top:50px;padding:28px 22px 45px;t
 <section class="section">
 <h2>How the path works</h2>
 <div class="steps">
-<div class="card"><div class="num">1</div><h3>Share only with a real need</h3><p>Use the link for someone who is actively evaluating capital—not as a generic blast or a fabricated opportunity.</p></div>
-<div class="card"><div class="num">2</div><h3>The requester controls the submission</h3><p>They describe the property, purpose, amount and timing themselves. No credit pull and no commitment is created by submitting.</p></div>
+<div class="card"><div class="num">1</div><h3>Share only with a real need</h3><p>Use the link only for someone actively evaluating real-estate debt, project capital, a JV, or select AI startup funding—not as a generic blast or fabricated opportunity.</p></div>
+<div class="card"><div class="num">2</div><h3>The requester controls the submission</h3><p>They describe the project or company, capital structure, amount and timing themselves. No commitment is created by submitting.</p></div>
 <div class="card"><div class="num">3</div><h3>The source stays attributable</h3><p>Pegasus stores your profile slug, campaign and entry source with a completed request so the introduction can be measured.</p></div>
 </div>
 </section>
@@ -105,7 +105,7 @@ footer{border-top:1px solid var(--line);margin-top:50px;padding:28px 22px 45px;t
       if(r.error)throw r.error;
       var p=r.data||{}, slug=(p.profile_slug||'').trim();
       if(!slug){status.innerHTML='Complete your public profile to create a stable referral link. <a href="/profile-edit.html">Finish profile →</a>';return;}
-      var u=new URL('/get-financing.html',location.origin);
+      var u=new URL('/request-capital.html',location.origin);
       u.searchParams.set('ref',slug);u.searchParams.set('utm_source','member_referral');u.searchParams.set('utm_medium','partner_link');u.searchParams.set('utm_campaign','capital_need');
       enable(u.toString(),p.full_name||p.company_name);
     }catch(e){status.textContent='Could not load your profile right now. Please try again.';}
