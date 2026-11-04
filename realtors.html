@@ -125,6 +125,7 @@ h1{font-weight:800;font-size:clamp(34px,5vw,52px);line-height:1.04;letter-spacin
       (a.specialty?'<div class="sp">'+esc(a.specialty)+'</div>':'<div class="sp"></div>')+
       (contact?'<div class="contact">'+contact+'</div>':'')+
       (a.profile_url?'<a class="view" href="'+esc(a.profile_url)+'" target="_blank" rel="noopener">View profile →</a>':'')+
+      (a.claimable&&a.slug?'<a class="claim" href="/claim-realtor?agent='+encodeURIComponent(a.slug)+'" style="display:block;margin-top:8px;font-size:12.5px;font-weight:600;color:var(--navy,#1b3a5b);text-decoration:none">This is you? Claim free →</a>':'')+
     '</div></div>';
   }
 
@@ -174,7 +175,7 @@ h1{font-weight:800;font-size:clamp(34px,5vw,52px);line-height:1.04;letter-spacin
       var acc=[], from=0, STEP=1000, done=false;
       while(!done){
         var r=await sb.from('public_realtors')
-          .select('full_name,job_title,brokerage,dre,city,state,specialty,phone,email,website,photo_url,profile_url')
+          .select('full_name,job_title,brokerage,dre,city,state,specialty,phone,email,website,photo_url,profile_url,slug,claimable')
           .order('full_name',{ascending:true})
           .range(from, from+STEP-1);
         if(r.error) throw r.error;

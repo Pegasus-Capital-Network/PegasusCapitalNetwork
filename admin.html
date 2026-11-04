@@ -120,6 +120,7 @@ async function loadDirectory(p){
           : '<div style="font-size:12.5px;color:var(--text3)">Nothing new to publish. Import more companies into Partner Network, then return here.</div>')+
         '<div id="dir-status" style="font-size:12px;color:var(--text3);margin-top:12px"></div>'+
       '</div></div>'+
+      '<div class="card" style="margin-top:14px"><div class="card-head"><div class="card-title">Realtor claims · pending review</div></div><div class="card-body" id="ag-claims" style="font-size:12px;color:var(--text3)">Loading…</div></div>'+
       '<div class="card" style="margin-top:14px"><div class="card-head"><div class="card-title">Site analytics &amp; claim funnel · last 30 days</div></div><div class="card-body" id="site-an" style="font-size:12px;color:var(--text3)">Loading…</div></div>'+
       '<div class="card" style="margin-top:14px"><div class="card-head"><div class="card-title">Most viewed pages · last 30 days</div></div><div class="card-body" id="dir-views" style="font-size:12px;color:var(--text3)">Loading…</div></div>'+
       '<div class="card" style="margin-top:14px"><div class="card-head"><div class="card-title">Placements · Featured &amp; Sponsored</div></div><div class="card-body">'+
@@ -134,6 +135,38 @@ async function loadDirectory(p){
           '<button class="btn btn-pri btn-sm" id="pl-add">Add placement</button></div>'+
         '<div id="pl-status" style="font-size:12px;margin-top:8px"></div>'+
       '</div></div>';
+    /* Realtor claims (migration 106): agents whose email didn't match on file,
+       awaiting a manual approve/reject. Instant-verified claims never appear. */
+    (async function(){
+      var hc=document.getElementById('ag-claims'); if(!hc) return;
+      async function load(){
+        try{
+          var cl=await c.from('pn_agent_claims').select('id,agent_id,claimant_email,evidence,created_at').eq('status','pending').order('created_at',{ascending:true}).limit(100);
+          if(cl.error) throw cl.error;
+          var rows=cl.data||[];
+          if(!rows.length){ hc.innerHTML='No pending realtor claims. Instant-verified claims (matching email) are approved automatically.'; return; }
+          var ids=rows.map(function(x){return x.agent_id;});
+          var ag=await c.from('pn_agents').select('id,full_name,company_name_snapshot,city,state,email,slug').in('id',ids);
+          var byId={}; (ag&&ag.data||[]).forEach(function(a){ byId[a.id]=a; });
+          hc.innerHTML=tbl(['Agent','On-file email','Claimant email','How connected','',''], rows.map(function(x){
+            var a=byId[x.agent_id]||{};
+            var who='<a href="/claim-realtor?agent='+aesc(a.slug||'')+'" target="_blank" style="color:var(--text);font-weight:600">'+aesc(a.full_name||'—')+'</a><div style="color:var(--text3)">'+aesc([a.company_name_snapshot,[a.city,a.state].filter(Boolean).join(', ')].filter(Boolean).join(' · '))+'</div>';
+            return [who, aesc(a.email||'—'), aesc(x.claimant_email||'—'), aesc(x.evidence||'—'),
+              '<button class="btn btn-pri btn-sm" data-ok="'+aesc(x.id)+'">Approve</button>',
+              '<button class="btn btn-ghost btn-sm" data-no="'+aesc(x.id)+'">Reject</button>'];
+          }));
+          hc.querySelectorAll('[data-ok],[data-no]').forEach(function(b){ b.onclick=async function(){
+            var id=b.getAttribute('data-ok')||b.getAttribute('data-no'), ok=!!b.getAttribute('data-ok');
+            if(!ok && !confirm('Reject this claim?')) return;
+            b.disabled=true;
+            var rr=await c.rpc('admin_review_agent_claim',{p_claim_id:id,p_approve:ok});
+            if(rr.error){ alert(rr.error.message); b.disabled=false; return; }
+            load();
+          }; });
+        }catch(e){ hc.textContent='Realtor claims unavailable — apply migration 106. ('+((e&&e.message)||e)+')'; }
+      }
+      load();
+    })();
     /* Site analytics (migration 101): first-party page views, referrers, email
        campaigns (utm) and the claim funnel. No cookies, no personal data. */
     (async function(){
