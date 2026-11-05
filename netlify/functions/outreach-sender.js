@@ -170,8 +170,29 @@ function buildScenarioInvite(r, footer, unsub){
   const body = "Hello,\n\nA borrower on Pegasus Capital Network submitted a financing scenario that lines up with what "+co+" lends on, based on the public information on your website. We can't share the borrower's details until "+co+" is on the platform and both sides agree to connect.\n\n"+co+" has a free page here: "+page+"\nClaim it to see matching scenarios and respond to the ones that fit."+perkLine()+" Claim it here:\n"+claim+"\n\nPegasus is a professional network for lenders, borrowers and brokers. It charges no referral or success fees, and lenders quote each file directly. An appetite match is a signal, not an approval.\n\n"+footer;
   return { subject, text: body, unsub };
 }
+// Realtor invite (warm list from the WCCM CRM). Personal, one email each, with
+// a direct link to claim and edit their own directory listing.
+function buildRealtorEmail(r){
+  const m=r.metadata||{}, f=firstName(r)||"there";
+  const unsub = ORIGIN+"/unsubscribe?t="+r.token;
+  const claim = utm(ORIGIN+"/claim-realtor?agent="+encodeURIComponent(m.agent_slug||""), r);
+  const subject = (firstName(r)?firstName(r)+", your":"Your")+" Pegasus agent profile is ready to claim";
+  const text =
+    "Hi "+f+",\n\n"+
+    "You're listed in the Pegasus Capital Network real estate directory — we built a profile for you from public information, and it's live now.\n\n"+
+    "Claiming it is free and takes about a minute:\n"+
+    "  - It already exists: nothing to set up from scratch.\n"+
+    "  - You control it: add your photo and specialties, fix your brokerage and title, and choose whether your contact details show publicly.\n"+
+    "  - You get found: clients, lenders and capital partners search the network to find agents.\n\n"+
+    "Find and claim your profile here:\n"+claim+"\n\n"+
+    "Pegasus Capital Network (pegasuscapitalnetwork.com) is a professional network for real estate, lending and capital.\n\n"+
+    "Best regards,\nPegasus Capital Network\n\n"+
+    "You are receiving this one-time note because you're listed in the Pegasus real estate directory. We will not follow up unless you reply.\n"+ADDRESS+"\nUnsubscribe: "+unsub;
+  return { subject, text, unsub };
+}
 function buildEmail(r){
   const m = r.metadata||{};
+  if(m.kind==="realtor" && m.agent_slug) return buildRealtorEmail(r);
   const page = m.presence_slug ? utm(ORIGIN+"/business/"+m.presence_slug, r) : null;
   const unsub = ORIGIN+"/unsubscribe?t="+r.token;
   const domain = m.source_domain || String(r.email.split("@")[1]||"");
@@ -278,9 +299,9 @@ exports.handler = async () => {
     const rows = [];
     for(const r of (candidates||[])){
       if(rows.length >= quota) break;
-      const k = coKey(r);
-      if(busy.has(k)) continue;
-      busy.add(k); rows.push(r);
+      const isIndividual = (r.metadata||{}).kind==="realtor";
+      if(!isIndividual){ const k = coKey(r); if(busy.has(k)) continue; busy.add(k); }
+      rows.push(r);
     }
     out.ran = true;
     for(const r of (rows||[])){
