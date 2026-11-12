@@ -1,0 +1,25 @@
+name: Validate California Partner Workbook 2026-07-28
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - name: Reconstruct workbook payload
+        run: cat qa/validation-inputs/ca-partner-20260728.xlsx.b64.part* > qa/validation-inputs/California-Partner-Network-2026-07-28.xlsx.b64
+      - run: node qa/validate-ca-partner-20260728.js
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ca-partner-20260728-validation
+          path: qa/validation-inputs/California-Partner-Network-2026-07-28-validation.json
+          if-no-files-found: warn
