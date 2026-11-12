@@ -31,10 +31,11 @@ body{margin:0;background:var(--void);color:var(--star);
   padding-right:max(22px,env(safe-area-inset-right,0px));text-align:center}
 #line{max-width:14em;font-family:"Cormorant Garamond",Georgia,serif;font-weight:500;
   font-size:clamp(27px,4.7vw,48px);line-height:1.26;letter-spacing:.004em;color:#f1f6fc;
-  opacity:0;transform:translateY(10px);transition:opacity .8s ease,transform .8s ease;
+  opacity:0;transform:translateY(9px);transition:opacity .5s ease,transform .5s ease;
   text-wrap:balance;text-shadow:0 2px 34px rgba(0,0,0,.55)}
 #line.show{opacity:1;transform:none}
 #line .g{color:var(--gold-2);font-style:italic}
+#line .rise{text-transform:uppercase;letter-spacing:.09em;color:var(--gold-2);font-weight:600}
 #line small{display:block;font-size:.62em;color:var(--mist);margin-top:.35em;font-weight:400}
 
 /* entry */
@@ -132,25 +133,43 @@ body{margin:0;background:var(--void);color:var(--star);
 
   /* ---- verse timeline (seconds → text). Supporting the voice, not racing it. ---- */
   var beats = [
-    [3.3,  "There are truths<br>that live between words."],
-    [9.0,  "Not in speeches."],
-    [15.3, "Not in headlines."],
-    [19.7, "Not in the things people say<br>to be remembered."],
-    [25.7, "But in the quiet moments<br>that change us forever."],
-    [30.7, "A conversation that arrives<br>at the right time."],
-    [34.0, "A hand that stays<br>when it could have let go."],
-    [41.9, "A dream that refuses to disappear."],
-    [45.8, "We spend years searching for meaning,<br>only to discover<br>that meaning was never hiding."],
-    [59.6, "It was growing. <span class='g'>Slowly.</span> <span class='g'>Silently.</span>"],
-    [70.7, "Inside every choice we made.<br>Inside every risk we took."],
-    [76.7, "Inside every person who believed in us<br>before we believed in ourselves."],
-    [84.9, "The Constellation of Pegasus<br>is not a destination.<br>It is a <span class='g'>reminder.</span>"],
-    [95.7, "That every horizon<br><span class='g'>begins beyond another one.</span>"],
-    [101.7,"That every life becomes larger<br>the moment it begins to serve<br>something greater than itself."],
-    [110.9,"And that every flight<br>begins the same way."],
-    [116.0,"With faith. With courage.<br>With a single movement forward."],
-    [120.9,"<span class='g'>We rise. We build. We fly.</span>"],
-    [125.5,"Not because the sky belongs to us.<br>But because we choose<br>to keep reaching for it."]
+    [3.0,  "There are truths that live between words."],
+    [8.7,  "Not in speeches."],
+    [11.6, "Not in headlines."],
+    [15.0, "Not in the things people say to be remembered."],
+    [19.8, "But in the quiet moments that change us forever."],
+    [25.1, "A conversation that arrives at the right time."],
+    [29.8, "A hand that stays"],
+    [32.8, "when it could have let go."],
+    [36.7, "A dream that refuses to disappear."],
+    [41.6, "We spend years searching for meaning,"],
+    [45.6, "only to discover"],
+    [48.3, "that meaning was never hiding."],
+    [53.0, "It was growing."],
+    [55.4, "<span class='g'>Slowly.</span>"],
+    [57.6, "<span class='g'>Silently.</span>"],
+    [60.3, "Inside every choice we made."],
+    [63.9, "Inside every risk we took."],
+    [67.3, "Inside every person who believed in us"],
+    [71.5, "before we believed in ourselves."],
+    [76.1, "The Constellation of Pegasus"],
+    [79.3, "is not a destination."],
+    [83.0, "It is a <span class='g'>reminder.</span>"],
+    [85.8, "That every horizon"],
+    [88.0, "<span class='g'>begins beyond another one.</span>"],
+    [91.1, "That every life becomes larger"],
+    [94.2, "the moment it begins to serve something greater than itself."],
+    [99.1, "And that every flight"],
+    [101.6,"begins the same way."],
+    [104.9,"With faith."],
+    [107.3,"With courage."],
+    [109.5,"With a single movement forward."],
+    [113.2,"<span class='rise'>We rise.</span>"],
+    [115.6,"<span class='rise'>We build.</span>"],
+    [117.7,"<span class='rise'>We fly.</span>"],
+    [120.0,"Not because the sky belongs to us."],
+    [123.4,"But because we choose"],
+    [126.0,"to keep reaching for it."]
   ];
 
   var shown = -1, pending = null;
@@ -162,7 +181,7 @@ body{margin:0;background:var(--void);color:var(--star);
     pending = setTimeout(function(){
       line.innerHTML = beats[i][1];
       line.classList.add("show");
-    }, 520);
+    }, 300);
   }
   function activeBeat(t){
     var idx = -1;
