@@ -42,6 +42,12 @@
 # could re-create a cross-domain loop. When unsure, the dashboard alias route is
 # the safer single-authority choice.
 # ════════════════════════════════════════════════════════════════════════════
+# ── Constellation of Pegasus — brand manifesto experience ──
+[[redirects]]
+  from = "/constellation"
+  to = "/constellation.html"
+  status = 200
+
 [[redirects]]
   from = "https://pegasuslendersgroup.com/*"
   to = "https://pegasuscapitalnetwork.com/:splat"

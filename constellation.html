@@ -1,0 +1,293 @@
+<title>The Constellation of Pegasus</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* Single committed look: a night sky. Deep navy-black ground, starlight whites,
+   a single gold accent. Serif (Cormorant) carries the manifesto; Inter for the
+   few small labels. Layout: one fixed full-bleed stage, canvas sky behind
+   centered verse. */
+:root{
+  --void:#05080f; --deep:#0a1526; --night:#11233b;
+  --star:#eef3fa; --mist:#93a6bd; --faint:#5d7187;
+  --gold:#C8A244; --gold-2:#E3C57E;
+  color-scheme: dark;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--void);color:var(--star);
+  font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  overflow:hidden;-webkit-font-smoothing:antialiased}
+.stage{position:fixed;inset:0;overflow:hidden;
+  background:radial-gradient(135% 95% at 50% 16%, #12263f 0%, #0a1526 40%, #05080f 80%)}
+#sky{position:absolute;inset:0;width:100%;height:100%;display:block}
+.vignette{position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(58% 46% at 50% 52%, rgba(3,6,12,0) 0%, rgba(3,6,12,.5) 68%, rgba(3,6,12,.84) 100%)}
+
+/* verse */
+.wrap{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  padding-left:max(22px,env(safe-area-inset-left,0px));
+  padding-right:max(22px,env(safe-area-inset-right,0px));text-align:center}
+#line{max-width:14em;font-family:"Cormorant Garamond",Georgia,serif;font-weight:500;
+  font-size:clamp(27px,4.7vw,48px);line-height:1.26;letter-spacing:.004em;color:#f1f6fc;
+  opacity:0;transform:translateY(10px);transition:opacity .8s ease,transform .8s ease;
+  text-wrap:balance;text-shadow:0 2px 34px rgba(0,0,0,.55)}
+#line.show{opacity:1;transform:none}
+#line .g{color:var(--gold-2);font-style:italic}
+#line small{display:block;font-size:.62em;color:var(--mist);margin-top:.35em;font-weight:400}
+
+/* entry */
+#overlay{position:absolute;inset:0;z-index:20;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:24px;text-align:center;
+  padding:max(24px,env(safe-area-inset-left,0px));
+  background:radial-gradient(120% 90% at 50% 32%, rgba(12,26,44,.34), rgba(5,8,15,.9));
+  transition:opacity 1.2s ease}
+#overlay.gone{opacity:0;pointer-events:none}
+.eyebrow{font-size:12px;letter-spacing:.44em;text-transform:uppercase;color:var(--gold);font-weight:600}
+.mark{font-family:"Cormorant Garamond",Georgia,serif;font-weight:600;
+  font-size:clamp(46px,9.5vw,92px);letter-spacing:.015em;line-height:.98;color:#f4f7fc}
+.sub{font-size:14.5px;color:var(--mist);max-width:30em;line-height:1.65}
+.begin{margin-top:8px;appearance:none;background:transparent;color:var(--gold-2);
+  border:1px solid rgba(200,162,68,.5);border-radius:999px;padding:15px 38px;
+  font-family:Inter,sans-serif;font-size:12.5px;letter-spacing:.24em;text-transform:uppercase;
+  font-weight:600;cursor:pointer;transition:background .3s,border-color .3s,color .3s}
+.begin:hover{background:rgba(200,162,68,.12);border-color:var(--gold-2);color:#fff}
+.begin:focus-visible{outline:2px solid var(--gold-2);outline-offset:4px}
+.note{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#6b7f96}
+
+/* close */
+#end{position:absolute;inset:0;z-index:20;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:26px;text-align:center;opacity:0;pointer-events:none;
+  transition:opacity 1.6s ease;
+  padding-left:max(24px,env(safe-area-inset-left,0px));
+  padding-right:max(24px,env(safe-area-inset-right,0px))}
+#end.show{opacity:1;pointer-events:auto}
+#end .dot{width:7px;height:7px;border-radius:50%;background:var(--gold-2);
+  box-shadow:0 0 22px 6px rgba(227,197,126,.5)}
+#end .closing{font-family:"Cormorant Garamond",Georgia,serif;font-style:italic;
+  font-size:clamp(23px,4.2vw,36px);color:#eef3fa;max-width:16em;line-height:1.3}
+#end .brand{font-size:12px;letter-spacing:.36em;text-transform:uppercase;color:var(--gold);font-weight:600}
+.replay{appearance:none;background:transparent;color:var(--mist);border:1px solid rgba(255,255,255,.16);
+  border-radius:999px;padding:11px 26px;font-family:Inter,sans-serif;font-size:11.5px;letter-spacing:.2em;
+  text-transform:uppercase;font-weight:600;cursor:pointer;transition:color .3s,border-color .3s}
+.replay:hover{color:#fff;border-color:rgba(255,255,255,.4)}
+.replay:focus-visible{outline:2px solid var(--gold-2);outline-offset:3px}
+
+/* controls */
+#mute{position:absolute;z-index:25;bottom:calc(16px + env(safe-area-inset-bottom,0px));
+  right:calc(16px + env(safe-area-inset-right,0px));width:42px;height:42px;border-radius:999px;
+  border:1px solid rgba(255,255,255,.14);background:rgba(8,16,28,.55);color:#cdd8e6;cursor:pointer;
+  display:none;align-items:center;justify-content:center}
+#mute.show{display:flex}
+#mute:focus-visible{outline:2px solid var(--gold-2);outline-offset:3px}
+#prog{position:absolute;left:0;bottom:0;height:2px;width:0;z-index:24;
+  background:linear-gradient(90deg,rgba(200,162,68,0),var(--gold-2))}
+@media (prefers-reduced-motion: reduce){#line{transition:opacity .4s ease}}
+</style>
+
+<div class="stage" id="stage">
+  <canvas id="sky"></canvas>
+  <div class="vignette"></div>
+  <div class="wrap"><div id="line" aria-live="polite"></div></div>
+
+  <button id="mute" aria-label="Mute">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M19 5a9 9 0 0 1 0 14"/></svg>
+  </button>
+  <div id="prog"></div>
+
+  <div id="overlay">
+    <div class="eyebrow">Pegasus Capital Network</div>
+    <div class="mark">The&nbsp;Constellation<br>of&nbsp;Pegasus</div>
+    <div class="sub">A few quiet minutes. Turn the sound on, and let it play.</div>
+    <button class="begin" id="begin">Begin</button>
+    <div class="note">2:09 · best with sound</div>
+  </div>
+
+  <div id="end">
+    <div class="dot"></div>
+    <div class="closing">Every horizon begins beyond another one.</div>
+    <div class="brand">Pegasus Capital Network</div>
+    <button class="replay" id="replay">Play again</button>
+  </div>
+</div>
+
+<audio id="audio" preload="auto" src="/assets/media/pegasus-constellation.mp3"></audio>
+
+<script>
+(function(){
+  "use strict";
+  var DUR = 129.6;
+  var reduce = false;
+  try{ reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches; }catch(e){}
+
+  var audio = document.getElementById("audio");
+  var line  = document.getElementById("line");
+  var overlay = document.getElementById("overlay");
+  var endEl = document.getElementById("end");
+  var muteBtn = document.getElementById("mute");
+  var prog = document.getElementById("prog");
+  var cv = document.getElementById("sky");
+  var ctx = cv.getContext("2d");
+
+  /* ---- verse timeline (seconds → text). Supporting the voice, not racing it. ---- */
+  var beats = [
+    [3.3,  "There are truths<br>that live between words."],
+    [9.0,  "Not in speeches."],
+    [15.3, "Not in headlines."],
+    [19.7, "Not in the things people say<br>to be remembered."],
+    [25.7, "But in the quiet moments<br>that change us forever."],
+    [30.7, "A conversation that arrives<br>at the right time."],
+    [34.0, "A hand that stays<br>when it could have let go."],
+    [41.9, "A dream that refuses to disappear."],
+    [45.8, "We spend years searching for meaning,<br>only to discover<br>that meaning was never hiding."],
+    [59.6, "It was growing. <span class='g'>Slowly.</span> <span class='g'>Silently.</span>"],
+    [70.7, "Inside every choice we made.<br>Inside every risk we took."],
+    [76.7, "Inside every person who believed in us<br>before we believed in ourselves."],
+    [84.9, "The Constellation of Pegasus<br>is not a destination.<br>It is a <span class='g'>reminder.</span>"],
+    [95.7, "That every horizon<br><span class='g'>begins beyond another one.</span>"],
+    [101.7,"That every life becomes larger<br>the moment it begins to serve<br>something greater than itself."],
+    [110.9,"And that every flight<br>begins the same way."],
+    [116.0,"With faith. With courage.<br>With a single movement forward."],
+    [120.9,"<span class='g'>We rise. We build. We fly.</span>"],
+    [125.5,"Not because the sky belongs to us.<br>But because we choose<br>to keep reaching for it."]
+  ];
+
+  var shown = -1, pending = null;
+  function setBeat(i){
+    if(i === shown) return;
+    shown = i;
+    line.classList.remove("show");
+    if(pending) clearTimeout(pending);
+    pending = setTimeout(function(){
+      line.innerHTML = beats[i][1];
+      line.classList.add("show");
+    }, 520);
+  }
+  function activeBeat(t){
+    var idx = -1;
+    for(var i=0;i<beats.length;i++){ if(t >= beats[i][0]) idx = i; else break; }
+    return idx;
+  }
+
+  /* ---- sky: ambient stars + the Pegasus asterism drawing itself ---- */
+  var W=0,H=0,DPR=1, bg=[];
+  var nodes = [
+    [0.10,0.44,0.05],[0.035,0.52,0.10],[0.19,0.35,0.12],[0.28,0.45,0.18],[0.30,0.63,0.56],
+    [0.44,0.31,0.22],[0.40,0.13,0.30],[0.60,0.17,0.40],[0.52,0.47,0.26],[0.70,0.41,0.34],
+    [0.72,0.61,0.60],[0.83,0.31,0.48]
+  ];
+  var edges = [
+    [0,2,0.12],[0,1,0.12],[2,3,0.18],[3,4,0.56],[2,5,0.24],[5,8,0.28],[8,3,0.30],
+    [8,9,0.34],[9,11,0.48],[9,10,0.60],[5,6,0.32],[6,7,0.42],[7,9,0.44],[5,7,0.40]
+  ];
+  function resize(){
+    DPR = Math.min(window.devicePixelRatio||1, 2);
+    W = cv.clientWidth; H = cv.clientHeight;
+    cv.width = Math.round(W*DPR); cv.height = Math.round(H*DPR);
+    ctx.setTransform(DPR,0,0,DPR,0,0);
+    bg = [];
+    var n = Math.round(Math.min(220, (W*H)/7000));
+    for(var i=0;i<n;i++){
+      bg.push({x:Math.random()*W, y:Math.random()*H,
+        r:Math.random()*1.3+0.2, a:Math.random()*0.5+0.15,
+        s:Math.random()*1.6+0.4, p:Math.random()*6.28});
+    }
+  }
+  function box(){
+    var w = Math.min(W*0.74, 700), h = w*0.60;
+    return {x:(W-w)/2, y:H*0.11, w:w, h:h};
+  }
+  function smooth(x){ x=Math.max(0,Math.min(1,x)); return x*x*(3-2*x); }
+  function draw(now){
+    var p = 0;
+    try{ p = (audio.currentTime||0)/DUR; }catch(e){}
+    if(p>1) p=1;
+    ctx.clearRect(0,0,W,H);
+    // ambient stars
+    var tw = reduce ? 0 : 1;
+    for(var i=0;i<bg.length;i++){
+      var st = bg[i];
+      var a = st.a*(0.62 + 0.38*Math.sin(now*0.001*st.s + st.p)*tw);
+      ctx.beginPath();
+      ctx.arc(st.x, st.y, st.r, 0, 6.2832);
+      ctx.fillStyle = "rgba(226,236,248,"+a.toFixed(3)+")";
+      ctx.fill();
+    }
+    // constellation
+    var b = box();
+    function P(idx){ return [b.x + nodes[idx][0]*b.w, b.y + nodes[idx][1]*b.h]; }
+    // edges
+    ctx.lineCap="round";
+    for(var e=0;e<edges.length;e++){
+      var ed=edges[e], t=ed[2];
+      var f = smooth((p - t)/0.045);
+      if(f<=0) continue;
+      var A=P(ed[0]), B=P(ed[1]);
+      var mx=A[0]+(B[0]-A[0])*f, my=A[1]+(B[1]-A[1])*f;
+      ctx.beginPath(); ctx.moveTo(A[0],A[1]); ctx.lineTo(mx,my);
+      ctx.strokeStyle="rgba(200,162,68,"+(0.30*f).toFixed(3)+")";
+      ctx.lineWidth=1; ctx.stroke();
+    }
+    // nodes
+    for(var k=0;k<nodes.length;k++){
+      var nf = smooth((p - nodes[k][2])/0.03);
+      if(nf<=0) continue;
+      var pt=P(k);
+      var pulse = reduce?1:(0.85+0.15*Math.sin(now*0.0016 + k));
+      var rad = (1.7 + 1.1*nf)*pulse;
+      var grd = ctx.createRadialGradient(pt[0],pt[1],0,pt[0],pt[1],rad*5);
+      grd.addColorStop(0,"rgba(240,245,252,"+(0.95*nf).toFixed(3)+")");
+      grd.addColorStop(0.35,"rgba(227,197,126,"+(0.55*nf).toFixed(3)+")");
+      grd.addColorStop(1,"rgba(227,197,126,0)");
+      ctx.beginPath(); ctx.arc(pt[0],pt[1],rad*5,0,6.2832); ctx.fillStyle=grd; ctx.fill();
+      ctx.beginPath(); ctx.arc(pt[0],pt[1],rad,0,6.2832);
+      ctx.fillStyle="rgba(247,250,254,"+nf.toFixed(3)+")"; ctx.fill();
+    }
+  }
+
+  var started=false, ended=false;
+  function loop(now){ draw(now||0); requestAnimationFrame(loop); }
+  function tick(){
+    if(!started) return;
+    var t = 0; try{ t = audio.currentTime||0; }catch(e){}
+    var i = activeBeat(t);
+    if(i>=0) setBeat(i);
+    prog.style.width = Math.min(100,(t/DUR)*100).toFixed(2)+"%";
+    if(!ended && t>0 && (t >= (DUR-0.25) || audio.ended)) showEnd();
+  }
+  function showEnd(){
+    ended = true;
+    line.classList.remove("show");
+    endEl.classList.add("show");
+  }
+
+  function begin(){
+    if(started && !ended) return;
+    ended=false; shown=-1;
+    endEl.classList.remove("show");
+    overlay.classList.add("gone");
+    muteBtn.classList.add("show");
+    try{ audio.currentTime = 0; }catch(e){}
+    var pr = audio.play();
+    if(pr && pr.catch) pr.catch(function(){});
+    started = true;
+  }
+
+  document.getElementById("begin").addEventListener("click", begin);
+  document.getElementById("replay").addEventListener("click", begin);
+  muteBtn.addEventListener("click", function(){
+    audio.muted = !audio.muted;
+    muteBtn.style.opacity = audio.muted ? "0.5" : "1";
+  });
+  audio.addEventListener("timeupdate", tick);
+  audio.addEventListener("ended", showEnd);
+  audio.addEventListener("loadedmetadata", function(){
+    if(audio.duration && isFinite(audio.duration)) DUR = audio.duration;
+  });
+
+  window.addEventListener("resize", resize);
+  resize();
+  requestAnimationFrame(loop);
+})();
+</script>
