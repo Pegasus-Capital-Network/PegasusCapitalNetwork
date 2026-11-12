@@ -266,11 +266,12 @@ body{margin:0;background:var(--void);color:var(--star);
   }
 
   var started=false, ended=false;
-  function loop(now){ draw(now||0); requestAnimationFrame(loop); }
+  function loop(now){ draw(now||0); if(started && !ended) tick(); requestAnimationFrame(loop); }
+  var LEAD = 0.5; // show each line a touch early so it lands on the word, not after
   function tick(){
     if(!started) return;
     var t = 0; try{ t = audio.currentTime||0; }catch(e){}
-    var i = activeBeat(t);
+    var i = activeBeat(t + LEAD);
     if(i>=0) setBeat(i);
     prog.style.width = Math.min(100,(t/DUR)*100).toFixed(2)+"%";
     if(!ended && t>0 && (t >= (DUR-0.25) || audio.ended)) showEnd();
