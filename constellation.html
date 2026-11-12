@@ -233,35 +233,59 @@ body{margin:0;background:var(--void);color:var(--star);
       ctx.fillStyle = "rgba(226,236,248,"+a.toFixed(3)+")";
       ctx.fill();
     }
-    // constellation
-    var b = box();
-    function P(idx){ return [b.x + nodes[idx][0]*b.w, b.y + nodes[idx][1]*b.h]; }
-    // edges
-    ctx.lineCap="round";
-    for(var e=0;e<edges.length;e++){
-      var ed=edges[e], t=ed[2];
-      var f = smooth((p - t)/0.045);
-      if(f<=0) continue;
-      var A=P(ed[0]), B=P(ed[1]);
-      var mx=A[0]+(B[0]-A[0])*f, my=A[1]+(B[1]-A[1])*f;
-      ctx.beginPath(); ctx.moveTo(A[0],A[1]); ctx.lineTo(mx,my);
-      ctx.strokeStyle="rgba(200,162,68,"+(0.30*f).toFixed(3)+")";
-      ctx.lineWidth=1; ctx.stroke();
-    }
-    // nodes
-    for(var k=0;k<nodes.length;k++){
-      var nf = smooth((p - nodes[k][2])/0.03);
-      if(nf<=0) continue;
-      var pt=P(k);
-      var pulse = reduce?1:(0.85+0.15*Math.sin(now*0.0016 + k));
-      var rad = (1.7 + 1.1*nf)*pulse;
-      var grd = ctx.createRadialGradient(pt[0],pt[1],0,pt[0],pt[1],rad*5);
-      grd.addColorStop(0,"rgba(240,245,252,"+(0.95*nf).toFixed(3)+")");
-      grd.addColorStop(0.35,"rgba(227,197,126,"+(0.55*nf).toFixed(3)+")");
-      grd.addColorStop(1,"rgba(227,197,126,0)");
-      ctx.beginPath(); ctx.arc(pt[0],pt[1],rad*5,0,6.2832); ctx.fillStyle=grd; ctx.fill();
-      ctx.beginPath(); ctx.arc(pt[0],pt[1],rad,0,6.2832);
-      ctx.fillStyle="rgba(247,250,254,"+nf.toFixed(3)+")"; ctx.fill();
+    // constellation — forms through the piece, brightens into the finale,
+    // then takes flight on "We fly" (106.6s) and soars up into the sky.
+    var curT = p*DUR;
+    var TLAUNCH = 106.6, LDUR = 3.0;
+    var lp = Math.max(0, Math.min(1,(curT-TLAUNCH)/LDUR));   // launch 0..1
+    var le = lp*lp*lp;                                        // ease-in: slow, then sudden
+    var bloom = Math.max(0, Math.min(1,(curT-101.5)/5.0));    // glow up into "We rise/build/fly"
+    if(lp < 1){
+      var b = box();
+      var P = function(idx){ return [b.x + nodes[idx][0]*b.w, b.y + nodes[idx][1]*b.h]; };
+      var gMul = 1 + bloom*0.7;
+      ctx.save();
+      if(lp>0){ ctx.globalAlpha = (1-lp); ctx.translate(0, -le*H*1.9); }
+      // edges
+      ctx.lineCap="round";
+      for(var e=0;e<edges.length;e++){
+        var ed=edges[e];
+        var f = lp>0 ? 1 : smooth((p - ed[2])/0.045);
+        if(f<=0) continue;
+        var A=P(ed[0]), B=P(ed[1]);
+        var mx=A[0]+(B[0]-A[0])*f, my=A[1]+(B[1]-A[1])*f;
+        ctx.beginPath(); ctx.moveTo(A[0],A[1]); ctx.lineTo(mx,my);
+        ctx.strokeStyle="rgba(200,162,68,"+Math.min(0.55,0.30*f*gMul).toFixed(3)+")";
+        ctx.lineWidth=1+bloom*0.6; ctx.stroke();
+      }
+      // trailing streaks as it lifts off
+      if(lp>0 && !reduce){
+        for(var s=0;s<nodes.length;s++){
+          var ps=P(s), len=le*170;
+          var sg=ctx.createLinearGradient(ps[0],ps[1],ps[0],ps[1]+len);
+          sg.addColorStop(0,"rgba(227,197,126,"+(0.5*(1-lp)).toFixed(3)+")");
+          sg.addColorStop(1,"rgba(227,197,126,0)");
+          ctx.strokeStyle=sg; ctx.lineWidth=1.4;
+          ctx.beginPath(); ctx.moveTo(ps[0],ps[1]); ctx.lineTo(ps[0],ps[1]+len); ctx.stroke();
+        }
+      }
+      // nodes
+      for(var k=0;k<nodes.length;k++){
+        var nf = lp>0 ? 1 : smooth((p - nodes[k][2])/0.03);
+        if(nf<=0) continue;
+        var pt=P(k);
+        var pulse = reduce?1:(0.85+0.15*Math.sin(now*0.0016 + k));
+        var rad = (1.7 + 1.1*nf)*pulse*(1+bloom*0.5);
+        var grd = ctx.createRadialGradient(pt[0],pt[1],0,pt[0],pt[1],rad*5);
+        grd.addColorStop(0,"rgba(240,245,252,"+Math.min(1,0.95*nf*gMul).toFixed(3)+")");
+        grd.addColorStop(0.35,"rgba(227,197,126,"+Math.min(0.9,0.55*nf*gMul).toFixed(3)+")");
+        grd.addColorStop(1,"rgba(227,197,126,0)");
+        ctx.beginPath(); ctx.arc(pt[0],pt[1],rad*5,0,6.2832); ctx.fillStyle=grd; ctx.fill();
+        ctx.beginPath(); ctx.arc(pt[0],pt[1],rad,0,6.2832);
+        ctx.fillStyle="rgba(247,250,254,"+Math.min(1,nf).toFixed(3)+")"; ctx.fill();
+      }
+      ctx.restore();
+      ctx.globalAlpha=1;
     }
   }
 
