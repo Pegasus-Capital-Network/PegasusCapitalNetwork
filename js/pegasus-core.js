@@ -157,6 +157,7 @@
         ${item('◇','Financing Requests','/deal-requests.html',{act:'Financing Requests'})}
         ${item('◈','Deal Rooms','/deal-rooms.html',{badge:drBadge,locked:drCap===0})}
         ${item('▣','CRM','/crm.html')}
+        ${item('⊙','Who Viewed You','/visitors.html')}
         <div class="sb-sec">Presentation</div>
         ${item('◉','My Profile',ownProfilePath(),{act:'My Profile'})}
         ${item('⚙','Edit Profile','/profile-edit.html')}
@@ -802,6 +803,7 @@
       ['\u25EB','Business Pages','/my-presences.html'],
       ['\u25C7','Financing Requests','/deal-requests.html'],
       ['\u25A6','My Workspace','/dashboard.html'],
+      ['\u2299','Who Viewed You','/visitors.html'],
       ['\u25A4','Access & Growth','/membership.html'],
     ];
     var adminRows=[];

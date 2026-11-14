@@ -326,6 +326,9 @@ Pegasus.boot(async function () {
   var p = route.profile;
   var seoSnap=document.getElementById('peg-seo-snapshot'); if(seoSnap) seoSnap.remove();
 
+  /* Visitor Insights — record this profile view (non-blocking; RPC skips self-views). */
+  if(!route.isOwner && p && p.id){ try{ (window.PegSB&&window.PegSB.ready||Promise.resolve(null)).then(function(c){ try{ if(c&&c.rpc) c.rpc('record_visit',{p_target_type:'profile',p_target_id:p.id}); }catch(_){}}); }catch(_){} }
+
   /* Tell core's header nav this is the owner's own profile, so the single
      "Manage Profile" dropdown renders in the top-right (replacing the old 3
      buttons). Re-applied; core respects this flag on every nav refresh. */

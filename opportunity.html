@@ -129,6 +129,9 @@ Pegasus.boot(async function(){
   var o = data.opportunity;
   var by = data.presented_by || {};
   var canManage = !!data.can_manage;
+
+  /* Visitor Insights — record this opportunity view (non-blocking; RPC skips self-views). */
+  if(!canManage && o && o.id){ try{ (window.PegSB&&window.PegSB.ready||Promise.resolve(null)).then(function(c){ try{ if(c&&c.rpc) c.rpc('record_visit',{p_target_type:'opportunity',p_target_id:o.id}); }catch(_){}}); }catch(_){} }
   var typeLbl = (o.template_type && TMPL_LABEL[o.template_type]) || OPP_TYPE[o.opportunity_type] || 'Opportunity';
   var visLbl  = VIS_LABEL[o.visibility] || o.visibility;
   var loc = [o.location, o.market].filter(Boolean).join(' · ');
