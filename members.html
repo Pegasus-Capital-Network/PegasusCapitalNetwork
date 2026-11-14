@@ -250,7 +250,7 @@ Pegasus.boot(async function(){
   function initials(n){ var w=(n||'?').trim().split(/\s+/); return ((w[0]?w[0][0]:'')+(w[1]?w[1][0]:'')).toUpperCase()||'•'; }
   function avHTML(av,name,cls){ cls=cls||''; return av ? '<img src="'+esc(av)+'" alt="">' : esc(initials(name)); }
 
-  var ROLE_LABELS={borrower:'Growth Partner',lender:'Lender',broker:'Broker',agent:'Real Estate Professional',investor:'Capital Partner',developer:'Developer',rwa_partner:'RWA Partner',business_funding_provider:'Business Funding Provider',insurance:'Insurance Partner',ecosystem_member:'Ecosystem Member',member:'Member'};
+  var ROLE_LABELS={borrower:'Growth Partner',lender:'Lender',broker:'Broker',agent:'Real Estate Professional',investor:'Capital Partner',developer:'Developer',rwa_partner:'RWA Partner',business_funding_provider:'Business Funding Provider',insurance:'Insurance Partner',ecosystem_member:'Network Member',member:'Member'};
   function roleLabel(r){ r=(r||'').toLowerCase(); return ROLE_LABELS[r] || (r||'member').replace(/_/g,' ').replace(/\b\w/g,function(c){return c.toUpperCase();}); }
 
   var INTENTS=[
@@ -518,7 +518,7 @@ Pegasus.boot(async function(){
     ['investor','Capital Partners'],['lender','Lenders'],['broker','Brokers'],
     ['developer','Developers'],['agent','Real Estate Agents'],['borrower','Growth Partners'],
     ['rwa_partner','RWA Partners'],['business_funding_provider','Service Providers'],
-    ['ecosystem_member','Ecosystem Members']
+    ['ecosystem_member','Network Members']
   ];
   var activeRole='', activeQuery='';
   /* Chips are role GROUPS, not exact enum values — otherwise a private_lender
