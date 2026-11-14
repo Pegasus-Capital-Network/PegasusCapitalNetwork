@@ -729,3 +729,11 @@
   to = "/"
   status = 301
   force = true
+
+# Old social preview artwork used the retired 'private concierge / ecosystem' brand message.
+# Force a clean Pegasus logo while individual page metadata is refreshed.
+[[redirects]]
+  from = "/assets/brand/og-default.png"
+  to = "/assets/brand/pegasus-mark.png"
+  status = 301
+  force = true
