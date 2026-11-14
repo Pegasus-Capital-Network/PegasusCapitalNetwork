@@ -182,6 +182,10 @@ Pegasus.boot(async function(){
   var p = data.presence;
   var seoSnap=document.getElementById('peg-seo-snapshot'); if(seoSnap) seoSnap.remove();
   var canManage = !!data.can_manage;
+
+  /* Visitor Insights — record this business-page view (non-blocking; RPC skips self-views). */
+  if(!canManage && p && p.id){ try{ (window.PegSB&&window.PegSB.ready||Promise.resolve(null)).then(function(c){ try{ if(c&&c.rpc) c.rpc('record_visit',{p_target_type:'business',p_target_id:p.id}); }catch(_){}}); }catch(_){} }
+
   var typeLbl = TYPE_LABEL[p.presence_type] || p.presence_type;
   var visLbl  = VIS_LABEL[p.visibility] || p.visibility;
   var loc = [p.location, p.market].filter(Boolean).join(' · ');

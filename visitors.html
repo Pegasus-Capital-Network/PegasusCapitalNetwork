@@ -1,0 +1,151 @@
+<!DOCTYPE html><html lang="en"><head><title>Who viewed you — Pegasus Network</title>
+<meta name="robots" content="noindex,nofollow">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500&family=IBM+Plex+Serif:wght@0,300;0,400;0,600&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/pegasus.css?v=dealroom-entitlements-20260524-1529">
+<link rel="icon" href="/assets/brand/favicon.ico" sizes="any">
+<meta name="theme-color" content="#08111C">
+<style>
+.vi-wrap{max-width:720px;margin:42px auto 90px;padding:0 20px}
+.vi-eyebrow{font-size:9px;font-family:var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--text3);margin-bottom:8px}
+.vi-h1{font-family:var(--serif);font-weight:300;font-size:28px;line-height:1.14;color:var(--text);margin:0 0 6px}
+.vi-sub{font-size:13.5px;color:var(--text2);line-height:1.6;margin-bottom:20px;max-width:46em}
+.vi-priv{display:flex;align-items:center;gap:14px;justify-content:space-between;background:var(--bg1);border:1px solid var(--border);border-radius:14px;padding:14px 16px;margin-bottom:22px}
+.vi-priv .t{font-size:13px;color:var(--text);font-weight:500}
+.vi-priv .d{font-size:11.5px;color:var(--text3);margin-top:3px;line-height:1.5;max-width:38em}
+.vi-toggle{flex:0 0 auto;position:relative;width:46px;height:26px;border-radius:999px;border:1px solid var(--border);background:var(--bg2);cursor:pointer;transition:background .25s,border-color .25s}
+.vi-toggle::after{content:"";position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;background:#9aa6b2;transition:transform .25s,background .25s}
+.vi-toggle.on{background:rgba(35,95,166,.22);border-color:var(--blue)}
+.vi-toggle.on::after{transform:translateX(20px);background:var(--blue)}
+.vi-count{font-size:12px;color:var(--text3);margin:0 0 12px;font-family:var(--mono);letter-spacing:.04em}
+.vi-list{display:flex;flex-direction:column;gap:10px}
+.vi-row{display:flex;gap:13px;align-items:flex-start;border:1px solid var(--border);border-radius:13px;padding:13px 15px;background:var(--bg1)}
+.vi-av{flex:0 0 42px;width:42px;height:42px;border-radius:50%;object-fit:cover;display:flex;align-items:center;justify-content:center;font-family:var(--sans);font-weight:600;font-size:15px;color:#fff}
+.vi-main{flex:1;min-width:0}
+.vi-nm{font-size:14.5px;font-weight:600;color:var(--text);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.vi-badge{font-size:10px;font-family:var(--mono);letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:999px;border:1px solid var(--border2);background:var(--bg2);color:var(--text2);font-weight:500}
+.vi-badge.lender{color:#0F3A7A;border-color:rgba(35,95,166,.4);background:rgba(35,95,166,.08)}
+.vi-badge.investor{color:#5A3E0A;border-color:rgba(181,118,15,.4);background:rgba(181,118,15,.08)}
+.vi-badge.developer{color:#064A5C;border-color:rgba(12,126,150,.4);background:rgba(12,126,150,.08)}
+.vi-badge.broker{color:#0A5C3D;border-color:rgba(14,154,102,.4);background:rgba(14,154,102,.08)}
+.vi-badge.founder{color:#5B2A86;border-color:rgba(123,63,166,.4);background:rgba(123,63,166,.08)}
+.vi-what{font-size:12.5px;color:var(--text2);margin-top:3px;line-height:1.5}
+.vi-what b{color:var(--text);font-weight:600}
+.vi-when{font-size:11px;color:var(--text3);margin-top:4px;font-family:var(--mono);letter-spacing:.03em}
+.vi-acts{display:flex;gap:7px;margin-top:11px;flex-wrap:wrap}
+.vi-acts .btn{font-size:11.5px;padding:6px 13px}
+.vi-anon .vi-av{background:var(--bg2)!important;color:var(--text3)}
+.vi-empty{text-align:center;border:1px dashed var(--border2);border-radius:14px;padding:38px 22px;color:var(--text3)}
+.vi-empty .big{font-family:var(--serif);font-weight:300;font-size:20px;color:var(--text2);margin-bottom:8px}
+</style>
+<script src="/js/i18n.js?v=20261021e"></script><script src="/js/ticker.js?v=20261021b" defer></script>
+</head><body>
+<div id="nav"></div>
+<div class="vi-wrap">
+  <div class="vi-eyebrow">Visitor Insights</div>
+  <h1 class="vi-h1">Who viewed you</h1>
+  <div class="vi-sub">Real interest in your profile, business pages and opportunities — who stopped by, when, and what they do. Free and always on. No Premium, no paywall.</div>
+  <div id="vi-body">
+    <div style="color:var(--text3);font-size:13px;padding:24px 2px">Loading…</div>
+  </div>
+</div>
+
+<script src="/js/pegasus-config.js?v=20261021a"></script>
+<script src="/js/pegasus-supabase.js"></script>
+<script src="/js/pegasus-entitlements.js"></script>
+<script src="/js/pegasus-data.js"></script>
+<script src="/js/pegasus-content.js"></script>
+<script src="/js/pegasus-match.js"></script>
+<script src="/js/pegasus-store.js"></script>
+<script src="/js/pegasus-api.js"></script>
+<script src="/js/pegasus-forms.js"></script>
+<script src="/js/pegasus-auth.js?v=20261020b"></script>
+<script src="/js/pegasus-core.js?v=20261021b"></script>
+<script src="/js/pegasus-pages.js"></script>
+<script>
+Pegasus.boot(async function(){
+  Pegasus.mountPublic('');
+  var esc = Pegasus.esc, body = document.getElementById('vi-body');
+  function show(h){ body.innerHTML = h; }
+
+  var c=null; try{ c=await window.PegSB.ready; }catch(e){ c=null; }
+  var uid=null; if(c){ try{ var u=await c.auth.getUser(); uid=u&&u.data&&u.data.user&&u.data.user.id; }catch(e){} }
+  if(!uid){
+    try{ localStorage.setItem('pegasus.redirectAfterAuth','/visitors.html'); }catch(_){}
+    show('<div class="vi-empty"><div class="big">Sign in to see your visitors</div><div style="font-size:13px;margin-bottom:18px">Who Viewed You shows the members looking at your profile and pages.</div><a class="btn btn-pri" href="/signin.html?next='+encodeURIComponent('/visitors.html')+'">Sign in</a></div>');
+    return;
+  }
+
+  function initials(n){ return (String(n||'').trim().split(/\s+/).map(function(w){return w[0];}).join('').slice(0,2)||'·').toUpperCase(); }
+  function roleKey(r){ r=String(r||'').toLowerCase(); if(r.indexOf('lend')>=0)return 'lender'; if(r.indexOf('invest')>=0)return 'investor'; if(r.indexOf('develop')>=0||r.indexOf('builder')>=0)return 'developer'; if(r.indexOf('brok')>=0)return 'broker'; if(r.indexOf('found')>=0)return 'founder'; return ''; }
+  function roleLabel(r){ return String(r||'member').replace(/_/g,' '); }
+  function ago(ts){ if(!ts) return ''; var d=new Date(ts), s=(Date.now()-d.getTime())/1000;
+    if(s<60) return 'just now'; if(s<3600) return Math.floor(s/60)+'m ago'; if(s<86400) return Math.floor(s/3600)+'h ago';
+    if(s<604800) return Math.floor(s/86400)+'d ago';
+    return d.toLocaleDateString(undefined,{month:'short',day:'numeric'}); }
+  function exact(ts){ try{ return new Date(ts).toLocaleString(undefined,{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}); }catch(e){ return ''; } }
+  function whatLine(v){
+    if(v.target_type==='profile') return 'viewed <b>your profile</b>';
+    if(v.target_type==='business') return 'viewed your business page <b>'+esc(v.target_label||'—')+'</b>';
+    if(v.target_type==='opportunity') return 'viewed your opportunity <b>'+esc(v.target_label||'—')+'</b>';
+    return 'viewed your page';
+  }
+
+  var anon=false;
+  try{ var ra=await c.rpc('get_visits_anonymous'); anon=!!(ra&&!ra.error&&ra.data); }catch(e){}
+
+  var rows=[];
+  try{ var r=await c.rpc('get_my_visitors',{p_limit:80}); rows=(r&&!r.error&&r.data)||[]; }catch(e){ rows=[]; }
+
+  function privacyCard(){
+    return '<div class="vi-priv"><div><div class="t">Browse privately</div>'+
+      '<div class="d">When on, the profiles and pages you open won\'t show your name to their owners — they\'ll only see that someone of your type stopped by.</div></div>'+
+      '<button class="vi-toggle'+(anon?' on':'')+'" id="vi-anon" role="switch" aria-checked="'+(anon?'true':'false')+'" aria-label="Browse privately"></button></div>';
+  }
+  function rowHtml(v){
+    var isAnon = v.anonymous || !v.viewer_user_id;
+    var name = isAnon ? 'Someone' : (v.viewer_name||'Member');
+    var rk = roleKey(v.viewer_role);
+    var badge = '<span class="vi-badge'+(rk?(' '+rk):'')+'">'+esc(roleLabel(v.viewer_role))+'</span>';
+    var av;
+    if(isAnon){ av='<div class="vi-av">◦</div>'; }
+    else if(v.viewer_avatar_url){ av='<img class="vi-av" src="'+esc(v.viewer_avatar_url)+'" alt="">'; }
+    else { av='<div class="vi-av" style="background:'+esc(v.viewer_avatar_color||'#235FA6')+'">'+esc(initials(v.viewer_name))+'</div>'; }
+    var sub = (v.viewer_title||v.viewer_company) ? '<div style="font-size:11.5px;color:var(--text3);margin-top:1px">'+esc([v.viewer_title,v.viewer_company].filter(Boolean).join(' · '))+'</div>' : '';
+    var count = (v.visit_count>1) ? ' · '+v.visit_count+' views' : '';
+    var acts='';
+    if(!isAnon && v.viewer_slug){
+      var u='/u/'+encodeURIComponent(v.viewer_slug);
+      acts='<div class="vi-acts">'+
+        '<a class="btn btn-pri" href="'+u+'">View profile</a>'+
+        '<a class="btn btn-ghost" href="'+u+'#connect">Connect</a>'+
+        '<a class="btn btn-ghost" href="'+u+'#message">Message</a></div>';
+    }
+    return '<div class="vi-row'+(isAnon?' vi-anon':'')+'">'+av+
+      '<div class="vi-main"><div class="vi-nm">'+esc(name)+badge+'</div>'+sub+
+      '<div class="vi-what">'+whatLine(v)+'</div>'+
+      '<div class="vi-when">'+esc(ago(v.last_viewed_at))+' · '+esc(exact(v.last_viewed_at))+count+'</div>'+
+      acts+'</div></div>';
+  }
+
+  function render(){
+    var html = privacyCard();
+    if(!rows.length){
+      html += '<div class="vi-empty"><div class="big">No visitors yet</div><div style="font-size:13px">Share your profile and pages across the network — when members view them, they\'ll show up here with a way to connect.</div></div>';
+    } else {
+      html += '<div class="vi-count">'+rows.length+' recent '+(rows.length===1?'visitor':'visitors')+'</div>';
+      html += '<div class="vi-list">'+rows.map(rowHtml).join('')+'</div>';
+    }
+    show(html);
+    var tg=document.getElementById('vi-anon');
+    if(tg) tg.onclick=async function(){
+      var next=!anon; tg.classList.toggle('on',next); tg.setAttribute('aria-checked',next?'true':'false');
+      try{ await c.rpc('set_visits_anonymous',{p_on:next}); anon=next; }
+      catch(e){ tg.classList.toggle('on',anon); tg.setAttribute('aria-checked',anon?'true':'false'); }
+    };
+  }
+  render();
+});
+</script>
+</body></html>
