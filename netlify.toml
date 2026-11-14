@@ -64,6 +64,14 @@
 # setting owns that. Adding one back is what caused the loop.
 
 # ════════════════════════════════════════════════════════════════════════════
+# Legacy multilingual sitemap retired after the site became English-only.
+# A redirect avoids advertising old /ar, /zh, /ru, /es and /fr routes.
+[[redirects]]
+  from = "/sitemap-i18n.xml"
+  to = "/sitemap.xml"
+  status = 301
+  force = true
+
 # DYNAMIC SEO SITEMAP — public Person profiles only (P0)
 [[redirects]]
   from = "/sitemap-entities.xml"
