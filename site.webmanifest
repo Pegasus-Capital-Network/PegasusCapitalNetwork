@@ -1,7 +1,7 @@
 {
-  "name": "Pegasus Network",
+  "name": "Pegasus Capital Network",
   "short_name": "Pegasus",
-  "description": "The operating system for structured real estate capital.",
+  "description": "Professional networking and business discovery for lenders, investors, brokers, founders and companies.",
   "start_url": "/dashboard.html",
   "display": "standalone",
   "background_color": "#050A10",
