@@ -111,9 +111,6 @@ async function peopleSitemap() {
   });
   const seen = new Set();
   const urls = [];
-  const sectionSeen = new Set();
-  const roleSeen = new Set();
-  const landing = [];
   for (const row of rows) {
     const slug = cleanSlug(row.profile_slug);
     if (!slug || seen.has(slug) || !String(row.full_name || "").trim()) continue;
@@ -121,18 +118,8 @@ async function peopleSitemap() {
     const lastmod = row.updated_at && /^\d{4}-\d{2}-\d{2}/.test(row.updated_at)
       ? String(row.updated_at).slice(0, 10) : "";
     urls.push(urlNode(ORIGIN + "/u/" + encodeURIComponent(slug), lastmod, "0.9"));
-    // Accumulate non-empty role/section landing pages for discovery.
-    const roleSlug = classifyPerson(row);
-    if (roleSlug && roleSlug !== "other") {
-      const section = sectionOf(roleSlug);
-      if (section && section !== "other") {
-        if (!sectionSeen.has(section)) { sectionSeen.add(section); landing.push(urlNode(ORIGIN + "/people/" + encodeURIComponent(section), "", "0.7")); }
-        const key = section + "/" + roleSlug;
-        if (!roleSeen.has(key)) { roleSeen.add(key); landing.push(urlNode(ORIGIN + "/people/" + encodeURIComponent(section) + "/" + encodeURIComponent(roleSlug), "", "0.6")); }
-      }
-    }
   }
-  return urlset(landing.concat(urls));
+  return urlset(urls);
 }
 // Business section + category landing pages (from the taxonomy facets). Included
 // in the businesses sitemap so the capital-stack directory is crawlable.
