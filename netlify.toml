@@ -714,3 +714,10 @@
   to = "/"
   status = 301
   force = true
+
+# Retired first-generation home copy: consolidate external shares to current homepage.
+[[redirects]]
+  from = "/home-legacy.html"
+  to = "/"
+  status = 301
+  force = true

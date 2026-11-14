@@ -78,7 +78,7 @@
     const d=C[key]||{}; let cards=opts.cards||d.cards||[]; const paras=d.paras||[];
     if(!cards.length && paras.length) cards=paras.slice(0,6).map(deriveTitle);
     if(!cards.length) return '';
-    return `<section class="eco-sec"><div class="eco-sec-head"><div class="eco-eyebrow dark">${esc(opts.eyebrow||'Inside the ecosystem')}</div><h2>${esc(opts.title||'Where relationships move')}</h2></div>
+    return `<section class="eco-sec"><div class="eco-sec-head"><div class="eco-eyebrow dark">${esc(opts.eyebrow||'Inside Pegasus')}</div><h2>${esc(opts.title||'Where relationships move')}</h2></div>
       <div class="eco-grid">${cards.map((t,i)=>`<div class="eco-item"><div class="eco-item-k">${String(i+1).padStart(2,'0')}</div><div class="eco-item-t">${esc(t)}</div><div class="eco-item-d">${esc(paras[i]||paras[i%Math.max(1,paras.length)]||'')}</div></div>`).join('')}</div></section>`;
   }
   function marketing(key,opts={}){

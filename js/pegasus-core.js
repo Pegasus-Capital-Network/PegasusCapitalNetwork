@@ -91,7 +91,7 @@
   var PEG_WORLDS={
     capital:{label:'Capital',items:[['Invest in real estate loans','/pegasus-direct-lending.html','Monthly interest, recorded deed of trust'],['Buy or refinance a home','/find-a-lender?type=residential_purchase','See matched lenders'],['Finance an investment deal','/get-financing.html','Bridge, construction, fix & flip, DSCR'],['Who lends what','/lending-programs.html','Programs lenders publish'],['Find a lender','/find-a-lender','Match by state and amount'],['Lender directory','/lenders','Ranked by real lending']]},
     ai:{label:'AI',items:[['Seeking capital','/seeking-capital.html','AI companies raising now'],['Capital providers','/capital-providers.html','Who funds AI'],['Investment matches','/investment-matches.html','Why they should meet'],['AI directory','/ai-directory.html','The research base, who exists'],['Raising? Apply for funding','/apply-for-funding.html','Get in front of capital'],['About Pegasus AI','/ai-network.html','']]},
-    private:{label:'Private',items:[['Family offices & investors','/private-network.html#register','Introduce your mandate'],['Capital & development partners','/private-network.html#register','Projects and co-investment'],['Tokenization','/private-network.html#rwa','Real-world assets'],['About Private Network','/private-network.html','']]}
+    private:{label:'Partnerships',items:[['Global Capital Partners','/private-network.html#register','International investment and real estate relationships'],['Real-World Assets','/rwa-network.html','Projects and service providers'],['Tokenization Partners','/rwa-partners.html','Technology and compliance partners'],['Capital Partnerships','/private-network.html','']]}
   };
   window.PEG_WORLDS=PEG_WORLDS;
   function worldLinksHTML(){
@@ -101,7 +101,7 @@
     return '<a href="/feed"'+feedOn+'>Feed</a>'+G('capital')+G('ai')+G('private')+'<a href="/jobs"'+jobsOn+'>Jobs</a>';
   }
   function worldDrawerHTML(){
-    return '<a href="/feed"><b>Network Feed</b></a><a href="/jobs"><b>Jobs &amp; Talent</b></a>'+['capital','ai','private'].map(function(k){ var w=PEG_WORLDS[k]; return '<div class="mob-sec">'+({capital:'Capital & Real Estate',ai:'Pegasus AI',private:'Private Network'})[k]+'</div>'+w.items.map(function(i){ return '<a href="'+i[1]+'">'+i[0]+'</a>'; }).join(''); }).join('');
+    return '<a href="/feed"><b>Network Feed</b></a><a href="/jobs"><b>Jobs &amp; Talent</b></a>'+['capital','ai','private'].map(function(k){ var w=PEG_WORLDS[k]; return '<div class="mob-sec">'+({capital:'Capital & Real Estate',ai:'Pegasus AI',private:'Projects & Partnerships'})[k]+'</div>'+w.items.map(function(i){ return '<a href="'+i[1]+'">'+i[0]+'</a>'; }).join(''); }).join('');
   }
 
   // --- public nav (full-site mega menu) ---
@@ -331,10 +331,10 @@
     const socRow=`<div style="display:flex;gap:8px;margin-top:16px">${soc.map(s=>`<a href="${s[1]}" target="_blank" rel="noopener" aria-label="Pegasus Capital Network on ${s[0]}" title="${s[0]}" style="display:inline-flex;width:32px;height:32px;align-items:center;justify-content:center;border:1px solid var(--border, rgba(255,255,255,.15));border-radius:8px;color:var(--text2)"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="${s[2]}"/></svg></a>`).join('')}</div>`;
     return `<footer class="footer">
       <div style="max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr 1fr;gap:30px;margin-bottom:32px">
-        <div><div class="brand" style="margin-bottom:12px"><img class="brand-mark" src="/assets/brand/pegasus-mark.png" alt="Pegasus"><span>Pegasus</span></div><div style="font-size:12px;color:var(--text3);line-height:1.6;max-width:240px">Three networks, one ecosystem. Capital, AI, and the Private Network.</div>${socRow}</div>
+        <div><div class="brand" style="margin-bottom:12px"><img class="brand-mark" src="/assets/brand/pegasus-mark.png" alt="Pegasus"><span>Pegasus</span></div><div style="font-size:12px;color:var(--text3);line-height:1.6;max-width:240px">Connect with professionals, businesses, and opportunities across real estate finance, AI, and partnerships.</div>${socRow}</div>
         ${col('Capital & Real Estate',[['Realtors','/realtors.html'],['Lenders Directory','/lenders'],['Find Financing','/find-a-lender'],['Borrowers','/borrowers.html'],['Lending Programs','/lending-programs.html'],['Lender Rankings','/rankings'],['Top Lenders 2025','/awards/top-lenders-2025'],['Financing Requests','/deal-requests.html']])}
         ${col('Pegasus AI',[['AI Network','/ai-network.html'],['Needs Board','/ai-needs.html'],['Intelligence','/intel.html']])}
-        ${col('Private & Account',[['Private Network','/private-network.html'],['How It Works','/how-it-works.html'],['Membership','/membership.html'],['Network Feed','/feed']])}
+        ${col('Partnerships & Account',[['Capital Partnerships','/private-network.html'],['How It Works','/how-it-works.html'],['Membership','/membership.html'],['Network Feed','/feed']])}
         ${col('Company',[['About','/about.html'],['Contact','/contact.html'],['FAQ','/faq.html'],['Trust & Safety','/trust-and-safety.html']])}
       </div>
       <div class="footer-legal">Pegasus Capital Network is a membership marketplace platform operated by Pegasus Lenders Group LLC. Pegasus is not a mortgage lender, mortgage loan originator (MLO), broker-dealer, real estate broker, or registered investment advisor. All connections made through the Pegasus platform are member-directed. Users must consult licensed professionals for all financial and legal decisions. \u00A9 2026 Pegasus Lenders Group LLC. &nbsp;·&nbsp; <a href="/privacy.html" style="color:var(--text3)">Privacy</a> &nbsp;·&nbsp; <a href="/terms.html" style="color:var(--text3)">Terms</a> &nbsp;·&nbsp; <a href="/disclosures.html" style="color:var(--text3)">Disclosures</a></div></footer>`;
