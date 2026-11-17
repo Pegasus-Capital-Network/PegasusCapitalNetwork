@@ -91,6 +91,7 @@
   var PEG_WORLDS={
     capital:{label:'Capital',items:[['Invest in real estate loans','/pegasus-direct-lending.html','Monthly interest, recorded deed of trust'],['Buy or refinance a home','/find-a-lender?type=residential_purchase','See matched lenders'],['Finance an investment deal','/get-financing.html','Bridge, construction, fix & flip, DSCR'],['Who lends what','/lending-programs.html','Programs lenders publish'],['Find a lender','/find-a-lender','Match by state and amount'],['Lender directory','/lenders','Ranked by real lending']]},
     ai:{label:'AI',items:[['Seeking capital','/seeking-capital.html','AI companies raising now'],['Capital providers','/capital-providers.html','Who funds AI'],['Investment matches','/investment-matches.html','Why they should meet'],['AI directory','/ai-directory.html','The research base, who exists'],['Raising? Apply for funding','/apply-for-funding.html','Get in front of capital'],['About Pegasus AI','/ai-network.html','']]},
+    infra:{label:'Infrastructure',items:[['AI Infrastructure & Energy','/ai-infrastructure.html','Data centers, powered land, power'],['Offer an asset','/ai-infrastructure.html#sides','Sites, power, equipment'],['Post a buy mandate','/ai-infrastructure.html#sides','What you want to acquire']]},
     private:{label:'Partnerships',items:[['Global Capital Partners','/private-network.html#register','International investment and real estate relationships'],['Real-World Assets','/rwa-network.html','Projects and service providers'],['Tokenization Partners','/rwa-partners.html','Technology and compliance partners'],['Capital Partnerships','/private-network.html','']]}
   };
   window.PEG_WORLDS=PEG_WORLDS;
@@ -116,6 +117,12 @@
       ['Seeking Capital','/seeking-capital','Raising now'],
       ['Capital Providers','/capital-providers','Who funds AI'],
       ['Needs Board','/ai-needs.html','Demand meets builders']
+    ]],
+    ['Infrastructure',[
+      ['AI Infrastructure & Energy','/ai-infrastructure.html','Data centers, land, power'],
+      ['Offer an asset','/ai-infrastructure.html#sides','Sites, power, equipment'],
+      ['Post a buy mandate','/ai-infrastructure.html#sides','What you want to acquire'],
+      ['Intelligence vs Marketplace','/ai-infrastructure.html#intel-vs-market','How listings are verified']
     ]],
     ['Private',[
       ['Private Network','/private-network.html','Family offices & investors'],
@@ -380,7 +387,7 @@
         <div><div class="brand" style="margin-bottom:12px"><img class="brand-mark" src="/assets/brand/pegasus-mark.png" alt="Pegasus"><span>Pegasus</span></div><div style="font-size:12px;color:var(--text3);line-height:1.6;max-width:240px">Connect with professionals, businesses, and opportunities across real estate finance, AI, and partnerships.</div>${socRow}</div>
         ${col('Directory',[['Business Directory','/businesses'],['Lender Directory','/lenders'],['Lender Rankings','/rankings'],['Real Estate Agents','/realtors.html'],['Members','/members'],['Lending Programs','/lending-programs.html']])}
         ${col('Capital',[['Find a Lender','/find-a-lender'],['Get Financing','/get-financing.html'],['Invest in Loans','/pegasus-direct-lending.html'],['Financing Requests','/deal-requests']])}
-        ${col('AI',[['AI Directory','/ai-directory.html'],['Seeking Capital','/seeking-capital'],['Capital Providers','/capital-providers'],['Needs Board','/ai-needs.html']])}
+        ${col('AI',[['AI Directory','/ai-directory.html'],['Seeking Capital','/seeking-capital'],['Capital Providers','/capital-providers'],['Needs Board','/ai-needs.html'],['AI Infrastructure & Energy','/ai-infrastructure.html']])}
         ${col('Private & Company',[['Private Network','/private-network.html'],['How It Works','/how-it-works.html'],['About','/about.html'],['Contact','/contact.html'],['FAQ','/faq.html'],['Trust & Safety','/trust-and-safety.html']])}
       </div>
       <div class="footer-legal">Pegasus Capital Network is a membership marketplace platform operated by Pegasus Lenders Group LLC. Pegasus is not a mortgage lender, mortgage loan originator (MLO), broker-dealer, real estate broker, or registered investment advisor. All connections made through the Pegasus platform are member-directed. Users must consult licensed professionals for all financial and legal decisions. \u00A9 2026 Pegasus Lenders Group LLC. &nbsp;·&nbsp; <a href="/privacy.html" style="color:var(--text3)">Privacy</a> &nbsp;·&nbsp; <a href="/terms.html" style="color:var(--text3)">Terms</a> &nbsp;·&nbsp; <a href="/disclosures.html" style="color:var(--text3)">Disclosures</a></div></footer>`;

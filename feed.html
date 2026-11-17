@@ -217,7 +217,7 @@
   function build(){
     var host=document.getElementById('fdWorlds'); if(!host) return;
     var W=window.PEG_WORLDS; if(!W){ return setTimeout(build,60); }
-    var NAMES={capital:['Capital & Real Estate','Capital'],ai:['AI & Technology','AI'],private:['Private & Tokenized','Private']};
+    var NAMES={capital:['Capital & Real Estate','Capital'],ai:['AI & Technology','AI'],infra:['AI Infrastructure & Energy','Infrastructure'],private:['Private & Tokenized','Private']};
     var qs=new URLSearchParams(location.search), cur=(qs.get('world')||'').toLowerCase();
     if(!W[cur]){ try{ cur=localStorage.getItem('peg_world')||''; }catch(e){ cur=''; } }
     if(!W[cur]) cur='';
