@@ -225,37 +225,69 @@ h1{font-weight:800;font-size:clamp(30px,4.6vw,48px);line-height:1.05;letter-spac
   function lenderHref(p){ return p.company_slug?('/lend/'+encodeURIComponent(p.company_slug)):(p.profile_slug?('/u/'+encodeURIComponent(p.profile_slug)):'#'); }
   function foundingBadge(p){ return p.founding_no?'<span class="fbadge" title="One of the first 50 lenders on Pegasus">★ Founding Lender №'+(p.founding_no<10?'0':'')+p.founding_no+'</span>':''; }
   function foundingFresh(p){ return p.founding_no && p.founding_at && (Date.now()-Date.parse(p.founding_at)) < 365*864e5; }
-  function card(p){
+  /* ── Group programs by lender: one card per company, programs aggregated ── */
+  function groupKey(p){
+    return p.company_presence_id
+      || (p.company_slug?('c:'+p.company_slug):'')
+      || (p.profile_slug?('p:'+p.profile_slug):'')
+      || (p.user_id?('u:'+p.user_id):'')
+      || ('n:'+String(p.company_page_name||p.company_name||p.lender_name||'').toLowerCase().trim());
+  }
+  function buildGroups(rows){
+    var map={}, order=[];
+    rows.forEach(function(p){
+      var k=groupKey(p);
+      if(!map[k]){ map[k]={key:k,rep:p,programs:[],loan_types:[],states:[],min_loan:null,max_loan:null,max_ltv:null,dscr_min:null,rate_from:'',rate_num:Infinity,bridge_ok:false,construction_ok:false,notes:''}; order.push(k); }
+      var g=map[k]; g.programs.push(p);
+      if(p.founding_no && !g.rep.founding_no) g.rep=p;            // prefer a founding row for identity
+      (p.loan_types||[]).forEach(function(t){ if(g.loan_types.indexOf(t)<0) g.loan_types.push(t); });
+      (p.states||[]).forEach(function(x){ if(g.states.indexOf(x)<0) g.states.push(x); });
+      var mn=Number(p.min_loan); if(isFinite(mn)&&mn>0) g.min_loan=(g.min_loan==null?mn:Math.min(g.min_loan,mn));
+      var mx=Number(p.max_loan); if(isFinite(mx)&&mx>0) g.max_loan=(g.max_loan==null?mx:Math.max(g.max_loan,mx));
+      var lv=Number(p.max_ltv);  if(isFinite(lv)&&lv>0) g.max_ltv=(g.max_ltv==null?lv:Math.max(g.max_ltv,lv));
+      var ds=Number(p.dscr_min); if(isFinite(ds)&&ds>0) g.dscr_min=(g.dscr_min==null?ds:Math.min(g.dscr_min,ds));
+      if(p.rate_from){ var rn=parseFloat(String(p.rate_from).replace(/[^0-9.]/g,'')); if(isFinite(rn)&&rn<g.rate_num){ g.rate_num=rn; g.rate_from=p.rate_from; } else if(!g.rate_from){ g.rate_from=p.rate_from; } }
+      if(p.bridge_ok) g.bridge_ok=true;
+      if(p.construction_ok) g.construction_ok=true;
+      if(!g.notes && p.notes) g.notes=p.notes;
+    });
+    var groups=order.map(function(k){ return map[k]; });
+    groups.sort(function(a,b){ var ra=foundingFresh(a.rep)?0:(a.rep.unclaimed?2:1), rb=foundingFresh(b.rep)?0:(b.rep.unclaimed?2:1); return ra-rb || ((a.rep.founding_no||99)-(b.rep.founding_no||99)); });
+    return groups;
+  }
+  function card(g){
+    var p=g.rep;
     var name=p.company_page_name||p.company_name||p.lender_name||'Lender';
     var who=p.unclaimed?(p.company_location||''):((p.company_page_name||p.company_name)&&p.lender_name&&p.lender_name!==name?p.lender_name:(p.location||''));
     var initials=name.split(/\s+/).map(function(w){return w.charAt(0);}).join('').slice(0,2).toUpperCase();
     // A real logo is any uploaded image that is NOT the Pegasus house placeholder.
     var isHouse=function(u){ return !u || /\/assets\/brand\//i.test(u) || /pegasus-(symbol|mark|emblem|watermark)/i.test(u); };
-    var realLogo = (!isHouse(p.logo_url)&&p.logo_url) || (!isHouse(p.avatar_url)&&p.avatar_url) || '';
-    var logoEmpty = !realLogo;
-    var logo = realLogo
-      ? '<img src="'+esc(realLogo)+'" alt="">'
-      : (p.unclaimed ? '<span class="logo-ph">Your<br>logo here</span>' : esc(initials));
-    var types=(p.loan_types||[]).map(function(t){ return '<span class="chip">'+esc(TYPES[t]||t)+'</span>'; }).join('');
-    var st=(p.states&&p.states.length)?(p.states.length>=45?(p.states.length+' states'):(p.states.slice(0,8).join(', ')+(p.states.length>8?' +'+(p.states.length-8):''))):((p.unclaimed&&!/nationwide/i.test(p.notes||''))?'See lender’s site':'Nationwide');
-    var ar=amountRange(p); if(ar==='Flexible'&&p.unclaimed) ar='See lender’s site';
+    var realLogo='';
+    g.programs.forEach(function(x){ if(!realLogo){ realLogo=(!isHouse(x.logo_url)&&x.logo_url) || (!isHouse(x.avatar_url)&&x.avatar_url) || ''; } });
+    var logoEmpty=!realLogo;
+    var logo = realLogo ? '<img src="'+esc(realLogo)+'" alt="">' : (p.unclaimed ? '<span class="logo-ph">Your<br>logo here</span>' : esc(initials));
+    var types=g.loan_types.map(function(t){ return '<span class="chip">'+esc(TYPES[t]||t)+'</span>'; }).join('');
+    var st=(g.states&&g.states.length)?(g.states.length>=45?(g.states.length+' states'):(g.states.slice(0,8).join(', ')+(g.states.length>8?' +'+(g.states.length-8):''))):((p.unclaimed&&!/nationwide/i.test(g.notes||''))?'See lender’s site':'Nationwide');
+    var ar=amountRange(g); if(ar==='Flexible'&&p.unclaimed) ar='See lender’s site';
     var facts=[['Loan size',ar]];
-    if(p.max_ltv) facts.push(['Max LTV',p.max_ltv+'%']);
-    if(p.rate_from) facts.push(['Rates from',p.rate_from]);
-    if(p.dscr_min) facts.push(['Min DSCR',String(p.dscr_min)]);
-    var firstType=(p.loan_types&&p.loan_types[0])||'';
+    if(g.max_ltv) facts.push(['Max LTV',g.max_ltv+'%']);
+    if(g.rate_from) facts.push(['Rates from',g.rate_from]);
+    if(g.dscr_min) facts.push(['Min DSCR',String(g.dscr_min)]);
+    var firstType=g.loan_types[0]||'';
     var href=lenderHref(p);
     var site=p.source_url||p.company_website||'';
+    var n=g.programs.length;
+    var headline = n>1 ? (n+' lending programs') : (p.program_name||'');
     var acts=p.unclaimed
       ? (site?'<a class="btn sm" href="'+esc(site)+'" target="_blank" rel="noopener nofollow">Visit lender</a>':'')+(p.company_slug?'<a class="btn ghost sm" href="/claim?presence='+encodeURIComponent(p.company_slug)+'">Your company? Claim it</a>':'')
       : '<a class="btn sm" href="'+(p.company_slug?(href+'#send'):('/find-a-lender'+(firstType?('?type='+encodeURIComponent(firstType)):'')))+'">Send a deal</a>'+(href!=='#'?'<a class="btn ghost sm" href="'+href+'">View lender</a>':'');
     return '<div class="card'+(p.unclaimed?' unclaimed':'')+'"><a class="lender" href="'+href+'"><span class="logo'+(logoEmpty&&p.unclaimed?' logo-empty':'')+'">'+logo+'</span><span><span class="lname">'+esc(name)+'</span><br><span class="lsub">'+esc(who)+'</span></span></a>'+
       (p.unclaimed?'<div class="uc">Unclaimed · from the lender’s public website</div>':foundingBadge(p))+
-      '<div class="pname">'+esc(p.program_name||'')+'</div>'+
+      (headline?'<div class="pname">'+esc(headline)+'</div>':'')+
       (types?'<div class="chips">'+types+'</div>':'')+
       '<div class="facts">'+facts.map(function(f){ return '<div class="fact"><div class="k">'+esc(f[0])+'</div><div class="v">'+esc(f[1])+'</div></div>'; }).join('')+'</div>'+
-      '<div class="states"><span style="color:var(--muted)">Lends in:</span> '+esc(st)+(p.bridge_ok?' · Bridge OK':'')+(p.construction_ok?' · Construction OK':'')+'</div>'+
-      (p.notes?'<div class="pnotes">'+esc(p.notes)+'</div>':'')+
+      '<div class="states"><span style="color:var(--muted)">Lends in:</span> '+esc(st)+(g.bridge_ok?' · Bridge OK':'')+(g.construction_ok?' · Construction OK':'')+'</div>'+
+      (g.notes?'<div class="pnotes">'+esc(g.notes)+'</div>':'')+
       '<div class="acts">'+acts+'</div></div>';
   }
   function render(){
@@ -266,13 +298,14 @@ h1{font-weight:800;font-size:clamp(30px,4.6vw,48px);line-height:1.05;letter-spac
       if(amt!=null){ if(p.min_loan!=null && amt<Number(p.min_loan)) return false; if(p.max_loan!=null && Number(p.max_loan)>0 && amt>Number(p.max_loan)) return false; }
       return true;
     });
+    var groups=buildGroups(rows);
     var g=$('grid');
     if(!ALL.length){
       g.innerHTML='<div class="empty"><b>Lenders are joining Pegasus now.</b>Be one of the first to show your appetite. No rigid criteria to publish, just the kind of deals you want, in broad strokes. Borrowers and brokers bring the real file and send it straight to you.<br><button class="btn gold" type="button" data-post="1">Show my appetite</button></div>';
-    }else if(!rows.length){
+    }else if(!groups.length){
       g.innerHTML='<div class="empty"><b>No published program matches that exact deal yet.</b>Try another state or amount, or run it through Find a Lender, which also ranks lenders by their real lending history.<br><a class="btn" href="/find-a-lender'+(t?('?type='+t):'')+'">Find a lender</a></div>';
     }else{
-      g.innerHTML=rows.map(card).join('');
+      g.innerHTML=groups.map(card).join('');
     }
     var pb=g.querySelector('[data-post]'); if(pb) pb.onclick=openEditor;
   }
@@ -288,9 +321,9 @@ h1{font-weight:800;font-size:clamp(30px,4.6vw,48px);line-height:1.05;letter-spac
       // Founding Lenders (first year) first, then other claimed programs, then unclaimed
       ALL=(r.data||[]).sort(function(x,y){ var rx=foundingFresh(x)?0:(x.unclaimed?2:1), ry=foundingFresh(y)?0:(y.unclaimed?2:1); return rx-ry || ((x.founding_no||99)-(y.founding_no||99)); });
     }catch(e){ console.error('[programs]',e); ALL=[]; }
-    var lenders={}, states={}, national=false;
-    ALL.forEach(function(p){ lenders[p.company_slug||p.user_id]=1; if(!p.states||!p.states.length) national=true; else p.states.forEach(function(x){ states[x]=1; }); });
-    $('stPrograms').textContent=ALL.length; $('stLenders').textContent=Object.keys(lenders).length;
+    var states={}, national=false;
+    ALL.forEach(function(p){ if(!p.states||!p.states.length) national=true; else p.states.forEach(function(x){ states[x]=1; }); });
+    $('stPrograms').textContent=ALL.length; $('stLenders').textContent=buildGroups(ALL).length;
     $('stStates').textContent=national?'All':Object.keys(states).length;
     render();
   }
