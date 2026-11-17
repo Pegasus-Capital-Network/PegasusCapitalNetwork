@@ -64,6 +64,8 @@ h1{font-weight:800;font-size:clamp(30px,4.6vw,48px);line-height:1.05;letter-spac
 .lender{display:flex;gap:12px;align-items:center}
 .logo{width:44px;height:44px;border-radius:10px;flex:none;background:linear-gradient(160deg,#f2f5f9,#e9eef4);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--navy);overflow:hidden}
 .logo img{width:100%;height:100%;object-fit:cover}
+.logo.logo-empty{background:#fff;border:1px dashed #c6d0db}
+.logo-ph{font-size:7.5px;font-weight:700;letter-spacing:.02em;line-height:1.1;text-align:center;text-transform:uppercase;color:#9aa6b4}
 .lname{font-weight:700;color:var(--ink);font-size:15px;line-height:1.25}
 .lsub{font-size:12px;color:var(--muted)}
 .pname{margin-top:14px;font-size:13px;font-weight:600;color:var(--ink2)}
@@ -227,7 +229,13 @@ h1{font-weight:800;font-size:clamp(30px,4.6vw,48px);line-height:1.05;letter-spac
     var name=p.company_page_name||p.company_name||p.lender_name||'Lender';
     var who=p.unclaimed?(p.company_location||''):((p.company_page_name||p.company_name)&&p.lender_name&&p.lender_name!==name?p.lender_name:(p.location||''));
     var initials=name.split(/\s+/).map(function(w){return w.charAt(0);}).join('').slice(0,2).toUpperCase();
-    var logo=p.logo_url?('<img src="'+esc(p.logo_url)+'" alt="">'):(p.avatar_url?('<img src="'+esc(p.avatar_url)+'" alt="">'):esc(initials));
+    // A real logo is any uploaded image that is NOT the Pegasus house placeholder.
+    var isHouse=function(u){ return !u || /\/assets\/brand\//i.test(u) || /pegasus-(symbol|mark|emblem|watermark)/i.test(u); };
+    var realLogo = (!isHouse(p.logo_url)&&p.logo_url) || (!isHouse(p.avatar_url)&&p.avatar_url) || '';
+    var logoEmpty = !realLogo;
+    var logo = realLogo
+      ? '<img src="'+esc(realLogo)+'" alt="">'
+      : (p.unclaimed ? '<span class="logo-ph">Your<br>logo here</span>' : esc(initials));
     var types=(p.loan_types||[]).map(function(t){ return '<span class="chip">'+esc(TYPES[t]||t)+'</span>'; }).join('');
     var st=(p.states&&p.states.length)?(p.states.length>=45?(p.states.length+' states'):(p.states.slice(0,8).join(', ')+(p.states.length>8?' +'+(p.states.length-8):''))):((p.unclaimed&&!/nationwide/i.test(p.notes||''))?'See lender’s site':'Nationwide');
     var ar=amountRange(p); if(ar==='Flexible'&&p.unclaimed) ar='See lender’s site';
@@ -241,7 +249,7 @@ h1{font-weight:800;font-size:clamp(30px,4.6vw,48px);line-height:1.05;letter-spac
     var acts=p.unclaimed
       ? (site?'<a class="btn sm" href="'+esc(site)+'" target="_blank" rel="noopener nofollow">Visit lender</a>':'')+(p.company_slug?'<a class="btn ghost sm" href="/claim?presence='+encodeURIComponent(p.company_slug)+'">Your company? Claim it</a>':'')
       : '<a class="btn sm" href="'+(p.company_slug?(href+'#send'):('/find-a-lender'+(firstType?('?type='+encodeURIComponent(firstType)):'')))+'">Send a deal</a>'+(href!=='#'?'<a class="btn ghost sm" href="'+href+'">View lender</a>':'');
-    return '<div class="card'+(p.unclaimed?' unclaimed':'')+'"><a class="lender" href="'+href+'"><span class="logo">'+logo+'</span><span><span class="lname">'+esc(name)+'</span><br><span class="lsub">'+esc(who)+'</span></span></a>'+
+    return '<div class="card'+(p.unclaimed?' unclaimed':'')+'"><a class="lender" href="'+href+'"><span class="logo'+(logoEmpty&&p.unclaimed?' logo-empty':'')+'">'+logo+'</span><span><span class="lname">'+esc(name)+'</span><br><span class="lsub">'+esc(who)+'</span></span></a>'+
       (p.unclaimed?'<div class="uc">Unclaimed · from the lender’s public website</div>':foundingBadge(p))+
       '<div class="pname">'+esc(p.program_name||'')+'</div>'+
       (types?'<div class="chips">'+types+'</div>':'')+
