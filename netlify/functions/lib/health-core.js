@@ -413,13 +413,92 @@ function checkSecurity() {
 }
 
 /* ════════════════════════════════════════════════════════════
+   CHECK 8 — Content Quality (public directories)
+   Watches for the presentation problems a human would otherwise
+   catch only by browsing: one lender dominating /lending-programs,
+   and public cards with no real logo (Pegasus placeholder).
+   ════════════════════════════════════════════════════════════ */
+async function checkContent() {
+  const issues = [];
+  if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    return { name: 'Content Quality', icon: '🧭', score: 100, issues: [iss('INFO', 'Content', 'Supabase not configured — content checks skipped')] };
+  }
+  const admin = createClient(
+    process.env.SUPABASE_URL,
+    process.env.SUPABASE_SERVICE_ROLE_KEY,
+    { auth: { persistSession: false } }
+  );
+  const isHouse = (u) => !u || /\/assets\/brand\//i.test(u) || /pegasus-(symbol|mark|emblem|watermark)/i.test(u);
+
+  /* Lending programs — lender concentration + missing logos */
+  try {
+    const { data, error } = await admin
+      .from('public_lender_programs')
+      .select('company_presence_id,company_slug,profile_slug,user_id,company_name,company_page_name,lender_name,logo_url,avatar_url,unclaimed');
+    if (error) throw error;
+    const rows = data || [];
+    const total = rows.length;
+    const groups = {};
+    let noLogo = 0;
+    rows.forEach((r) => {
+      const key = r.company_presence_id
+        || (r.company_slug ? 'c:' + r.company_slug : '')
+        || (r.profile_slug ? 'p:' + r.profile_slug : '')
+        || (r.user_id ? 'u:' + r.user_id : '')
+        || ('n:' + String(r.company_page_name || r.company_name || r.lender_name || '').toLowerCase().trim());
+      const name = r.company_page_name || r.company_name || r.lender_name || 'Lender';
+      if (!groups[key]) groups[key] = { name, count: 0 };
+      groups[key].count++;
+      if (isHouse(r.logo_url) && isHouse(r.avatar_url)) noLogo++;
+    });
+    const arr = Object.keys(groups).map((k) => groups[k]).sort((a, b) => b.count - a.count);
+    if (total > 0 && arr[0]) {
+      const top = arr[0];
+      const pct = Math.round((100 * top.count) / total);
+      if (top.count >= 6 && pct >= 50) {
+        issues.push(iss('WARNING', 'Directory balance', `${top.name} publishes ${top.count} of ${total} lending programs (${pct}%) — one lender dominates /lending-programs`));
+      } else if (top.count >= 8) {
+        issues.push(iss('INFO', 'Directory balance', `${top.name} has ${top.count} lending programs (grouped into one card)`));
+      }
+    }
+    if (noLogo > 0) {
+      issues.push(iss('INFO', 'Logos', `${noLogo} lending card(s) have no real logo (initials / "Your logo here")`));
+    }
+  } catch (e) {
+    issues.push(iss('INFO', 'Content', `Lending-program check skipped: ${e.message}`));
+  }
+
+  /* Public company pages missing a logo */
+  try {
+    const { data, error } = await admin
+      .from('presences')
+      .select('name,logo_url')
+      .eq('presence_type', 'company')
+      .eq('visibility', 'public_preview')
+      .eq('status', 'active')
+      .limit(5000);
+    if (!error) {
+      const rows = data || [];
+      const missing = rows.filter((r) => isHouse(r.logo_url)).length;
+      if (rows.length > 0 && missing > 0) {
+        const pct = Math.round((100 * missing) / rows.length);
+        issues.push(iss('INFO', 'Logos', `${missing} of ${rows.length} public company pages (${pct}%) have no logo`));
+      }
+    }
+  } catch (_) { /* non-fatal */ }
+
+  const warn = issues.filter((i) => i.severity === 'WARNING').length;
+  return { name: 'Content Quality', icon: '🧭', score: Math.max(0, 100 - warn * 10), issues };
+}
+
+/* ════════════════════════════════════════════════════════════
    RUN ALL CHECKS
    Returns combined report object.
    ════════════════════════════════════════════════════════════ */
 async function runAllChecks(baseUrl, source = 'manual') {
   const BASE = baseUrl || process.env.URL || process.env.DEPLOY_URL || 'https://pegasuscapitalnetwork.com';
 
-  const [routeResult, authResult, linkResult, envResult, stripeResult, supabaseResult, securityResult] =
+  const [routeResult, authResult, linkResult, envResult, stripeResult, supabaseResult, securityResult, contentResult] =
     await Promise.all([
       checkRoutes(BASE),
       checkAuth(BASE),
@@ -428,9 +507,10 @@ async function runAllChecks(baseUrl, source = 'manual') {
       checkStripe(),
       checkSupabase(),
       Promise.resolve(checkSecurity()),
+      checkContent(),
     ]);
 
-  const allChecks = [routeResult, authResult, linkResult, envResult, stripeResult, supabaseResult, securityResult];
+  const allChecks = [routeResult, authResult, linkResult, envResult, stripeResult, supabaseResult, securityResult, contentResult];
   const allIssues = allChecks.flatMap(c => c.issues || []);
 
   const critical = allIssues.filter(i => i.severity === 'CRITICAL').length;
@@ -466,6 +546,7 @@ async function runAllChecks(baseUrl, source = 'manual') {
       stripe:    stripeResult,
       supabase:  supabaseResult,
       security:  securityResult,
+      content:   contentResult,
     },
     delivery: {
       emailConfigured:    !!process.env.HEALTH_REPORT_EMAIL,
