@@ -115,6 +115,21 @@ h1{font-weight:800;font-size:clamp(40px,7vw,74px);line-height:1.02;letter-spacin
  .w-tags{margin:10px 0 12px}
  .w-live{margin:0 0 10px}
 }
+/* consistent top menu + hero search (homepage styling, same destinations as every page) */
+.topnav{display:flex;gap:2px;align-items:center}
+.topnav a{font-size:14px;color:var(--ink2);font-weight:500;padding:8px 12px;border-radius:8px;transition:color .15s,background .15s}
+.topnav a:hover{color:var(--navy);background:var(--bg2)}
+.top-cta{display:flex;gap:9px;align-items:center}
+.si.pri{background:var(--navy);color:#fff;border-color:var(--navy)}
+.si.pri:hover{color:#fff;border-color:var(--navy-d)}
+@media(max-width:860px){.topnav{display:none}}
+.hero-search{display:flex;align-items:center;gap:10px;max-width:520px;margin:26px auto 0;background:#fff;border:1px solid var(--line);border-radius:12px;padding:5px 6px 5px 16px;box-shadow:var(--shadow-sm)}
+.hero-search:focus-within{border-color:var(--navy-l)}
+.hero-search svg{width:19px;height:19px;color:var(--muted);flex:0 0 auto}
+.hero-search input{flex:1;border:0;outline:0;background:transparent;font-family:var(--sans);font-size:15.5px;color:var(--ink);padding:12px 0}
+.hero-search input::placeholder{color:var(--muted)}
+.hero-search button{flex:0 0 auto;border:0;border-radius:9px;background:var(--navy);color:#fff;font-family:var(--sans);font-weight:700;font-size:14px;padding:11px 18px;cursor:pointer}
+@media(max-width:640px){.hero-search{margin-top:18px}.hero-search button{padding:11px 14px}}
 </style><script src="/js/i18n.js?v=20261021e"></script><script src="/js/ticker.js?v=20261021b" defer></script>
 <script type="application/ld+json">
 {
@@ -140,6 +155,13 @@ h1{font-weight:800;font-size:clamp(40px,7vw,74px);line-height:1.02;letter-spacin
       <img src="/assets/brand/pegasus-mark.png" alt="Pegasus" style="height:26px;width:auto;display:block">
       <span class="wm">Pegasus</span>
     </a>
+    <nav class="topnav" aria-label="Main">
+      <a href="/businesses">Directory</a>
+      <a href="/find-a-lender">Capital</a>
+      <a href="/ai-directory.html">AI</a>
+      <a href="/private-network.html">Private</a>
+      <a href="/how-it-works.html">Learn</a>
+    </nav>
     <div class="top-actions"><a class="si" href="/signin.html">Sign in</a><a class="top-join" href="/signup.html">Join free</a></div>
   </div>
 </header>
@@ -149,6 +171,11 @@ h1{font-weight:800;font-size:clamp(40px,7vw,74px);line-height:1.02;letter-spacin
   <div class="eyebrow">Welcome to Pegasus</div>
   <h1>Connect people.<br>Move business forward.</h1>
   <p class="sub">Discover companies, lenders, investors, founders and partners across real estate finance and AI. Build relationships and advance real opportunities.</p>
+  <form class="hero-search" role="search" onsubmit="var q=this.querySelector('input').value.trim();location.href='/search'+(q?('?q='+encodeURIComponent(q)):'');return false;">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+    <input type="search" placeholder="Search companies, lenders, people…" aria-label="Search Pegasus" autocomplete="off">
+    <button type="submit">Search</button>
+  </form>
   <div class="hero-actions">
     <a class="hero-cta" href="/signup.html">Join Pegasus — Free Profile →</a>
     <a class="hero-cta secondary" href="/businesses">Explore Businesses →</a>

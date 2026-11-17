@@ -345,6 +345,11 @@
   status = 200
 
 [[redirects]]
+  from = "/search"
+  to = "/search.html"
+  status = 200
+
+[[redirects]]
   from = "/visitors"
   to = "/visitors.html"
   status = 200
