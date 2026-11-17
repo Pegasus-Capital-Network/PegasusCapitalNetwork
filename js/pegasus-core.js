@@ -94,14 +94,61 @@
     private:{label:'Partnerships',items:[['Global Capital Partners','/private-network.html#register','International investment and real estate relationships'],['Real-World Assets','/rwa-network.html','Projects and service providers'],['Tokenization Partners','/rwa-partners.html','Technology and compliance partners'],['Capital Partnerships','/private-network.html','']]}
   };
   window.PEG_WORLDS=PEG_WORLDS;
+  // --- UNIFIED PUBLIC MENU: one structure for every page (top bar + mobile) ---
+  var NAV_GROUPS=[
+    ['Directory',[
+      ['Business Directory','/businesses','2,600+ companies'],
+      ['Lender Directory','/lenders','Ranked by real lending'],
+      ['Lender Rankings','/rankings','HMDA 2025'],
+      ['Real Estate Agents','/realtors.html','Agents & brokers'],
+      ['Members','/members','People in the network'],
+      ['Lending Programs','/lending-programs.html','What lenders publish'],
+      ['Jobs & Talent','/jobs','Roles across the network']
+    ]],
+    ['Capital',[
+      ['Find a Lender','/find-a-lender','Match by state & amount'],
+      ['Get Financing','/get-financing.html','Bridge, DSCR, construction'],
+      ['Invest in Loans','/pegasus-direct-lending.html','Real estate-backed'],
+      ['Financing Requests','/deal-requests','Live borrower requests']
+    ]],
+    ['AI',[
+      ['AI Directory','/ai-directory.html','Who exists'],
+      ['Seeking Capital','/seeking-capital','Raising now'],
+      ['Capital Providers','/capital-providers','Who funds AI'],
+      ['Needs Board','/ai-needs.html','Demand meets builders']
+    ]],
+    ['Private',[
+      ['Private Network','/private-network.html','Family offices & investors'],
+      ['Tokenization','/private-network.html#rwa','Real-world assets'],
+      ['Family Offices','/private-network.html#register','Introduce your mandate']
+    ]],
+    ['Learn',[
+      ['How It Works','/how-it-works.html','The system explained'],
+      ['Capital Academy','/capital-academy.html','Finance fundamentals'],
+      ['FAQ','/faq.html','Common questions'],
+      ['About','/about.html','About Pegasus'],
+      ['Contact','/contact.html','']
+    ]]
+  ];
+  window.PEG_NAV_GROUPS=NAV_GROUPS;
+  function navGroupHTML(label,items){
+    return '<div class="nav-group"><span tabindex="0" role="button" aria-haspopup="true">'+label+' \u25BE</span><div class="nav-drop">'+items.map(function(i){ return '<a href="'+i[1]+'"><span>'+i[0]+'</span>'+(i[2]?'<small>'+i[2]+'</small>':'')+'</a>'; }).join('')+'</div></div>';
+  }
   function worldLinksHTML(){
-    var G=function(k){ var w=PEG_WORLDS[k]; return '<div class="nav-group"><span tabindex="0" role="button" aria-haspopup="true">'+w.label+' \u25BE</span><div class="nav-drop">'+w.items.map(function(i){ return '<a href="'+i[1]+'"><span>'+i[0]+'</span>'+(i[2]?'<small>'+i[2]+'</small>':'')+'</a>'; }).join('')+'</div></div>'; };
     var feedOn=(/^\/(?:(?:ar|zh|ru|es|fr)\/)?feed/.test(location.pathname))?' class="on"':'';
-    var jobsOn=(/^\/(?:(?:ar|zh|ru|es|fr)\/)?jobs/.test(location.pathname))?' class="on"':'';
-    return '<a href="/feed"'+feedOn+'>Feed</a>'+G('capital')+G('ai')+G('private')+'<a href="/jobs"'+jobsOn+'>Jobs</a>';
+    return '<a href="/feed"'+feedOn+'>Feed</a>'+NAV_GROUPS.map(function(g){ return navGroupHTML(g[0],g[1]); }).join('');
   }
   function worldDrawerHTML(){
-    return '<a href="/feed"><b>Network Feed</b></a><a href="/jobs"><b>Jobs &amp; Talent</b></a>'+['capital','ai','private'].map(function(k){ var w=PEG_WORLDS[k]; return '<div class="mob-sec">'+({capital:'Capital & Real Estate',ai:'Pegasus AI',private:'Projects & Partnerships'})[k]+'</div>'+w.items.map(function(i){ return '<a href="'+i[1]+'">'+i[0]+'</a>'; }).join(''); }).join('');
+    return '<a href="/feed"><b>Network Feed</b></a>'+NAV_GROUPS.map(function(g){ return '<div class="mob-sec">'+g[0]+'</div>'+g[1].map(function(i){ return '<a href="'+i[1]+'">'+i[0]+'</a>'; }).join(''); }).join('');
+  }
+  // Navigate to the search results page from any search box in the nav.
+  function goSearch(ev){
+    if(ev&&ev.preventDefault) ev.preventDefault();
+    var inp=(ev&&ev.target&&ev.target.querySelector)?ev.target.querySelector('input'):null;
+    if(!inp) inp=document.getElementById('pubSearchInput');
+    var q=inp?String(inp.value||'').trim():'';
+    location.href='/search'+(q?('?q='+encodeURIComponent(q)):'');
+    return false;
   }
 
   // --- public nav (full-site mega menu) ---
@@ -111,6 +158,7 @@
     const learn=G('Learn',[['How Pegasus Works','/how-it-works.html','The system explained'],['Growth Capital','/growth-capital.html','Financing & programs'],['Capital Sessions','/capital-sessions.html','Live institutional briefings'],['Capital Academy','/capital-academy.html','Finance fundamentals'],['Network Badge','/network-badge.html','Show your Pegasus connection'],['FAQ','/faq.html','Common questions']]);
     return `<a href="#maincontent" class="skip-link" onclick="var m=document.getElementById('maincontent')||document.querySelector('main,section,.section,.auth-wrap,.ar-wrap,.view');if(m){m.setAttribute('tabindex','-1');m.focus();}">Skip to content</a><nav class="pub-nav">
       <a class="brand" href="/"><img class="brand-mark" src="/assets/brand/pegasus-mark.png" alt="Pegasus"><span>Pegasus</span></a>
+      <form class="pub-search" role="search" onsubmit="return Pegasus.goSearch(event)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg><input type="search" name="q" id="pubSearchInput" placeholder="Search companies, lenders, people…" autocomplete="off" aria-label="Search Pegasus"></form>
       <div class="pub-links">${worldLinksHTML()}</div>
       <div class="nav-cta" id="pub-nav-cta"><a class="btn btn-ghost" id="nav-signin-btn" href="/signin.html">Sign In</a><a class="btn btn-pri nav-create" id="nav-create-btn" href="/signup.html">Create Free Profile</a></div>
       <button class="mob-menu-btn" id="mobMenuBtn" aria-label="Menu"><span></span><span></span><span></span></button>
@@ -119,10 +167,8 @@
     <div class="mob-drawer" id="mobDrawer">
       <div class="mob-drawer-head"><img src="/assets/brand/pegasus-wordmark.png" style="height:24px"><button class="mob-drawer-close" id="mobClose" aria-label="Close menu">✕</button></div>
       <div class="mob-drawer-nav" id="mobDrawerNav">
+        <form class="mob-search" role="search" onsubmit="return Pegasus.goSearch(event)"><input type="search" name="q" placeholder="Search companies, lenders, people…" autocomplete="off" aria-label="Search Pegasus"></form>
         ${worldDrawerHTML()}
-        <div class="mob-sec">More</div>
-        <a href="/how-it-works.html">How it works</a>
-        <a href="/about.html">About</a><a href="/contact.html">Contact</a><a href="/faq.html">FAQ</a>
       </div>
       <div class="mob-drawer-foot" id="mobDrawerFoot"><a class="btn btn-ghost" href="/signin.html">Sign In</a><a class="btn btn-pri nav-create" href="/signup.html">Create Profile</a></div>
     </div>
@@ -332,10 +378,10 @@
     return `<footer class="footer">
       <div style="max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr 1fr;gap:30px;margin-bottom:32px">
         <div><div class="brand" style="margin-bottom:12px"><img class="brand-mark" src="/assets/brand/pegasus-mark.png" alt="Pegasus"><span>Pegasus</span></div><div style="font-size:12px;color:var(--text3);line-height:1.6;max-width:240px">Connect with professionals, businesses, and opportunities across real estate finance, AI, and partnerships.</div>${socRow}</div>
-        ${col('Capital & Real Estate',[['Realtors','/realtors.html'],['Lenders Directory','/lenders'],['Find Financing','/find-a-lender'],['Borrowers','/borrowers.html'],['Lending Programs','/lending-programs.html'],['Lender Rankings','/rankings'],['Top Lenders 2025','/awards/top-lenders-2025'],['Financing Requests','/deal-requests.html']])}
-        ${col('Pegasus AI',[['AI Network','/ai-network.html'],['Needs Board','/ai-needs.html'],['Intelligence','/intel.html']])}
-        ${col('Partnerships & Account',[['Capital Partnerships','/private-network.html'],['How It Works','/how-it-works.html'],['Membership','/membership.html'],['Network Feed','/feed']])}
-        ${col('Company',[['About','/about.html'],['Contact','/contact.html'],['FAQ','/faq.html'],['Trust & Safety','/trust-and-safety.html']])}
+        ${col('Directory',[['Business Directory','/businesses'],['Lender Directory','/lenders'],['Lender Rankings','/rankings'],['Real Estate Agents','/realtors.html'],['Members','/members'],['Lending Programs','/lending-programs.html']])}
+        ${col('Capital',[['Find a Lender','/find-a-lender'],['Get Financing','/get-financing.html'],['Invest in Loans','/pegasus-direct-lending.html'],['Financing Requests','/deal-requests']])}
+        ${col('AI',[['AI Directory','/ai-directory.html'],['Seeking Capital','/seeking-capital'],['Capital Providers','/capital-providers'],['Needs Board','/ai-needs.html']])}
+        ${col('Private & Company',[['Private Network','/private-network.html'],['How It Works','/how-it-works.html'],['About','/about.html'],['Contact','/contact.html'],['FAQ','/faq.html'],['Trust & Safety','/trust-and-safety.html']])}
       </div>
       <div class="footer-legal">Pegasus Capital Network is a membership marketplace platform operated by Pegasus Lenders Group LLC. Pegasus is not a mortgage lender, mortgage loan originator (MLO), broker-dealer, real estate broker, or registered investment advisor. All connections made through the Pegasus platform are member-directed. Users must consult licensed professionals for all financial and legal decisions. \u00A9 2026 Pegasus Lenders Group LLC. &nbsp;·&nbsp; <a href="/privacy.html" style="color:var(--text3)">Privacy</a> &nbsp;·&nbsp; <a href="/terms.html" style="color:var(--text3)">Terms</a> &nbsp;·&nbsp; <a href="/disclosures.html" style="color:var(--text3)">Disclosures</a></div></footer>`;
   }
@@ -975,7 +1021,7 @@
     boot,
     get session(){ return sessionProxy(); },
     tier:()=>Store.get().tier, meta:T, limit:lim, store:Store,
-    fmt, toast, esc, safeUrl, mountApp, mountPublic, publicNav, footer, modal, closeModal, dismissModal, clearDraft, clearModalFields, modalDirty, guardUnsaved,
+    fmt, toast, esc, safeUrl, mountApp, mountPublic, publicNav, footer, goSearch, modal, closeModal, dismissModal, clearDraft, clearModalFields, modalDirty, guardUnsaved,
     toggleNotif, markNotifs, toggleAccount, copyProfileLink, profileUrl, ownProfilePath, slugify, presencePath, opportunityPath, engageOpen, shareSheet, opportunityShare, buildShareCard, inviteOpen,
     refreshNav: pegApplyAuthedNav,
     setTier(t){ Store.set({tier:t}); },
