@@ -360,6 +360,11 @@
   status = 200
 
 [[redirects]]
+  from = "/infrastructure/listing/:slug"
+  to = "/infrastructure-listing.html?slug=:slug"
+  status = 200
+
+[[redirects]]
   from = "/visitors"
   to = "/visitors.html"
   status = 200

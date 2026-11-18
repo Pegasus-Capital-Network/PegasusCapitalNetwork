@@ -97,6 +97,27 @@ Pegasus.boot(async function(){
    '<div class="sb-actions"><button class="btn btn-pri" type="submit" id="sbSubmit">Submit for review</button><a class="btn btn-ghost" href="/infrastructure">Cancel</a></div>'+
    '</form>';
 
+  // Edit mode (?id=) — owner editing an existing listing
+  var editId=null; try{ editId=new URLSearchParams(location.search).get('id'); }catch(_){}
+  if(editId){
+    try{
+      var mr=await c.rpc('get_my_infra_listings'); var mine=(mr&&!mr.error&&mr.data)||[];
+      var L=mine.filter(function(x){ return x.id===editId; })[0];
+      if(L){
+        document.querySelector('.sb-h1').textContent='Edit listing';
+        var setv=function(id,v){ var el=document.getElementById(id); if(el&&v!=null) el.value=v; };
+        setv('f_category',L.category); setv('f_txn',L.transaction_type); setv('f_role',L.role); setv('f_title',L.title);
+        setv('f_summary',L.summary); setv('f_location',L.location); setv('f_market',L.market);
+        setv('f_mw',L.mw_capacity); setv('f_it',L.it_load_mw); setv('f_power',L.power_status); setv('f_delivery',L.expected_delivery);
+        setv('f_acre',L.acreage); setv('f_sqft',L.building_sqft); setv('f_dev',L.dev_status); setv('f_evidence',L.evidence_url);
+        document.getElementById('f_pricedisc').checked=!!L.price_disclosed; setv('f_ask',L.asking_price); setv('f_budget',L.budget);
+        setv('f_cname',L.contact_name); setv('f_cemail',L.contact_email); setv('f_cphone',L.contact_phone);
+        document.getElementById('sbSubmit').textContent='Save changes';
+        if(L.verification_status==='published'){ var n=document.createElement('div'); n.className='sb-note'; n.innerHTML='<b>Heads up:</b> this listing is published. Saving changes returns it to review before it is public again.'; var sub=document.querySelector('.sb-sub'); sub.parentNode.insertBefore(n, sub.nextSibling); }
+      } else { editId=null; }
+    }catch(_){ editId=null; }
+  }
+
   function num(id){ var v=(document.getElementById(id).value||'').replace(/[^0-9.]/g,''); return v===''?null:v; }
   function val(id){ return (document.getElementById(id).value||'').trim()||null; }
 
@@ -118,13 +139,18 @@ Pegasus.boot(async function(){
       contact_name:val('f_cname'), contact_email:val('f_cemail'), contact_phone:val('f_cphone')
     };
     try{
-      var r=await c.rpc('submit_infra_listing',{p:payload});
+      var r = editId ? await c.rpc('update_my_infra_listing',{p_id:editId,p:payload})
+                     : await c.rpc('submit_infra_listing',{p:payload});
       if(r&&r.error) throw r.error;
-      root.innerHTML='<div class="sb-ok"><div class="big">Submitted — pending review</div>'+
-        '<div style="font-size:13.5px;color:var(--text2);line-height:1.6;max-width:46ch;margin:0 auto 18px">Thanks. Your submission is in the queue for verification and will publish to the marketplace once reviewed. Nothing publishes automatically.</div>'+
-        '<a class="btn btn-pri" href="/infrastructure">Back to the marketplace</a> <a class="btn btn-ghost" href="/infrastructure-submit.html">Submit another</a></div>';
+      var big = editId ? 'Changes saved' : 'Submitted — pending review';
+      var msg = editId
+        ? 'Your changes are saved. If the listing was published, it has returned to review and will be public again once re-verified. Nothing publishes automatically.'
+        : 'Thanks. Your submission is in the queue for verification and will publish to the marketplace once reviewed. Nothing publishes automatically.';
+      root.innerHTML='<div class="sb-ok"><div class="big">'+big+'</div>'+
+        '<div style="font-size:13.5px;color:var(--text2);line-height:1.6;max-width:46ch;margin:0 auto 18px">'+msg+'</div>'+
+        '<a class="btn btn-pri" href="/dashboard.html#infrastructure">Go to my workspace</a> <a class="btn btn-ghost" href="/infrastructure">Marketplace</a></div>';
       window.scrollTo({top:0,behavior:'smooth'});
-    }catch(ex){ err.textContent=(ex&&ex.message)?('Could not submit: '+ex.message):'Could not submit. Please try again.'; btn.disabled=false; btn.textContent='Submit for review'; }
+    }catch(ex){ err.textContent=(ex&&ex.message)?('Could not save: '+ex.message):'Could not save. Please try again.'; btn.disabled=false; btn.textContent=editId?'Save changes':'Submit for review'; }
   });
 });
 </script>
