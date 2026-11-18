@@ -1,0 +1,131 @@
+<!DOCTYPE html><html lang="en"><head>
+<title>Submit an asset or requirement — AI Infrastructure &amp; Energy — Pegasus</title>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="robots" content="noindex,follow">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500&family=IBM+Plex+Serif:wght@0,300;0,400;0,600&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/pegasus.css?v=dealroom-entitlements-20260524-1529">
+<link rel="icon" href="/assets/brand/favicon.ico" sizes="any"><meta name="theme-color" content="#08111C">
+<style>
+.sb-wrap{max-width:720px;margin:36px auto 90px;padding:0 20px}
+.sb-h1{font-family:var(--serif);font-weight:300;font-size:30px;color:var(--text);margin:0 0 4px}
+.sb-sub{font-size:13.5px;color:var(--text2);margin-bottom:8px;line-height:1.6}
+.sb-note{font-size:12px;color:var(--text3);background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:11px 13px;line-height:1.55;margin:14px 0 22px}
+.sb-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:560px){.sb-grid{grid-template-columns:1fr}}
+.fld{display:flex;flex-direction:column;gap:6px}
+.fld.full{grid-column:1/-1}
+.fld label{font-size:11px;font-family:var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--text3)}
+.fld input,.fld select,.fld textarea{border:1px solid var(--border);border-radius:10px;background:var(--bg2);padding:10px 12px;font-family:var(--sans);font-size:14px;color:var(--text);outline:0}
+.fld input:focus,.fld select:focus,.fld textarea:focus{border-color:var(--blue)}
+.fld textarea{min-height:86px;resize:vertical}
+.fld .hint{font-size:11px;color:var(--text3)}
+.sb-sec{font-size:11px;font-family:var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin:26px 0 2px;grid-column:1/-1}
+.sb-check{display:flex;align-items:center;gap:9px;font-size:13px;color:var(--text2)}
+.sb-actions{display:flex;gap:10px;align-items:center;margin-top:24px}
+.sb-err{color:#c0392b;font-size:13px;margin-top:10px;min-height:16px}
+.sb-ok{text-align:center;border:1px solid var(--border);border-radius:16px;padding:40px 24px}
+.sb-ok .big{font-family:var(--serif);font-weight:300;font-size:24px;color:var(--text);margin-bottom:10px}
+</style>
+<script src="/js/i18n.js?v=20261021e"></script><script src="/js/ticker.js?v=20261021b" defer></script>
+</head><body>
+<div class="sb-wrap" id="sbRoot"><div style="color:var(--text3);padding:24px">Loading…</div></div>
+
+<script src="/js/pegasus-config.js?v=20261021a"></script>
+<script src="/js/pegasus-supabase.js"></script>
+<script src="/js/pegasus-entitlements.js"></script>
+<script src="/js/pegasus-data.js"></script>
+<script src="/js/pegasus-content.js"></script>
+<script src="/js/pegasus-match.js"></script>
+<script src="/js/pegasus-store.js"></script>
+<script src="/js/pegasus-api.js"></script>
+<script src="/js/pegasus-forms.js"></script>
+<script src="/js/pegasus-auth.js?v=20261020b"></script>
+<script src="/js/pegasus-core.js?v=20261117b"></script>
+<script src="/js/pegasus-pages.js"></script>
+<script>
+Pegasus.boot(async function(){
+  Pegasus.mountPublic('');
+  var esc=Pegasus.esc, root=document.getElementById('sbRoot');
+  document.body.insertAdjacentHTML('beforeend', Pegasus.footer());
+  var c=null; try{ c=await window.PegSB.ready; }catch(e){ c=null; }
+  var uid=null; if(c){ try{ var u=await c.auth.getUser(); uid=u&&u.data&&u.data.user&&u.data.user.id; }catch(e){} }
+  if(!uid){
+    try{ localStorage.setItem('pegasus.redirectAfterAuth','/infrastructure-submit.html'); }catch(_){}
+    root.innerHTML='<div class="sb-ok"><div class="big">Sign in to submit</div><div style="font-size:13.5px;color:var(--text2);margin-bottom:18px">Browsing is open to everyone. Submitting an asset or requirement takes a free Pegasus profile so listers and buyers are accountable.</div><a class="btn btn-pri" href="/signin.html?next='+encodeURIComponent('/infrastructure-submit.html')+'">Sign in</a> <a class="btn btn-ghost" href="/signup.html?next='+encodeURIComponent('/infrastructure-submit.html')+'">Create free profile</a></div>';
+    return;
+  }
+
+  var opt=function(v,l){ return '<option value="'+v+'">'+l+'</option>'; };
+  root.innerHTML=
+   '<h1 class="sb-h1">Submit an asset or requirement</h1>'+
+   '<div class="sb-sub">Data centers, powered land, power &amp; energy, equipment, or capital / JV. Submissions are reviewed before they publish — verified listings only.</div>'+
+   '<div class="sb-note">Only share what you are authorised to disclose. Keep confidential documents off this form; attach a link to a data room if you have one. Pegasus provides a platform and introductions — it is not a broker-dealer, securities intermediary or energy broker, and nothing here is an offer or commitment. Regulated activity is handled by licensed parties under separate agreement.</div>'+
+   '<form id="sbForm"><div class="sb-grid">'+
+     '<div class="fld full"><label>Category *</label><select id="f_category" required><option value="">Choose…</option>'+
+        opt('data_centers','Data Centers')+opt('powered_land','Powered Land')+opt('power_energy','Power &amp; Energy')+opt('buyers_sellers','Buyers &amp; Sellers')+opt('equipment_tech','Equipment &amp; Technology')+opt('capital_jv','Capital &amp; JV')+'</select></div>'+
+     '<div class="fld"><label>Transaction type</label><input id="f_txn" maxlength="60" placeholder="e.g. For sale, Lease, Acquisition, Requirement, JV"></div>'+
+     '<div class="fld"><label>Your role</label><select id="f_role"><option value="">—</option>'+opt('seller','Seller / owner')+opt('buyer','Buyer')+opt('tenant','Tenant')+opt('developer','Developer')+opt('investor','Investor')+opt('representative','Representative / broker')+opt('partner','Partner')+'</select></div>'+
+     '<div class="fld full"><label>Title *</label><input id="f_title" maxlength="160" required placeholder="e.g. 40 MW powered land, interconnection approved — Central Texas"></div>'+
+     '<div class="fld full"><label>Summary</label><textarea id="f_summary" maxlength="1200" placeholder="What it is, status, what you are looking for. No confidential details."></textarea></div>'+
+     '<div class="fld"><label>Location</label><input id="f_location" maxlength="120" placeholder="City / county, state"></div>'+
+     '<div class="fld"><label>Geographic market</label><input id="f_market" maxlength="120" placeholder="e.g. ERCOT, PJM, Northern Virginia"></div>'+
+
+     '<div class="sb-sec">Power &amp; capacity</div>'+
+     '<div class="fld"><label>Utility capacity (MW)</label><input id="f_mw" inputmode="decimal" placeholder="e.g. 40"></div>'+
+     '<div class="fld"><label>IT load (MW)</label><input id="f_it" inputmode="decimal" placeholder="e.g. 32"></div>'+
+     '<div class="fld"><label>Power connection status</label><select id="f_power"><option value="">—</option>'+opt('claimed','Claimed')+opt('requested','Requested')+opt('contracted','Contracted')+opt('energized','Energized')+'</select><span class="hint">Distinguish claimed vs. requested vs. contracted vs. energized.</span></div>'+
+     '<div class="fld"><label>Expected power delivery</label><input id="f_delivery" maxlength="60" placeholder="e.g. Q3 2026 / Energized"></div>'+
+
+     '<div class="sb-sec">Site / asset</div>'+
+     '<div class="fld"><label>Land acreage</label><input id="f_acre" inputmode="decimal" placeholder="e.g. 120"></div>'+
+     '<div class="fld"><label>Building sq ft</label><input id="f_sqft" inputmode="decimal" placeholder="e.g. 250000"></div>'+
+     '<div class="fld"><label>Development / operating status</label><input id="f_dev" maxlength="60" placeholder="e.g. Operating, Shovel-ready, Land, Planned"></div>'+
+     '<div class="fld"><label>Supporting evidence (link)</label><input id="f_evidence" maxlength="400" placeholder="Public doc or data-room URL"><span class="hint">Kept private; used for verification only.</span></div>'+
+
+     '<div class="sb-sec">Pricing</div>'+
+     '<div class="fld full"><label class="sb-check"><input type="checkbox" id="f_pricedisc"> Disclose a price / budget publicly</label></div>'+
+     '<div class="fld"><label>Asking price (USD)</label><input id="f_ask" inputmode="numeric" placeholder="Optional"></div>'+
+     '<div class="fld"><label>Budget (USD)</label><input id="f_budget" inputmode="numeric" placeholder="Optional"></div>'+
+
+     '<div class="sb-sec">Private contact (never shown publicly)</div>'+
+     '<div class="fld"><label>Contact name</label><input id="f_cname" maxlength="120"></div>'+
+     '<div class="fld"><label>Contact email</label><input id="f_cemail" maxlength="160" type="email"></div>'+
+     '<div class="fld"><label>Contact phone</label><input id="f_cphone" maxlength="40"></div>'+
+   '</div>'+
+   '<div class="sb-err" id="sbErr"></div>'+
+   '<div class="sb-actions"><button class="btn btn-pri" type="submit" id="sbSubmit">Submit for review</button><a class="btn btn-ghost" href="/infrastructure">Cancel</a></div>'+
+   '</form>';
+
+  function num(id){ var v=(document.getElementById(id).value||'').replace(/[^0-9.]/g,''); return v===''?null:v; }
+  function val(id){ return (document.getElementById(id).value||'').trim()||null; }
+
+  document.getElementById('sbForm').addEventListener('submit', async function(e){
+    e.preventDefault();
+    var err=document.getElementById('sbErr'); err.textContent='';
+    var cat=document.getElementById('f_category').value, title=val('f_title');
+    if(!cat){ err.textContent='Please choose a category.'; return; }
+    if(!title){ err.textContent='Please add a title.'; return; }
+    var btn=document.getElementById('sbSubmit'); btn.disabled=true; btn.textContent='Submitting…';
+    var payload={
+      category:cat, transaction_type:val('f_txn'), role:document.getElementById('f_role').value||null,
+      title:title, summary:val('f_summary'), location:val('f_location'), market:val('f_market'),
+      price_disclosed:document.getElementById('f_pricedisc').checked,
+      asking_price:num('f_ask'), budget:num('f_budget'),
+      mw_capacity:num('f_mw'), it_load_mw:num('f_it'),
+      power_status:document.getElementById('f_power').value||null, expected_delivery:val('f_delivery'),
+      acreage:num('f_acre'), building_sqft:num('f_sqft'), dev_status:val('f_dev'), evidence_url:val('f_evidence'),
+      contact_name:val('f_cname'), contact_email:val('f_cemail'), contact_phone:val('f_cphone')
+    };
+    try{
+      var r=await c.rpc('submit_infra_listing',{p:payload});
+      if(r&&r.error) throw r.error;
+      root.innerHTML='<div class="sb-ok"><div class="big">Submitted — pending review</div>'+
+        '<div style="font-size:13.5px;color:var(--text2);line-height:1.6;max-width:46ch;margin:0 auto 18px">Thanks. Your submission is in the queue for verification and will publish to the marketplace once reviewed. Nothing publishes automatically.</div>'+
+        '<a class="btn btn-pri" href="/infrastructure">Back to the marketplace</a> <a class="btn btn-ghost" href="/infrastructure-submit.html">Submit another</a></div>';
+      window.scrollTo({top:0,behavior:'smooth'});
+    }catch(ex){ err.textContent=(ex&&ex.message)?('Could not submit: '+ex.message):'Could not submit. Please try again.'; btn.disabled=false; btn.textContent='Submit for review'; }
+  });
+});
+</script>
+</body></html>

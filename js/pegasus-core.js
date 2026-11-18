@@ -117,6 +117,15 @@
       ['Capital Providers','/capital-providers','Who funds AI'],
       ['Needs Board','/ai-needs.html','Demand meets builders']
     ]],
+    ['Infrastructure',[
+      ['AI Infrastructure & Energy','/infrastructure','Data centers, power, land, capital'],
+      ['Data Centers','/infrastructure?cat=data_centers','Buy, lease, develop'],
+      ['Powered Land','/infrastructure?cat=powered_land','MW capacity & interconnection'],
+      ['Power & Energy','/infrastructure?cat=power_energy','Generation, grid, storage'],
+      ['Buyers & Sellers','/infrastructure?cat=buyers_sellers','Requirements & mandates'],
+      ['Capital & JV','/infrastructure?cat=capital_jv','Project finance & partnerships'],
+      ['Submit an asset','/infrastructure-submit.html','List or post a requirement']
+    ]],
     ['Private',[
       ['Private Network','/private-network.html','Family offices & investors'],
       ['Tokenization','/private-network.html#rwa','Real-world assets'],

@@ -75,7 +75,7 @@ h1{font-weight:800;font-size:clamp(40px,7vw,74px);line-height:1.02;letter-spacin
 .hero-note a{color:var(--navy);text-decoration:underline;text-underline-offset:2px}
 
 /* worlds */
-.worlds{position:relative;z-index:2;display:grid;grid-template-columns:repeat(3,1fr);gap:22px;padding:30px 0 10px}
+.worlds{position:relative;z-index:2;display:grid;grid-template-columns:repeat(2,1fr);gap:22px;padding:30px 0 10px;max-width:860px;margin:0 auto}
 @media(max-width:860px){.worlds{grid-template-columns:1fr;max-width:480px;margin:0 auto}}
 .world{position:relative;display:flex;flex-direction:column;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:30px 28px 26px;min-height:300px;box-shadow:var(--shadow-sm);transition:transform .22s cubic-bezier(.2,.7,.2,1),box-shadow .22s,border-color .22s;overflow:hidden}
 .world::before{content:"";position:absolute;left:0;right:0;top:0;height:4px;background:linear-gradient(90deg,var(--navy),var(--navy-l));transform:scaleX(0);transform-origin:left;transition:transform .3s cubic-bezier(.2,.7,.2,1)}
@@ -203,10 +203,18 @@ h1{font-weight:800;font-size:clamp(40px,7vw,74px);line-height:1.02;letter-spacin
       <div class="w-tags"><span>Startups</span><span>Investors</span><span>Clients</span><span>Intelligence</span></div>
       <span class="w-enter">Enter <span class="ar">&rarr;</span></span>
     </a>
+    <a class="world" href="/infrastructure">
+      <span class="w-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="5" rx="1"/><rect x="3" y="12" width="18" height="5" rx="1"/><path d="M7 6.5h0M7 14.5h0M11 6.5h4M11 14.5h4"/></svg></span>
+      <div class="w-label">Pegasus Infrastructure</div>
+      <div class="w-ttl">AI Infrastructure &amp; Energy</div>
+      <div class="w-desc">The physical layer of AI: data centers, powered land, power &amp; energy, equipment and the capital behind it. A verified marketplace for assets, buyer requirements and partnerships.</div>
+      <div class="w-tags"><span>Data Centers</span><span>Powered Land</span><span>Power</span><span>Capital &amp; JV</span></div>
+      <span class="w-enter">Enter <span class="ar">&rarr;</span></span>
+    </a>
     <a class="world" href="/rwa-network.html">
       <span class="w-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="7" r="2"/><circle cx="18" cy="7" r="2"/><path d="M4 20v-4a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v4"/><path d="M9 8h6"/></svg></span>
       <div class="w-label">Projects &amp; Partnerships</div>
-      <div class="w-ttl">Real-World Assets</div>
+      <div class="w-ttl">Tokenization</div>
       <div class="w-desc">Explore real estate projects, capital relationships, and technology and compliance partners working with real-world assets.</div>
       <div class="w-tags"><span>Projects</span><span>Investors</span><span>RWA</span></div>
       <span class="w-enter">Enter <span class="ar">&rarr;</span></span>
