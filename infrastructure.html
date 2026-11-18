@@ -106,8 +106,9 @@
     <div class="inf-sec-h">Market Intelligence</div>
     <div class="inf-intel">
       <h3 style="margin:0 0 6px;font-size:17px;color:var(--text)">Infrastructure Market Radar</h3>
-      <p style="font-size:13.5px;color:var(--text2);line-height:1.6;margin:0">A daily read on publicly reported data-center, power and energy activity — transactions, capacity announcements, interconnection and technology moves. Published intelligence is drawn from public sources and is clearly separated from assets available on Pegasus. No listing, price, MW figure or mandate here implies availability through Pegasus.</p>
-      <p style="font-size:12px;color:var(--text3);margin:12px 0 0">The Radar feed is being prepared. Want it in your inbox when it launches? <a href="/signup.html" style="color:var(--blue)">Create a free profile</a>.</p>
+      <p style="font-size:13.5px;color:var(--text2);line-height:1.6;margin:0">A daily read on publicly reported data-center, power and energy activity — transactions, capacity announcements, interconnection and technology moves. Published intelligence is drawn from public sources and is clearly separated from assets available on Pegasus. No signal, price, MW figure or mandate here implies availability through Pegasus.</p>
+      <div id="infSignals" style="margin-top:14px"></div>
+      <p id="infSignalsNote" style="font-size:12px;color:var(--text3);margin:12px 0 0">The Radar feed is being prepared. Want it when it launches? <a href="/signup.html" style="color:var(--blue)">Create a free profile</a>.</p>
     </div>
   </section>
 
@@ -187,7 +188,8 @@ Pegasus.boot(async function(){
       (r.summary?'<div class="sum">'+esc(r.summary)+'</div>':'')+
       (m.length?'<div class="inf-metrics">'+m.join('')+'</div>':'')+
       '<div class="acts"><span class="inf-verif">Verified</span><span style="flex:1"></span>'+
-      '<button class="btn btn-ghost" style="font-size:12px;padding:7px 14px" data-inq="'+esc(r.slug||r.id)+'" data-title="'+esc(r.title)+'">Request details</button></div></div>';
+      '<a class="btn btn-ghost" style="font-size:12px;padding:7px 14px" href="/infrastructure/listing/'+esc(r.slug)+'">View details</a>'+
+      '<button class="btn btn-pri" style="font-size:12px;padding:7px 14px" data-inq="'+esc(r.slug||r.id)+'" data-title="'+esc(r.title)+'">Request details</button></div></div>';
   }
 
   async function load(){
@@ -220,7 +222,7 @@ Pegasus.boot(async function(){
       location.href='/signin.html?next='+encodeURIComponent('/infrastructure'); return; }
     btn.disabled=true; btn.textContent='Sending…';
     try{
-      var lr=await c.rpc('get_infra_listing',{p_slug:curSlug});
+      var lr=await c.rpc('get_infra_listing_public',{p_slug:curSlug});
       var lid=(lr&&!lr.error&&lr.data&&lr.data[0]&&lr.data[0].id)||null;
       if(!lid) throw new Error('listing');
       var r=await c.rpc('create_infra_inquiry',{p_listing:lid,p_message:msg});
@@ -238,6 +240,22 @@ Pegasus.boot(async function(){
   // deep link ?cat=
   try{ var qc=new URLSearchParams(location.search).get('cat'); if(qc&&CATLABEL[qc]) active=qc; renderChips(); wireChips(); }catch(_){}
   load();
+
+  // Market Intelligence — published public signals (never listings)
+  (async function loadSignals(){
+    var host=document.getElementById('infSignals'), note=document.getElementById('infSignalsNote');
+    var rows=[];
+    try{ var r=await c.rpc('get_infra_market_signals',{p_limit:12}); rows=(r&&!r.error&&r.data)||[]; }catch(e){}
+    if(!rows.length) return;
+    if(note) note.style.display='none';
+    host.innerHTML=rows.map(function(s){
+      var meta=[s.source_name,s.signal_date].filter(Boolean).join(' · ');
+      var t=s.source_url?('<a href="'+esc(s.source_url)+'" target="_blank" rel="noopener nofollow" style="color:var(--text);text-decoration:none">'+esc(s.title)+' ↗</a>'):esc(s.title);
+      return '<div style="border-top:1px solid var(--border);padding:11px 0"><div style="font-size:13.5px;color:var(--text);font-weight:500">'+t+'</div>'+
+        (s.summary?'<div style="font-size:12.5px;color:var(--text2);line-height:1.5;margin-top:3px">'+esc(s.summary)+'</div>':'')+
+        '<div style="font-size:11px;color:var(--text3);font-family:var(--mono);margin-top:4px">Public source'+(meta?' · '+esc(meta):'')+'</div></div>';
+    }).join('');
+  })();
 });
 </script>
 </body></html>

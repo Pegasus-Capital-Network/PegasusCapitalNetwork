@@ -1,0 +1,111 @@
+<!DOCTYPE html><html lang="en"><head>
+<title>Infrastructure listing — Pegasus Capital Network</title>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="robots" content="noindex,follow">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500&family=IBM+Plex+Serif:wght@0,300;0,400;0,600&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/pegasus.css?v=dealroom-entitlements-20260524-1529">
+<link rel="icon" href="/assets/brand/favicon.ico" sizes="any"><meta name="theme-color" content="#08111C">
+<style>
+.il-wrap{max-width:860px;margin:28px auto 90px;padding:0 20px}
+.il-back{font-size:12.5px;color:var(--text3)}
+.il-badges{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 8px}
+.il-badge{font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;padding:3px 9px;border-radius:999px;border:1px solid var(--border2);color:var(--text2)}
+.il-verif{font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;color:#0a7a4f;display:inline-flex;align-items:center;gap:6px;padding:3px 9px;border:1px solid rgba(31,157,85,.35);border-radius:999px;background:rgba(31,157,85,.07)}
+.il-verif::before{content:"";width:6px;height:6px;border-radius:50%;background:#1f9d55}
+.il-h1{font-family:var(--serif);font-weight:300;font-size:clamp(26px,4vw,38px);line-height:1.1;color:var(--text);margin:4px 0 6px}
+.il-loc{font-size:14px;color:var(--text2)}
+.il-specs{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin:22px 0}
+@media(max-width:560px){.il-specs{grid-template-columns:1fr}}
+.il-spec{background:var(--bg1);padding:14px 16px}
+.il-spec .k{font-family:var(--mono);font-size:9.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);margin-bottom:4px}
+.il-spec .v{font-size:15px;color:var(--text);font-weight:600}
+.il-summary{font-size:14.5px;color:var(--text2);line-height:1.7;white-space:pre-wrap}
+.il-card{border:1px solid var(--border);border-radius:14px;padding:18px;background:var(--bg1);margin-top:22px}
+.il-card h3{font-size:15px;color:var(--text);margin:0 0 6px}
+.il-card p{font-size:13px;color:var(--text2);line-height:1.6;margin:0}
+.il-note{font-size:11.5px;color:var(--text3);line-height:1.65;border-top:1px solid var(--border);margin-top:26px;padding:18px 0 0}
+.il-modal-bg{position:fixed;inset:0;background:rgba(8,17,28,.55);display:none;align-items:center;justify-content:center;z-index:400;padding:20px}
+.il-modal-bg.on{display:flex}
+.il-modal{background:var(--bg1);border:1px solid var(--border2);border-radius:16px;max-width:460px;width:100%;padding:22px;box-shadow:var(--sh-lift)}
+.il-modal textarea{width:100%;min-height:96px;border:1px solid var(--border);border-radius:10px;background:var(--bg2);padding:10px 12px;font-family:var(--sans);font-size:13.5px;color:var(--text);outline:0}
+.il-modal .row{display:flex;gap:8px;justify-content:flex-end;margin-top:14px}
+</style>
+<script src="/js/i18n.js?v=20261021e"></script><script src="/js/ticker.js?v=20261021b" defer></script>
+</head><body>
+<main id="maincontent" class="il-wrap"><div id="ilRoot"><div style="color:var(--text3);padding:24px">Loading…</div></div></main>
+
+<div class="il-modal-bg" id="ilModalBg"><div class="il-modal">
+  <h3 style="margin:0 0 6px;font-size:17px;color:var(--text)">Request details</h3>
+  <p id="ilModalSub" style="font-size:13px;color:var(--text2);margin:0 0 12px">Your message reaches the lister through Pegasus. Your contact details stay private until you choose to share them.</p>
+  <textarea id="ilMsg" placeholder="Briefly describe your interest, mandate or question…"></textarea>
+  <div class="row"><button class="btn btn-ghost" id="ilCancel">Cancel</button><button class="btn btn-pri" id="ilSend">Send inquiry</button></div>
+</div></div>
+
+<script src="/js/pegasus-config.js?v=20261021a"></script>
+<script src="/js/pegasus-supabase.js"></script>
+<script src="/js/pegasus-entitlements.js"></script>
+<script src="/js/pegasus-data.js"></script>
+<script src="/js/pegasus-content.js"></script>
+<script src="/js/pegasus-match.js"></script>
+<script src="/js/pegasus-store.js"></script>
+<script src="/js/pegasus-api.js"></script>
+<script src="/js/pegasus-forms.js"></script>
+<script src="/js/pegasus-auth.js?v=20261020b"></script>
+<script src="/js/pegasus-core.js?v=20261118a"></script>
+<script src="/js/pegasus-pages.js"></script>
+<script>
+Pegasus.boot(async function(){
+  Pegasus.mountPublic('');
+  document.body.insertAdjacentHTML('beforeend', Pegasus.footer());
+  var esc=Pegasus.esc, root=document.getElementById('ilRoot');
+  var CATLABEL={data_centers:'Data Centers',powered_land:'Powered Land',power_energy:'Power & Energy',buyers_sellers:'Buyers & Sellers',equipment_tech:'Equipment & Technology',capital_jv:'Capital & JV'};
+  function money(n){ if(n==null) return null; n=Number(n); if(!isFinite(n)||n<=0) return null; if(n>=1e9)return '$'+(Math.round(n/1e8)/10)+'B'; if(n>=1e6)return '$'+(Math.round(n/1e5)/10)+'M'; if(n>=1e3)return '$'+Math.round(n/1e3)+'K'; return '$'+n; }
+  function slugOf(){ try{ var q=new URLSearchParams(location.search).get('slug'); if(q) return q; }catch(e){} var m=location.pathname.match(/\/infrastructure\/listing\/([^\/?#]+)/); return m?decodeURIComponent(m[1]):''; }
+
+  var c=null; try{ c=await window.PegSB.ready; }catch(e){ c=null; }
+  var slug=slugOf(), L=null;
+  try{ var r=await c.rpc('get_infra_listing_public',{p_slug:slug}); L=(r&&!r.error&&r.data&&r.data[0])||null; }catch(e){}
+  if(!L){ root.innerHTML='<div style="text-align:center;padding:60px 20px"><p style="font-family:var(--serif);font-weight:300;font-size:22px;color:var(--text2)">Listing not available</p><p style="color:var(--text3);font-size:13px;margin:8px 0 20px">It may be unpublished, under review, or the link has changed.</p><a class="btn btn-ghost" href="/infrastructure">Back to the marketplace →</a></div>'; return; }
+
+  var specs=[];
+  if(L.mw_capacity) specs.push(['Utility capacity', esc(L.mw_capacity)+' MW']);
+  if(L.it_load_mw) specs.push(['IT load', esc(L.it_load_mw)+' MW']);
+  if(L.power_status) specs.push(['Power status', esc(L.power_status.charAt(0).toUpperCase()+L.power_status.slice(1))]);
+  if(L.expected_delivery) specs.push(['Expected delivery', esc(L.expected_delivery)]);
+  if(L.acreage) specs.push(['Land', esc(L.acreage)+' acres']);
+  if(L.building_sqft) specs.push(['Building', esc(Number(L.building_sqft).toLocaleString())+' sq ft']);
+  if(L.dev_status) specs.push(['Status', esc(L.dev_status)]);
+  var price = L.price_disclosed ? (money(L.asking_price)||money(L.budget)) : null;
+  if(price) specs.push([L.budget&&!L.asking_price?'Budget':'Asking price', esc(price)]);
+  var loc=[L.location,L.market].filter(Boolean).join(' · ');
+
+  root.innerHTML=
+    '<a class="il-back" href="/infrastructure?cat='+esc(L.category)+'">← '+esc(CATLABEL[L.category]||'Marketplace')+'</a>'+
+    '<div class="il-badges"><span class="il-verif">Verified on Pegasus</span><span class="il-badge">'+esc(CATLABEL[L.category]||L.category)+'</span>'+
+      (L.transaction_type?'<span class="il-badge">'+esc(L.transaction_type)+'</span>':'')+(L.role?'<span class="il-badge">'+esc(L.role)+'</span>':'')+'</div>'+
+    '<h1 class="il-h1">'+esc(L.title)+'</h1>'+(loc?'<div class="il-loc">'+esc(loc)+'</div>':'')+
+    (specs.length?'<div class="il-specs">'+specs.map(function(s){return '<div class="il-spec"><div class="k">'+s[0]+'</div><div class="v">'+s[1]+'</div></div>';}).join('')+'</div>':'')+
+    (L.summary?'<div class="il-summary">'+esc(L.summary)+'</div>':'')+
+    (L.evidence_present?'<div class="il-card"><h3>Supporting documentation</h3><p>The lister has provided supporting evidence, reviewed during verification. Specific documents and data-room access are shared directly between the parties after an inquiry — not published here.</p></div>':'')+
+    '<div class="il-card"><h3>Interested?</h3><p style="margin-bottom:12px">Send an inquiry through Pegasus. Your contact details stay private until you decide to share them.</p><button class="btn btn-pri" id="ilInq">Request details</button></div>'+
+    '<div class="il-note"><b>Platform &amp; compliance.</b> Pegasus is a technology and membership platform that provides introductions and publishing tools — not a broker-dealer, securities intermediary, real-estate or energy broker, or investment adviser. Nothing here is an offer, solicitation, recommendation or commitment, and no success-based or securities compensation is implied. Figures are as represented by the lister and reviewed for plausibility, not independently guaranteed. Regulated transactions are handled by licensed parties under separate written agreement.</div>';
+
+  var bg=document.getElementById('ilModalBg');
+  document.getElementById('ilInq').onclick=function(){ document.getElementById('ilMsg').value=''; document.getElementById('ilModalSub').textContent='Re: '+L.title+' — your message reaches the lister through Pegasus.'; bg.classList.add('on'); };
+  document.getElementById('ilCancel').onclick=function(){ bg.classList.remove('on'); };
+  bg.onclick=function(e){ if(e.target===bg) bg.classList.remove('on'); };
+  document.getElementById('ilSend').onclick=async function(){
+    var btn=this, msg=document.getElementById('ilMsg').value.trim();
+    var u=null; try{ u=await c.auth.getUser(); }catch(_){}
+    if(!u||!u.data||!u.data.user){ try{ localStorage.setItem('pegasus.redirectAfterAuth',location.pathname+location.search); }catch(_){}
+      location.href='/signin.html?next='+encodeURIComponent(location.pathname+location.search); return; }
+    btn.disabled=true; btn.textContent='Sending…';
+    try{ var r=await c.rpc('create_infra_inquiry',{p_listing:L.id,p_message:msg}); if(r&&r.error) throw r.error;
+      bg.classList.remove('on'); Pegasus.toast&&Pegasus.toast('Inquiry sent — the lister will see it in their workspace.');
+    }catch(e){ Pegasus.toast&&Pegasus.toast('Could not send. Please try again.'); }
+    btn.disabled=false; btn.textContent='Send inquiry';
+  };
+});
+</script>
+</body></html>

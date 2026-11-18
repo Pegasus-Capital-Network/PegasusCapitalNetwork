@@ -463,6 +463,22 @@ Pegasus.boot((st)=>{
      People you've reached out to (distinct recipients of your messages),
      so the Connect button has a visible, persistent result.            */
   v.insertAdjacentHTML('beforeend','<div id="ca-connections" style="margin-top:14px"></div>');
+
+  /* AI Infrastructure & Energy — my listings + incoming inquiries */
+  v.insertAdjacentHTML('beforeend','<div id="ws-infrastructure" style="margin-top:14px"></div>');
+  (async function(){
+    var host=document.getElementById('ws-infrastructure'); if(!host) return;
+    var c; try{ c=await window.PegSB.ready; }catch(_){ return; }
+    var E=Pegasus.esc;
+    var lr=await c.rpc('get_my_infra_listings'); var listings=(lr&&!lr.error&&lr.data)||[];
+    var qr=await c.rpc('get_infra_inquiries_for_me'); var inqs=(qr&&!qr.error&&qr.data)||[];
+    if(!listings.length && !inqs.length){ host.innerHTML=''; return; }
+    var sb=function(s){ var m={published:'green',verified:'blue',rejected:'red'}; return '<span class="badge '+(m[s]||'')+'" style="text-transform:capitalize">'+s+'</span>'; };
+    var lh = listings.length ? listings.map(function(x){ return `<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;border-top:1px solid var(--border);padding:9px 0;font-size:12.5px"><div><b>${E(x.title)}</b> ${sb(x.verification_status)}<div style="color:var(--text3);font-size:11px;margin-top:2px">${E(String(x.category||'').replace(/_/g,' '))}${x.location?' · '+E(x.location):''}</div></div><div style="display:flex;gap:6px"><a class="btn btn-ghost btn-sm" href="/infrastructure-submit.html?id=${x.id}">Edit</a>${(x.slug&&x.verification_status==='published')?`<a class="btn btn-ghost btn-sm" target="_blank" href="/infrastructure/listing/${encodeURIComponent(x.slug)}">View</a>`:''}</div></div>`; }).join('') : `<div style="font-size:12px;color:var(--text3);padding:8px 0">No infrastructure listings yet. <a href="/infrastructure-submit.html" style="color:var(--blue)">Submit one →</a></div>`;
+    var qhtml = inqs.length ? `<div style="margin-top:12px"><div style="font-size:11px;font-family:var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--text3);margin-bottom:6px">Incoming inquiries</div>`+inqs.map(function(q){ return `<div style="border-top:1px solid var(--border);padding:8px 0;font-size:12.5px"><div><b>${E(q.from_name||'A member')}</b> <span style="color:var(--text3)">on</span> ${E(q.listing_title)} ${q.status==='new'?'<span class="badge">new</span>':''}</div>${q.message?`<div style="color:var(--text2);margin-top:3px">${E(q.message)}</div>`:''}${q.from_slug?`<a href="/u/${encodeURIComponent(q.from_slug)}" style="font-size:11px;color:var(--blue)">View profile →</a>`:''}</div>`; }).join('')+`</div>` : '';
+    host.innerHTML=`<div class="card" id="infrastructure"><div class="card-head"><div class="card-title">AI Infrastructure &amp; Energy</div><a href="/infrastructure-submit.html" style="font-size:11px;color:var(--blue-lt)">+ New listing</a></div><div class="card-body">${lh}${qhtml}</div></div>`;
+    inqs.filter(function(q){return q.status==='new';}).forEach(function(q){ try{ c.rpc('mark_infra_inquiry_read',{p_id:q.id}); }catch(_){} });
+  })();
   window.caRenderConnections=async function(){
     var host=document.getElementById('ca-connections'); if(!host)return;
     try{

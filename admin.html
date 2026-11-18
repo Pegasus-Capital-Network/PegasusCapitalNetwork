@@ -76,7 +76,7 @@ v.insertAdjacentHTML('beforeend',
   '<a href="/showcase-admin.html" style="color:var(--blue)">Showcase Moderation</a> · <a href="/admin/intelligence" style="color:var(--blue)">Capital Intelligence</a> · '+
   '<a href="/admin/partner-network" style="color:var(--blue)">Partner Network</a></div>'+
   '<div style="display:flex;gap:4px;margin-bottom:16px;flex-wrap:wrap" id="atabs"></div><div id="apanel"></div>');
-const sections=['Dashboard','Users','Pegasus AI','Intelligence','Investors','AI Companies','Intro Requests','Funding','Investment Matches','Private Network','Capital Pipeline','Capital Metrics','Direct Lending','PN Capital Leads','Feed','Invites','Claims','Deal Requests','Duplicates','Directory','Homepage Event','Subscriptions','Access System','Deal Rooms','Lender Profiles','Growth Partner Submissions','Match Activity','Analytics','Member Log','Manual Review','Platform Health','Schema & Repair'];
+const sections=['Dashboard','Users','Pegasus AI','Intelligence','Investors','AI Companies','Intro Requests','Funding','Investment Matches','Private Network','Capital Pipeline','Capital Metrics','Direct Lending','PN Capital Leads','Feed','Invites','Claims','Deal Requests','Duplicates','Directory','Infrastructure','Homepage Event','Subscriptions','Access System','Deal Rooms','Lender Profiles','Growth Partner Submissions','Match Activity','Analytics','Member Log','Manual Review','Platform Health','Schema & Repair'];
 document.getElementById('atabs').innerHTML=sections.map((s,i)=>'<div class="toggle-opt '+(i===0?'on':'')+'" style="font-size:11px" onclick="aShow(\''+s+'\')">'+s+'</div>').join('');
 function tbl(cols,rows){return '<div class="card"><table class="tbl"><thead><tr>'+cols.map(c=>'<th>'+c+'</th>').join('')+'</tr></thead><tbody>'+rows.map(r=>'<tr>'+r.map(c=>'<td>'+c+'</td>').join('')+'</tr>').join('')+'</tbody></table></div>';}
 const chip=(t,c)=>'<span class="badge '+c+'">'+t+'</span>';
@@ -2462,6 +2462,75 @@ var HEALTH_MANUAL_HTML =
     '</div>'+
   '</div>';
 
+/* ── AI Infrastructure & Energy — moderation + market intelligence ─────────── */
+async function loadInfraModeration(p){
+  p.innerHTML='<div style="padding:30px;color:var(--text3);font-size:12px">Loading infrastructure queue…</div>';
+  var c; try{ c=await window.PegSB.ready; }catch(e){ p.innerHTML='<div class="banner bn-cancel"><div class="banner-msg">🔴 <span>Supabase unavailable.</span></div></div>'; return; }
+  var st = window.__infraStatus || 'pending';
+  var filters=['pending','verified','published','rejected','all'];
+  var head='<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px">'+filters.map(function(f){return '<div class="toggle-opt '+(f===st?'on':'')+'" style="font-size:11px" onclick="infraFilter(\''+f+'\')">'+f+'</div>';}).join('')+'</div>';
+  var r=await c.rpc('admin_get_infra_queue',{p_status: st==='all'?null:st, p_limit:200});
+  if(r&&r.error){ p.innerHTML=head+'<div class="banner bn-cancel"><div class="banner-msg">🔴 <span>'+aesc(r.error.message||'Error')+'</span></div></div>'; return; }
+  var rows=(r&&r.data)||[];
+  function money(n){ if(n==null)return''; n=Number(n); if(!isFinite(n)||n<=0)return''; if(n>=1e9)return '$'+(Math.round(n/1e8)/10)+'B'; if(n>=1e6)return '$'+(Math.round(n/1e5)/10)+'M'; return '$'+Math.round(n/1e3)+'K'; }
+  var body = rows.length ? rows.map(function(x){
+    var facts=[]; if(x.mw_capacity)facts.push(x.mw_capacity+' MW cap'); if(x.it_load_mw)facts.push(x.it_load_mw+' MW IT'); if(x.power_status)facts.push('power: '+x.power_status); if(x.acreage)facts.push(x.acreage+' ac'); if(x.building_sqft)facts.push(Number(x.building_sqft).toLocaleString()+' sqft'); if(x.price_disclosed&&(x.asking_price||x.budget))facts.push(money(x.asking_price||x.budget));
+    var contact=[x.contact_name,x.contact_email,x.contact_phone].filter(Boolean).join(' · ');
+    return '<div class="card" style="margin-bottom:12px"><div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap">'+
+      '<div style="flex:1;min-width:240px"><div style="font-size:9px;font-family:var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--text3)">'+aesc(x.category)+' · '+aesc(x.verification_status)+(x.transaction_type?' · '+aesc(x.transaction_type):'')+'</div>'+
+      '<div style="font-size:15px;color:var(--text);font-weight:600;margin:3px 0">'+aesc(x.title)+'</div>'+
+      '<div style="font-size:12px;color:var(--text3)">'+aesc([x.location,x.market].filter(Boolean).join(' · '))+'</div>'+
+      (x.summary?'<div style="font-size:12.5px;color:var(--text2);margin-top:6px;line-height:1.5">'+aesc(x.summary)+'</div>':'')+
+      (facts.length?'<div style="font-size:11.5px;color:var(--text2);margin-top:8px">'+aesc(facts.join('  ·  '))+'</div>':'')+
+      '<div style="font-size:11.5px;color:var(--text2);margin-top:8px;padding:8px 10px;background:var(--bg2);border:1px solid var(--border);border-radius:8px"><b>Private (admin-only):</b> '+(contact?aesc(contact):'—')+(x.evidence_url?' · <a href="'+aesc(x.evidence_url)+'" target="_blank" rel="noopener">evidence ↗</a>':' · no evidence link')+'</div></div>'+
+      '<div style="display:flex;flex-direction:column;gap:6px;min-width:150px">'+
+        (x.verification_status!=='published'?'<button class="btn btn-pri btn-sm" onclick="infraModerate(\''+x.id+'\',\'published\')">Approve &amp; publish</button>':'<button class="btn btn-ghost btn-sm" onclick="infraModerate(\''+x.id+'\',\'pending\')">Unpublish</button>')+
+        '<button class="btn btn-ghost btn-sm" onclick="infraModerate(\''+x.id+'\',\'rejected\')">Reject…</button>'+
+        '<button class="btn btn-ghost btn-sm" onclick="infraHistory(\''+x.id+'\')">History</button>'+
+        (x.slug?'<a class="btn btn-ghost btn-sm" href="/infrastructure/listing/'+encodeURIComponent(x.slug)+'" target="_blank">Preview</a>':'')+
+      '</div></div><div id="infra-hist-'+x.id+'"></div></div>';
+  }).join('') : adminEmpty('🏗','No '+st+' infrastructure listings','Submitted assets and requirements appear here for verification. Approve to publish, reject with a reason, or unpublish. Nothing publishes automatically.');
+  p.innerHTML=head+body;
+  loadInfraSignals(p);
+}
+window.infraFilter=function(f){ window.__infraStatus=f; loadInfraModeration(document.getElementById('apanel')); };
+window.infraModerate=async function(id,status){
+  var note=null;
+  if(status==='rejected'){ note=prompt('Reason for rejection (sent to the lister):',''); if(note===null) return; }
+  var c=await window.PegSB.ready;
+  var r=await c.rpc('admin_moderate_infra',{p_id:id,p_status:status,p_note:note});
+  if(r&&r.error){ alert('Failed: '+((r.error&&r.error.message)||'error')); return; }
+  loadInfraModeration(document.getElementById('apanel'));
+};
+window.infraHistory=async function(id){
+  var host=document.getElementById('infra-hist-'+id); if(!host) return;
+  if(host.innerHTML){ host.innerHTML=''; return; }
+  var c=await window.PegSB.ready; var r=await c.rpc('admin_get_infra_events',{p_id:id}); var ev=(r&&!r.error&&r.data)||[];
+  host.innerHTML='<div style="margin-top:10px;border-top:1px solid var(--border);padding-top:10px;font-size:11.5px;color:var(--text2)">'+(ev.length?ev.map(function(e){return '<div style="padding:3px 0">'+aesc(String(e.created_at||'').replace('T',' ').slice(0,16))+' — <b>'+aesc(e.action)+'</b> '+aesc((e.from_status||'·')+'→'+(e.to_status||'·'))+(e.note?' · '+aesc(e.note):'')+'</div>';}).join(''):'No history yet.')+'</div>';
+};
+async function loadInfraSignals(p){
+  var c=await window.PegSB.ready;
+  var r=await c.from('infra_market_signals').select('*').order('created_at',{ascending:false}).limit(50);
+  var rows=(r&&!r.error&&r.data)||[];
+  var form='<div class="card" style="margin-top:22px"><div style="font-weight:600;color:var(--text);margin-bottom:6px">Market Intelligence — publish a public signal</div>'+
+    '<div style="font-size:11.5px;color:var(--text3);margin-bottom:10px">Public, sourced market intelligence shown in the Market Intelligence section. These are context only and <b>never</b> become marketplace listings.</div>'+
+    '<input id="sig_title" placeholder="Headline" style="width:100%;margin-bottom:6px;padding:8px 10px;border:1px solid var(--border);border-radius:8px;background:var(--bg2);color:var(--text)">'+
+    '<textarea id="sig_summary" placeholder="Short summary (from public sources)" style="width:100%;min-height:50px;margin-bottom:6px;padding:8px 10px;border:1px solid var(--border);border-radius:8px;background:var(--bg2);color:var(--text)"></textarea>'+
+    '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px"><input id="sig_source" placeholder="Source name" style="flex:1;min-width:120px;padding:8px 10px;border:1px solid var(--border);border-radius:8px;background:var(--bg2);color:var(--text)"><input id="sig_url" placeholder="Source URL" style="flex:2;min-width:160px;padding:8px 10px;border:1px solid var(--border);border-radius:8px;background:var(--bg2);color:var(--text)"><input id="sig_date" type="date" style="padding:8px 10px;border:1px solid var(--border);border-radius:8px;background:var(--bg2);color:var(--text)"></div>'+
+    '<button class="btn btn-pri btn-sm" onclick="infraAddSignal()">Publish signal</button></div>';
+  var list = rows.length ? '<div class="card" style="margin-top:12px">'+rows.map(function(s){return '<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;border-top:1px solid var(--border);padding:8px 0;font-size:12px"><div><b>'+aesc(s.title)+'</b> <span style="color:var(--text3)">'+aesc((s.source_name||'')+(s.signal_date?' · '+s.signal_date:''))+'</span> '+(s.is_published?'<span class="badge green">published</span>':'<span class="badge">draft</span>')+'</div><button class="btn btn-ghost btn-sm" onclick="infraToggleSignal(\''+s.id+'\','+(!s.is_published)+')">'+(s.is_published?'Unpublish':'Publish')+'</button></div>';}).join('')+'</div>' : '';
+  p.insertAdjacentHTML('beforeend', form+list);
+}
+window.infraAddSignal=async function(){
+  var c=await window.PegSB.ready;
+  var payload={title:(document.getElementById('sig_title').value||'').trim(),summary:(document.getElementById('sig_summary').value||'').trim(),source_name:(document.getElementById('sig_source').value||'').trim(),source_url:(document.getElementById('sig_url').value||'').trim(),signal_date:document.getElementById('sig_date').value||null,is_published:true};
+  if(!payload.title){ alert('Add a headline.'); return; }
+  var r=await c.rpc('admin_create_infra_signal',{p:payload});
+  if(r&&r.error){ alert('Failed: '+((r.error&&r.error.message)||'error')); return; }
+  loadInfraModeration(document.getElementById('apanel'));
+};
+window.infraToggleSignal=async function(id,pub){ var c=await window.PegSB.ready; var r=await c.rpc('admin_set_infra_signal_published',{p_id:id,p_pub:pub}); if(r&&r.error){alert('Failed: '+((r.error&&r.error.message)||'error'));return;} loadInfraModeration(document.getElementById('apanel')); };
+
 window.aShow=function(s){[...document.querySelectorAll('#atabs .toggle-opt')].forEach(e=>e.classList.toggle('on',e.textContent===s));const p=document.getElementById('apanel');
   if(s==='Dashboard'){ loadDashboard(p); return; }
   if(s==='Users'){ loadUsers(p); return; }
@@ -2481,6 +2550,7 @@ window.aShow=function(s){[...document.querySelectorAll('#atabs .toggle-opt')].fo
   if(s==='Deal Requests'){ loadDealRequests(p); return; }
   if(s==='Duplicates'){ loadDuplicates(p); return; }
   if(s==='Directory'){ loadDirectory(p); return; }
+  if(s==='Infrastructure'){ loadInfraModeration(p); return; }
   if(s==='Subscriptions'){ loadSubscriptions(p); return; }
   if(s==='Feed'){ loadFeedAdmin(p); return; }
   if(s==='Invites'){ loadInvites(p); return; }
