@@ -350,6 +350,16 @@
   status = 200
 
 [[redirects]]
+  from = "/infrastructure"
+  to = "/infrastructure.html"
+  status = 200
+
+[[redirects]]
+  from = "/infrastructure-submit"
+  to = "/infrastructure-submit.html"
+  status = 200
+
+[[redirects]]
   from = "/visitors"
   to = "/visitors.html"
   status = 200
