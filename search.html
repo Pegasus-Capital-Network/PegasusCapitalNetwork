@@ -24,10 +24,11 @@
 .sr-row:hover{border-color:var(--blue);transform:translateY(-1px)}
 .sr-av{flex:0 0 44px;width:44px;height:44px;border-radius:10px;object-fit:cover;display:flex;align-items:center;justify-content:center;font-family:var(--sans);font-weight:600;font-size:16px;color:#fff;background:var(--blue)}
 .sr-av.person{border-radius:50%}
+img.sr-av:not(.person){object-fit:contain;background:#fff}
 .sr-main{flex:1;min-width:0}
 .sr-nm{font-size:15px;font-weight:600;color:var(--text);display:flex;align-items:center;gap:9px;flex-wrap:wrap}
 .sr-badge{font-size:9.5px;font-family:var(--mono);letter-spacing:.06em;text-transform:uppercase;padding:2px 7px;border-radius:999px;border:1px solid var(--border2);color:var(--text2);background:var(--bg2);font-weight:500}
-.sr-sb{font-size:12.5px;color:var(--text2);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:62ch}
+.sr-sb{font-size:12.5px;color:var(--text2);margin-top:2px;white-space:normal;overflow-wrap:anywhere;line-height:1.5;max-width:62ch}
 .sr-go{flex:0 0 auto;color:var(--text3);font-size:18px}
 .sr-empty{text-align:center;border:1px dashed var(--border2);border-radius:14px;padding:40px 22px;color:var(--text3)}
 .sr-empty .big{font-family:var(--serif);font-weight:300;font-size:21px;color:var(--text2);margin-bottom:8px}
@@ -74,7 +75,7 @@ Pegasus.boot(async function(){
 
   function rowHTML(r){
     var isPerson=r.kind==='member';
-    var av = r.logo_url
+    var av = r.logo_url && /^https?:\/\//i.test(r.logo_url)
       ? '<img class="sr-av'+(isPerson?' person':'')+'" src="'+esc(r.logo_url)+'" alt="">'
       : '<div class="sr-av'+(isPerson?' person':'')+'">'+esc(initials(r.name))+'</div>';
     var cat = r.category ? '<span class="sr-badge">'+esc(String(r.category).replace(/_/g,' '))+'</span>' : '';
@@ -91,6 +92,21 @@ Pegasus.boot(async function(){
   }
 
   var lastQ=null, timer=null;
+  async function enrichCompanies(rows){
+    var slugs=rows.filter(function(r){return r.kind!=='member';}).map(function(r){
+      try{return new URL(r.url,location.origin).pathname.split('/').filter(Boolean).pop();}catch(_){return '';}
+    }).filter(function(s){return /^[a-z0-9-]+$/i.test(s||'');});
+    if(!slugs.length) return rows;
+    var result=await c.from('public_business_discovery').select('slug,logo_url,short_description,tagline').in('slug',slugs);
+    if(result.error) throw result.error;
+    var bySlug={}; (result.data||[]).forEach(function(r){bySlug[r.slug]=r;});
+    return rows.map(function(r){
+      if(r.kind==='member') return r;
+      var slug; try{slug=new URL(r.url,location.origin).pathname.split('/').filter(Boolean).pop();}catch(_){return r;}
+      var d=bySlug[slug];
+      return d?Object.assign({},r,{logo_url:d.logo_url||r.logo_url,subtitle:d.short_description||d.tagline||r.subtitle}):r;
+    });
+  }
   async function run(q){
     q=String(q||'').trim();
     if(q===lastQ) return; lastQ=q;
@@ -99,6 +115,7 @@ Pegasus.boot(async function(){
     body.innerHTML='<div class="sr-count">Searching…</div>';
     var rows=[];
     try{ var r=await c.rpc('search_network',{p_q:q,p_limit:40}); rows=(r&&!r.error&&r.data)||[]; }catch(e){ rows=[]; }
+    try{rows=await enrichCompanies(rows);}catch(e){console.error('Public company details unavailable',e);}
     if(q!==lastQ) return; // a newer query superseded this one
     if(!rows.length){ renderEmpty(q); return; }
     body.innerHTML='<div class="sr-count">'+rows.length+(rows.length===40?'+':'')+' result'+(rows.length===1?'':'s')+'</div><div class="sr-list">'+rows.map(rowHTML).join('')+'</div>';
