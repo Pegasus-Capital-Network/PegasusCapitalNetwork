@@ -236,13 +236,25 @@ async function searchBusinesses(q){
 function placementTag(kind){
   return kind==="featured"?'<span class="dir-tag">Featured</span>':kind==="sponsored"?'<span class="dir-tag dir-tag-sp">Sponsored</span>':"";
 }
+// Enrich only already-listed businesses from the existing public discovery view.
+// The search/placement projections omit their saved logo and description.
+async function enrichBusinessCards(rows){
+  const slugs=[...new Set(rows.map(r=>r.slug).filter(s=>/^[a-z0-9-]+$/i.test(s||"")))];
+  if(!slugs.length) return rows;
+  const {url,key}=cfg();
+  const qs=new URLSearchParams({select:"slug,logo_url,tagline,short_description,category,industry",slug:"in.("+slugs.join(",")+")"});
+  const res=await fetch(url+"/rest/v1/public_business_discovery?"+qs,{headers:{apikey:key,Authorization:"Bearer "+key}});
+  if(!res.ok) throw new Error("public business card details unavailable: "+res.status);
+  const details=new Map((await res.json()).map(r=>[r.slug,r]));
+  return rows.map(r=>({...r,...(details.get(r.slug)||{})}));
+}
 // Client type-ahead for the search box (plain ES5, no template literals).
 const SEARCH_JS=String.raw`<script>(function(){var i=document.getElementById("dirQ"),box=document.getElementById("dirSug");if(!i||!box)return;var t=null,seq=0,act=-1;
 function e(v){return String(v==null?"":v).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
 function hide(){box.hidden=true;box.innerHTML="";act=-1;}
 function tag(p){return p==="featured"?'<span class="dir-tag">Featured</span>':p==="sponsored"?'<span class="dir-tag dir-tag-sp">Sponsored</span>':"";}
 function draw(rows){act=-1;if(!rows.length){box.innerHTML='<div class="dir-sug-empty">No companies match</div>';box.hidden=false;return;}
-box.innerHTML=rows.map(function(r,k){var m=[r.cat_label,r.location].filter(Boolean).join(" · ");return '<a role="option" id="dirSug'+k+'" href="/business/'+encodeURIComponent(r.slug)+'"><span class="dir-sug-n">'+e(r.name)+'</span>'+tag(r.placement)+(m?'<span class="dir-sug-m">'+e(m)+'</span>':'')+'</a>';}).join("")+
+box.innerHTML=rows.map(function(r,k){var m=[r.cat_label,r.location].filter(Boolean).join(" · ");var logo=r.logo_url&&/^https?:\/\//i.test(r.logo_url)?'<img width="36" height="36" style="object-fit:contain;float:left;margin-right:10px;background:#fff;border-radius:6px" src="'+e(r.logo_url)+'" alt="'+e(r.name)+' logo">':'';return '<a role="option" id="dirSug'+k+'" href="/business/'+encodeURIComponent(r.slug)+'">'+logo+'<span class="dir-sug-n">'+e(r.name)+'</span>'+tag(r.placement)+(m?'<span class="dir-sug-m">'+e(m)+'</span>':'')+(r.short_description||r.tagline?'<span class="dir-sug-m">'+e(r.short_description||r.tagline)+'</span>':'')+'</a>';}).join("")+
 '<a class="dir-sug-all" href="/businesses/search?q='+encodeURIComponent(i.value.trim())+'">See all results →</a>';box.hidden=false;}
 i.addEventListener("input",function(){clearTimeout(t);var q=i.value.trim();if(!q){hide();return;}t=setTimeout(function(){var my=++seq;fetch("/api/business-search?q="+encodeURIComponent(q)+"&limit=8").then(function(r){return r.ok?r.json():[];}).then(function(rows){if(my===seq&&i.value.trim())draw(Array.isArray(rows)?rows:[]);}).catch(function(){});},160);});
 i.addEventListener("keydown",function(ev){var as=box.querySelectorAll("a[role=option]");if(box.hidden||!as.length)return;if(ev.key==="ArrowDown"||ev.key==="ArrowUp"){ev.preventDefault();act=(act+(ev.key==="ArrowDown"?1:-1)+as.length)%as.length;for(var k=0;k<as.length;k++)as[k].classList.toggle("on",k===act);i.setAttribute("aria-activedescendant","dirSug"+act);}else if(ev.key==="Enter"&&act>=0){ev.preventDefault();location.href=as[act].getAttribute("href");}else if(ev.key==="Escape"){hide();}});
@@ -326,9 +338,10 @@ function card(item,kind){
   }
   const seg=kind==="events"?"event":"business";
   const meta=[txt(item.category),txt(item.industry),txt(item.location),txt(item.market)].filter(Boolean).join(" · ");
-  const desc=txt(item.tagline)||txt(item.short_description);
+  const desc=txt(item.short_description)||txt(item.tagline);
+  const logo=txt(item.logo_url);
   return '<article class="dir-card"><a class="dir-link" href="/'+seg+'/'+encodeURIComponent(item.slug||"")+'">'+
-    '<div class="dir-avatar dir-initial">'+esc((txt(item.name)[0]||"P").toUpperCase())+'</div>'+
+    (logo&&/^https?:\/\//i.test(logo)?'<img class="dir-avatar" style="object-fit:contain;border-radius:12px;background:#fff" src="'+esc(logo)+'" alt="'+esc(item.name||"Business")+' logo" loading="lazy" width="68" height="68">':'<div class="dir-avatar dir-initial">'+esc((txt(item.name)[0]||"P").toUpperCase())+'</div>')+
     '<div><h2>'+esc(item.name||"Pegasus "+(kind==="events"?"Event":"Business"))+(item.placement?" "+placementTag(item.placement):"")+'</h2>'+(meta?'<p class="dir-meta">'+esc(meta)+'</p>':'')+
     (kind==="events"?'':hmdaBadge(item))+
     (desc?'<p class="dir-desc">'+esc(desc)+'</p>':'')+'<span class="dir-open">View '+(kind==="events"?"event":"business")+' →</span></div></a></article>';
@@ -466,7 +479,7 @@ export default async (request)=>{
   try{
     if(kind==="businesses"&&u.searchParams.get("section")==="search"){
       const q=String(u.searchParams.get("q")||"").replace(/\s+/g," ").trim().slice(0,80);
-      const rows=q?await searchBusinesses(q):[];
+      const rows=q?await enrichBusinessCards(await searchBusinesses(q)):[];
       return new Response(render({kind,page:1,rows,total:rows.length,search:q}),{status:200,headers:{"Content-Type":"text/html; charset=utf-8","Cache-Control":"public, max-age=0, s-maxage=120, stale-while-revalidate=600","Netlify-Vary":"query=q","X-Robots-Tag":"noindex,follow"}});
     }
     if(kind==="businesses"){
@@ -478,9 +491,13 @@ export default async (request)=>{
       const activeState=cleanState(u.searchParams.get("state"))||null;
       if(activeSection!=="all" && !sections.some(s=>s.slug===activeSection)){activeSection="all";activeSub=null;}
       if(activeSub){const sec=sections.find(s=>s.slug===activeSection);if(!sec||!sec.subs.some(c=>c.slug===activeSub)) activeSub=null;}
-      const {rows,total}=await loadBusinesses(activeSection,activeSub,activeState,page);
+      const listed=await loadBusinesses(activeSection,activeSub,activeState,page);
+      const total=listed.total;
+      const selectedPlacements=placementsFor(placements,activeSection,activeSub,activeState);
+      const enriched=await enrichBusinessCards([...listed.rows,...selectedPlacements]);
+      const rows=enriched.slice(0,listed.rows.length);
       if(page>1&&!rows.length) return errPage(404,"Directory page not found");
-      const featured=placementsFor(placements,activeSection,activeSub,activeState);
+      const featured=enriched.slice(listed.rows.length);
       return new Response(render({kind,page,rows,total,sections,activeSection,activeSub,activeState,stateFacets,featured}),{status:200,headers:{"Content-Type":"text/html; charset=utf-8","Cache-Control":"public, max-age=0, s-maxage=300, stale-while-revalidate=600","Netlify-Vary":"query=page|section|category|state","X-Robots-Tag":"index,follow,max-image-preview:large"}});
     }
     if(kind==="people"){

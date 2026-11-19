@@ -19,6 +19,19 @@ function json(body,status,cache){
     "Cache-Control":cache||"public, max-age=0, s-maxage=120, stale-while-revalidate=600","Netlify-Vary":"query=q|limit","X-Robots-Tag":"noindex"}});
 }
 
+// Enrich only already-listed businesses from the existing public discovery view.
+// The search/placement projections omit their saved logo and description.
+async function enrichBusinessCards(rows){
+  const slugs=[...new Set(rows.map(r=>r.slug).filter(s=>/^[a-z0-9-]+$/i.test(s||"")))];
+  if(!slugs.length) return rows;
+  const {url,key}=cfg();
+  const qs=new URLSearchParams({select:"slug,logo_url,tagline,short_description,category,industry",slug:"in.("+slugs.join(",")+")"});
+  const res=await fetch(url+"/rest/v1/public_business_discovery?"+qs,{headers:{apikey:key,Authorization:"Bearer "+key}});
+  if(!res.ok) throw new Error("public business card details unavailable: "+res.status);
+  const details=new Map((await res.json()).map(r=>[r.slug,r]));
+  return rows.map(r=>({...r,...(details.get(r.slug)||{})}));
+}
+
 export default async (request)=>{
   const u=new URL(request.url);
   const q=String(u.searchParams.get("q")||"").replace(/\s+/g," ").trim().slice(0,80);
@@ -31,7 +44,7 @@ export default async (request)=>{
       body:JSON.stringify({p_q:q,p_limit:limit})});
     if(!res.ok) return json({error:"search unavailable"},502,"no-store");
     const rows=await res.json();
-    return json(Array.isArray(rows)?rows:[]);
+    return json(await enrichBusinessCards(Array.isArray(rows)?rows:[]));
   }catch(err){
     console.error("[business-search]",err);
     return json({error:"search unavailable"},502,"no-store");
