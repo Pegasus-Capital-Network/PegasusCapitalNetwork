@@ -48,6 +48,20 @@
   to = "/constellation.html"
   status = 200
 
+# Consolidate the .network alias into the canonical .com domain.
+# Host-specific rules only: do not redirect pegasuscapitalnetwork.com itself.
+[[redirects]]
+  from = "https://pegasuscapital.network/*"
+  to = "https://pegasuscapitalnetwork.com/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "https://www.pegasuscapital.network/*"
+  to = "https://pegasuscapitalnetwork.com/:splat"
+  status = 301
+  force = true
+
 [[redirects]]
   from = "https://pegasuslendersgroup.com/*"
   to = "https://pegasuscapitalnetwork.com/:splat"
