@@ -212,7 +212,9 @@ Pegasus.boot(async function(){
   var mbSlug = mb.slug ? encodeURIComponent(mb.slug) : '';
   var managedLine = '';
   if (mb.generic) {
-    managedLine = '<div class="pp-managed"><span class="pp-managed-txt">Connected Pegasus member</span></div>';
+    // A privacy-hidden manager can be the internal owner of an unclaimed
+    // research listing; it is not proof of the named company's membership.
+    managedLine = '<div class="pp-managed"><span class="pp-managed-txt">Public listing on Pegasus</span></div>';
   } else if (mb.name) {
     var mbInit = (mb.name||'?').trim().split(/\s+/).map(function(w){return w[0];}).slice(0,2).join('').toUpperCase();
     managedLine = '<div class="pp-managed">'+
