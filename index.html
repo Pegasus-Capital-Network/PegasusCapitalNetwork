@@ -71,6 +71,7 @@ h1{font-weight:800;font-size:clamp(40px,7vw,74px);line-height:1.02;letter-spacin
 .hero-actions{display:flex;gap:12px;align-items:center;justify-content:center;flex-wrap:wrap;margin-top:24px}
 .hero-cta{display:inline-flex;padding:12px 20px;border-radius:10px;background:var(--navy);color:#fff;font-size:14px;font-weight:700;box-shadow:var(--shadow-sm)}
 .hero-cta.secondary{background:#fff;color:var(--navy);border:1px solid var(--line);box-shadow:none}
+.founding-pill{display:none;margin:0 auto 16px;font-size:12px;font-weight:700;color:#9a7b3f;background:rgba(154,123,63,.08);border:1px solid rgba(154,123,63,.28);border-radius:999px;padding:6px 15px;width:max-content;max-width:90%}
 .hero-note{margin:14px auto 0;color:var(--muted);font-size:13px}
 .hero-note a{color:var(--navy);text-decoration:underline;text-underline-offset:2px}
 
@@ -169,6 +170,7 @@ h1{font-weight:800;font-size:clamp(40px,7vw,74px);line-height:1.02;letter-spacin
 <section class="hero"><div class="wrap">
   <img class="hero-peg" src="/assets/brand/pegasus-mark.png" alt="Pegasus" style="height:94px;width:auto;margin:0 auto 20px;display:block">
   <div class="eyebrow">Welcome to Pegasus</div>
+  <a id="foundingPill" class="founding-pill" href="/signup.html"></a>
   <h1>Connect people.<br>Move business forward.</h1>
   <p class="sub">Discover companies, lenders, investors, founders and partners across real estate finance and AI. Build relationships and advance real opportunities.</p>
   <form class="hero-search" role="search" onsubmit="var q=this.querySelector('input').value.trim();location.href='/search'+(q?('?q='+encodeURIComponent(q)):'');return false;">
@@ -251,5 +253,12 @@ window.__pegCounts.then(function(c){
   put('capital',[c.biz?f(c.biz)+' companies':'',c.programs?f(c.programs)+' lending programs':'']);
   put('ai',[c.ai?f(c.ai)+' AI companies':'',c.inv?f(c.inv)+' investors':'']);
 });
+</script>
+<script>
+(function(){
+  var C=window.PEG_CONFIG||{};var U=C.SUPABASE_URL||'https://auth.pegasuscapitalnetwork.com',K=C.SUPABASE_ANON||'sb_publishable_hrR8wI6hM921mnxk7bBE_A_YKxWsoBI';
+  fetch(U+'/rest/v1/rpc/founding_perk_spots_left',{method:'POST',headers:{apikey:K,Authorization:'Bearer '+K,'Content-Type':'application/json'},body:'{}'})
+    .then(function(r){return r.json();}).then(function(n){ n=parseInt(n,10); if(n>0){ var el=document.getElementById('foundingPill'); if(el){ el.textContent='★ Founding Member access — only '+n+' spots left'; el.style.display='block'; } } }).catch(function(){});
+})();
 </script>
 </body></html>

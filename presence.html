@@ -234,7 +234,11 @@ Pegasus.boot(async function(){
       '<button class="btn btn-ghost" onclick="oppCreate()" style="color:rgba(255,255,255,.82);border-color:rgba(255,255,255,.2)">+ Present Something</button>'+
       '<button class="btn btn-ghost" onclick="presenceCopyLink()" style="color:rgba(255,255,255,.82);border-color:rgba(255,255,255,.2)">Copy Link</button>';
   } else {
+    // Unclaimed company (no real manager): surface a prominent, free claim CTA —
+    // this is where SEO and our company spotlights land.
+    var isUnclaimedCompany = (p.presence_type==='company' && !(mb && mb.name));
     heroBtns =
+      (isUnclaimedCompany?'<a class="btn btn-pri" href="/claim?presence='+encodeURIComponent(p.slug)+'">Is this your company? Claim it free</a>':'')+
       (p.website_url?'<a class="btn btn-ghost" href="'+safeHref(p.website_url)+'" target="_blank" rel="noopener noreferrer" style="color:rgba(255,255,255,.82);border-color:rgba(255,255,255,.2)">Visit Website</a>':'')+
       ((mb.name && mbSlug)?'<a class="btn btn-ghost" href="/u/'+mbSlug+'" style="color:rgba(255,255,255,.82);border-color:rgba(255,255,255,.2)">View Manager Profile</a>':'')+
       '<button class="btn btn-ghost" onclick="presenceCopyLink()" style="color:rgba(255,255,255,.82);border-color:rgba(255,255,255,.2)">Copy Link</button>';
