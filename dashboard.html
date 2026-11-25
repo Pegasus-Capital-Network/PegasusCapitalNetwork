@@ -464,6 +464,26 @@ Pegasus.boot((st)=>{
      so the Connect button has a visible, persistent result.            */
   v.insertAdjacentHTML('beforeend','<div id="ca-connections" style="margin-top:14px"></div>');
 
+  /* Grow Pegasus — turn every member into a growth channel (invite, referral link, badge) */
+  v.insertAdjacentHTML('beforeend','<div id="ws-grow" style="margin-top:14px"></div>');
+  (async function(){
+    var host=document.getElementById('ws-grow'); if(!host) return;
+    var c; try{ c=await window.PegSB.ready; }catch(_){ return; }
+    var mine=null,left=null;
+    try{ var a=await c.rpc('my_founding_number'); mine=(a&&!a.error)?a.data:null; }catch(_){}
+    try{ var b=await c.rpc('founding_perk_spots_left'); left=(b&&!b.error)?b.data:null; }catch(_){}
+    var fbadge = (mine!=null&&mine>0) ? '<span style="font-family:var(--mono);font-size:9px;letter-spacing:.06em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(170,137,38,.3);border-radius:999px;padding:2px 8px;margin-left:8px">Founding Member No.'+(String(mine).length<2?'0':'')+mine+'</span>' : '';
+    var scar = (left!=null&&left>0) ? '<div style="font-size:12px;color:var(--text2);margin-top:2px">Only <b style="color:var(--gold)">'+left+'</b> founding-member spots left — bring the right people in before they\'re gone.</div>' : '';
+    host.innerHTML='<div class="card" id="grow" style="border-color:rgba(170,137,38,0.28);background:linear-gradient(135deg,rgba(170,137,38,.06),transparent)">'+
+      '<div class="card-head"><div class="card-title">Grow Pegasus'+fbadge+'</div></div>'+
+      '<div class="card-body"><div style="font-size:12.5px;color:var(--text2);line-height:1.55;margin-bottom:8px">The network is only as valuable as the people on it. Bring the lenders, brokers, builders, investors and partners you actually work with — a warm network beats a big one.</div>'+scar+
+      '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px">'+
+        '<button class="btn btn-pri btn-sm" onclick="Pegasus.inviteOpen&&Pegasus.inviteOpen()">Invite colleagues</button>'+
+        '<a class="btn btn-ghost btn-sm" href="/capital-referral-partners.html">Get my tracked referral link</a>'+
+        '<a class="btn btn-ghost btn-sm" href="/network-badge.html">Add the “On Pegasus” badge</a>'+
+      '</div></div></div>';
+  })();
+
   /* AI Infrastructure & Energy — my listings + incoming inquiries */
   v.insertAdjacentHTML('beforeend','<div id="ws-infrastructure" style="margin-top:14px"></div>');
   (async function(){
